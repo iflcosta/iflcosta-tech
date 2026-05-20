@@ -26,23 +26,33 @@ export default async function handler(req) {
     );
 
     if (accessToken) {
-      const { data } = await supabase.auth.getUser(accessToken);
-      if (data?.user) {
-        // Grava no log de auditoria
-        await supabase.from('audit_log').insert({
-          actor: data.user.id,
-          action: 'logout',
-          entity: 'auth',
-          entity_id: data.user.id,
-          after: { scope }
-        });
+      let userId = '';
+      try {
+        const { data } = await supabase.auth.getUser(accessToken);
+        if (data?.user) {
+          userId = data.user.id;
+          // Grava no log de auditoria
+          await supabase.from('audit_log').insert({
+            actor: userId,
+            action: 'logout',
+            entity: 'auth',
+            entity_id: userId,
+            after: { scope }
+          });
+        }
+      } catch (logErr) {
+        console.error('Erro ao obter usuário ou gravar log de auditoria:', logErr);
       }
       
-      // Invalida a sessão no Supabase Auth
-      await supabase.auth.admin.signOut(data?.user?.id || '', scope);
+      try {
+        // Invalida a sessão no Supabase Auth (requer JWT do usuário, não o UUID)
+        await supabase.auth.admin.signOut(accessToken, scope);
+      } catch (signOutErr) {
+        console.error('Erro ao invalidar sessão no Supabase:', signOutErr);
+      }
     }
   } catch (err) {
-    console.error('Erro ao processar logout no servidor:', err);
+    console.error('Erro geral ao processar logout no servidor:', err);
   }
 
   // Redireciona para a landing principal limpando os cookies de sessão
