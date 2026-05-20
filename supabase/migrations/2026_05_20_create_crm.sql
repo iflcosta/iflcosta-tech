@@ -97,25 +97,21 @@ DECLARE
   old_data JSONB := NULL;
   new_data JSONB := NULL;
   op TEXT := TG_OP;
-  actor_id TEXT := NULL;
+  actor_id TEXT := 'system';
 BEGIN
-  -- Tentar obter o ID do usuário autenticado no Supabase
+  -- Obter o ID do usuário autenticado no Supabase ou 'system'
   BEGIN
-    actor_id := auth.uid()::text;
+    actor_id := coalesce(auth.uid()::text, 'system');
   EXCEPTION WHEN OTHERS THEN
-    actor_id := 'system';
-  END;
-  
-  IF actor_id IS NULL THEN
     actor_id := 'system';
   END;
 
   IF (op = 'UPDATE' OR op = 'DELETE') THEN
     old_data := to_jsonb(OLD);
-  END;
+  END IF;
   IF (op = 'INSERT' OR op = 'UPDATE') THEN
     new_data := to_jsonb(NEW);
-  END;
+  END IF;
 
   INSERT INTO public.audit_log (actor, action, entity, entity_id, before, after)
   VALUES (
@@ -131,7 +127,7 @@ BEGIN
     RETURN OLD;
   ELSE
     RETURN NEW;
-  END;
+  END IF;
 END;
 $$;
 
