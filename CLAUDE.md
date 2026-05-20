@@ -76,16 +76,16 @@ tests/                  # Playwright
 | **003-lead-capture** | 100% — Concluído e homologado | — |
 | **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
-| **006-admin-os** | Em planejamento | Analisar especificações em `.specs/006-admin-os/` e criar `implementation_plan.md` |
-| **007-admin-inventory** | Spec resumida | — |
+| **006-admin-os** | 100% — Código e testes E2E totalmente homologados (12/12 verdes) | Aplicar migração SQL no banco de produção e sincronizar repositório |
+| **007-admin-inventory** | Spec resumida | Planejar a gestão de peças integradas às Ordens de Serviço |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS e CRM |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **Planejamento da Feature 006 (Admin OS - Ordens de Serviço)** — Analisar detalhadamente [.specs/006-admin-os/spec.md](file:///C:/Users/Iago/.gemini/antigravity/scratch/iflcosta-tech/.specs/006-admin-os/spec.md) e o fluxo conceitual em [tracking_design.md](file:///C:/Users/Iago/.gemini/antigravity/scratch/iflcosta-tech/.specs/006-admin-os/tracking_design.md).
-2. **Criar e aprovar o `implementation_plan.md`** — Definir schema da nova tabela `service_orders`, chaves estrangeiras com `customers`, políticas de RLS e novos endpoints `/api/admin/os/*`.
-3. **Migração do Banco de Dados e UI** — Executar script SQL no Supabase, desenvolver APIs Edge no Vercel, e construir a tela de controle de OS e a Timeline Pública de rastreamento no admin.
+1. **Executar a Migração SQL no Banco de Produção** — Aplicar o arquivo [2026_05_20_create_service_orders.sql](file:///C:/Users/Iago/.gemini/antigravity/scratch/iflcosta-tech/supabase/migrations/2026_05_20_create_service_orders.sql) via Editor SQL do painel do Supabase.
+2. **Push para o GitHub** — Enviar as modificações finais locais da Feature 006 para o repositório remoto.
+3. **Especificar a Feature 007 (Admin Inventory - Estoque)** — Integrar o banco de dados de estoque com a tabela de peças de reparo (`repair_parts`).
 
 ---
 

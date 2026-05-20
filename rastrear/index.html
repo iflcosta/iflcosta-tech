@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rastreamento de Serviço — Iago Lopes | Hardware & Tech</title>
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Theme Dark/Glassmorphism HSL */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b132b 0%, #1c2541 50%, #0b0c10 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.08);
+      
+      --color-brand-hsl: 245, 95%, 65%;
+      --color-brand-glow: hsla(var(--color-brand-hsl), 0.3);
+      --color-primary: #ffffff;
+      --color-secondary: #a0aec0;
+      --color-tertiary: #718096;
+      --color-success: #10b981;
+      --color-success-glow: rgba(16, 185, 129, 0.2);
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --space-4: 1rem;
+      --space-5: 1.5rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--color-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 90px; /* Space for sticky WhatsApp footer */
+      line-height: 1.5;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+      padding: var(--space-4);
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-4) 0;
+      margin-bottom: var(--space-4);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .os-badge {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-secondary);
+    }
+
+    /* Card Principal / Welcome */
+    .welcome-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-5);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .welcome-card h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    .welcome-card p {
+      font-size: 0.9rem;
+      color: var(--color-secondary);
+    }
+
+    .device-info {
+      background: rgba(0,0,0,0.2);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-top: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .device-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .device-label {
+      color: var(--color-tertiary);
+    }
+
+    .device-value {
+      font-weight: 500;
+    }
+
+    /* Card de Destaque do Status Atual */
+    .active-status-card {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.03) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      text-align: center;
+      margin-bottom: var(--space-5);
+      box-shadow: 0 4px 20px 0 var(--color-brand-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .active-status-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--color-brand-glow) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .active-status-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-badge-lg {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
+    .active-status-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .active-timer {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      background: rgba(0,0,0,0.3);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-top: 4px;
+      border: 1px solid var(--glass-border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Linha do Tempo (Timeline) */
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-secondary);
+      margin-bottom: var(--space-4);
+      padding-left: 4px;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      margin-bottom: var(--space-5);
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 9px;
+      bottom: 6px;
+      width: 2px;
+      background: var(--glass-border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: var(--space-5);
+    }
+
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -28px;
+      top: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 2px solid var(--color-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    /* Completed state */
+    .timeline-item.completed .timeline-dot {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: #ffffff;
+      box-shadow: 0 0 8px var(--color-success-glow);
+    }
+
+    /* Active state */
+    .timeline-item.active .timeline-dot {
+      background: #4f46e5;
+      border-color: #818cf8;
+      color: #ffffff;
+      box-shadow: 0 0 10px var(--color-brand-glow);
+    }
+
+    .timeline-item.active .timeline-dot::after {
+      content: '';
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--color-brand-glow);
+      position: absolute;
+      animation: ripple 2s infinite ease-out;
+      z-index: -1;
+    }
+
+    @keyframes ripple {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    /* Future state */
+    .timeline-item.future {
+      opacity: 0.45;
+    }
+
+    .timeline-content {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+    }
+
+    .timeline-item.active .timeline-content {
+      border-color: rgba(99, 102, 241, 0.35);
+      background: rgba(99, 102, 241, 0.04);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .timeline-date {
+      font-size: 0.75rem;
+      color: var(--color-tertiary);
+    }
+
+    .timeline-desc {
+      font-size: 0.85rem;
+      color: var(--color-secondary);
+    }
+
+    .timeline-duration {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--color-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      display: inline-block;
+      margin-top: var(--space-2);
+    }
+
+    /* Fotos de Transparência */
+    .photos-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-5);
+    }
+
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .photo-thumb {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      position: relative;
+      cursor: pointer;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .photo-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .photo-thumb:hover img {
+      transform: scale(1.08);
+    }
+
+    .photo-tag {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      right: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 2px 0;
+      border-radius: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      color: #ffffff;
+    }
+
+    /* Sticky Footer CTA WhatsApp */
+    .whatsapp-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(11, 19, 43, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--glass-border);
+      padding: var(--space-4);
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+    }
+
+    .btn-wa-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 14px var(--space-5);
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: background-color var(--duration-fast), transform 0.1s;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-wa-cta:hover {
+      background: #059669;
+    }
+
+    .btn-wa-cta:active {
+      transform: translateY(1px);
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: var(--space-4);
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 8px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: var(--space-5);
+      right: var(--space-5);
+      color: #ffffff;
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* States (Loading and Error) */
+    .status-info-box {
+      text-align: center;
+      padding: var(--space-7) var(--space-5);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      margin-top: var(--space-6);
+    }
+
+    .spinner {
+      border: 4px solid rgba(255,255,255,0.1);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border-left-color: #6366f1;
+      animation: spin 1s linear infinite;
+      margin: 0 auto var(--space-4) auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <header>
+      <div class="logo">IL | Hardware & Tech</div>
+      <div class="os-badge" id="os-number-badge">Buscando...</div>
+    </header>
+
+    <!-- Loading State -->
+    <div id="tracking-loading" class="status-info-box">
+      <div class="spinner"></div>
+      <h3 style="font-weight: 600; margin-bottom: 4px;">Localizando Aparelho</h3>
+      <p style="color: var(--color-secondary); font-size: 0.85rem;">Conectando com o canal seguro de rastreamento...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="tracking-error" class="status-info-box" style="display: none;">
+      <div style="font-size: 2.5rem; margin-bottom: var(--space-3);">🛑</div>
+      <h3 style="font-weight: 700; margin-bottom: 6px;">Código de Rastreio Inválido</h3>
+      <p style="color: var(--color-secondary); font-size: 0.85rem; max-width: 320px; margin: 0 auto;">
+        Não encontramos nenhuma ordem de serviço ativa com este token. Verifique o link enviado no seu WhatsApp.
+      </p>
+    </div>
+
+    <!-- MAIN TRACKING CONTENT (Injetado) -->
+    <div id="tracking-content" style="display: none;">
+      
+      <!-- Welcome Client Card -->
+      <div class="welcome-card">
+        <h2 id="client-greeting">Olá!</h2>
+        <p>Acompanhe abaixo o andamento em tempo real do conserto do seu equipamento.</p>
+        
+        <div class="device-info">
+          <div class="device-row">
+            <span class="device-label">Equipamento</span>
+            <span class="device-value" id="client-device-name">...</span>
+          </div>
+          <div class="device-row">
+            <span class="device-label">Número de Série</span>
+            <span class="device-value" id="client-device-serial">...</span>
+          </div>
+          <div class="device-row">
+            <span class="device-label">Previsão Prometida</span>
+            <span class="device-value" id="client-device-deadline">...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card de Status Atual Focado -->
+      <div class="active-status-card" id="active-status-container">
+        <div class="active-status-content">
+          <span class="status-badge-lg" id="active-status-badge">
+            <div class="pulse-dot"></div>
+            <span id="active-status-name">...</span>
+          </span>
+          <div class="active-status-title" id="active-status-headline">Carregando etapa...</div>
+          <div class="active-timer" id="active-status-timer">
+            ⏱️ Calculando tempo nesta etapa...
+          </div>
+        </div>
+      </div>
+
+      <!-- Linha do Tempo de Execução -->
+      <h3 class="section-title">Timeline do Serviço</h3>
+      <div class="timeline" id="timeline-list">
+        <!-- Injetado dinamicamente via JS com transições e tempos exatos -->
+      </div>
+
+      <!-- Galeria de Fotos de Bancada (Transparência) -->
+      <div class="photos-card" id="client-photos-section" style="display: none;">
+        <h3 class="section-title" style="margin-bottom: 12px; padding-left: 0;">Transparência de Bancada</h3>
+        <p style="font-size: 0.8rem; color: var(--color-secondary); margin-bottom: var(--space-4);">
+          Fotos reais tiradas por Iago antes, durante e após a execução do conserto no laboratório.
+        </p>
+        <div class="photos-grid" id="client-photos-grid">
+          <!-- Miniaturas injetadas -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- WhatsApp Persistente no Rodapé -->
+  <div class="whatsapp-footer" id="wa-footer" style="display: none;">
+    <a href="#" class="btn-wa-cta" id="btn-wa-client-cta" target="_blank">
+      <svg class="icon" style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.803-4.394 9.806-9.799.002-2.618-1.016-5.08-2.87-6.936C16.353 2.016 13.882.993 11.272.993c-5.41 0-9.813 4.399-9.816 9.804-.002 1.902.486 3.759 1.412 5.372l-.994 3.632 3.717-.975c1.472.8 3.018 1.232 4.476 1.233zM16.92 13.9c-.3-.15-1.77-.875-2.03-.972-.26-.098-.45-.147-.64.146-.19.293-.73.927-.895 1.122-.165.195-.33.22-.63.07-1.125-.563-2.05-1.034-2.85-2.42-.21-.36.21-.336.6-.112.35.2.45.26.5.36.05.1-.025.2-.1.35-.075.15-.64 1.537-.785 1.88-.14.33-.28.28-.58.13-.3-.15-1.27-.47-2.42-1.493-.895-.8-1.5-1.787-1.675-2.087-.175-.3-.02-.46.13-.61.135-.13.3-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.64-1.537-.88-2.115-.23-.56-.475-.48-.64-.49-.165-.01-.355-.01-.545-.01-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.39s1.025 2.78 1.17 2.97c.145.195 2.01 3.07 4.87 4.3.68.29 1.21.465 1.625.596.685.22 1.3.19 1.79.115.545-.08 1.77-.725 2.02-1.39.25-.667.25-1.24.175-1.39-.075-.15-.275-.24-.575-.39z" />
+      </svg>
+      <span>Dúvidas? Falar com Iago no WhatsApp</span>
+    </a>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="lightbox">
+    <button class="lightbox-close" id="lightbox-close">✕</button>
+    <img src="" alt="Foto Ampliada" class="lightbox-img" id="lightbox-img">
+  </div>
+
+  <script src="/assets/js/rastrear.js" type="module"></script>
+</body>
+</html>
