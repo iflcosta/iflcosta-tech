@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const gridContainer = document.getElementById('leads-grid-container');
 
   // Drawer Elements
-  const drawerBackdrop = document.getElementById('drawer-backdrop');
+  const drawerBackdrop = document.getElementById('lead-drawer-backdrop');
   const leadDrawer = document.getElementById('lead-drawer');
-  const closeDrawerBtn = document.getElementById('close-drawer-btn');
+  const closeDrawerBtn = document.getElementById('close-lead-drawer-btn');
   const drawerLeadName = document.getElementById('drawer-lead-name');
   const drawerLeadService = document.getElementById('drawer-lead-service');
   const drawerStatusSelect = document.getElementById('drawer-status-select');
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Close Drawer
   closeDrawerBtn.addEventListener('click', closeDrawer);
-  drawerBackdrop.addEventListener('click', closeDrawer);
+  // Backdrop click listener deactivated as requested by user ("mantenha o clicar fora desativado")
 
   // Close Conversion Modal on clicking outside (backdrop)
   conversionBackdrop.addEventListener('click', (e) => {

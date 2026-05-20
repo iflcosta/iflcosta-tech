@@ -211,11 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
       custObservacoes.value = '';
     }
 
-    modalBackdrop.classList.add('open');
+    modalBackdrop.classList.add('is-open');
   }
 
   function closeCustomerModal() {
-    modalBackdrop.classList.remove('open');
+    modalBackdrop.classList.remove('is-open');
   }
 
   async function handleCustomerSubmit(e) {

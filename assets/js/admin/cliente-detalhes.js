@@ -305,11 +305,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function openDeleteModal() {
     if (!currentCustomerData) return;
     deleteClientNameBold.textContent = currentCustomerData.nome;
-    deleteModalBackdrop.classList.add('open');
+    deleteModalBackdrop.classList.add('is-open');
   }
 
   function closeDeleteModal() {
-    deleteModalBackdrop.classList.remove('open');
+    deleteModalBackdrop.classList.remove('is-open');
   }
 
   async function handleLogicalDelete() {
