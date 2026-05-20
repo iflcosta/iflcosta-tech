@@ -17,31 +17,31 @@
 
 ## 1. Banco de dados — Schema SQL
 
-- [ ] **T001** — Criar migration `supabase/migrations/2026_05_19_create_leads.sql` com: extensão `pgcrypto`, enums `lead_servico`/`lead_origem`/`lead_status`, tabela `leads` completa (id, created_at, nome, telefone, email, servico, mensagem, cidade, urgencia, origem, cta_location, user_agent, referrer, consent_at, ip_hash, status, notes), índice unique `leads_telefone_day_uniq`, índices de performance, RLS habilitado, policy `service_role full access`. Ref: plan §2. **M**
+- [x] **T001** — Criar migration `supabase/migrations/2026_05_19_create_leads.sql` com: extensão `pgcrypto`, enums `lead_servico`/`lead_origem`/`lead_status`, tabela `leads` completa (id, created_at, nome, telefone, email, servico, mensagem, cidade, urgencia, origem, cta_location, user_agent, referrer, consent_at, ip_hash, status, notes), índice unique `leads_telefone_day_uniq`, índices de performance, RLS habilitado, policy `service_role full access`. Ref: plan §2. **M**
 
-- [ ] **T002** — Criar tabela `audit_log` na mesma migration + função `log_lead_insert()` + trigger `leads_audit_insert`. Ref: plan §2. **S**
+- [x] **T002** — Criar tabela `audit_log` na mesma migration + função `log_lead_insert()` + trigger `leads_audit_insert`. Ref: plan §2. **S**
 
-- [ ] **T003** — Aplicar migration no Supabase via MCP tool (`apply_migration`). **AC:** tabela `leads` visível no dashboard, RLS ativo, trigger ativo. **S**
+- [x] **T003** — Aplicar migration no Supabase via MCP tool (`apply_migration`). **AC:** tabela `leads` visível no dashboard, RLS ativo, trigger ativo. **S**
 
-- [ ] **T004** — Documentar script de purga mensal LGPD (`DELETE ... status in ('novo','perdido') AND created_at < now() - interval '180 days'`) como comentário no final da migration ou em `supabase/cron.sql`. Ref: plan §2, RF-14. **S**
+- [x] **T004** — Documentar script de purga mensal LGPD (`DELETE ... status in ('novo','perdido') AND created_at < now() - interval '180 days'`) como comentário no final da migration ou em `supabase/cron.sql`. Ref: plan §2, RF-14. **S**
 
 ---
 
 ## 2. Endpoint `/api/leads`
 
-- [ ] **T010** — Criar `/api/leads.js` como Vercel Edge Function com runtime `edge`. Estrutura: `createClient` supabase (service_role), exports `config` + `default handler`. Ref: plan §3. **M**
+- [x] **T010** — Criar `/api/leads.js` como Vercel Edge Function com runtime `edge`. Estrutura: `createClient` supabase (service_role), exports `config` + `default handler`. Ref: plan §3. **M**
 
-- [ ] **T011** — Implementar as 3 camadas anti-spam no handler: (1) honeypot (`body.website` não vazio → fake 200), (2) timing check (`Date.now() - body._t < 3000` → fake 200), (3) rate limit via `checkRateLimit(ipHash)` → 429. Ref: plan §3. **M**
+- [x] **T011** — Implementar as 3 camadas anti-spam no handler: (1) honeypot (`body.website` não vazio → fake 200), (2) timing check (`Date.now() - body._t < 3000` → fake 200), (3) rate limit via `checkRateLimit(ipHash)` → 429. Ref: plan §3. **M**
 
-- [ ] **T012** — Implementar `validateLead(body)`: nome (2–80 chars), telefone (10–11 dígitos), email (regex leve, opcional), servico (enum), mensagem (≤ 1500, opcional), origem (modal|page). Retorna `{ ok, field, message }`. Ref: plan §3. **S**
+- [x] **T012** — Implementar `validateLead(body)`: nome (2–80 chars), telefone (10–11 dígitos), email (regex leve, opcional), servico (enum), mensagem (≤ 1500, opcional), origem (modal|page). Retorna `{ ok, field, message }`. Ref: plan §3. **S**
 
-- [ ] **T013** — Implementar `buildWhatsAppUrl(body)` montando mensagem com nome, serviço, cidade, urgência, detalhe (≤ 400 chars). Número via `process.env.WHATSAPP_NUMBER`. Ref: plan §3. **S**
+- [x] **T013** — Implementar `buildWhatsAppUrl(body)` montando mensagem com nome, serviço, cidade, urgência, detalhe (≤ 400 chars). Número via `process.env.WHATSAPP_NUMBER`. Ref: plan §3. **S**
 
-- [ ] **T014** — Implementar `sha256(str)` via `crypto.subtle.digest` (Web Crypto API, disponível em Edge) + `checkRateLimit(ipHash)` usando Supabase count na janela de `RATE_LIMIT_WINDOW` segundos. Ref: plan §3. **S**
+- [x] **T014** — Implementar `sha256(str)` via `crypto.subtle.digest` (Web Crypto API, disponível em Edge) + `checkRateLimit(ipHash)` usando Supabase count na janela de `RATE_LIMIT_WINDOW` segundos. Ref: plan §3. **S**
 
-- [ ] **T015** — Implementar insert no Supabase com normalização (telefone só dígitos, `trim()` em strings, `consent_at = new Date().toISOString()`). Tratar `error.code === '23505'` (dedupe) como sucesso silencioso — responder 200 com redirect. Ref: plan §3. **M**
+- [x] **T015** — Implementar insert no Supabase com normalização (telefone só dígitos, `trim()` em strings, `consent_at = new Date().toISOString()`). Tratar `error.code === '23505'` (dedupe) como sucesso silencioso — responder 200 com redirect. Ref: plan §3. **M**
 
-- [ ] **T016** — Instalar `@supabase/supabase-js` como dependência de produção. **AC:** `npm install @supabase/supabase-js` + confirmar no `package.json`. **S**
+- [x] **T016** — Instalar `@supabase/supabase-js` como dependência de produção. **AC:** `npm install @supabase/supabase-js` + confirmar no `package.json`. **S**
 
 - [ ] **T017** — Testar endpoint manualmente com `curl` ou REST client: (a) POST válido → 200 + redirect URL, (b) honeypot preenchido → 200 redirect null, (c) timing < 3s → 200 redirect null, (d) consent false → 400, (e) telefone inválido → 400, (f) mesmo telefone no mesmo dia → 200 deduped. **AC:** todos os 6 casos corretos. **M**
 
@@ -49,37 +49,37 @@
 
 ## 3. Refactor `app.js` → ES Modules
 
-- [ ] **T020** — Criar `assets/js/lib/theme.js` extraindo a lógica de tema de `app.js`: `initTheme()` com anti-FOUC, toggle, `localStorage['ifl-theme']`. Ref: plan §4. **S**
+- [x] **T020** — Criar `assets/js/lib/theme.js` extraindo a lógica de tema de `app.js`: `initTheme()` com anti-FOUC, toggle, `localStorage['ifl-theme']`. Ref: plan §4. **S**
 
-- [ ] **T021** — Criar `assets/js/lib/consent.js` extraindo LGPD consent de `app.js`: banner aparece em primeiro acesso, aceitar/recusar, `localStorage['ifl-consent']`, bloquear GA4 quando `essential`. Ref: plan §4, RF-23. **S**
+- [x] **T021** — Criar `assets/js/lib/consent.js` extraindo LGPD consent de `app.js`: banner aparece em primeiro acesso, aceitar/recusar, `localStorage['ifl-consent']`, bloquear GA4 quando `essential`. Ref: plan §4, RF-23. **S**
 
-- [ ] **T022** — Criar `assets/js/lib/analytics.js` com `track(event, params)` wrapper sobre `gtag()`. Disparar `track()` apenas após consent `all`. Expor `initAnalytics(ga4Id)` que injeta o script gtag condicionalmente. Ref: plan §8. **M**
+- [x] **T022** — Criar `assets/js/lib/analytics.js` com `track(event, params)` wrapper sobre `gtag()`. Disparar `track()` apenas após consent `all`. Expor `initAnalytics(ga4Id)` que injeta o script gtag condicionalmente. Ref: plan §8. **M**
 
-- [ ] **T023** — Criar `assets/js/lib/phone-mask.js` com `attachPhoneMask(input)` — máscara `(11) 9 9999-9999` via listener de `input` + validação `setCustomValidity` no `blur`. Ref: plan §4. **S**
+- [x] **T023** — Criar `assets/js/lib/phone-mask.js` com `attachPhoneMask(input)` — máscara `(11) 9 9999-9999` via listener de `input` + validação `setCustomValidity` no `blur`. Ref: plan §4. **S**
 
-- [ ] **T024** — Criar `assets/js/lib/form-validation.js` com `validateField(field)` aplicando estilos de erro/sucesso inline após blur: `aria-invalid`, `.field.has-error`, span de mensagem. Ref: plan §4, plan §7. **S**
+- [x] **T024** — Criar `assets/js/lib/form-validation.js` com `validateField(field)` aplicandostyles de erro/sucesso inline após blur: `aria-invalid`, `.field.has-error`, span de mensagem. Ref: plan §4, plan §7. **S**
 
-- [ ] **T025** — Criar `assets/js/lib/orcamento-form.js` com `initOrcamentoForm()`: setup de máscara, restore/save draft em `sessionStorage` (TTL 5min), validação blur, submit handler (fetch → /api/leads → success/error/loading states). Gravar `_t_form_open` no `sessionStorage` ao abrir modal. Ref: plan §4, plan §9. **L**
+- [x] **T025** — Criar `assets/js/lib/orcamento-form.js` com `initOrcamentoForm()`: setup de máscara, restore/save draft em `sessionStorage` (TTL 5min), validação blur, submit handler (fetch → /api/leads → success/error/loading states). Gravar `_t_form_open` no `sessionStorage` ao abrir modal. Ref: plan §4, plan §9. **L**
 
-- [ ] **T026** — Criar `assets/js/main.js` importando e inicializando todos os módulos na ordem correta: `initTheme`, `initAnalytics`, `initConsent`, `initOrcamentoForm`, sticky header, smooth scroll, reveal (IntersectionObserver), WhatsApp float. **S**
+- [x] **T026** — Criar `assets/js/main.js` importando e inicializando todos os módulos na ordem correta: `initTheme`, `initAnalytics`, `initConsent`, `initOrcamentoForm`, sticky header, smooth scroll, reveal (IntersectionObserver), WhatsApp float. **S**
 
-- [ ] **T027** — Atualizar `index.html`: trocar `<script src="assets/js/app.js" defer>` por `<script type="module" src="/assets/js/main.js">`. Adicionar `data-mode="modal"` no `<form>` do modal. Adicionar `data-cta-location` nos botões `[data-modal-open]` (hero, serviços, final-cta, float). **S**
+- [x] **T027** — Atualizar `index.html`: trocar `<script src="assets/js/app.js" defer>` por `<script type="module" src="/assets/js/main.js">`. Adicionar `data-mode="modal"` no `<form>` do modal. Adicionar `data-cta-location` nos botões `[data-modal-open]` (hero, serviços, final-cta, float). **S**
 
-- [ ] **T028** — Manter `app.js` original como backup comentado ou remover se `main.js` cobrir 100% das funcionalidades. **AC:** Playwright tests passam após troca. **S**
+- [x] **T028** — Manter `app.js` original como backup comentado ou remover se `main.js` cobrir 100% das funcionalidades. **AC:** Playwright tests passam após troca. **S**
 
 ---
 
 ## 4. Página `/orcamento`
 
-- [ ] **T030** — Criar `orcamento.html` reusando header + footer da landing. Seção central com: eyebrow "Orçamento online", h1 "Me conta o que está acontecendo", `<form data-orcamento-form data-mode="page">`. Ref: plan §5. **M**
+- [x] **T030** — Criar `orcamento.html` reusando header + footer da landing. Seção central com: eyebrow "Orçamento online", h1 "Me conta o que está acontecendo", `<form data-orcamento-form data-mode="page">`. Ref: plan §5. **M**
 
-- [ ] **T031** — Adicionar ao form da `/orcamento` campos extras em relação ao modal: Email, Cidade (select com principais cidades atendidas + "Outra" + "Remoto"), Urgência (select: hoje/essa semana/sem pressa), Mensagem (textarea 1500 chars com contador). Ref: plan §5, RF-7. **M**
+- [x] **T031** — Adicionar ao form da `/orcamento` campos extras em relação ao modal: Email, Cidade (select com principais cidades atendidas + "Outra" + "Remoto"), Urgência (select: hoje/essa semana/sem pressa), Mensagem (textarea 1500 chars com contador). Ref: plan §5, RF-7. **M**
 
-- [ ] **T032** — Adicionar campos condicionais: se `servico === 'custom_pc'`, exibir Tipo de uso (gamer/produtividade/workstation) e Faixa de orçamento. Implementar com JS + `hidden` attribute. **S**
+- [x] **T032** — Adicionar campos condicionais: se `servico === 'custom_pc'`, exibir Tipo de uso (gamer/produtividade/workstation) e Faixa de orçamento. Implementar com JS + `hidden` attribute. **S**
 
-- [ ] **T033** — Adicionar honeypot + consent checkbox + botão submit à `/orcamento`. Mesmo padrão do modal. **S**
+- [x] **T033** — Adicionar honeypot + consent checkbox + botão submit à `/orcamento`. Mesmo padrão do modal. **S**
 
-- [ ] **T034** — Adicionar SEO metadata em `orcamento.html`: `<title>`, `<meta description>`, `<link canonical>`. `robots: index,follow` (é uma landing page de conversão, não noindex). **S**
+- [x] **T034** — Adicionar SEO metadata em `orcamento.html`: `<title>`, `<meta description>`, `<link canonical>`. `robots: index,follow` (é uma landing page de conversão, não noindex). **S**
 
 ---
 

@@ -68,7 +68,7 @@ create table public.leads (
 -- -----------------------------------------------------------------------------
 
 create unique index leads_telefone_day_uniq
-  on public.leads (telefone, date_trunc('day', created_at));
+  on public.leads (telefone, date_trunc('day', created_at at time zone 'America/Sao_Paulo'));
 
 -- -----------------------------------------------------------------------------
 -- Índices de performance pras queries do admin (feature 005)
