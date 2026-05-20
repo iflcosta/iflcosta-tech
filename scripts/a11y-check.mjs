@@ -23,6 +23,7 @@ const ROUTES = [
   '/termos',
   '/obrigado',
   '/404',
+  '/admin/login',
 ];
 
 const BLOCKING_IMPACTS = new Set(['serious', 'critical']);

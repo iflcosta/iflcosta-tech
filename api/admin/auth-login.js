@@ -1,0 +1,137 @@
+// /api/admin/auth-login.js
+// Vercel Edge Function — processa login (Magic Link ou Senha) e grava cookies httpOnly (Feature 004)
+// Spec: /.specs/004-admin-auth/spec.md
+// Plan: /.specs/004-admin-auth/plan.md §3
+
+import { createClient } from '@supabase/supabase-js';
+
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ ok: false, error: 'method_not_allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  try {
+    const body = await req.json().catch(() => null);
+    if (!body || !body.email) {
+      return new Response(JSON.stringify({ ok: false, error: 'invalid_payload', message: 'E-mail é obrigatório.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const email = body.email.trim().toLowerCase();
+    const password = body.password;
+    const origin = new URL(req.url).origin;
+
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      { auth: { persistSession: false } }
+    );
+
+    // Restrição absoluta single-user (Iago)
+    const ALLOWED_EMAIL = 'iflcosta@outlook.com';
+
+    if (email !== ALLOWED_EMAIL) {
+      if (!password) {
+        // Magic link: finge sucesso para mitigar enumeração de contas
+        return new Response(JSON.stringify({ ok: true, message: 'Se o e-mail estiver cadastrado, um link foi enviado.' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } else {
+        // Senha: falha imediatamente por segurança
+        return new Response(JSON.stringify({ ok: false, error: 'invalid_credentials', message: 'E-mail ou senha inválidos.' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // Fluxo A: Solicitação de Magic Link
+    if (!password) {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${origin}/api/admin/auth-callback`
+        }
+      });
+
+      if (error) {
+        console.error('Erro ao enviar Magic Link via Supabase:', error);
+        return new Response(JSON.stringify({ ok: false, error: 'provider_error', message: 'Não conseguimos enviar o link. Tente de novo.' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      return new Response(JSON.stringify({ ok: true, message: 'Link enviado com sucesso. Verifica sua caixa de entrada e spam!' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Fluxo B: Autenticação Tradicional por Senha
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error || !data.session) {
+      console.error('Erro ao logar por senha via Supabase:', error);
+      
+      // Registrar falha de login em audit_log
+      await supabase.from('audit_log').insert({
+        actor: null,
+        action: 'login_fail',
+        entity: 'auth',
+        after: { email, reason: error?.message || 'invalid_credentials' }
+      });
+
+      return new Response(JSON.stringify({ ok: false, error: 'invalid_credentials', message: 'E-mail ou senha inválidos.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const { access_token, refresh_token, expires_in } = data.session;
+
+    const res = new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    // Injeta cookies HttpOnly de sessão e de refresh
+    res.headers.append(
+      'Set-Cookie',
+      `sb-access-token=${access_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${expires_in}`
+    );
+    res.headers.append(
+      'Set-Cookie',
+      `sb-refresh-token=${refresh_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${60 * 60 * 24 * 30}`
+    );
+
+    // Registrar login bem-sucedido em audit_log
+    const actor = data.user?.id || 'system';
+    await supabase.from('audit_log').insert({
+      actor: actor,
+      action: 'login_success',
+      entity: 'auth',
+      entity_id: actor,
+      after: { method: 'password' }
+    });
+
+    return res;
+  } catch (err) {
+    console.error('Erro de servidor no login endpoint:', err);
+    return new Response(JSON.stringify({ ok: false, error: 'server_error', message: 'Algo deu errado do nosso lado. Tente de novo.' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
