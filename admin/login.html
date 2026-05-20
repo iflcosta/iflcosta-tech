@@ -37,25 +37,61 @@
     <!-- Mensagens de Feedback para o usuário -->
     <div id="feedback" class="feedback-message" role="alert" aria-live="assertive"></div>
 
-    <!-- Form Principal (Magic Link por padrão) -->
+    <!-- Form Principal (Híbrido: Magic Link + OTP) -->
     <form id="login-form" novalidate class="form-group" style="gap: var(--space-4);">
-      <div class="form-group">
-        <label for="email" class="form-label">Seu e-mail cadastrado</label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          class="form-input" 
-          placeholder="exemplo@outlook.com" 
-          required 
-          autocomplete="email" 
-          inputmode="email"
-        >
+      <!-- Etapa 1: E-mail -->
+      <div id="email-step-container" class="form-group" style="gap: var(--space-4); width: 100%;">
+        <div class="form-group">
+          <label for="email" class="form-label">Seu e-mail cadastrado</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            class="form-input" 
+            placeholder="exemplo@outlook.com" 
+            required 
+            autocomplete="email" 
+            inputmode="email"
+          >
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn-auth">
+          <span id="btn-text">Receber link de acesso</span>
+        </button>
       </div>
 
-      <button type="submit" id="submit-btn" class="btn-auth">
-        <span id="btn-text">Receber link de acesso</span>
-      </button>
+      <!-- Etapa 2: Código OTP (inicialmente oculto) -->
+      <div id="otp-step-container" class="form-group" style="display: none; gap: var(--space-4); width: 100%;">
+        <div class="form-group">
+          <label for="otp" class="form-label">Código de 6 dígitos do e-mail</label>
+          <input 
+            type="text" 
+            id="otp" 
+            name="otp" 
+            class="form-input" 
+            placeholder="000000" 
+            required 
+            maxlength="6"
+            pattern="[0-9]{6}"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            style="letter-spacing: 0.3em; text-align: center; font-family: monospace; font-size: var(--text-xl); font-weight: var(--font-bold);"
+          >
+        </div>
+
+        <button type="button" id="submit-otp-btn" class="btn-auth">
+          <span id="btn-otp-text">Confirmar e Entrar</span>
+        </button>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: var(--space-1);">
+          <button type="button" id="back-to-email-btn" style="background: none; border: none; color: var(--color-text-secondary); font-size: var(--text-xs); cursor: pointer; padding: var(--space-1) 0; font-family: inherit;">
+            ← Voltar
+          </button>
+          <button type="button" id="resend-otp-btn" style="background: none; border: none; color: var(--color-brand); font-size: var(--text-xs); cursor: pointer; padding: var(--space-1) 0; font-family: inherit; font-weight: var(--font-bold);">
+            Reenviar código
+          </button>
+        </div>
+      </div>
     </form>
 
     <div class="divider">ou</div>

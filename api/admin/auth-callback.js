@@ -9,8 +9,18 @@ export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
   const url = new URL(req.url);
+  const errorParam = url.searchParams.get('error') || url.searchParams.get('error_description');
   const code = url.searchParams.get('code');
   const next = url.searchParams.get('next') || '/admin';
+
+  if (errorParam) {
+    console.error('Erro de autenticação retornado pelo Supabase:', errorParam);
+    const errorString = errorParam.toLowerCase();
+    const isExpired = errorString.includes('expired') || 
+                      errorString.includes('invalid') ||
+                      errorString.includes('unauthorized');
+    return Response.redirect(new URL(`/admin/login?error=${isExpired ? 'expired' : 'server_error'}`, req.url));
+  }
 
   if (!code) {
     return Response.redirect(new URL('/admin/login?error=missing_code', req.url));

@@ -26,6 +26,7 @@ export default async function handler(req) {
 
     const email = body.email.trim().toLowerCase();
     const password = body.password;
+    const token = body.token;
     const origin = new URL(req.url).origin;
 
     const supabase = createClient(
@@ -38,6 +39,12 @@ export default async function handler(req) {
     const ALLOWED_EMAIL = 'iflcosta@outlook.com';
 
     if (email !== ALLOWED_EMAIL) {
+      if (token) {
+        return new Response(JSON.stringify({ ok: false, error: 'invalid_token', message: 'Código inválido ou expirado.' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
       if (!password) {
         // Magic link: finge sucesso para mitigar enumeração de contas
         return new Response(JSON.stringify({ ok: true, message: 'Se o e-mail estiver cadastrado, um link foi enviado.' }), {
@@ -53,7 +60,53 @@ export default async function handler(req) {
       }
     }
 
-    // Fluxo A: Solicitação de Magic Link
+    // Fluxo C: Verificação de OTP (6 dígitos)
+    if (token) {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token: token.trim(),
+        type: 'email'
+      });
+
+      if (error || !data.session) {
+        console.error('Erro ao verificar OTP via Supabase:', error);
+        return new Response(JSON.stringify({ ok: false, error: 'invalid_token', message: 'Código inválido ou expirado. Tente de novo.' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      const { access_token, refresh_token, expires_in } = data.session;
+
+      const res = new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      // Injeta cookies HttpOnly de sessão e de refresh
+      res.headers.append(
+        'Set-Cookie',
+        `sb-access-token=${access_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${expires_in}`
+      );
+      res.headers.append(
+        'Set-Cookie',
+        `sb-refresh-token=${refresh_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${60 * 60 * 24 * 30}`
+      );
+
+      // Registrar login bem-sucedido em audit_log
+      const actor = data.user?.id || 'system';
+      await supabase.from('audit_log').insert({
+        actor: actor,
+        action: 'login_success',
+        entity: 'auth',
+        entity_id: actor,
+        after: { method: 'otp' }
+      });
+
+      return res;
+    }
+
+    // Fluxo A: Solicitação de Magic Link (apenas se senha e token não forem passados)
     if (!password) {
       const { error } = await supabase.auth.signInWithOtp({
         email,

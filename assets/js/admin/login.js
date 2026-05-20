@@ -17,6 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const togglePasswordBtn = document.getElementById('toggle-password-btn');
   const passwordSection = document.getElementById('password-section');
 
+  // Seletores da etapa 2 (OTP)
+  const emailStepContainer = document.getElementById('email-step-container');
+  const otpStepContainer = document.getElementById('otp-step-container');
+  const otpInput = document.getElementById('otp');
+  const submitOtpBtn = document.getElementById('submit-otp-btn');
+  const btnOtpText = document.getElementById('btn-otp-text');
+  const backToEmailBtn = document.getElementById('back-to-email-btn');
+  const resendOtpBtn = document.getElementById('resend-otp-btn');
+
   // Recupera parâmetros da URL (next, error)
   const urlParams = new URLSearchParams(window.location.search);
   const nextParam = urlParams.get('next') || '/admin';
@@ -28,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     expired: 'O link de acesso expirou ou já foi utilizado. Solicite um novo link.',
     missing_code: 'Código de login ausente. Tente novamente ou use a senha.',
     invalid_credentials: 'E-mail ou senha inválidos.',
+    invalid_token: 'Código de 6 dígitos inválido ou expirado. Tente de novo.',
     server_error: 'Algo deu errado do nosso lado. Tente de novo.'
   };
 
@@ -52,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Envio de Magic Link
+  // Envio do e-mail para solicitar Magic Link / OTP
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideFeedback();
@@ -76,8 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.ok) {
-        showFeedback(result.message || 'Link de acesso enviado! Verifica seu e-mail.', 'success');
-        loginForm.reset();
+        showFeedback('Link e código de 6 dígitos enviados! Você pode clicar no link ou digitar o código abaixo.', 'success');
+        // Transiciona para a etapa de inserção do OTP
+        emailStepContainer.style.display = 'none';
+        otpStepContainer.style.display = 'flex';
+        otpInput.value = '';
+        otpInput.focus();
       } else {
         showFeedback(result.message || 'Erro ao enviar o link. Tente novamente.', 'error');
       }
@@ -88,6 +102,91 @@ document.addEventListener('DOMContentLoaded', () => {
       setLoading(submitBtn, btnText, false, 'Receber link de acesso');
     }
   });
+
+  // Voltar para a etapa do e-mail
+  backToEmailBtn.addEventListener('click', () => {
+    hideFeedback();
+    otpStepContainer.style.display = 'none';
+    emailStepContainer.style.display = 'flex';
+    emailInput.focus();
+  });
+
+  // Reenviar código OTP
+  resendOtpBtn.addEventListener('click', async () => {
+    hideFeedback();
+    const email = emailInput.value.trim();
+    
+    resendOtpBtn.disabled = true;
+    resendOtpBtn.textContent = 'Enviando...';
+
+    try {
+      const response = await fetch('/api/admin/auth-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.ok) {
+        showFeedback('Novo código enviado com sucesso! Verifique sua caixa de entrada.', 'success');
+      } else {
+        showFeedback(result.message || 'Erro ao reenviar o código. Tente novamente.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showFeedback('Erro de conexão. Tente novamente mais tarde.', 'error');
+    } finally {
+      resendOtpBtn.disabled = false;
+      resendOtpBtn.textContent = 'Reenviar código';
+    }
+  });
+
+  // Enviar código OTP para validação
+  submitOtpBtn.addEventListener('click', handleOtpSubmit);
+  otpInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleOtpSubmit();
+    }
+  });
+
+  async function handleOtpSubmit() {
+    hideFeedback();
+    const email = emailInput.value.trim();
+    const otp = otpInput.value.trim();
+
+    if (!otp || otp.length !== 6 || !/^\d+$/.test(otp)) {
+      showFeedback('Insira o código de 6 dígitos numéricos.', 'error');
+      otpInput.focus();
+      return;
+    }
+
+    setLoading(submitOtpBtn, btnOtpText, true, 'Confirmando...');
+
+    try {
+      const response = await fetch('/api/admin/auth-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, token: otp })
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.ok) {
+        showFeedback('Autenticação bem-sucedida! Redirecionando...', 'success');
+        window.location.assign(nextParam);
+      } else {
+        showFeedback(result.message || 'Código de 6 dígitos inválido ou expirado.', 'error');
+        otpInput.focus();
+      }
+    } catch (err) {
+      console.error(err);
+      showFeedback('Erro de conexão ao verificar o código. Tente de novo.', 'error');
+    } finally {
+      setLoading(submitOtpBtn, btnOtpText, false, 'Confirmar e Entrar');
+    }
+  }
 
   // Login por Senha
   passwordForm.addEventListener('submit', async (e) => {
