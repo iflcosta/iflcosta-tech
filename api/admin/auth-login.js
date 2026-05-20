@@ -117,8 +117,20 @@ export default async function handler(req) {
 
       if (error) {
         console.error('Erro ao enviar Magic Link via Supabase:', error);
-        return new Response(JSON.stringify({ ok: false, error: 'provider_error', message: 'Não conseguimos enviar o link. Tente de novo.' }), {
-          status: 500,
+        
+        let status = error.status || 500;
+        let message = 'Não conseguimos enviar o link. Tente de novo.';
+        
+        const errorMsg = (error.message || '').toLowerCase();
+        if (errorMsg.includes('rate limit') || errorMsg.includes('too many requests') || status === 429) {
+          status = 429;
+          message = 'Limite de envios atingido. Aguarde 60 segundos antes de solicitar um novo link.';
+        } else if (error.message) {
+          message = `Erro: ${error.message}`;
+        }
+
+        return new Response(JSON.stringify({ ok: false, error: 'provider_error', message }), {
+          status: status,
           headers: { 'Content-Type': 'application/json' }
         });
       }
