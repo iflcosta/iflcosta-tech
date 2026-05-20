@@ -44,8 +44,8 @@ export default async function handler(req) {
           'Location': new URL(`/admin/login?next=${encodeURIComponent(next)}&error=expired`, req.url).toString()
         }
       });
-      res.headers.append('Set-Cookie', 'sb-access-token=; Max-Age=0; Path=/admin; HttpOnly; Secure; SameSite=Lax');
-      res.headers.append('Set-Cookie', 'sb-refresh-token=; Max-Age=0; Path=/admin; HttpOnly; Secure; SameSite=Lax');
+      res.headers.append('Set-Cookie', 'sb-access-token=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax');
+      res.headers.append('Set-Cookie', 'sb-refresh-token=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax');
       return res;
     }
 
@@ -61,11 +61,11 @@ export default async function handler(req) {
     });
     res.headers.append(
       'Set-Cookie',
-      `sb-access-token=${access_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${expires_in}`
+      `sb-access-token=${access_token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${expires_in}`
     );
     res.headers.append(
       'Set-Cookie',
-      `sb-refresh-token=${refresh_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${60 * 60 * 24 * 30}`
+      `sb-refresh-token=${refresh_token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 30}`
     );
     
     return res;

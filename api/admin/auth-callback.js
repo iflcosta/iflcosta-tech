@@ -183,14 +183,14 @@ export default async function handler(req) {
       }
     });
     
-    // Configura cookies HttpOnly seguros com escopo restrito a /admin
+    // Configura cookies HttpOnly seguros com escopo restrito a /
     res.headers.append(
       'Set-Cookie',
-      `sb-access-token=${access_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${expires_in}`
+      `sb-access-token=${access_token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${expires_in}`
     );
     res.headers.append(
       'Set-Cookie',
-      `sb-refresh-token=${refresh_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${60 * 60 * 24 * 30}`
+      `sb-refresh-token=${refresh_token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 30}`
     );
 
     // Grava no log de auditoria
