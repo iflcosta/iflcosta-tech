@@ -37,7 +37,13 @@ export default async function handler(req) {
       console.error('Falha ao renovar sessão com Supabase:', error);
       
       // Limpa os cookies se o refresh token falhar (revogado/expirado)
-      const res = Response.redirect(new URL(`/admin/login?next=${encodeURIComponent(next)}&error=expired`, req.url));
+      // Criamos uma resposta manualmente porque Response.redirect() retorna headers imutáveis no Edge Runtime
+      const res = new Response(null, {
+        status: 307,
+        headers: {
+          'Location': new URL(`/admin/login?next=${encodeURIComponent(next)}&error=expired`, req.url).toString()
+        }
+      });
       res.headers.append('Set-Cookie', 'sb-access-token=; Max-Age=0; Path=/admin; HttpOnly; Secure; SameSite=Lax');
       res.headers.append('Set-Cookie', 'sb-refresh-token=; Max-Age=0; Path=/admin; HttpOnly; Secure; SameSite=Lax');
       return res;
@@ -46,7 +52,13 @@ export default async function handler(req) {
     const { access_token, refresh_token, expires_in } = data.session;
 
     // Redireciona o usuário para o destino pretendido com os novos cookies atualizados
-    const res = Response.redirect(new URL(next, req.url));
+    // Criamos uma resposta manualmente porque Response.redirect() retorna headers imutáveis no Edge Runtime
+    const res = new Response(null, {
+      status: 307,
+      headers: {
+        'Location': new URL(next, req.url).toString()
+      }
+    });
     res.headers.append(
       'Set-Cookie',
       `sb-access-token=${access_token}; HttpOnly; Secure; SameSite=Lax; Path=/admin; Max-Age=${expires_in}`

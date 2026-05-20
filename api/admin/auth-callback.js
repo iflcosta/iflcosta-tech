@@ -33,7 +33,13 @@ export default async function handler(req) {
     const { access_token, refresh_token, expires_in } = data.session;
 
     // Redireciona o usuário para o destino final (por padrão /admin)
-    const res = Response.redirect(new URL(next, req.url));
+    // Criamos uma resposta manualmente porque Response.redirect() retorna headers imutáveis no Edge Runtime
+    const res = new Response(null, {
+      status: 307,
+      headers: {
+        'Location': new URL(next, req.url).toString()
+      }
+    });
     
     // Configura cookies HttpOnly seguros com escopo restrito a /admin
     res.headers.append(

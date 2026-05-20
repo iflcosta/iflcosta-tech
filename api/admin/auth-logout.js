@@ -45,8 +45,20 @@ export default async function handler(req) {
       }
       
       try {
-        // Invalida a sessão no Supabase Auth (requer JWT do usuário, não o UUID)
-        await supabase.auth.admin.signOut(accessToken, scope);
+        // Invalida a sessão no Supabase Auth usando o próprio token do usuário
+        const userSupabase = createClient(
+          process.env.SUPABASE_URL,
+          process.env.SUPABASE_SERVICE_ROLE_KEY,
+          {
+            global: {
+              headers: {
+                Authorization: `Bearer ${accessToken}`
+              }
+            },
+            auth: { persistSession: false }
+          }
+        );
+        await userSupabase.auth.signOut();
       } catch (signOutErr) {
         console.error('Erro ao invalidar sessão no Supabase:', signOutErr);
       }
@@ -56,7 +68,13 @@ export default async function handler(req) {
   }
 
   // Redireciona para a landing principal limpando os cookies de sessão
-  const res = Response.redirect(new URL('/', req.url));
+  // Criamos uma resposta manualmente porque Response.redirect() retorna headers imutáveis no Edge Runtime
+  const res = new Response(null, {
+    status: 307,
+    headers: {
+      'Location': new URL('/', req.url).toString()
+    }
+  });
   res.headers.append('Set-Cookie', 'sb-access-token=; Max-Age=0; Path=/admin; HttpOnly; Secure; SameSite=Lax');
   res.headers.append('Set-Cookie', 'sb-refresh-token=; Max-Age=0; Path=/admin; HttpOnly; Secure; SameSite=Lax');
   
