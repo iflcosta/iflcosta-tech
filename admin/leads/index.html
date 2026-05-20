@@ -165,7 +165,7 @@
       inset: 0;
       background: rgba(15, 23, 42, 0.4);
       backdrop-filter: blur(4px);
-      z-index: 90;
+      z-index: 140;
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--duration-base) var(--ease-out);
@@ -185,7 +185,7 @@
       max-width: 500px;
       background: var(--color-bg-elevated);
       box-shadow: var(--shadow-2xl);
-      z-index: 100;
+      z-index: 150;
       transform: translateX(100%);
       transition: transform var(--duration-base) var(--ease-out);
       display: flex;
@@ -194,6 +194,26 @@
 
     .lead-drawer.is-open {
       transform: translateX(0);
+    }
+
+    .drawer-close-btn {
+      background: var(--color-bg-subtle);
+      border: none;
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+
+    .drawer-close-btn:hover {
+      background-color: var(--color-border-subtle);
+      color: var(--color-text-primary);
     }
 
     .drawer-header {
@@ -357,7 +377,7 @@
         <h2 style="font-size: var(--text-lg); font-weight: var(--font-bold); margin: 0;" id="drawer-lead-name">Detalhes do Lead</h2>
         <span class="badge badge--brand" id="drawer-lead-service" style="margin-top: var(--space-1);">Notebook</span>
       </div>
-      <button id="close-drawer-btn" class="hamburger-btn" style="padding: var(--space-1) var(--space-2);">✕</button>
+      <button id="close-drawer-btn" class="drawer-close-btn">✕</button>
     </div>
     
     <div class="drawer-body">

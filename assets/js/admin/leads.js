@@ -75,6 +75,24 @@ document.addEventListener('DOMContentLoaded', () => {
   closeDrawerBtn.addEventListener('click', closeDrawer);
   drawerBackdrop.addEventListener('click', closeDrawer);
 
+  // Close Conversion Modal on clicking outside (backdrop)
+  conversionBackdrop.addEventListener('click', (e) => {
+    if (e.target === conversionBackdrop) {
+      closeConversionModal();
+    }
+  });
+
+  // Global ESC key listener to close active overlays
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (conversionBackdrop.classList.contains('is-open')) {
+        closeConversionModal();
+      } else if (leadDrawer.classList.contains('is-open')) {
+        closeDrawer();
+      }
+    }
+  });
+
   // Status Change in Drawer
   drawerStatusSelect.addEventListener('change', async () => {
     if (!activeLead) return;
@@ -347,11 +365,11 @@ document.addEventListener('DOMContentLoaded', () => {
     conversionFeedback.style.display = 'none';
 
     // Show modal
-    conversionBackdrop.classList.add('open');
+    conversionBackdrop.classList.add('is-open');
   }
 
   function closeConversionModal() {
-    conversionBackdrop.classList.remove('open');
+    conversionBackdrop.classList.remove('is-open');
   }
 
   async function handleConversionSubmit(e) {
