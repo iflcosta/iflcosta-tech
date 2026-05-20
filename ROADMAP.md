@@ -45,10 +45,10 @@ Visão macro das 9 features. Ordem de execução é estrita: cada uma desbloquei
 
 ## Fase 2 — Admin SaaS solo (substitui Notion)
 
-### 004 — Admin auth  ·  spec/plan/tasks prontos
+### 004 — Admin auth  ·  100% Concluído e Testado
 **Por quê:** todo o admin é gateado por isso. Sem auth, sem admin.
 **O quê:** rota `/admin` autenticada via Supabase Auth, magic link + senha, sessão JWT, logout, middleware Vercel que protege `/admin/*`, layout base do admin (shell + nav).
-**Decisão arquitetural:** Vite ou continuar zero-build? (resolver em `plan.md`)
+**Decisão arquitetural:** Continuidade do Zero-Build (HTML + CSS puro + ES Modules nativos no navegador).
 **Desbloqueia:** 005-009.
 
 ### 005 — Admin CRM (leads + customers)
