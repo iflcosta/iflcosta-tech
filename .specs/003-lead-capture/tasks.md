@@ -2,7 +2,7 @@
 
 **Feature:** `003-lead-capture`
 **Spec:** [spec.md](./spec.md) · **Plan:** [plan.md](./plan.md)
-**Status geral:** 0% — spec e plan prontos, implementação não iniciada
+**Status geral:** 100% — Completo, testado e validado em staging/produção
 **Depende de:** 001 (componentes CSS) + 002 (modal HTML na landing)
 
 ---
@@ -43,7 +43,7 @@
 
 - [x] **T016** — Instalar `@supabase/supabase-js` como dependência de produção. **AC:** `npm install @supabase/supabase-js` + confirmar no `package.json`. **S**
 
-- [ ] **T017** — Testar endpoint manualmente com `curl` ou REST client: (a) POST válido → 200 + redirect URL, (b) honeypot preenchido → 200 redirect null, (c) timing < 3s → 200 redirect null, (d) consent false → 400, (e) telefone inválido → 400, (f) mesmo telefone no mesmo dia → 200 deduped. **AC:** todos os 6 casos corretos. **M**
+- [x] **T017** — Testar endpoint manualmente com `curl` ou REST client: (a) POST válido → 200 + redirect URL, (b) honeypot preenchido → 200 redirect null, (c) timing < 3s → 200 redirect null, (d) consent false → 400, (e) telefone inválido → 400, (f) mesmo telefone no mesmo dia → 200 deduped. **AC:** todos os 6 casos corretos. **M**
 
 ---
 
@@ -125,27 +125,27 @@
 
 ## 8. Deploy e variáveis de ambiente
 
-- [ ] **T070** — Configurar no painel Vercel as variáveis: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `WHATSAPP_NUMBER`, `GA4_ID`, `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW`, `IP_SALT`. Ref: plan §3 tabela de env vars. **S**
+- [x] **T070** — Configurar no painel Vercel as variáveis: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `WHATSAPP_NUMBER`, `GA4_ID`, `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW`, `IP_SALT`. Ref: plan §3 tabela de env vars. **S**
 
-- [ ] **T071** — Confirmar que `SUPABASE_SERVICE_ROLE_KEY` NÃO está exposta no cliente (não aparece em JS bundle do browser). **AC:** inspecionar Network tab no browser — nenhum request do cliente usa a chave. **S**
+- [x] **T071** — Confirmar que `SUPABASE_SERVICE_ROLE_KEY` NÃO está exposta no cliente (não aparece em JS bundle do browser). **AC:** inspecionar Network tab no browser — nenhum request do cliente usa a chave. **S**
 
-- [ ] **T072** — Deploy de preview via push para branch de feature. Testar endpoint `/api/leads` em staging com payload real. **S**
+- [x] **T072** — Deploy de preview via push para branch de feature. Testar endpoint `/api/leads` em staging com payload real. **S**
 
 ---
 
 ## 9. Critério de pronto (Feature 003)
 
-- [ ] Migration SQL aplicada no Supabase (leads + audit_log + RLS + trigger)
-- [ ] `/api/leads` responde corretamente a todos os 6 casos do contrato
-- [ ] Modal na landing submete e redireciona pro WhatsApp com mensagem pré-preenchida
-- [ ] `/orcamento` standalone funcional com campos longos
-- [ ] Máscara `(11) 9 9999-9999` funciona em todos os campos telefone
-- [ ] Draft persiste no sessionStorage por 5min (modal: preencher, fechar, reabrir — campos voltam)
-- [ ] Eventos GA4 todos disparados conforme plan §8
-- [ ] axe-core sem violações `serious`/`critical` no form
-- [ ] Playwright smoke tests passando (modal + /orcamento)
-- [ ] Teste manual iOS Safari + Android Chrome confirmado
-- [ ] Nenhum evento GA4 inclui PII
+- [x] Migration SQL aplicada no Supabase (leads + audit_log + RLS + trigger)
+- [x] `/api/leads` responde corretamente a todos os 6 casos do contrato
+- [x] Modal na landing submete e redireciona pro WhatsApp com mensagem pré-preenchida
+- [x] `/orcamento` standalone funcional com campos longos
+- [x] Máscara `(11) 9 9999-9999` funciona em todos os campos telefone
+- [x] Draft persiste no sessionStorage por 5min (modal: preencher, fechar, reabrir — campos voltam)
+- [x] Eventos GA4 todos disparados conforme plan §8
+- [x] axe-core sem violações `serious`/`critical` no form
+- [x] Playwright smoke tests passando (modal + /orcamento)
+- [x] Teste manual iOS Safari + Android Chrome confirmado
+- [x] Nenhum evento GA4 inclui PII
 
 ---
 

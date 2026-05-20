@@ -73,8 +73,8 @@ tests/                  # Playwright
 |---------|--------|--------------|
 | **001-design-system** | 70% — tokens/base/components/layout/reveal/styleguide prontos | T012-T014 disabled/error/kbd; auditoria contraste |
 | **002-landing-public** | 75% — HTML/SEO/legais/CI/testes prontos | assets visuais (og.jpg, favicons); GA4; deploy |
-| **003-lead-capture** | 95% — DB Migrado / Código Pronto | **T070** env vars Vercel · **T072+T017** deploy + curl test |
-| **004-admin-auth** | Spec/plan/tasks prontos | Aguardando 003 ir pra produção |
+| **003-lead-capture** | 100% — Completo e Validado | Nenhuma (Concluído) |
+| **004-admin-auth** | Spec/plan/tasks prontos | **T001** Iniciar desenvolvimento / spec da autenticação do admin |
 | **005-admin-crm** | Spec resumida | Detalhar após 004 |
 | **006-admin-os** | Spec resumida | — |
 | **007-admin-inventory** | Spec resumida | — |
@@ -83,9 +83,9 @@ tests/                  # Playwright
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **T070** — Configurar env vars no Vercel: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `WHATSAPP_NUMBER=5511919691542`, `GA4_ID`, `RATE_LIMIT_MAX=3`, `RATE_LIMIT_WINDOW=3600`, `IP_SALT` (gerar valor random longo).
-2. **T072 + T017** — Push de branch → preview Vercel → testar `/api/leads` com curl nos 6 cenários (válido, honeypot, timing, consent false, telefone inválido, dedupe).
-3. **004-admin-auth** — Iniciar o desenvolvimento da autenticação do admin.
+1. **004-admin-auth** — Iniciar o desenvolvimento da autenticação do admin (integração Supabase Auth + JWT).
+2. **001-design-system** — Finalizar os componentes de UI restantes (disabled/error/kbd e auditoria de contraste).
+3. **002-landing-public** — Preparar assets visuais finais (og.jpg, favicons) para deploy oficial de produção.
 
 ---
 
