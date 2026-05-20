@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obrigado! Recebi seu orçamento — Iago Lopes | Hardware & Tech</title>
+  <meta name="description" content="Recebi seu pedido de orçamento. Eu respondo no WhatsApp em até 1 hora útil.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://iflcosta.tech/obrigado">
+  <meta name="theme-color" content="#4F46E5">
+  <meta name="color-scheme" content="light dark">
+
+  <script>
+    (function () {
+      var t = localStorage.getItem('ifl-theme') || 'system';
+      if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <header class="site-header" data-site-header>
+    <div class="container">
+      <a href="/" class="wordmark" aria-label="Iago Lopes — Hardware e Tech">
+        <span class="wordmark__mono" aria-hidden="true">IL</span>
+        <span class="wordmark__text">
+          <span class="wordmark__name">Iago Lopes</span>
+          <span class="wordmark__role">Hardware &amp; Tech</span>
+        </span>
+      </a>
+      <div class="header-actions">
+        <a class="btn btn--primary btn--sm" href="/">Voltar pra home</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section>
+      <div class="container" style="max-width: 680px;">
+        <div class="section-head">
+          <span class="eyebrow">Recebido</span>
+          <h1 style="font-size: var(--text-3xl); font-weight: var(--font-bold); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight);">Obrigado! Já estou vendo aqui.</h1>
+          <p>Recebi seu pedido de orçamento. Eu respondo no WhatsApp em até <strong>1 hora útil</strong> — geralmente bem antes. Se preferir não esperar, é só clicar no botão abaixo pra falar comigo agora mesmo.</p>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn btn--primary" href="https://wa.me/5511919691542" target="_blank" rel="noopener" aria-label="Falar comigo no WhatsApp agora">Falar no WhatsApp agora</a>
+          <a class="btn btn--secondary" href="/" aria-label="Voltar pra home">Voltar pra home</a>
+        </div>
+
+        <div class="card" style="margin-top: var(--space-8);">
+          <h2 style="font-size: var(--text-lg); font-weight: var(--font-semibold); color: var(--color-text-primary); margin-bottom: var(--space-3); letter-spacing: var(--tracking-tight);">Enquanto isso, talvez te interesse:</h2>
+          <ul class="link-list">
+            <li><a href="/#como-funciona">Como funciona o atendimento</a></li>
+            <li><a href="/#faq">Perguntas frequentes</a></li>
+            <li><a href="/#areas">Áreas atendidas</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: 0;">
+        <span>© 2026 Iago Lopes · Bragança Paulista – SP</span>
+        <a href="/" style="color: var(--color-text-brand);">Voltar pra home</a>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    main { padding-block: var(--space-8); }
+    .cta-row {
+      display: flex; flex-wrap: wrap; gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    .cta-row .btn { flex: 1 1 220px; min-height: 44px; justify-content: center; }
+    @media (max-width: 480px) {
+      .cta-row { flex-direction: column; }
+      .cta-row .btn { width: 100%; }
+    }
+    .link-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+    .link-list a {
+      color: var(--color-text-brand);
+      text-decoration: underline;
+      display: inline-block;
+      min-height: 44px;
+      line-height: 44px;
+    }
+    .link-list a:hover { text-decoration: none; }
+  </style>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página não encontrada (404) — Iago Lopes | Hardware & Tech</title>
+  <meta name="description" content="Essa página não existe ou foi movida. Volte pra home ou fale comigo no WhatsApp.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="https://iflcosta.tech/404">
+  <meta name="theme-color" content="#4F46E5">
+  <meta name="color-scheme" content="light dark">
+
+  <script>
+    (function () {
+      var t = localStorage.getItem('ifl-theme') || 'system';
+      if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <header class="site-header" data-site-header>
+    <div class="container">
+      <a href="/" class="wordmark" aria-label="Iago Lopes — Hardware e Tech">
+        <span class="wordmark__mono" aria-hidden="true">IL</span>
+        <span class="wordmark__text">
+          <span class="wordmark__name">Iago Lopes</span>
+          <span class="wordmark__role">Hardware &amp; Tech</span>
+        </span>
+      </a>
+      <div class="header-actions">
+        <a class="btn btn--primary btn--sm" href="/">Voltar pra home</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="error-section">
+      <div class="container" style="max-width: 680px;">
+        <div class="error-art" aria-hidden="true">
+          <svg viewBox="0 0 240 110" xmlns="http://www.w3.org/2000/svg" role="img" focusable="false">
+            <defs>
+              <linearGradient id="g404" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="currentColor" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="currentColor" stop-opacity="0.45"/>
+              </linearGradient>
+            </defs>
+            <text x="120" y="78" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="78" font-weight="700" fill="url(#g404)" letter-spacing="6">404</text>
+            <path d="M10 95 H70 L78 88 H110" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+            <path d="M130 88 H162 L170 95 H230" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+            <circle cx="70" cy="95" r="3" fill="currentColor" opacity="0.7"/>
+            <circle cx="170" cy="95" r="3" fill="currentColor" opacity="0.7"/>
+            <path d="M114 84 L120 90 L114 96" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+            <path d="M126 84 L120 90 L126 96" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+        </div>
+
+        <div class="section-head">
+          <span class="eyebrow">Erro 404</span>
+          <h1 style="font-size: var(--text-3xl); font-weight: var(--font-bold); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight);">Essa página tomou um curto-circuito.</h1>
+          <p>Pode ter sido um link antigo ou um typo. Não se preocupa — é fácil voltar.</p>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn btn--primary" href="/" aria-label="Voltar pra home">Voltar pra home</a>
+          <a class="btn btn--secondary" href="https://wa.me/5511919691542" target="_blank" rel="noopener" aria-label="Falar comigo no WhatsApp">Falar no WhatsApp</a>
+        </div>
+
+        <div class="card" style="margin-top: var(--space-8);">
+          <h2 style="font-size: var(--text-lg); font-weight: var(--font-semibold); color: var(--color-text-primary); margin-bottom: var(--space-3); letter-spacing: var(--tracking-tight);">Procurando algo?</h2>
+          <ul class="link-list">
+            <li><a href="/#servicos">Serviços</a></li>
+            <li><a href="/#como-funciona">Como funciona</a></li>
+            <li><a href="/#faq">Perguntas frequentes</a></li>
+            <li><a href="/privacidade">Política de Privacidade</a></li>
+            <li><a href="/termos">Termos</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: 0;">
+        <span>© 2026 Iago Lopes · Bragança Paulista – SP</span>
+        <a href="/" style="color: var(--color-text-brand);">Voltar pra home</a>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .error-section {
+      min-height: calc(100svh - 200px);
+      display: flex;
+      align-items: center;
+      padding-block: var(--space-8);
+    }
+    .error-art {
+      color: var(--color-text-brand);
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--space-4);
+    }
+    .error-art svg { width: 100%; max-width: 320px; height: auto; }
+    .cta-row {
+      display: flex; flex-wrap: wrap; gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    .cta-row .btn { flex: 1 1 220px; min-height: 44px; justify-content: center; }
+    @media (max-width: 480px) {
+      .cta-row { flex-direction: column; }
+      .cta-row .btn { width: 100%; }
+    }
+    .link-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+    .link-list a {
+      color: var(--color-text-brand);
+      text-decoration: underline;
+      display: inline-block;
+      min-height: 44px;
+      line-height: 44px;
+    }
+    .link-list a:hover { text-decoration: none; }
+  </style>
+</body>
+</html>

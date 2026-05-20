@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /styleguide
+Disallow: /api/
+
+Sitemap: https://iflcosta.tech/sitemap.xml

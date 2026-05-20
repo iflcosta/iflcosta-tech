@@ -1,0 +1,28 @@
+{
+  "name": "iflcosta-tech",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Landing pública e admin de Iago Lopes | Hardware & Tech",
+  "type": "module",
+  "scripts": {
+    "serve": "serve -p 3000 -L .",
+    "wait": "wait-on http://localhost:3000/ -t 30000",
+    "lhci": "lhci autorun",
+    "a11y": "node scripts/a11y-check.mjs",
+    "ci": "npm run lhci && npm run a11y",
+    "test": "playwright test",
+    "test:e2e": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@lhci/cli": "^0.14.0",
+    "@playwright/test": "^1.48.0",
+    "serve": "^14.2.4",
+    "wait-on": "^8.0.1"
+  }
+}

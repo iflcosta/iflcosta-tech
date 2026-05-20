@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Styleguide — Iago Lopes | Hardware & Tech</title>
+  <meta name="description" content="Catálogo interno do design system — tokens, tipografia, espaçamento e componentes.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#4F46E5">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Theme init (anti-FOUC) -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('ifl-theme') || 'system';
+      if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/reveal.css">
+
+  <style>
+    /* Ajustes locais mínimos do styleguide — nada reusable aqui */
+    .sg-header {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--color-bg-surface);
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+    .sg-header .container {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-3); padding-block: var(--space-3); flex-wrap: wrap;
+    }
+    .sg-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+    .sg-section { padding-block: var(--space-8); border-top: 1px solid var(--color-border-subtle); }
+    .sg-section:first-of-type { border-top: 0; }
+
+    /* Swatches */
+    .sg-swatch-grid {
+      display: grid; gap: var(--space-4);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @media (min-width: 640px) { .sg-swatch-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+    @media (min-width: 1024px) { .sg-swatch-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+    .sg-swatch { display: flex; flex-direction: column; gap: var(--space-2); }
+    .sg-swatch__box {
+      width: 100%; aspect-ratio: 16/9; min-height: 80px;
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+    }
+    .sg-swatch__name {
+      font-family: var(--font-mono); font-size: var(--text-xs);
+      color: var(--color-text-primary); word-break: break-all;
+    }
+    .sg-swatch__meta {
+      font-size: var(--text-xs); color: var(--color-text-tertiary);
+      display: flex; justify-content: space-between; gap: var(--space-2);
+    }
+
+    /* Typography rows */
+    .sg-type-row { padding-block: var(--space-4); border-bottom: 1px dashed var(--color-border-subtle); }
+    .sg-type-row:last-child { border-bottom: 0; }
+    .sg-type-meta {
+      font-family: var(--font-mono); font-size: var(--text-xs);
+      color: var(--color-text-tertiary); margin-bottom: var(--space-2);
+    }
+
+    /* Spacing bars */
+    .sg-space-row {
+      display: grid; grid-template-columns: 140px 1fr;
+      align-items: center; gap: var(--space-4);
+      padding-block: var(--space-2);
+    }
+    .sg-space-label { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-secondary); }
+    .sg-space-bar { height: 14px; background: var(--color-brand-subtle); border-radius: var(--radius-sm); }
+
+    /* Component groups */
+    .sg-block { margin-block: var(--space-5); }
+    .sg-block h3 {
+      font-size: var(--text-lg); font-weight: var(--font-semibold);
+      margin-bottom: var(--space-3); color: var(--color-text-primary);
+    }
+    .sg-row {
+      display: flex; flex-wrap: wrap; gap: var(--space-3);
+      align-items: center; padding: var(--space-4);
+      background: var(--color-bg-surface); border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+    }
+    .sg-grid-2 {
+      display: grid; gap: var(--space-4);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 768px) { .sg-grid-2 { grid-template-columns: repeat(2, 1fr); } }
+    .sg-grid-3 {
+      display: grid; gap: var(--space-4);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) { .sg-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .sg-grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+    .sg-card-demo h3 { margin-bottom: var(--space-2); }
+    .sg-card-demo p { color: var(--color-text-secondary); font-size: var(--text-sm); }
+
+    .sg-footer {
+      padding-block: var(--space-6);
+      border-top: 1px solid var(--color-border-subtle);
+      font-size: var(--text-sm); color: var(--color-text-tertiary);
+      text-align: center;
+    }
+
+    /* Loading state demo */
+    .btn[aria-busy="true"] { opacity: 0.7; cursor: progress; }
+    /* Field error demo */
+    .field--error .input,
+    .field--error .textarea,
+    .field--error .select { border-color: var(--color-danger); box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+    .field--error .hint { color: var(--color-danger); }
+
+    /* Disabled state for native inputs */
+    .input:disabled, .textarea:disabled, .select:disabled,
+    .btn:disabled, .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Pular para o conteúdo principal</a>
+
+  <header class="sg-header">
+    <div class="container">
+      <a href="/" class="wordmark" aria-label="Iago Lopes — Hardware e Tech">
+        <span class="wordmark__mono" aria-hidden="true">IL</span>
+        <span class="wordmark__text">
+          <span class="wordmark__name">Iago Lopes</span>
+          <span class="wordmark__role">Hardware &amp; Tech</span>
+        </span>
+      </a>
+
+      <div class="sg-actions">
+        <button class="theme-toggle" data-theme-toggle aria-label="Alternar tema">
+          <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <a class="btn btn--primary btn--sm" href="/">Voltar pra home</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container">
+
+      <section class="sg-section" aria-labelledby="page-title">
+        <div class="section-head">
+          <span class="eyebrow">Styleguide interna</span>
+          <h1 id="page-title" style="font-size: var(--text-3xl); font-weight: var(--font-bold); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight);">Design System — Iago Lopes | Hardware &amp; Tech</h1>
+          <p style="font-size: var(--text-lg); color: var(--color-text-secondary); line-height: var(--leading-relaxed);">
+            Catálogo de tokens e componentes do projeto. Página oculta de buscadores (<code>noindex</code>),
+            usada como smoke test visual e referência rápida. Alterne entre claro e escuro pelo botão acima.
+          </p>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           1. COLOR TOKENS
+           ========================================================= -->
+      <section class="sg-section" aria-labelledby="sec-colors">
+        <div class="section-head">
+          <span class="eyebrow">01 · Tokens</span>
+          <h2 id="sec-colors">Cores</h2>
+          <p>Tokens semânticos — sempre referenciados em componentes via <code>var(--color-*)</code>. Razão de contraste calculada contra <code>--color-bg-base</code> no tema claro.</p>
+        </div>
+
+        <div class="sg-block">
+          <h3>Background</h3>
+          <div class="sg-swatch-grid">
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-bg-base);"></div>
+              <span class="sg-swatch__name">--color-bg-base</span>
+              <span class="sg-swatch__meta"><span>#F8FAFC</span><span>base</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-bg-surface);"></div>
+              <span class="sg-swatch__name">--color-bg-surface</span>
+              <span class="sg-swatch__meta"><span>#FFFFFF</span><span>1.04:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-bg-elevated);"></div>
+              <span class="sg-swatch__name">--color-bg-elevated</span>
+              <span class="sg-swatch__meta"><span>#FFFFFF</span><span>1.04:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-bg-subtle);"></div>
+              <span class="sg-swatch__name">--color-bg-subtle</span>
+              <span class="sg-swatch__meta"><span>#F1F5F9</span><span>1.05:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-bg-inverse);"></div>
+              <span class="sg-swatch__name">--color-bg-inverse</span>
+              <span class="sg-swatch__meta"><span>#0F172A</span><span>17.5:1</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sg-block">
+          <h3>Texto</h3>
+          <div class="sg-swatch-grid">
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-text-primary);"></div>
+              <span class="sg-swatch__name">--color-text-primary</span>
+              <span class="sg-swatch__meta"><span>slate-900</span><span>16.1:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-text-secondary);"></div>
+              <span class="sg-swatch__name">--color-text-secondary</span>
+              <span class="sg-swatch__meta"><span>slate-600</span><span>7.8:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-text-tertiary);"></div>
+              <span class="sg-swatch__name">--color-text-tertiary</span>
+              <span class="sg-swatch__meta"><span>slate-500</span><span>5.2:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-text-brand);"></div>
+              <span class="sg-swatch__name">--color-text-brand</span>
+              <span class="sg-swatch__meta"><span>indigo-700</span><span>8.6:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-text-inverse); border-color: var(--color-border-default);"></div>
+              <span class="sg-swatch__name">--color-text-inverse</span>
+              <span class="sg-swatch__meta"><span>slate-50</span><span>—</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sg-block">
+          <h3>Borda</h3>
+          <div class="sg-swatch-grid">
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-border-subtle);"></div>
+              <span class="sg-swatch__name">--color-border-subtle</span>
+              <span class="sg-swatch__meta"><span>slate-200</span><span>—</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-border-default);"></div>
+              <span class="sg-swatch__name">--color-border-default</span>
+              <span class="sg-swatch__meta"><span>slate-300</span><span>—</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-border-strong);"></div>
+              <span class="sg-swatch__name">--color-border-strong</span>
+              <span class="sg-swatch__meta"><span>slate-400</span><span>—</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-border-focus);"></div>
+              <span class="sg-swatch__name">--color-border-focus</span>
+              <span class="sg-swatch__meta"><span>indigo-600</span><span>foco</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sg-block">
+          <h3>Brand</h3>
+          <div class="sg-swatch-grid">
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-brand);"></div>
+              <span class="sg-swatch__name">--color-brand</span>
+              <span class="sg-swatch__meta"><span>indigo-600</span><span>6.5:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-brand-hover);"></div>
+              <span class="sg-swatch__name">--color-brand-hover</span>
+              <span class="sg-swatch__meta"><span>indigo-700</span><span>8.6:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-brand-active);"></div>
+              <span class="sg-swatch__name">--color-brand-active</span>
+              <span class="sg-swatch__meta"><span>indigo-800</span><span>10.4:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-brand-subtle);"></div>
+              <span class="sg-swatch__name">--color-brand-subtle</span>
+              <span class="sg-swatch__meta"><span>indigo-50</span><span>1.07:1</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sg-block">
+          <h3>Funcionais</h3>
+          <div class="sg-swatch-grid">
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-success);"></div>
+              <span class="sg-swatch__name">--color-success</span>
+              <span class="sg-swatch__meta"><span>#10B981</span><span>2.6:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-success-subtle);"></div>
+              <span class="sg-swatch__name">--color-success-subtle</span>
+              <span class="sg-swatch__meta"><span>#D1FAE5</span><span>1.1:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-warning);"></div>
+              <span class="sg-swatch__name">--color-warning</span>
+              <span class="sg-swatch__meta"><span>#F59E0B</span><span>1.9:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-warning-subtle);"></div>
+              <span class="sg-swatch__name">--color-warning-subtle</span>
+              <span class="sg-swatch__meta"><span>#FEF3C7</span><span>1.05:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-danger);"></div>
+              <span class="sg-swatch__name">--color-danger</span>
+              <span class="sg-swatch__meta"><span>#EF4444</span><span>4.0:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-danger-subtle);"></div>
+              <span class="sg-swatch__name">--color-danger-subtle</span>
+              <span class="sg-swatch__meta"><span>#FEE2E2</span><span>1.08:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-info);"></div>
+              <span class="sg-swatch__name">--color-info</span>
+              <span class="sg-swatch__meta"><span>#0EA5E9</span><span>3.1:1</span></span>
+            </div>
+            <div class="sg-swatch">
+              <div class="sg-swatch__box" style="background: var(--color-info-subtle);"></div>
+              <span class="sg-swatch__name">--color-info-subtle</span>
+              <span class="sg-swatch__meta"><span>#E0F2FE</span><span>1.06:1</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           2. TYPOGRAPHY
+           ========================================================= -->
+      <section class="sg-section" aria-labelledby="sec-type">
+        <div class="section-head">
+          <span class="eyebrow">02 · Tokens</span>
+          <h2 id="sec-type">Tipografia</h2>
+          <p>Família system stack — zero web font. Escala fluida via <code>clamp()</code> entre 360px e 1440px.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-5);">
+          <span class="sg-type-meta">font-family: var(--font-sans)</span>
+          <p style="font-family: var(--font-sans); font-size: var(--text-lg);">
+            -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", "Inter", system-ui, sans-serif
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-display · weight 700 · leading 1.15 · tracking -0.02em</div>
+            <div style="font-size: var(--text-display); font-weight: var(--font-bold); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-3xl · weight 700 · leading 1.15 · tracking -0.02em (h1)</div>
+            <div style="font-size: var(--text-3xl); font-weight: var(--font-bold); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-2xl · weight 600 · leading 1.3 (h2)</div>
+            <div style="font-size: var(--text-2xl); font-weight: var(--font-semibold); line-height: var(--leading-snug);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-xl · weight 600 · leading 1.3 (h3)</div>
+            <div style="font-size: var(--text-xl); font-weight: var(--font-semibold); line-height: var(--leading-snug);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-lg · weight 600 · leading 1.3 (h4)</div>
+            <div style="font-size: var(--text-lg); font-weight: var(--font-semibold); line-height: var(--leading-snug);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-lg · weight 400 · leading 1.65 (body-large / lead)</div>
+            <div style="font-size: var(--text-lg); font-weight: var(--font-regular); line-height: var(--leading-relaxed);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-base · weight 400 · leading 1.5 (body)</div>
+            <div style="font-size: var(--text-base); font-weight: var(--font-regular); line-height: var(--leading-normal);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-sm · weight 400 · leading 1.5 (small / caption)</div>
+            <div style="font-size: var(--text-sm); font-weight: var(--font-regular); line-height: var(--leading-normal);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-xs · weight 600 · uppercase · tracking 0.04em (.eyebrow)</div>
+            <div class="eyebrow">Bragança veloz, microsoldagem fixa qualquer placa difícil</div>
+          </div>
+          <div class="sg-type-row">
+            <div class="sg-type-meta">--text-sm · weight 500 (label de form)</div>
+            <div style="font-size: var(--text-sm); font-weight: var(--font-medium); line-height: var(--leading-snug);">
+              Bragança veloz, microsoldagem fixa qualquer placa difícil
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           3. SPACING
+           ========================================================= -->
+      <section class="sg-section" aria-labelledby="sec-space">
+        <div class="section-head">
+          <span class="eyebrow">03 · Tokens</span>
+          <h2 id="sec-space">Espaçamento</h2>
+          <p>Escala base-4px, intencionalmente esparsa nos valores altos. Use <code>--space-3</code> a <code>--space-5</code> em padding interno; <code>--space-9/10</code> entre seções.</p>
+        </div>
+
+        <div class="card">
+          <div class="sg-space-row"><span class="sg-space-label">space-1 (4px)</span><div class="sg-space-bar" style="width: var(--space-1);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-2 (8px)</span><div class="sg-space-bar" style="width: var(--space-2);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-3 (12px)</span><div class="sg-space-bar" style="width: var(--space-3);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-4 (16px)</span><div class="sg-space-bar" style="width: var(--space-4);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-5 (24px)</span><div class="sg-space-bar" style="width: var(--space-5);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-6 (32px)</span><div class="sg-space-bar" style="width: var(--space-6);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-7 (48px)</span><div class="sg-space-bar" style="width: var(--space-7);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-8 (64px)</span><div class="sg-space-bar" style="width: var(--space-8);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-9 (96px)</span><div class="sg-space-bar" style="width: var(--space-9);"></div></div>
+          <div class="sg-space-row"><span class="sg-space-label">space-10 (128px)</span><div class="sg-space-bar" style="width: var(--space-10);"></div></div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           4. COMPONENTES
+           ========================================================= -->
+      <section class="sg-section" aria-labelledby="sec-components">
+        <div class="section-head">
+          <span class="eyebrow">04 · Componentes</span>
+          <h2 id="sec-components">Componentes</h2>
+          <p>Cada componente em todas as variantes, tamanhos e estados relevantes. Padrão BEM (CSS classes) conforme ADR 0005.</p>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="sg-block">
+          <h3>Buttons — variantes</h3>
+          <div class="sg-row">
+            <button type="button" class="btn btn--primary">Primary</button>
+            <button type="button" class="btn btn--secondary">Secondary</button>
+            <button type="button" class="btn btn--ghost">Ghost</button>
+            <button type="button" class="btn btn--success">Success</button>
+          </div>
+          <div class="sg-row" style="background: var(--color-bg-inverse); margin-top: var(--space-3);">
+            <button type="button" class="btn btn--secondary-inverse">Secondary inverse</button>
+            <span style="color: var(--color-text-inverse); font-size: var(--text-sm);">Usado sobre fundos sempre escuros (Final CTA)</span>
+          </div>
+        </div>
+
+        <div class="sg-block">
+          <h3>Buttons — tamanhos (sm · md · lg)</h3>
+          <div class="sg-row">
+            <button type="button" class="btn btn--primary btn--sm">Pequeno</button>
+            <button type="button" class="btn btn--primary">Médio (default)</button>
+            <button type="button" class="btn btn--primary btn--lg">Grande</button>
+          </div>
+        </div>
+
+        <div class="sg-block">
+          <h3>Buttons — com ícone</h3>
+          <div class="sg-row">
+            <button type="button" class="btn btn--primary">
+              Pedir orçamento
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <button type="button" class="btn btn--secondary">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              Ver serviços
+            </button>
+          </div>
+        </div>
+
+        <div class="sg-block">
+          <h3>Buttons — estados (disabled · loading)</h3>
+          <div class="sg-row">
+            <button type="button" class="btn btn--primary" disabled>Disabled</button>
+            <button type="button" class="btn btn--secondary" disabled>Disabled</button>
+            <button type="button" class="btn btn--primary" aria-busy="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              Carregando
+            </button>
+          </div>
+          <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+        </div>
+
+        <!-- BADGES -->
+        <div class="sg-block">
+          <h3>Badges</h3>
+          <div class="sg-row">
+            <span class="badge badge--info">Info</span>
+            <span class="badge badge--success">Success</span>
+            <span class="badge badge--brand">Brand</span>
+            <span class="badge badge--neutral">Neutral</span>
+          </div>
+          <div class="sg-row" style="margin-top: var(--space-3);">
+            <span class="badge badge--info"><span class="dot" aria-hidden="true"></span>Em análise</span>
+            <span class="badge badge--success"><span class="dot" aria-hidden="true"></span>Pronto</span>
+            <span class="badge badge--brand"><span class="dot" aria-hidden="true"></span>Garantia 90d</span>
+            <span class="badge badge--neutral"><span class="dot" aria-hidden="true"></span>Aguardando</span>
+          </div>
+        </div>
+
+        <!-- CARDS -->
+        <div class="sg-block">
+          <h3>Cards</h3>
+          <div class="sg-grid-3">
+            <article class="card sg-card-demo">
+              <h3>.card — base</h3>
+              <p>Background <code>surface</code>, borda <code>subtle</code>, shadow-sm. Padding sobe pra <code>--space-6</code> em ≥ 768px.</p>
+            </article>
+            <article class="card card--interactive sg-card-demo" tabindex="0">
+              <h3>.card--interactive</h3>
+              <p>Adiciona hover: shadow-md, translateY(-2px), borda <code>default</code>. Pode receber foco.</p>
+            </article>
+            <article class="card card--feature sg-card-demo">
+              <span class="badge badge--brand">Feature</span>
+              <h3>.card--feature</h3>
+              <p>Flex column com gap, altura 100% pra alinhar em grid. Ideal pra cards de serviço.</p>
+              <button type="button" class="btn btn--ghost btn--sm" style="align-self: flex-start;">Saiba mais</button>
+            </article>
+          </div>
+        </div>
+
+        <!-- CHIPS -->
+        <div class="sg-block">
+          <h3>Chips</h3>
+          <div class="sg-row">
+            <div class="chip-group">
+              <button type="button" class="chip">📱 Celular / tablet</button>
+              <button type="button" class="chip is-active">💻 Notebook / PC</button>
+              <button type="button" class="chip">🎮 Custom PC</button>
+              <button type="button" class="chip">🌐 Suporte TI</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM FIELDS -->
+        <div class="sg-block">
+          <h3>Form fields</h3>
+          <div class="sg-grid-2">
+            <div class="card">
+              <form onsubmit="event.preventDefault();" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                <div class="field">
+                  <label for="sg-nome">Nome (input padrão)</label>
+                  <input class="input" type="text" id="sg-nome" placeholder="Como prefere ser chamado(a)">
+                </div>
+
+                <div class="field">
+                  <label for="sg-whats">WhatsApp</label>
+                  <input class="input" type="tel" id="sg-whats" placeholder="(11) 9 0000-0000">
+                  <span class="hint">Vou responder por aqui mesmo, sem ligar sem aviso.</span>
+                </div>
+
+                <div class="field">
+                  <label for="sg-servico">Serviço (select)</label>
+                  <select class="select" id="sg-servico">
+                    <option>Celular / tablet</option>
+                    <option>Notebook / PC</option>
+                    <option>Custom PC</option>
+                    <option>Suporte TI</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="sg-msg">O que está acontecendo? (textarea)</label>
+                  <textarea class="textarea" id="sg-msg" placeholder="Modelo, sintoma, quando começou."></textarea>
+                </div>
+              </form>
+            </div>
+
+            <div class="card">
+              <form onsubmit="event.preventDefault();" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                <div class="field field--error">
+                  <label for="sg-email-err">E-mail (estado erro)</label>
+                  <input class="input" type="email" id="sg-email-err" value="texto.invalido" aria-invalid="true" aria-describedby="sg-email-err-hint">
+                  <span class="hint" id="sg-email-err-hint">Formato inválido — confira o e-mail.</span>
+                </div>
+
+                <div class="field">
+                  <label for="sg-disabled">Campo desabilitado</label>
+                  <input class="input" type="text" id="sg-disabled" value="Não editável" disabled>
+                </div>
+
+                <div class="field field--consent">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="consent-demo">
+                    <span>Concordo com a <a href="/privacidade">Política de Privacidade</a> e autorizo o contato pelos dados fornecidos.</span>
+                  </label>
+                </div>
+
+                <div class="form-success" role="status">
+                  ✓ Recebido! Vou responder no WhatsApp em até 1 hora útil.
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="sg-block">
+          <h3>Modal</h3>
+          <div class="sg-row" style="flex-direction: column; align-items: flex-start;">
+            <p style="font-size: var(--text-sm); color: var(--color-text-secondary);">
+              Estrutura: <code>.modal-backdrop[data-modal] &gt; .modal &gt; .modal__header / .modal__body / .modal__actions (ou .modal__footer)</code>.
+              Trapa foco, fecha com <kbd>Esc</kbd> ou clique fora, bloqueia scroll do body.
+            </p>
+            <button type="button" class="btn btn--primary" data-sg-modal-open>
+              Abrir modal de exemplo
+            </button>
+          </div>
+        </div>
+
+        <!-- THEME TOGGLE -->
+        <div class="sg-block">
+          <h3>Theme toggle</h3>
+          <div class="sg-row">
+            <button class="theme-toggle" data-theme-toggle aria-label="Alternar tema (demo)">
+              <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+              <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+            <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0;">
+              <code>.theme-toggle</code> com <code>data-theme-toggle</code>. Persiste em <code>localStorage['ifl-theme']</code> (<code>light</code> · <code>dark</code> · <code>system</code>). O mesmo botão está no header desta página.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           5. PADRÕES TRANSVERSAIS
+           ========================================================= -->
+      <section class="sg-section" aria-labelledby="sec-patterns">
+        <div class="section-head">
+          <span class="eyebrow">05 · Padrões</span>
+          <h2 id="sec-patterns">Padrões transversais</h2>
+          <p>Detalhes de comportamento que valem pra todo o sistema — foco, navegação por teclado, motion.</p>
+        </div>
+
+        <div class="sg-grid-2">
+          <article class="card">
+            <h3 style="margin-bottom: var(--space-3);">Focus visible</h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--text-sm); margin-bottom: var(--space-4);">
+              Outline de 2px em <code>--color-border-focus</code> (indigo-600 no claro, indigo-400 no escuro), offset 2px, raio <code>--radius-sm</code>.
+              Aparece somente com <code>:focus-visible</code> — clique de mouse não dispara.
+            </p>
+            <button type="button" class="btn btn--secondary" id="sg-focus-demo">
+              Tab até aqui (ou clique pra focar)
+            </button>
+          </article>
+
+          <article class="card">
+            <h3 style="margin-bottom: var(--space-3);">Skip link</h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--text-sm);">
+              Primeiro item focável do <code>&lt;body&gt;</code> é <code>.skip-link</code> com âncora pra <code>#main</code>.
+              Aparece com <kbd>Tab</kbd> a partir da URL bar — invisível com mouse. Permite pular header e ir direto ao conteúdo.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 style="margin-bottom: var(--space-3);">Reduced motion</h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--text-sm);">
+              Quando <code>@media (prefers-reduced-motion: reduce)</code> está ativo (sistema operacional do usuário),
+              animações e transições são reduzidas a <code>0.01ms</code>. Vale pra modal, hover de cards, reveal on scroll e loading spinners.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 style="margin-bottom: var(--space-3);">Touch targets ≥ 44px</h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--text-sm);">
+              Todo elemento interativo (<code>.btn</code>, <code>.input</code>, <code>.select</code>, <code>.textarea</code>)
+              tem <code>min-height: 44px</code>. <code>.btn--sm</code> usa 36px e fica reservado pra contexto desktop / dentro de header denso.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <div class="sg-footer">
+        Styleguide interna · não-indexada · ver <code>.specs/001-design-system/plan.md</code>.
+      </div>
+    </div>
+  </main>
+
+  <!-- =============================================
+       MODAL DEMO
+       ============================================= -->
+  <div class="modal-backdrop" data-modal id="sg-modal-demo" role="dialog" aria-modal="true" aria-labelledby="sg-modal-title" aria-hidden="true">
+    <div class="modal">
+      <div class="modal__header">
+        <div>
+          <h2 class="modal__title" id="sg-modal-title">Demo do modal</h2>
+          <p class="modal__subtitle">Pressione <kbd>Esc</kbd> ou clique fora pra fechar.</p>
+        </div>
+        <button type="button" class="modal__close" data-sg-modal-close aria-label="Fechar">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <p>
+          Este é um exemplo de modal usando a estrutura padrão do projeto.
+          O foco fica trapado dentro do modal enquanto ele estiver aberto, e o scroll do body fica bloqueado.
+        </p>
+        <p style="color: var(--color-text-secondary); font-size: var(--text-sm);">
+          Em produção, modais reais são abertos via <code>[data-modal-open]</code> + <code>main.js</code>.
+          Esta demo usa um handler local mais simples só pra ilustração.
+        </p>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" data-sg-modal-close>Cancelar</button>
+          <button type="button" class="btn btn--primary" data-sg-modal-close>Entendi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       SCRIPTS
+       ============================================= -->
+  <script>
+    // Theme toggle local (replicado do main.js — styleguide não depende de main.js)
+    (function () {
+      var STORAGE = 'ifl-theme';
+      function current() {
+        var stored = localStorage.getItem(STORAGE);
+        if (stored === 'light' || stored === 'dark') return stored;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      function apply(t) {
+        if (t === 'system') {
+          document.documentElement.removeAttribute('data-theme');
+        } else {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+        localStorage.setItem(STORAGE, t);
+      }
+      document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          apply(current() === 'dark' ? 'light' : 'dark');
+        });
+      });
+    })();
+
+    // Modal demo local
+    (function () {
+      var modal = document.getElementById('sg-modal-demo');
+      if (!modal) return;
+      var openers = document.querySelectorAll('[data-sg-modal-open]');
+      var closers = modal.querySelectorAll('[data-sg-modal-close]');
+      var lastFocus = null;
+
+      function open() {
+        lastFocus = document.activeElement;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        var firstClose = modal.querySelector('[data-sg-modal-close]');
+        if (firstClose) firstClose.focus();
+      }
+      function close() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      openers.forEach(function (b) { b.addEventListener('click', open); });
+      closers.forEach(function (b) { b.addEventListener('click', close); });
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+      });
+    })();
+  </script>
+</body>
+</html>
