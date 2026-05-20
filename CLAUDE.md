@@ -67,27 +67,25 @@ tests/                  # Playwright
 
 ## 4. Estado atual do projeto (atualizar conforme avança)
 
-> Última atualização: 2026-05-19
+> Última atualização: 2026-05-20 (Atualizado na sessão atual)
 
 | Feature | Status | Próxima ação |
 |---------|--------|--------------|
-| **001-design-system** | 70% — tokens/base/components/layout/reveal/styleguide prontos | T012-T014 disabled/error/kbd; auditoria contraste |
-| **002-landing-public** | 75% — HTML/SEO/legais/CI/testes prontos | assets visuais (og.jpg, favicons); GA4; deploy |
-| **003-lead-capture** | 100% código / 0% deploy | **T003** aplicar migration · **T070** env vars Vercel · **T072+T017** deploy + curl test |
-| **004-admin-auth** | Spec/plan/tasks prontos | Aguardando 003 ir pra produção |
-| **005-admin-crm** | Spec resumida | Detalhar após 004 |
-| **006-admin-os** | Spec resumida | — |
+| **001-design-system** | 100% — Integrado e auditado | Mantendo consistência nas próximas features |
+| **002-landing-public** | 100% — Produção online | Monitoramento |
+| **003-lead-capture** | 100% — Concluído e homologado | — |
+| **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
+| **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
+| **006-admin-os** | Em planejamento | Analisar especificações em `.specs/006-admin-os/` e criar `implementation_plan.md` |
 | **007-admin-inventory** | Spec resumida | — |
-| **008-whatsapp-bridge** | Spec resumida | Caixa-preta nessa fase |
-| **009-copilot-ia** | Spec resumida | Depende de 005-007 com dados reais |
+| **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
+| **009-copilot-ia** | Spec resumida | Depende de dados reais de OS e CRM |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **T003** — Aplicar migration `supabase/migrations/2026_05_19_create_leads.sql` no Supabase via MCP `apply_migration`. AC: tabela `leads` visível no dashboard, RLS ativo, trigger ativo.
-2. **T070** — Configurar env vars no Vercel: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `WHATSAPP_NUMBER=5511919691542`, `GA4_ID`, `RATE_LIMIT_MAX=3`, `RATE_LIMIT_WINDOW=3600`, `IP_SALT` (gerar valor random longo).
-3. **T072 + T017** — Push de branch → preview Vercel → testar `/api/leads` com curl nos 6 cenários (válido, honeypot, timing, consent false, telefone inválido, dedupe).
-
-Depois disso: marcar tasks completos em `.specs/003-lead-capture/tasks.md` e iniciar 004-admin-auth.
+1. **Planejamento da Feature 006 (Admin OS - Ordens de Serviço)** — Analisar detalhadamente [.specs/006-admin-os/spec.md](file:///C:/Users/Iago/.gemini/antigravity/scratch/iflcosta-tech/.specs/006-admin-os/spec.md) e o fluxo conceitual em [tracking_design.md](file:///C:/Users/Iago/.gemini/antigravity/scratch/iflcosta-tech/.specs/006-admin-os/tracking_design.md).
+2. **Criar e aprovar o `implementation_plan.md`** — Definir schema da nova tabela `service_orders`, chaves estrangeiras com `customers`, políticas de RLS e novos endpoints `/api/admin/os/*`.
+3. **Migração do Banco de Dados e UI** — Executar script SQL no Supabase, desenvolver APIs Edge no Vercel, e construir a tela de controle de OS e a Timeline Pública de rastreamento no admin.
 
 ---
 
