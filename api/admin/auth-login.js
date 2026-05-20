@@ -65,7 +65,7 @@ export default async function handler(req) {
       const { data, error } = await supabase.auth.verifyOtp({
         email,
         token: token.trim(),
-        type: 'email'
+        type: 'magiclink'
       });
 
       if (error || !data.session) {
