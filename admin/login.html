@@ -63,19 +63,19 @@
       <!-- Etapa 2: Código OTP (inicialmente oculto) -->
       <div id="otp-step-container" class="form-group" style="display: none; gap: var(--space-4); width: 100%;">
         <div class="form-group">
-          <label for="otp" class="form-label">Código de 6 dígitos do e-mail</label>
+          <label for="otp" class="form-label">Código de acesso do e-mail</label>
           <input 
             type="text" 
             id="otp" 
             name="otp" 
             class="form-input" 
-            placeholder="000000" 
+            placeholder="Código recebido" 
             required 
-            maxlength="6"
-            pattern="[0-9]{6}"
+            maxlength="8"
+            pattern="[0-9]{6,8}"
             inputmode="numeric"
             autocomplete="one-time-code"
-            style="letter-spacing: 0.3em; text-align: center; font-family: monospace; font-size: var(--text-xl); font-weight: var(--font-bold);"
+            style="letter-spacing: 0.2em; text-align: center; font-family: monospace; font-size: var(--text-xl); font-weight: var(--font-bold);"
           >
         </div>
 
@@ -125,6 +125,6 @@
     </div>
   </main>
 
-  <script src="/assets/js/admin/login.js?v=1.0.1" type="module"></script>
+  <script src="/assets/js/admin/login.js?v=1.0.2" type="module"></script>
 </body>
 </html>

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     expired: 'O link de acesso expirou ou já foi utilizado. Solicite um novo link.',
     missing_code: 'Código de login ausente. Tente novamente ou use a senha.',
     invalid_credentials: 'E-mail ou senha inválidos.',
-    invalid_token: 'Código de 6 dígitos inválido ou expirado. Tente de novo.',
+    invalid_token: 'Código de acesso inválido ou expirado. Tente de novo.',
     server_error: 'Algo deu errado do nosso lado. Tente de novo.'
   };
 
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.ok) {
-        showFeedback('Link e código de 6 dígitos enviados! Você pode clicar no link ou digitar o código abaixo.', 'success');
+        showFeedback('Link e código de acesso enviados! Você pode clicar no link ou digitar o código abaixo.', 'success');
         // Transiciona para a etapa de inserção do OTP
         emailStepContainer.style.display = 'none';
         otpStepContainer.style.display = 'flex';
@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = emailInput.value.trim();
     const otp = otpInput.value.trim();
 
-    if (!otp || otp.length !== 6 || !/^\d+$/.test(otp)) {
-      showFeedback('Insira o código de 6 dígitos numéricos.', 'error');
+    if (!otp || otp.length < 6 || otp.length > 8 || !/^\d+$/.test(otp)) {
+      showFeedback('Insira o código de acesso numérico válido.', 'error');
       otpInput.focus();
       return;
     }
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showFeedback('Autenticação bem-sucedida! Redirecionando...', 'success');
         window.location.assign(nextParam);
       } else {
-        showFeedback(result.message || 'Código de 6 dígitos inválido ou expirado.', 'error');
+        showFeedback(result.message || 'Código de acesso inválido ou expirado.', 'error');
         otpInput.focus();
       }
     } catch (err) {
