@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios Financeiros de Estoque — Iago Lopes | Hardware & Tech</title>
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', var(--font-sans); }
+
+    /* Dashboard Layout */
+    .reports-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+      margin-top: var(--space-4);
+    }
+
+    /* Canvas Chart Container */
+    .chart-container {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 300px;
+    }
+
+    #stock-chart {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Grids para Tabelas */
+    .tables-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+    }
+    @media (min-width: 1024px) {
+      .tables-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .table-card {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+
+    .table-card-title {
+      font-size: var(--text-md);
+      font-weight: var(--font-bold);
+      color: var(--color-text-primary);
+      margin: 0 0 var(--space-3) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .reports-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+      text-align: left;
+    }
+    .reports-table th, .reports-table td {
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+    .reports-table th {
+      font-weight: var(--font-semibold);
+      color: var(--color-text-secondary);
+      background: var(--color-bg-subtle);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wide);
+    }
+  </style>
+  <script>
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</head>
+<body>
+
+  <div class="admin-shell">
+    <main class="admin-main">
+      <div class="page-header" style="flex-direction: row; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+        <div>
+          <h1 class="page-title">Relatórios Financeiros de Estoque</h1>
+          <p class="page-subtitle">Visão analítica de custos, margens e evolução do valor estocado.</p>
+        </div>
+        <div>
+          <a href="/admin/estoque" class="btn btn--secondary" style="text-decoration: none;"><span>← Voltar ao Estoque</span></a>
+        </div>
+      </div>
+
+      <!-- Indicadores Superiores -->
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <span class="stat-label">Custo Total Estocado</span>
+            <span class="stat-value" id="rep-total-custo">R$ 0,00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏷️</div>
+          <div class="stat-info">
+            <span class="stat-label">Venda Potencial</span>
+            <span class="stat-value" id="rep-venda-potencial">R$ 0,00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-info">
+            <span class="stat-label">Lucro Bruto Estimado</span>
+            <span class="stat-value" id="rep-lucro-estimado" style="color: var(--color-success);">R$ 0,00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <span class="stat-label">Margem Bruta Geral</span>
+            <span class="stat-value" id="rep-margem-geral">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reports-layout">
+        <!-- Gráfico do Estoque -->
+        <div class="chart-container">
+          <div class="chart-header">
+            <div>
+              <h2 style="font-size: var(--text-md); font-weight: var(--font-bold); margin: 0;">Curva de Evolução do Valor Estocado (Últimos 30 Dias)</h2>
+              <p style="font-size: var(--text-xs); color: var(--color-text-tertiary); margin: 0;">Valor do estoque consolidado dia-a-dia a preço de custo.</p>
+            </div>
+            <div style="font-size: var(--text-xs); font-weight: var(--font-bold); background: var(--color-bg-subtle); padding: 4px 10px; border-radius: var(--radius-full); border: 1px solid var(--color-border-subtle);" id="chart-legend">
+              Total em Estoque (R$)
+            </div>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="stock-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Tabelas de Análise -->
+        <div class="tables-grid">
+          
+          <!-- Top 10 Produtos Mais Rentáveis -->
+          <div class="table-card">
+            <h3 class="table-card-title">💎 Top 10 Produtos de Maior Margem</h3>
+            <table class="reports-table">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th style="text-align: right;">Custo</th>
+                  <th style="text-align: right;">Venda</th>
+                  <th style="text-align: right;">Margem (%)</th>
+                </tr>
+              </thead>
+              <tbody id="top-products-body">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--color-text-tertiary); padding: var(--space-4);">Carregando produtos...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Produtos Sem Giro / Alertas -->
+          <div class="table-card">
+            <h3 class="table-card-title">⚠️ Alertas e Baixo Giro</h3>
+            <table class="reports-table">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>SKU</th>
+                  <th style="text-align: center;">Qtd Atual</th>
+                  <th style="text-align: center;">Mínimo</th>
+                </tr>
+              </thead>
+              <tbody id="alerts-products-body">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--color-text-tertiary); padding: var(--space-4);">Carregando alertas...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/admin/layout.js" type="module"></script>
+  <script src="/assets/js/admin/relatorios.js" type="module"></script>
+</body>
+</html>

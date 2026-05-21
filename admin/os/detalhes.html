@@ -364,6 +364,48 @@
             </div>
           </div>
 
+          <!-- Card de Peças de Reposição Consumidas (T008) -->
+          <div class="card">
+            <h2 style="font-size: var(--text-base); font-weight: var(--font-bold); margin: 0 0 var(--space-4) 0; display: flex; align-items: center; gap: var(--space-2);">
+              <span>📦</span> Peças de Reposição (Do Estoque)
+            </h2>
+            <p style="font-size: var(--text-xs); color: var(--color-text-tertiary); margin: 0 0 var(--space-3) 0;">
+              Vincule peças do estoque a esta Ordem de Serviço. O estoque será atualizado e o custo unitário será integrado no financeiro automaticamente.
+            </p>
+            
+            <!-- Autocomplete / Busca de Peças -->
+            <div class="field" style="position: relative; margin-bottom: var(--space-4);">
+              <label>Adicionar Peça do Estoque</label>
+              <div style="display: flex; gap: var(--space-2);">
+                <input type="text" id="part-search-input" class="input" placeholder="Digite o nome, marca ou SKU da peça..." autocomplete="off">
+                <button type="button" id="btn-add-part" class="btn btn--primary" style="min-height: 40px;" disabled>Adicionar</button>
+              </div>
+              
+              <!-- Container de Resultados do Autocomplete -->
+              <div id="part-search-results" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--color-bg-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 10; max-height: 200px; overflow-y: auto; margin-top: 2px;">
+                <!-- Itens injetados via JS -->
+              </div>
+            </div>
+
+            <!-- Tabela de Peças Consumidas -->
+            <div id="parts-consumed-container" style="overflow-x: auto;">
+              <table class="table" style="font-size: var(--text-sm); width: 100%; border-collapse: collapse; margin-top: var(--space-2);">
+                <thead>
+                  <tr style="border-bottom: 2px solid var(--color-border-subtle); text-align: left;">
+                    <th style="padding: var(--space-2) 0;">Peça</th>
+                    <th style="padding: var(--space-2) 0; text-align: center; width: 60px;">Qtd</th>
+                    <th style="padding: var(--space-2) 0; text-align: right; width: 100px;">Custo Unit.</th>
+                    <th style="padding: var(--space-2) 0; text-align: right; width: 100px;">Total</th>
+                    <th style="padding: var(--space-2) 0; text-align: center; width: 60px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="parts-consumed-list">
+                  <!-- Injetado dinamicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <!-- Card de Fotos de Bancada (Antes/Durante/Depois) -->
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">

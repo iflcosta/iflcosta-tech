@@ -48,6 +48,22 @@ export default async function handler(req) {
 async function handleGet(req, supabase) {
   try {
     const url = new URL(req.url);
+    const id = url.searchParams.get('id')?.trim();
+
+    if (id) {
+      const { data, error } = await supabase
+        .from('repairs')
+        .select('*, customers(*)')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        console.error('Erro ao buscar OS por ID:', error);
+        return json(404, { ok: false, error: 'not_found', message: 'Ordem de Serviço não encontrada.' });
+      }
+      return json(200, { ok: true, data });
+    }
+
     const search = url.searchParams.get('search')?.trim();
     const status = url.searchParams.get('status')?.trim();
     const customerId = url.searchParams.get('customer_id')?.trim();
@@ -216,23 +232,38 @@ async function handlePost(req, supabase, actor) {
       forma_pagamento: forma_pagamento?.trim() || null,
       garantia_dias: typeof garantia_dias === 'number' ? garantia_dias : 90,
       garantia_de: garantia_de || null,
-      created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
 
-    // Salvar a nova OS no banco de dados
-    const { data: newOS, error: insertError } = await supabase
-      .from('repairs')
-      .insert(osPayload)
-      .select('*')
-      .single();
+    const osId = body.id;
+    let query;
 
-    if (insertError) {
-      console.error('Erro ao inserir OS:', insertError);
-      return json(500, { ok: false, error: 'database_error', message: 'Erro ao salvar a nova Ordem de Serviço.' });
+    if (osId) {
+      // Atualizar OS existente
+      query = supabase
+        .from('repairs')
+        .update(osPayload)
+        .eq('id', osId)
+        .select('*')
+        .single();
+    } else {
+      // Inserir nova OS
+      osPayload.created_at = new Date().toISOString();
+      query = supabase
+        .from('repairs')
+        .insert(osPayload)
+        .select('*')
+        .single();
     }
 
-    return json(201, { ok: true, data: newOS });
+    const { data: savedOS, error: dbError } = await query;
+
+    if (dbError) {
+      console.error('Erro ao salvar OS:', dbError);
+      return json(500, { ok: false, error: 'database_error', message: 'Erro ao salvar a Ordem de Serviço.' });
+    }
+
+    return json(osId ? 200 : 201, { ok: true, data: savedOS });
   } catch (err) {
     console.error('Erro no POST de OS:', err);
     return json(500, { ok: false, error: 'server_error', message: 'Erro interno de servidor.' });

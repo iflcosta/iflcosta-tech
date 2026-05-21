@@ -70,6 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const lightboxImg = document.getElementById('lightbox-img');
   const lightboxClose = document.getElementById('lightbox-close');
 
+  // Peças de Reposição (T008)
+  const partSearchInput = document.getElementById('part-search-input');
+  const btnAddPart = document.getElementById('btn-add-part');
+  const partSearchResults = document.getElementById('part-search-results');
+  const partsConsumedList = document.getElementById('parts-consumed-list');
+  let selectedPart = null;
+  let osMovements = [];
+
   let currentOS = null;
   let osHistory = [];
   let currentFileToUpload = null;
@@ -102,6 +110,21 @@ document.addEventListener('DOMContentLoaded', () => {
   btnSaveStatus.addEventListener('click', saveStatusTransition);
   btnPrint.addEventListener('click', () => window.print());
   btnWhatsapp.addEventListener('click', triggerWhatsAppMessage);
+
+  // Peças de Reposição (T008)
+  let partSearchTimeout = null;
+  partSearchInput.addEventListener('input', () => {
+    clearTimeout(partSearchTimeout);
+    partSearchTimeout = setTimeout(handlePartSearch, 250);
+  });
+  btnAddPart.addEventListener('click', handleAddPartToOS);
+
+  // Fechar autocomplete ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (e.target !== partSearchInput && e.target !== partSearchResults) {
+      partSearchResults.style.display = 'none';
+    }
+  });
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Core Loading Logic
@@ -148,6 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Preenche as informações na tela
     renderOSDetails();
+
+    // Carrega peças vinculadas à OS (T008)
+    await loadOSParts();
     
     loadingState.style.display = 'none';
     detailsContent.style.display = 'grid';
@@ -730,6 +756,292 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const displayLabel = labelMap[status] || status;
     return `<span class="badge-os badge-os--${status}">${displayLabel}</span>`;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Peças de Reposição & Estoque Logic (T008)
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  async function handlePartSearch() {
+    const val = partSearchInput.value.trim();
+    if (val.length < 2) {
+      partSearchResults.style.display = 'none';
+      btnAddPart.disabled = true;
+      selectedPart = null;
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/inventory/products?search=${encodeURIComponent(val)}&limit=10`);
+      if (response.ok) {
+        const res = await response.json();
+        renderPartSearchResults(res.data);
+      } else {
+        throw new Error('Falha ao buscar da API');
+      }
+    } catch (err) {
+      console.warn('Erro ao buscar produtos da API. Usando localStorage...', err);
+      const stored = localStorage.getItem('iflcosta_products_list');
+      const list = stored ? JSON.parse(stored) : [];
+      const filtered = list.filter(p => 
+        (p.nome.toLowerCase().includes(val.toLowerCase()) || 
+         p.sku.toLowerCase().includes(val.toLowerCase()) || 
+         (p.marca && p.marca.toLowerCase().includes(val.toLowerCase())))
+      ).slice(0, 10);
+      renderPartSearchResults(filtered);
+    }
+  }
+
+  function renderPartSearchResults(products) {
+    const available = products.filter(p => p.qty_atual > 0);
+    
+    if (available.length === 0) {
+      partSearchResults.innerHTML = `<div style="padding: var(--space-2); font-size: var(--text-xs); color: var(--color-text-tertiary);">Nenhuma peça com estoque disponível.</div>`;
+      partSearchResults.style.display = 'block';
+      btnAddPart.disabled = true;
+      selectedPart = null;
+      return;
+    }
+
+    partSearchResults.innerHTML = available.map(p => `
+      <div class="part-search-item" data-id="${p.id}" style="padding: var(--space-2); cursor: pointer; border-bottom: 1px solid var(--color-border-subtle); font-size: var(--text-sm); transition: background var(--transition-fast);">
+        <div style="font-weight: var(--font-bold);">${escapeHtml(p.nome)}</div>
+        <div style="font-size: var(--text-xs); color: var(--color-text-secondary); display: flex; justify-content: space-between; margin-top: 2px;">
+          <span>SKU: ${escapeHtml(p.sku)} | Estoque: ${p.qty_atual}</span>
+          <span style="font-weight: var(--font-bold); color: var(--color-primary);">R$ ${p.preco_venda.toFixed(2)}</span>
+        </div>
+      </div>
+    `).join('');
+
+    partSearchResults.style.display = 'block';
+
+    partSearchResults.querySelectorAll('.part-search-item').forEach(item => {
+      item.addEventListener('mouseenter', () => item.style.background = 'var(--color-bg-primary)');
+      item.addEventListener('mouseleave', () => item.style.background = 'none');
+      item.addEventListener('click', () => {
+        const id = item.getAttribute('data-id');
+        selectedPart = available.find(p => p.id === id);
+        if (selectedPart) {
+          partSearchInput.value = selectedPart.nome;
+          partSearchResults.style.display = 'none';
+          btnAddPart.disabled = false;
+        }
+      });
+    });
+  }
+
+  async function handleAddPartToOS() {
+    if (!selectedPart) return;
+
+    btnAddPart.disabled = true;
+    const qty = 1;
+    const movementPayload = {
+      product_id: selectedPart.id,
+      tipo: 'saída',
+      qty: qty,
+      repair_id: osId,
+      custo_unitario: selectedPart.preco_custo,
+      observacao: `Consumo na OS #${currentOS.os_number || ''}`
+    };
+
+    try {
+      const response = await fetch('/api/admin/inventory/movements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(movementPayload)
+      });
+
+      if (!response.ok) throw new Error('Falha ao adicionar movimento');
+      
+      const novoValorCobrado = (parseFloat(detValorCobrado.value) || 0) + selectedPart.preco_venda;
+      detValorCobrado.value = novoValorCobrado.toFixed(2);
+      
+      await saveAllOSChanges();
+      
+    } catch (err) {
+      console.warn('Falha na API de movimentações. Gravando em localStorage...', err);
+
+      const productsStored = localStorage.getItem('iflcosta_products_list');
+      if (productsStored) {
+        let productsList = JSON.parse(productsStored);
+        productsList = productsList.map(p => {
+          if (p.id === selectedPart.id) {
+            p.qty_atual = Math.max(0, p.qty_atual - qty);
+          }
+          return p;
+        });
+        localStorage.setItem('iflcosta_products_list', JSON.stringify(productsList));
+      }
+
+      const movementsStored = localStorage.getItem('iflcosta_movements_list');
+      const movementsList = movementsStored ? JSON.parse(movementsStored) : [];
+      const newMovement = {
+        id: crypto.randomUUID ? crypto.randomUUID() : 'mov-' + Math.random().toString(36).substring(2, 9),
+        ...movementPayload,
+        created_at: new Date().toISOString()
+      };
+      movementsList.push(newMovement);
+      localStorage.setItem('iflcosta_movements_list', JSON.stringify(movementsList));
+
+      const partsCost = movementsList
+        .filter(m => m.repair_id === osId && m.tipo === 'saída')
+        .reduce((sum, m) => sum + (m.qty * m.custo_unitario), 0);
+      
+      currentOS.valor_custo_peças = partsCost;
+      detCustoPecas.value = partsCost.toFixed(2);
+
+      const novoValorCobrado = (parseFloat(detValorCobrado.value) || 0) + selectedPart.preco_venda;
+      detValorCobrado.value = novoValorCobrado.toFixed(2);
+      currentOS.valor_cobrado = novoValorCobrado;
+      currentOS.valor_lucro = currentOS.valor_cobrado - currentOS.valor_custo_peças;
+
+      saveOSDataDirectly();
+      calculateProfitMargin();
+    } finally {
+      partSearchInput.value = '';
+      selectedPart = null;
+      btnAddPart.disabled = true;
+      await loadOSDetails();
+    }
+  }
+
+  async function loadOSParts() {
+    try {
+      const response = await fetch(`/api/admin/inventory/movements?repair_id=${osId}`);
+      if (response.ok) {
+        const res = await response.json();
+        osMovements = res.data;
+      } else {
+        throw new Error('Falha no GET de movimentos');
+      }
+    } catch (err) {
+      console.warn('Erro ao carregar movimentos da API. Buscando localmente...', err);
+      const stored = localStorage.getItem('iflcosta_movements_list');
+      const movements = stored ? JSON.parse(stored) : [];
+      
+      const productsStored = localStorage.getItem('iflcosta_products_list');
+      const products = productsStored ? JSON.parse(productsStored) : [];
+
+      osMovements = movements
+        .filter(m => m.repair_id === osId)
+        .map(m => {
+          const prod = products.find(p => p.id === m.product_id);
+          return {
+            ...m,
+            products: prod ? { nome: prod.nome } : { nome: 'Peça Desconhecida' }
+          };
+        });
+    }
+
+    renderOSPartsList();
+  }
+
+  function renderOSPartsList() {
+    if (osMovements.length === 0) {
+      partsConsumedList.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--color-text-tertiary); padding: var(--space-4) 0;">Nenhuma peça vinculada a esta Ordem de Serviço.</td></tr>`;
+      detCustoPecas.readOnly = false;
+      return;
+    }
+
+    detCustoPecas.readOnly = true;
+
+    partsConsumedList.innerHTML = osMovements.map(m => {
+      const total = m.qty * m.custo_unitario;
+      const partName = m.products ? m.products.nome : 'Peça';
+      return `
+        <tr style="border-bottom: 1px solid var(--color-border-subtle);">
+          <td style="padding: var(--space-2) 0; font-weight: var(--font-medium);">${escapeHtml(partName)}</td>
+          <td style="padding: var(--space-2) 0; text-align: center;">${m.qty}</td>
+          <td style="padding: var(--space-2) 0; text-align: right;">R$ ${m.custo_unitario.toFixed(2)}</td>
+          <td style="padding: var(--space-2) 0; text-align: right; font-weight: var(--font-bold);">R$ ${total.toFixed(2)}</td>
+          <td style="padding: var(--space-2) 0; text-align: center;">
+            <button type="button" class="btn-delete-part" data-id="${m.id}" style="background: none; border: none; color: var(--color-danger); cursor: pointer; font-size: var(--text-sm); font-weight: var(--font-bold);" title="Estornar peça">✕</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    partsConsumedList.querySelectorAll('.btn-delete-part').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const mid = btn.getAttribute('data-id');
+        if (!confirm('Deseja realmente remover esta peça e estornar o estoque?')) return;
+
+        try {
+          const response = await fetch(`/api/admin/inventory/movements?id=${mid}`, {
+            method: 'DELETE'
+          });
+
+          if (!response.ok) throw new Error('Falha ao excluir movimento');
+
+          const mov = osMovements.find(m => m.id === mid);
+          if (mov) {
+            let precoVenda = 0;
+            try {
+              const prodResp = await fetch(`/api/admin/inventory/products?id=${mov.product_id}`);
+              if (prodResp.ok) {
+                const prodData = await prodResp.json();
+                precoVenda = prodData.data.preco_venda;
+              }
+            } catch (pErr) {
+              console.log('Não foi possível buscar preco_venda do produto via API.');
+            }
+
+            if (precoVenda > 0) {
+              const novoCobrado = Math.max(0, (parseFloat(detValorCobrado.value) || 0) - precoVenda);
+              detValorCobrado.value = novoCobrado.toFixed(2);
+            }
+          }
+
+          await saveAllOSChanges();
+
+        } catch (err) {
+          console.warn('Erro ao deletar movimento via API. Executando localmente...', err);
+          
+          const mov = osMovements.find(m => m.id === mid);
+          if (mov) {
+            const productsStored = localStorage.getItem('iflcosta_products_list');
+            if (productsStored) {
+              let productsList = JSON.parse(productsStored);
+              productsList = productsList.map(p => {
+                if (p.id === mov.product_id) {
+                  p.qty_atual += mov.qty;
+                }
+                return p;
+              });
+              localStorage.setItem('iflcosta_products_list', JSON.stringify(productsList));
+            }
+
+            const movementsStored = localStorage.getItem('iflcosta_movements_list');
+            if (movementsStored) {
+              let movementsList = JSON.parse(movementsStored);
+              movementsList = movementsList.filter(m => m.id !== mid);
+              localStorage.setItem('iflcosta_movements_list', JSON.stringify(movementsList));
+
+              const partsCost = movementsList
+                .filter(m => m.repair_id === osId && m.tipo === 'saída')
+                .reduce((sum, m) => sum + (m.qty * m.custo_unitario), 0);
+              
+              currentOS.valor_custo_peças = partsCost;
+              detCustoPecas.value = partsCost.toFixed(2);
+            }
+
+            const productsStoredList = productsStored ? JSON.parse(productsStored) : [];
+            const prod = productsStoredList.find(p => p.id === mov.product_id);
+            if (prod) {
+              const novoCobrado = Math.max(0, (parseFloat(detValorCobrado.value) || 0) - prod.preco_venda);
+              detValorCobrado.value = novoCobrado.toFixed(2);
+              currentOS.valor_cobrado = novoCobrado;
+            }
+            
+            currentOS.valor_lucro = currentOS.valor_cobrado - currentOS.valor_custo_peças;
+            saveOSDataDirectly();
+            calculateProfitMargin();
+          }
+        } finally {
+          await loadOSDetails();
+        }
+      });
+    });
   }
 
   function escapeHtml(text) {
