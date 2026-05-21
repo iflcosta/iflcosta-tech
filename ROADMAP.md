@@ -1,6 +1,6 @@
 # Roadmap — iflcosta-tech
 
-Visão macro das 9 features. Ordem de execução é estrita: cada uma desbloqueia a próxima. Updates pontuais por feature ficam em `.specs/NNN-nome/`.
+Visão macro das 10 features. Ordem de execução é estrita: cada uma desbloqueia a próxima. Updates pontuais por feature ficam em `.specs/NNN-nome/`.
 
 > **Critério de "pronto":** spec aprovado + plan aprovado + tasks 100% checadas + deploy validado em prod.
 
@@ -9,7 +9,7 @@ Visão macro das 9 features. Ordem de execução é estrita: cada uma desbloquei
 ## Sequência
 
 ```
-001 ──┬── 002 ──┬── 003 ───────┬── 005 ─── 006 ─── 007 ─── 008 ─── 009
+001 ──┬── 002 ──┬── 003 ───────┬── 005 ─── 006 ─── 007 ─── 010 ─── 008 ─── 009
       │        │               │
       └── styleguide.html      └── /api/leads + /orcamento
                        │
@@ -54,12 +54,18 @@ Visão macro das 9 features. Ordem de execução é estrita: cada uma desbloquei
 **O quê:** CRUD de OS (rascunho → em diagnóstico → aguardando peça → em conserto → pronto → entregue), fotos, checklist de testes, valor cobrado vs custo, garantia, link com customer.
 **Status:** Código e testes E2E totalmente homologados (12/12 verdes). Banco de produção migrado com sucesso.
 
-### 007 — Admin Inventory (estoque + Custom PC) ·  Planejamento Pronto
+### 007 — Admin Inventory (estoque + Custom PC) ·  100% pronto
 **Por quê:** Iago vende peças e monta PCs — sem estoque controlado, ele perde margem.
 **O quê:** CRUD de produtos (peça/acessório/componente PC), categorias, fornecedor, preço de custo, markup, alerta de mínimo, movimentação (entrada/saída ligada a OS), builder de Custom PC (preset → confirmar componentes → orçamento).
-**Status:** Especificações, plano de implementação e tarefas 100% mapeados locais e prontos para o início do desenvolvimento.
+**Status:** T001–T013 implementados — banco, APIs, UI de estoque, integração peças↔OS, Custom PC Builder, relatórios e suíte E2E. Em produção.
 **Depende de:** 006 (OS pode consumir peça do estoque).
 **Desbloqueia:** 009 (copilot consulta estoque).
+
+### 010 — Painel Financeiro  ·  100% pronto
+**Por quê:** o admin registra receita, custo e lucro por OS, mas faltava visão gerencial consolidada — Iago não enxergava o caixa sem planilha.
+**O quê:** página `/admin/financeiro` com 4 cards (receita, lucro bruto, a receber, ticket médio), filtro de período, gráfico de tendência de 6 meses em canvas vanilla, tabela de contas a receber; API `/api/admin/financeiro` agregando `repairs`.
+**Status:** T001–T005 implementados (spec, API, UI, gráfico, navegação). Em produção.
+**Depende de:** 006 (receita/lucro/payment_status das OS) + 007 (custo de peças).
 
 ---
 
@@ -91,4 +97,4 @@ Visão macro das 9 features. Ordem de execução é estrita: cada uma desbloquei
 
 ---
 
-**Última revisão:** 2026-05-19
+**Última revisão:** 2026-05-21

@@ -37,3 +37,9 @@ npm test
 
 - `landing.spec.js` — smoke da home (`/`): hero, modal, theme, FAQ, LGPD, WhatsApp float, skip link, scroll.
 - `legal-pages.spec.js` — smoke de `/privacidade` e `/termos`.
+- `admin-auth.spec.js` — Feature 004: login, sessão, logout.
+- `admin-crm.spec.js` — Feature 005: leads, conversão, ficha de cliente + regressões do modal de conversão.
+- `admin-os.spec.js` — Feature 006: listagem, criação, ficha e transição de status de OS + código de garantia.
+- `admin-inventory.spec.js` — Feature 007: estoque, movimentações, Custom PC Builder.
+- `tracking-portal.spec.js` — Feature 006 (portal público `/rastrear`): timeline, Custom PC, garantia, LGPD.
+- `admin-financeiro.spec.js` — Feature 010: cards de resumo, filtro de período, A Receber, gráfico.

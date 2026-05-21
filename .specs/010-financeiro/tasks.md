@@ -48,6 +48,16 @@
 ## T005 — Sidebar + Dashboard card `S` ✅
 **Ref:** plan.md §4  
 **Critério:**
-- [ ] Link "💰 Financeiro" no sidebar do admin (layout.js ou HTML do sidebar)
-- [ ] Card no `admin/index.html` mostrando receita do mês atual (via API)
-- [ ] Card é clicável e navega para `/admin/financeiro/`
+- [x] Link "💰 Financeiro" no sidebar do admin (layout.js ou HTML do sidebar)
+- [x] Card no `admin/index.html` mostrando receita do mês atual (via API)
+- [x] Card é clicável e navega para `/admin/financeiro/`
+
+---
+
+## T006 — Suíte E2E Playwright `S` ✅
+**Ref:** padrão de `tests/admin-*.spec.js`  
+**Critério:**
+- [x] `tests/admin-financeiro.spec.js` com mock de `/api/admin/financeiro`
+- [x] T01 cards de resumo · T02 troca de período · T03 tabela A Receber
+- [x] T04 estado vazio · T05 range personalizado · T06 canvas do gráfico
+- [x] Sintaxe e encoding validados (execução depende de browser no CI)

@@ -298,10 +298,57 @@ test.describe('Admin CRM E2E Flows', () => {
 
     // Confirmar exclusão
     await page.locator('#confirm-delete-btn').click();
-    
+
     // Deve retornar para o Dashboard de Clientes
     await page.waitForURL('**/admin/clientes');
     await expect(page.locator('.page-title')).toHaveText('Fichas de Clientes');
+  });
+
+  test('Regressão: modal de conversão abre na frente do drawer e reabre o drawer ao cancelar', async ({ page }) => {
+    await page.goto('/admin/leads');
+
+    const isDesktop = await page.evaluate(() => window.innerWidth >= 1024);
+    const clickTarget = isDesktop
+      ? page.locator('tbody tr', { hasText: 'Maria da Silva' }).first()
+      : page.locator('.lead-card', { hasText: 'Maria da Silva' }).first();
+    await clickTarget.click();
+
+    // Drawer aberto
+    await expect(page.locator('#lead-drawer')).toHaveClass(/is-open/);
+
+    // Abre o modal de conversão
+    await page.locator('#convert-lead-btn').click();
+
+    // Bug corrigido: o drawer fecha visualmente para o modal não abrir atrás
+    await expect(page.locator('#lead-drawer')).not.toHaveClass(/is-open/);
+    await expect(page.locator('#conversion-backdrop')).toHaveClass(/is-open/);
+
+    // Cancelar a conversão deve reabrir o drawer (lead ainda ativo)
+    await page.locator('#cancel-conversion-btn').click();
+    await expect(page.locator('#conversion-backdrop')).not.toHaveClass(/is-open/);
+    await expect(page.locator('#lead-drawer')).toHaveClass(/is-open/);
+  });
+
+  test('Regressão: Confirmar Conversão funciona após o drawer ter sido fechado', async ({ page }) => {
+    await page.goto('/admin/leads');
+
+    const isDesktop = await page.evaluate(() => window.innerWidth >= 1024);
+    const clickTarget = isDesktop
+      ? page.locator('tbody tr', { hasText: 'Maria da Silva' }).first()
+      : page.locator('.lead-card', { hasText: 'Maria da Silva' }).first();
+    await clickTarget.click();
+    await expect(page.locator('#lead-drawer')).toHaveClass(/is-open/);
+
+    // Abre conversão (drawer fecha) e confirma direto — activeLead não pode ser perdido
+    await page.locator('#convert-lead-btn').click();
+    await expect(page.locator('#conversion-backdrop')).toHaveClass(/is-open/);
+
+    await page.locator('#conv-cidade').fill('São Paulo');
+    await page.locator('#submit-conversion-btn').click();
+
+    // A conversão conclui e redireciona para a ficha do cliente
+    await page.waitForURL('**/admin/clientes/detalhes?id=customer-uuid-1');
+    await expect(page.locator('#header-client-name')).toHaveText('Maria da Silva');
   });
 
 });

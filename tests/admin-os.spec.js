@@ -32,12 +32,13 @@ const MOCK_OS_LIST = [
     status: 'diagnóstico',
     prazo_prometido: '2026-05-25T18:00:00.000Z',
     valor_cobrado: 1200.00,
-    valor_custo_pecas: 450.00,
+    valor_custo_peças: 450.00,
     valor_lucro: 750.00,
     forma_pagamento: 'PIX',
     garantia_dias: 90,
     garantia_ate: null,
     tracking_token: 'tracking-token-uuid-1',
+    digital_warranty_code: 'WARR-2026-A1B2C3',
     customers: { nome: 'Maria da Silva', telefone: '11999998888', email: 'maria@email.com' }
   },
   {
@@ -55,7 +56,7 @@ const MOCK_OS_LIST = [
     status: 'pronto',
     prazo_prometido: '2026-05-20T12:00:00.000Z',
     valor_cobrado: 250.00,
-    valor_custo_pecas: 30.00,
+    valor_custo_peças: 30.00,
     valor_lucro: 220.00,
     forma_pagamento: 'dinheiro',
     garantia_dias: 90,
@@ -84,47 +85,22 @@ const MOCK_OS_DETAILS = {
 
 const MOCK_SANITIZED_TRACKING = {
   id: 'os-uuid-1',
-  os_number: 'OS-2026-0001',
-  status: 'diagnostico',
-  is_custom_pc: false,
-  payment_status: 'pendente',
-  digital_warranty_code: 'WARR-2026-A1B2C3',
-  garantia_dias: 90,
+  os_number: 1001,
+  status: 'diagnóstico',
+  equipamento: { tipo: 'Celular', marca: 'Apple', modelo: 'iPhone 13 Pro', serial: 'F17F****B123' },
+  problema_reportado: 'Tela trincada e sem touch.',
   prazo_prometido: '2026-05-25T18:00:00.000Z',
+  garantia_dias: 90,
+  garantia_ate: null,
   created_at: '2026-05-20T10:00:00.000Z',
   entregue_at: null,
-  // Campos flat normalizados (como normalizeApiPayload produz)
   cliente: { nome: 'Maria' },
-  equipamento: { tipo: 'Celular', marca: 'Apple', modelo: 'iPhone 13 Pro', serial: 'F17F****B123' },
   fotos: [
     { id: 'photo-1', url: '/assets/images/placeholder.jpg', tipo: 'antes', uploaded_at: '2026-05-20T10:05:00.000Z' }
   ],
   historico: [
-    { id: 'h-1', status: 'rascunho', entered_at: '2026-05-20T10:00:00.000Z', exited_at: '2026-05-20T10:02:00.000Z', duration_seconds: 120, public_notes: null },
-    { id: 'h-2', status: 'diagnostico', entered_at: '2026-05-20T10:02:00.000Z', exited_at: null, duration_seconds: null, public_notes: 'Aparelho aberto para análise interna dos componentes.' }
-  ],
-  pecas: [
-    { id: 'p-1', qty: 1, nome: 'Módulo de Tela Original Apple', categoria: 'peça', subcategoria: 'Tela', component_category: null, specs: {} }
-  ]
-};
-
-const MOCK_SANITIZED_TRACKING_CUSTOM_PC = {
-  ...MOCK_SANITIZED_TRACKING,
-  os_number: 'OS-2026-0002',
-  status: 'em_conserto',
-  is_custom_pc: true,
-  payment_status: 'parcial',
-  digital_warranty_code: 'WARR-2026-D4E5F6',
-  cliente: { nome: 'João' },
-  equipamento: { tipo: 'Custom PC', marca: 'Custom Build', modelo: 'Gamer Pro 2026', serial: 'N/A' },
-  historico: [
-    { id: 'h-1', status: 'rascunho', entered_at: '2026-05-19T09:00:00.000Z', exited_at: '2026-05-19T09:10:00.000Z', duration_seconds: 600, public_notes: null },
-    { id: 'h-2', status: 'em_conserto', entered_at: '2026-05-20T08:00:00.000Z', exited_at: null, duration_seconds: null, public_notes: 'Montagem em andamento. CPU e RAM instaladas.' }
-  ],
-  pecas: [
-    { id: 'p-1', qty: 1, nome: 'Intel Core i9-14900K', categoria: 'componente_pc', component_category: 'CPU', specs: { cores: 24, threads: 32, speed: 5600 } },
-    { id: 'p-2', qty: 2, nome: 'Kingston Fury Beast DDR5 32GB', categoria: 'componente_pc', component_category: 'RAM', specs: { capacity: 64, speed: 6000 } },
-    { id: 'p-3', qty: 1, nome: 'NVIDIA RTX 4080 Super', categoria: 'componente_pc', component_category: 'GPU', specs: { vram: 16 } }
+    { id: 'h-1', status: 'rascunho', entered_at: '2026-05-20T10:00:00.000Z', exited_at: '2026-05-20T10:02:00.000Z', duration_seconds: 120, notes: 'OS inicial' },
+    { id: 'h-2', status: 'diagnóstico', entered_at: '2026-05-20T10:02:00.000Z', exited_at: null, duration_seconds: null, notes: 'Aparelho aberto para testes' }
   ]
 };
 
@@ -187,13 +163,7 @@ test.beforeEach(async ({ context, page }) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ ok: true, data: MOCK_SANITIZED_TRACKING, historico: MOCK_SANITIZED_TRACKING.historico })
-      });
-    } else if (token === 'tracking-token-custom-pc') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ ok: true, data: MOCK_SANITIZED_TRACKING_CUSTOM_PC, historico: MOCK_SANITIZED_TRACKING_CUSTOM_PC.historico })
+        body: JSON.stringify({ ok: true, data: MOCK_SANITIZED_TRACKING, history: MOCK_SANITIZED_TRACKING.historico })
       });
     } else {
       await route.fulfill({
@@ -401,204 +371,35 @@ test.describe('Feature 006 — Admin OS: Ordens de Serviço', () => {
     await expect(chk2).toBeChecked();
   });
 
-  // ── PARTE 4: Transição de Status ───────────�  // T08 — LGPD: apenas primeiro nome
-  test('T08 — Rastreamento: página pública mostra nome apenas como primeiro nome (LGPD)', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page).toHaveTitle(/Rastreamento/);
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
+  // ── PARTE 4: Transição de Status ──────────────────────────────────────────
+  test('T07 — Status: seleciona novo status e salva transição', async ({ page }) => {
+    await page.goto('/admin/os/detalhes?id=os-uuid-1');
+    await expect(page.locator('#os-details-content')).toBeVisible({ timeout: 15000 });
 
-    const greeting = page.locator('#client-greeting');
-    await expect(greeting).toContainText('Maria');
-    await expect(greeting).not.toContainText('da Silva'); // Sobrenome não deve aparecer (LGPD)
+    // IDs reais: det-status-select, det-status-notes, btn-save-status
+    await page.locator('#det-status-select').selectOption('aguardando_aprovação');
+    await page.locator('#det-status-notes').fill('Necessária substituição da tela original. Total: R$ 1200.');
+
+    await page.locator('#btn-save-status').click();
+
+    // O mock retorna sucesso; o badge deve atualizar
+    // ID real do badge: os-status-label-badge
+    await expect(page.locator('#os-status-label-badge')).toContainText('Aguardando Aprovação', { timeout: 5000 });
   });
 
-  // T09 — LGPD: serial mascarado
-  test('T09 — Rastreamento: serial do equipamento aparece mascarado', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
+  // ── PARTE 5: Garantia (Feature 010) ──────────────────────────────────────────
+  test('T08 — Ficha: código de garantia digital exibido em campo read-only', async ({ page }) => {
+    await page.goto('/admin/os/detalhes?id=os-uuid-1');
+    await expect(page.locator('#os-details-content')).toBeVisible({ timeout: 15000 });
 
-    const serialEl = page.locator('#device-serial');
-    await expect(serialEl).toContainText('****');
-    await expect(serialEl).not.toContainText('F17FK1ABC123'); // serial real não deve aparecer
-  });
+    // Campo de código de garantia preenchido a partir de digital_warranty_code
+    const warrantyField = page.locator('#det-warranty-code');
+    await expect(warrantyField).toHaveValue('WARR-2026-A1B2C3');
 
-  // T10 — Timeline visível
-  test('T10 — Rastreamento: timeline de etapas é visível e preenchida', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
+    // Campo é read-only (não editável pelo usuário)
+    await expect(warrantyField).toHaveAttribute('readonly', '');
 
-    const timeline = page.locator('#timeline');
-    await expect(timeline).toBeVisible();
-    const items = timeline.locator('.timeline-item');
-    const count = await items.count();
-    expect(count).toBeGreaterThan(0);
-  });
-
-  // T11 — WhatsApp CTA
-  test('T11 — Rastreamento: botão WhatsApp de contato está visível com href correto', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    const waFooter = page.locator('#wa-footer');
-    await expect(waFooter).toBeVisible();
-
-    const waBtn = page.locator('#btn-wa');
-    await expect(waBtn).toBeVisible();
-    await expect(waBtn).toHaveAttribute('href', /wa\.me\/5511919691542/);
-    await expect(waBtn).toHaveAttribute('href', /OS-2026-0001/);
-  });
-
-  // T12 — Dados financeiros não existem na página
-  test('T12 — Rastreamento: dados corporativos privados (custo/lucro) não existem na página', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // Elementos exclusivos do admin não devem existir no DOM
-    await expect(page.locator('#det-custo-pecas')).toHaveCount(0);
-    await expect(page.locator('#det-lucro-valor')).toHaveCount(0);
-    await expect(page.locator('#det-valor-cobrado')).toHaveCount(0);
-  });
-
-  // ── NOVOS TESTES: Portal Aprimorado (Tracking Upgrade) ──────────────────────────
-
-  test('T13 — Portal: exibe número da OS no formato #OS-YYYY-NNNN', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // Badge no header
-    const badge = page.locator('#os-number-badge');
-    await expect(badge).toBeVisible();
-    await expect(badge).toContainText('OS-2026-0001');
-  });
-
-  test('T14 — Portal: public_notes aparecem na timeline na etapa ativa', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // A etapa ativa (diagnostico) tem public_notes no mock
-    // Deve aparecer com 💡 em alguma .tl-public-note ou #active-note
-    const activeNote = page.locator('#active-note');
-    await expect(activeNote).toBeVisible();
-    await expect(activeNote).toContainText('Aparelho aberto para análise interna');
-
-    // Também deve aparecer na timeline
-    const tlNotes = page.locator('.tl-public-note');
-    const count = await tlNotes.count();
-    expect(count).toBeGreaterThan(0);
-  });
-
-  test('T15 — Portal Custom PC: grid de hardware é renderizado com is_custom_pc=true', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-custom-pc');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // Badge CUSTOM PC deve estar visível
-    const badgePC = page.locator('#badge-custom-pc');
-    await expect(badgePC).toBeVisible();
-
-    // Grid de hardware deve existir
-    const pcGrid = page.locator('.pc-grid');
-    await expect(pcGrid).toBeVisible();
-
-    // Deve ter pelo menos 3 cards (CPU, RAM, GPU do mock)
-    const cards = page.locator('.pc-card');
-    await expect(cards).toHaveCount(3);
-
-    // Card de CPU deve conter o nome do processador
-    await expect(cards.first()).toContainText('Intel Core i9');
-  });
-
-  test('T16 — Portal Clássico: lista de peças simples com is_custom_pc=false', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // Não deve ter o grid de Custom PC
-    await expect(page.locator('#badge-custom-pc')).not.toBeVisible();
-    await expect(page.locator('.pc-grid')).toHaveCount(0);
-
-    // Deve ter a lista clássica de peças
-    const parts = page.locator('.part-row');
-    await expect(parts).toHaveCount(1); // 1 peça no mock
-    await expect(parts.first()).toContainText('Módulo de Tela Original Apple');
-
-    // Sem preços visíveis
-    const pageText = await page.locator('#tracking-content').innerText();
-    expect(pageText).not.toMatch(/R\$\s*\d+[,.]\d{2}/); // sem formato de preço BRL
-  });
-
-  test('T17 — Portal: código de garantia exibido e botão de cópia funciona', async ({ page, context }) => {
-    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // Código de garantia deve estar visível
-    const codeEl = page.locator('#w-code');
-    await expect(codeEl).toBeVisible();
-    await expect(codeEl).toContainText('WARR-2026-A1B2C3');
-
-    // Botão copiar
-    const btnCopy = page.locator('#btn-copy-warranty');
-    await expect(btnCopy).toBeVisible();
-    await btnCopy.click();
-
-    // Feedback visual após cópia
-    await expect(btnCopy).toContainText('Copiado', { timeout: 2000 });
-
-    // Verifica clipboard (requer permissão acima)
-    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-    expect(clipboardText).toBe('WARR-2026-A1B2C3');
-  });
-
-  test('T18 — Portal: badge de payment_status exibe texto correto para cada estado', async ({ page }) => {
-    // Teste 1: pendente (token padrão)
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    const paymentBadge = page.locator('#w-payment .payment-badge');
-    await expect(paymentBadge).toBeVisible();
-    await expect(paymentBadge).toContainText('Acerto na Retirada');
-    await expect(paymentBadge).toHaveClass(/pendente/);
-
-    // Teste 2: parcial (token Custom PC — payment_status = 'parcial')
-    await page.goto('/rastrear?token=tracking-token-custom-pc');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    const paymentBadge2 = page.locator('#w-payment .payment-badge');
-    await expect(paymentBadge2).toContainText('Entrada Paga');
-    await expect(paymentBadge2).toHaveClass(/parcial/);
-  });
-
-  // Teste de token inválido (erro 404)
-  test('T19 — Portal: token inválido exibe tela de erro amigável', async ({ page }) => {
-    await page.goto('/rastrear?token=token-que-nao-existe');
-
-    const errorBox = page.locator('#tracking-error');
-    await expect(errorBox).toBeVisible({ timeout: 10000 });
-    await expect(errorBox).toContainText('Inválido');
-
-    // Conteúdo principal não deve aparecer
-    await expect(page.locator('#tracking-content')).not.toBeVisible();
-    // Footer do WhatsApp não deve aparecer
-    await expect(page.locator('#wa-footer')).not.toBeVisible();
-  });
-});
-t expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // ID real: btn-wa-client-cta (dentro de wa-footer)
-    const waFooter = page.locator('#wa-footer');
-    await expect(waFooter).toBeVisible();
-
-    const waBtn = page.locator('#btn-wa-client-cta');
-    await expect(waBtn).toBeVisible();
-    await expect(waBtn).toHaveAttribute('href', /wa\.me/);
-  });
-
-  test('T12 — Rastreamento: dados corporativos privados (custo/lucro) não existem na página', async ({ page }) => {
-    await page.goto('/rastrear?token=tracking-token-uuid-1');
-    await expect(page.locator('#tracking-content')).toBeVisible({ timeout: 15000 });
-
-    // Campos exclusivos do admin NÃO devem existir na página pública de rastreamento
-    await expect(page.locator('#det-custo-pecas')).toHaveCount(0);
-    await expect(page.locator('#det-lucro-valor')).toHaveCount(0);
-    await expect(page.locator('#det-valor-cobrado')).toHaveCount(0);
+    // Botão de copiar presente
+    await expect(page.locator('#btn-copy-warranty-code')).toBeVisible();
   });
 });
