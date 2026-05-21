@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let osMovements = [];
 
   let currentOS = null;
-  let osHistory = [];
   let currentFileToUpload = null;
 
   // 1. Load OS Data
@@ -157,10 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha no GET');
       }
     } catch (err) {
-      console.log('Buscando dados locais do localStorage para a OS:', osId);
-      const stored = localStorage.getItem('iflcosta_os_list');
-      const list = stored ? JSON.parse(stored) : [];
-      currentOS = list.find(o => o.id === osId);
+      console.error('Erro ao carregar OS da API:', err);
     }
 
     if (!currentOS) {
@@ -169,36 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Carrega o histórico de status da OS
-    loadStatusHistory();
-
     // Preenche as informações na tela
     renderOSDetails();
 
     // Carrega peças vinculadas à OS (T008)
     await loadOSParts();
-    
+
     loadingState.style.display = 'none';
     detailsContent.style.display = 'grid';
-  }
-
-  function loadStatusHistory() {
-    const historyKey = `iflcosta_os_history_${currentOS.id}`;
-    const stored = localStorage.getItem(historyKey);
-    osHistory = stored ? JSON.parse(stored) : [];
-    if (osHistory.length === 0) {
-      // Cria histórico inicial se não houver
-      osHistory = [
-        {
-          id: 'hist-init',
-          os_id: currentOS.id,
-          status: currentOS.status,
-          entered_at: currentOS.created_at || new Date().toISOString(),
-          exited_at: null
-        }
-      ];
-      localStorage.setItem(historyKey, JSON.stringify(osHistory));
-    }
   }
 
   function renderOSDetails() {
@@ -329,37 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentOS.entregue_at = new Date().toISOString();
     }
 
-    // Grava no histórico local
-    const historyKey = `iflcosta_os_history_${currentOS.id}`;
-    
-    // Fechar status anterior
-    if (osHistory.length > 0) {
-      const last = osHistory[osHistory.length - 1];
-      if (!last.exited_at) {
-        last.exited_at = new Date().toISOString();
-        last.duration_seconds = Math.floor((new Date() - new Date(last.entered_at)) / 1000);
-        last.notes = notesText || null;
-        last.public_notes = publicNotesText || null;
-      }
-    }
-
-    // Cria novo status
-    osHistory.push({
-      id: crypto.randomUUID ? crypto.randomUUID() : 'hist-' + Math.random().toString(36).substring(2, 9),
-      os_id: currentOS.id,
-      status: nextStatus,
-      entered_at: new Date().toISOString(),
-      exited_at: null,
-      notes: notesText || null,
-      public_notes: publicNotesText || null
-    });
-
-    localStorage.setItem(historyKey, JSON.stringify(osHistory));
-
-    // Salva a OS localmente
-    saveOSDataDirectly();
-
-    // Sincroniza via API
+    // Sincroniza via API — o trigger on_os_status_change cuida do histórico no banco
     try {
       const response = await fetch('/api/admin/os/status', {
         method: 'POST',
@@ -379,10 +323,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!response.ok) throw new Error('Falha ao atualizar status na API');
 
-      alert(`Status atualizado com sucesso no servidor e localmente de ${previousStatus.toUpperCase()} para ${nextStatus.toUpperCase()}!`);
+      alert(`Status atualizado de ${previousStatus.toUpperCase()} para ${nextStatus.toUpperCase()}!`);
     } catch (err) {
-      console.warn('Erro ao atualizar status na API, gravado no localStorage de backup.', err);
-      alert(`Status atualizado localmente (Modo Offline) de ${previousStatus.toUpperCase()} para ${nextStatus.toUpperCase()}!`);
+      console.error('Erro ao atualizar status na API:', err);
+      currentOS.status = previousStatus;
+      alert('Erro ao atualizar status. Tente novamente.');
+      return;
     }
 
     // Rerenderiza
@@ -420,7 +366,6 @@ document.addEventListener('DOMContentLoaded', () => {
       chk.addEventListener('change', (e) => {
         const index = parseInt(e.target.getAttribute('data-checklist-index'));
         currentOS.checklist[index].checked = e.target.checked;
-        saveOSDataDirectly(); // Auto-save checklist state
       });
     });
 
@@ -429,7 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', (e) => {
         const index = parseInt(btn.getAttribute('data-checklist-index'));
         currentOS.checklist.splice(index, 1);
-        saveOSDataDirectly();
         renderChecklist();
       });
     });
@@ -446,7 +390,6 @@ document.addEventListener('DOMContentLoaded', () => {
       checked: false
     });
 
-    saveOSDataDirectly();
     renderChecklist();
   }
 
@@ -560,7 +503,6 @@ document.addEventListener('DOMContentLoaded', () => {
         uploaded_at: new Date().toISOString()
       });
 
-      saveOSDataDirectly();
       renderPhotos();
       cancelPhotoUpload();
       alert('Foto comprimida e anexada com sucesso!');
@@ -672,8 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const photoId = btn.getAttribute('data-photo-id');
         currentOS.photos = currentOS.photos.filter(p => p.id !== photoId);
-        
-        saveOSDataDirectly();
         renderPhotos();
       });
     });
@@ -723,26 +663,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       alert('Toda a ficha da Ordem de Serviço foi salva com sucesso no banco!');
     } catch (err) {
-      console.warn('API indisponível. Persistindo de forma offline em localStorage...', err);
-      
-      const stored = localStorage.getItem('iflcosta_os_list');
-      let list = stored ? JSON.parse(stored) : [];
-      list = list.map(o => o.id === currentOS.id ? currentOS : o);
-      localStorage.setItem('iflcosta_os_list', JSON.stringify(list));
-      
-      alert('Dados gravados localmente (Modo Offline) com sucesso!');
+      console.error('Erro ao salvar OS na API:', err);
+      alert('Erro ao salvar. Verifique sua conexão e tente novamente.');
     } finally {
       btnSave.disabled = false;
       btnSave.innerHTML = originalText;
       renderOSDetails();
     }
-  }
-
-  function saveOSDataDirectly() {
-    const stored = localStorage.getItem('iflcosta_os_list');
-    let list = stored ? JSON.parse(stored) : [];
-    list = list.map(o => o.id === currentOS.id ? currentOS : o);
-    localStorage.setItem('iflcosta_os_list', JSON.stringify(list));
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -833,15 +760,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha ao buscar da API');
       }
     } catch (err) {
-      console.warn('Erro ao buscar produtos da API. Usando localStorage...', err);
-      const stored = localStorage.getItem('iflcosta_products_list');
-      const list = stored ? JSON.parse(stored) : [];
-      const filtered = list.filter(p => 
-        (p.nome.toLowerCase().includes(val.toLowerCase()) || 
-         p.sku.toLowerCase().includes(val.toLowerCase()) || 
-         (p.marca && p.marca.toLowerCase().includes(val.toLowerCase())))
-      ).slice(0, 10);
-      renderPartSearchResults(filtered);
+      console.error('Erro ao buscar produtos da API:', err);
+      renderPartSearchResults([]);
     }
   }
 
@@ -893,7 +813,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tipo: 'saída',
       qty: qty,
       repair_id: osId,
-      custo_unitario: selectedPart.preco_custo,
+      custo_unitario: selectedPart.custo_atual,
       observacao: `Consumo na OS #${currentOS.os_number || ''}`
     };
 
@@ -912,44 +832,8 @@ document.addEventListener('DOMContentLoaded', () => {
       await saveAllOSChanges();
       
     } catch (err) {
-      console.warn('Falha na API de movimentações. Gravando em localStorage...', err);
-
-      const productsStored = localStorage.getItem('iflcosta_products_list');
-      if (productsStored) {
-        let productsList = JSON.parse(productsStored);
-        productsList = productsList.map(p => {
-          if (p.id === selectedPart.id) {
-            p.qty_atual = Math.max(0, p.qty_atual - qty);
-          }
-          return p;
-        });
-        localStorage.setItem('iflcosta_products_list', JSON.stringify(productsList));
-      }
-
-      const movementsStored = localStorage.getItem('iflcosta_movements_list');
-      const movementsList = movementsStored ? JSON.parse(movementsStored) : [];
-      const newMovement = {
-        id: crypto.randomUUID ? crypto.randomUUID() : 'mov-' + Math.random().toString(36).substring(2, 9),
-        ...movementPayload,
-        created_at: new Date().toISOString()
-      };
-      movementsList.push(newMovement);
-      localStorage.setItem('iflcosta_movements_list', JSON.stringify(movementsList));
-
-      const partsCost = movementsList
-        .filter(m => m.repair_id === osId && m.tipo === 'saída')
-        .reduce((sum, m) => sum + (m.qty * m.custo_unitario), 0);
-      
-      currentOS.valor_custo_peças = partsCost;
-      detCustoPecas.value = partsCost.toFixed(2);
-
-      const novoValorCobrado = (parseFloat(detValorCobrado.value) || 0) + selectedPart.preco_venda;
-      detValorCobrado.value = novoValorCobrado.toFixed(2);
-      currentOS.valor_cobrado = novoValorCobrado;
-      currentOS.valor_lucro = currentOS.valor_cobrado - currentOS.valor_custo_peças;
-
-      saveOSDataDirectly();
-      calculateProfitMargin();
+      console.error('Erro ao adicionar peça na API:', err);
+      alert('Erro ao adicionar peça. Tente novamente.');
     } finally {
       partSearchInput.value = '';
       selectedPart = null;
@@ -968,22 +852,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha no GET de movimentos');
       }
     } catch (err) {
-      console.warn('Erro ao carregar movimentos da API. Buscando localmente...', err);
-      const stored = localStorage.getItem('iflcosta_movements_list');
-      const movements = stored ? JSON.parse(stored) : [];
-      
-      const productsStored = localStorage.getItem('iflcosta_products_list');
-      const products = productsStored ? JSON.parse(productsStored) : [];
-
-      osMovements = movements
-        .filter(m => m.repair_id === osId)
-        .map(m => {
-          const prod = products.find(p => p.id === m.product_id);
-          return {
-            ...m,
-            products: prod ? { nome: prod.nome } : { nome: 'Peça Desconhecida' }
-          };
-        });
+      console.error('Erro ao carregar peças da API:', err);
+      osMovements = [];
     }
 
     renderOSPartsList();
@@ -1048,48 +918,8 @@ document.addEventListener('DOMContentLoaded', () => {
           await saveAllOSChanges();
 
         } catch (err) {
-          console.warn('Erro ao deletar movimento via API. Executando localmente...', err);
-          
-          const mov = osMovements.find(m => m.id === mid);
-          if (mov) {
-            const productsStored = localStorage.getItem('iflcosta_products_list');
-            if (productsStored) {
-              let productsList = JSON.parse(productsStored);
-              productsList = productsList.map(p => {
-                if (p.id === mov.product_id) {
-                  p.qty_atual += mov.qty;
-                }
-                return p;
-              });
-              localStorage.setItem('iflcosta_products_list', JSON.stringify(productsList));
-            }
-
-            const movementsStored = localStorage.getItem('iflcosta_movements_list');
-            if (movementsStored) {
-              let movementsList = JSON.parse(movementsStored);
-              movementsList = movementsList.filter(m => m.id !== mid);
-              localStorage.setItem('iflcosta_movements_list', JSON.stringify(movementsList));
-
-              const partsCost = movementsList
-                .filter(m => m.repair_id === osId && m.tipo === 'saída')
-                .reduce((sum, m) => sum + (m.qty * m.custo_unitario), 0);
-              
-              currentOS.valor_custo_peças = partsCost;
-              detCustoPecas.value = partsCost.toFixed(2);
-            }
-
-            const productsStoredList = productsStored ? JSON.parse(productsStored) : [];
-            const prod = productsStoredList.find(p => p.id === mov.product_id);
-            if (prod) {
-              const novoCobrado = Math.max(0, (parseFloat(detValorCobrado.value) || 0) - prod.preco_venda);
-              detValorCobrado.value = novoCobrado.toFixed(2);
-              currentOS.valor_cobrado = novoCobrado;
-            }
-            
-            currentOS.valor_lucro = currentOS.valor_cobrado - currentOS.valor_custo_peças;
-            saveOSDataDirectly();
-            calculateProfitMargin();
-          }
+          console.error('Erro ao remover peça na API:', err);
+          alert('Erro ao remover peça. Tente novamente.');
         } finally {
           await loadOSDetails();
         }

@@ -101,9 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha no GET');
       }
     } catch (err) {
-      console.warn('Erro ao carregar produtos. Usando localStorage...', err);
-      const stored = localStorage.getItem('iflcosta_products_list');
-      allProducts = stored ? JSON.parse(stored) : [];
+      console.error('Erro ao carregar produtos da API:', err);
+      allProducts = [];
     }
   }
 
@@ -117,39 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha no GET');
       }
     } catch (err) {
-      console.warn('Erro ao carregar presets. Usando localStorage...', err);
-      const stored = localStorage.getItem('iflcosta_presets_list');
-      allPresets = stored ? JSON.parse(stored) : [
-        {
-          id: 'preset-gamer-entrada',
-          nome: 'PC Gamer Entrada',
-          components: {
-            Processador: 'Ryzen 5 5600',
-            'Placa-mãe': 'B550M Pro-VDH',
-            'Memória RAM': '16GB DDR4',
-            Armazenamento: 'SSD NVMe 1TB',
-            'Placa de Vídeo': 'RX 6600',
-            Fonte: '550W Bronze',
-            Gabinete: 'Mid Tower RGB',
-            Cooler: 'Air Cooler default'
-          }
-        },
-        {
-          id: 'preset-workstation',
-          nome: 'Workstation Profissional',
-          components: {
-            Processador: 'Intel Core i7-13700K',
-            'Placa-mãe': 'Z790 Creator',
-            'Memória RAM': '32GB DDR5',
-            Armazenamento: 'SSD NVMe 2TB PCIe 4.0',
-            'Placa de Vídeo': 'RTX 4070 12GB',
-            Fonte: '750W Gold',
-            Gabinete: 'Silent Tower',
-            Cooler: 'Water Cooler 240mm'
-          }
-        }
-      ];
-      localStorage.setItem('iflcosta_presets_list', JSON.stringify(allPresets));
+      console.error('Erro ao carregar presets da API:', err);
+      allPresets = [];
     }
 
     presetSelect.innerHTML = '<option value="">Selecione um Preset...</option>' +
@@ -221,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     for (const prod of Object.values(selectedBuild)) {
       if (prod) {
-        totalCost += prod.preco_custo || 0;
+        totalCost += prod.custo_atual || 0;
       }
     }
 
@@ -249,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const markup = parseInt(markupSlider.value) || 0;
     let totalCost = 0;
     for (const prod of Object.values(selectedBuild)) {
-      if (prod) totalCost += prod.preco_custo || 0;
+      if (prod) totalCost += prod.custo_atual || 0;
     }
     const suggestedPrice = totalCost * (1 + (markup / 100));
 
@@ -284,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let customerId = 'temp-customer-id';
     
     try {
-      const resp = await fetch('/api/admin/customers?limit=1');
+      const resp = await fetch('/api/admin/crm/customers?limit=1');
       if (resp.ok) {
         const res = await resp.json();
         if (res.data && res.data.length > 0) {
@@ -292,15 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (e) {
-      console.warn('Erro ao obter clientes da API. Buscando localmente...');
-      const stored = localStorage.getItem('iflcosta_customers_list');
-      const list = stored ? JSON.parse(stored) : [];
-      if (list.length > 0) customerId = list[0].id;
+      console.error('Erro ao obter clientes da API:', e);
     }
 
     let totalCost = 0;
     for (const prod of Object.values(selectedBuild)) {
-      if (prod) totalCost += prod.preco_custo || 0;
+      if (prod) totalCost += prod.custo_atual || 0;
     }
     const markup = parseInt(markupSlider.value) || 0;
     const suggestedPrice = totalCost * (1 + (markup / 100));
@@ -344,48 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha ao criar OS na API');
       }
     } catch (err) {
-      console.warn('Erro ao criar OS via API. Salvando localmente...', err);
-      
-      const stored = localStorage.getItem('iflcosta_os_list');
-      const list = stored ? JSON.parse(stored) : [];
-      const newOS = {
-        id: crypto.randomUUID ? crypto.randomUUID() : 'os-' + Math.random().toString(36).substring(2, 9),
-        ...osPayload
-      };
-      list.push(newOS);
-      localStorage.setItem('iflcosta_os_list', JSON.stringify(list));
-
-      const movementsStored = localStorage.getItem('iflcosta_movements_list');
-      const movementsList = movementsStored ? JSON.parse(movementsStored) : [];
-      
-      for (const prod of Object.values(selectedBuild)) {
-        if (prod) {
-          movementsList.push({
-            id: crypto.randomUUID ? crypto.randomUUID() : 'mov-' + Math.random().toString(36).substring(2, 9),
-            product_id: prod.id,
-            tipo: 'saída',
-            qty: 1,
-            repair_id: newOS.id,
-            custo_unitario: prod.preco_custo,
-            observacao: `Consumo na montagem do PC Rascunho #${osNumber}`,
-            created_at: new Date().toISOString()
-          });
-
-          const productsStored = localStorage.getItem('iflcosta_products_list');
-          if (productsStored) {
-            let productsList = JSON.parse(productsStored);
-            productsList = productsList.map(p => {
-              if (p.id === prod.id) p.qty_atual = Math.max(0, p.qty_atual - 1);
-              return p;
-            });
-            localStorage.setItem('iflcosta_products_list', JSON.stringify(productsList));
-          }
-        }
-      }
-      localStorage.setItem('iflcosta_movements_list', JSON.stringify(movementsList));
-
-      alert('PC Build criada como OS Rascunho com sucesso de forma Offline!');
-      window.location.href = `/admin/os/detalhes?id=${newOS.id}`;
+      console.error('Erro ao criar OS via API:', err);
+      alert('Erro ao criar Ordem de Serviço. Verifique sua conexão e tente novamente.');
     }
   }
 

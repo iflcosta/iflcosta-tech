@@ -59,12 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const mHint = document.getElementById('movement-hint');
 
   const CATEGORIA_LABELS = { 'peça': 'Peça', 'acessório': 'Acessório', 'componente_pc': 'Componente PC' };
-  const PRODUCTS_KEY = 'iflcosta_products_list';
 
   let productsList = [];
   let editingId = null;
 
-  seedMockData();
   fetchProducts();
 
   // ── Listeners ──
@@ -103,9 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const resData = await response.json();
       productsList = resData.data || [];
     } catch (err) {
-      console.log('API de estoque indisponível — carregando dados locais.', err);
-      const stored = localStorage.getItem(PRODUCTS_KEY);
-      productsList = stored ? JSON.parse(stored) : [];
+      console.error('Erro ao carregar produtos da API:', err);
+      productsList = [];
     } finally {
       renderList();
       toggleLoading(false);
@@ -285,12 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(isEdit ? { id: editingId, ...payload } : payload)
         });
       } catch (netErr) {
-        // Sem rede (dev local): grava no localStorage
-        upsertLocal(saveProductLocal(payload, isEdit));
-        persistProducts();
-        closeProductModal();
-        renderList();
-        return;
+        throw netErr;
       }
       if (response.status === 401) { window.location.href = '/admin/login'; return; }
       if (!response.ok) {
@@ -317,11 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         response = await fetch(`/api/admin/inventory/products?id=${encodeURIComponent(editingId)}`, { method: 'DELETE' });
       } catch (netErr) {
-        productsList = productsList.filter(p => String(p.id) !== String(editingId));
-        persistProducts();
-        closeProductModal();
-        renderList();
-        return;
+        throw netErr;
       }
       if (response.status === 401) { window.location.href = '/admin/login'; return; }
       if (!response.ok) {
@@ -403,10 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(payload)
         });
       } catch (netErr) {
-        applyMovementLocal(productId, payload.tipo, qty);
-        closeMovementModal();
-        renderList();
-        return;
+        throw netErr;
       }
       if (response.status === 401) { window.location.href = '/admin/login'; return; }
       if (!response.ok) {
@@ -460,25 +445,8 @@ document.addEventListener('DOMContentLoaded', () => {
     else productsList.push(product);
   }
 
-  function saveProductLocal(payload, isEdit) {
-    if (isEdit) {
-      const existing = productsList.find(p => String(p.id) === String(editingId)) || {};
-      return { ...existing, ...payload, id: editingId };
-    }
-    return { ...payload, id: 'prod-' + Math.random().toString(36).slice(2, 11), qty_atual: 0 };
-  }
 
-  function applyMovementLocal(productId, tipo, qty) {
-    const prod = productsList.find(p => String(p.id) === String(productId));
-    if (!prod) return;
-    const delta = tipo === 'entrada' ? qty : -qty;
-    prod.qty_atual = qtyOf(prod) + delta;
-    persistProducts();
-  }
 
-  function persistProducts() {
-    try { localStorage.setItem(PRODUCTS_KEY, JSON.stringify(productsList)); } catch (e) { /* quota */ }
-  }
 
   function toggleLoading(show) {
     loadingState.style.display = show ? 'block' : 'none';
@@ -503,17 +471,4 @@ document.addEventListener('DOMContentLoaded', () => {
     return String(text).replace(/[&<>"']/g, m => map[m]);
   }
 
-  // Semente de dados para o ambiente local (npm run serve, sem API)
-  function seedMockData() {
-    if (localStorage.getItem(PRODUCTS_KEY)) return;
-    const mock = [
-      { id: 'prod-1', nome: 'Tela iPhone 11 (Incell)', categoria: 'peça', subcategoria: 'Tela', marca: 'Apple', modelo: 'iPhone 11', sku: 'TLA-IP11', custo_atual: 95.00, preco_venda: 320.00, qty_atual: 3, qty_minima: 2, fornecedor: { nome: 'Loja do amigo' } },
-      { id: 'prod-2', nome: 'Bateria Samsung A12', categoria: 'peça', subcategoria: 'Bateria', marca: 'Samsung', modelo: 'A12', sku: 'BAT-A12', custo_atual: 28.00, preco_venda: 110.00, qty_atual: 1, qty_minima: 3, fornecedor: { nome: 'Loja do amigo' } },
-      { id: 'prod-3', nome: 'Conector de Carga USB-C', categoria: 'peça', subcategoria: 'Conector', marca: 'Genérico', modelo: 'USB-C', sku: '', custo_atual: 6.50, preco_venda: 45.00, qty_atual: 0, qty_minima: 0, fornecedor: { nome: 'AliExpress' } },
-      { id: 'prod-4', nome: 'Película 3D Cerâmica', categoria: 'acessório', subcategoria: 'Película', marca: '', modelo: '', sku: 'PEL-3D', custo_atual: 2.00, preco_venda: 25.00, qty_atual: 12, qty_minima: 5, fornecedor: { nome: 'AliExpress' } },
-      { id: 'prod-5', nome: 'SSD NVMe 1TB', categoria: 'componente_pc', subcategoria: 'Armazenamento', marca: 'Kingston', modelo: 'NV2', sku: 'SSD-NV2-1T', custo_atual: 320.00, preco_venda: 480.00, qty_atual: 0, qty_minima: 0, fornecedor: { nome: 'Distribuidor' } },
-      { id: 'prod-6', nome: 'Memória RAM DDR4 8GB', categoria: 'componente_pc', subcategoria: 'Memória', marca: 'XPG', modelo: 'D10', sku: 'RAM-D10-8', custo_atual: 110.00, preco_venda: 180.00, qty_atual: 2, qty_minima: 4, fornecedor: { nome: 'Distribuidor' } }
-    ];
-    try { localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mock)); } catch (e) { /* quota */ }
-  }
 });
