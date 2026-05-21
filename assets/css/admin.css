@@ -280,6 +280,10 @@
   .hamburger-btn {
     display: none;
   }
+  /* Toggle de tema permanece visível no desktop */
+  #theme-toggle-btn.hamburger-btn {
+    display: inline-flex;
+  }
 }
 
 .admin-header-right {
