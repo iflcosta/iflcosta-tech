@@ -23,10 +23,10 @@ Este checklist organiza a execução em pequenas tarefas atômicas e testáveis.
 - [x] **T003 [M] — API: CRUD de Produtos (`/api/admin/inventory/products.js`)**
   * **Critério de Aceite:** Endpoint Vercel Edge Function com suporte a `GET` (lista/busca/filtros), `POST` (inserir), `PUT` (editar), e `DELETE` (soft-delete). Validar autenticação do administrador.
 
-- [ ] **T004 [S] — API: Movimentação de Estoque (`/api/admin/inventory/movements.js`)**
+- [x] **T004 [S] — API: Movimentação de Estoque (`/api/admin/inventory/movements.js`)**
   * **Critério de Aceite:** Endpoint `POST` para registrar movimentos manuais ("entrada", "ajuste") e `GET` para auditoria e histórico de estoque.
 
-- [ ] **T005 [S] — API: Presets do Builder (`/api/admin/inventory/presets.js`)**
+- [x] **T005 [S] — API: Presets do Builder (`/api/admin/inventory/presets.js`)**
   * **Critério de Aceite:** Endpoints `GET`, `POST` e `PUT` para gerenciar os modelos pré-definidos de computadores customizados.
 
 ---
