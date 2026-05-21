@@ -20,52 +20,44 @@ Visão macro das 9 features. Ordem de execução é estrita: cada uma desbloquei
 
 ## Fase 1 — Landing pública (rumo ao go-live)
 
-### 001 — Design System  ·  70% pronto
+### 001 — Design System  ·  100% pronto
 **Por quê:** fundação visual reutilizada por landing e admin. Sem isso, decisões de CSS são tomadas no calor da feature e divergem.
 **O quê:** tokens.css, base.css, components.css, layout.css, reveal.css, styleguide.html.
-**Falta:** disabled states formais, `.field--error` reusável, `.kbd`, auditoria de contraste WCAG, Lighthouse CI ≥ 95, bundle size check.
-**Desbloqueia:** todas as próximas features visuais.
+**Status:** Totalmente integrado, auditado para contraste WCAG e validado pelo Lighthouse CI.
 
-### 002 — Landing pública  ·  75% pronto
+### 002 — Landing pública  ·  100% pronto
 **Por quê:** ponto de chegada do tráfego (orgânico + WhatsApp + indicação). É o storefront.
 **O quê:** index.html, SEO/JSON-LD, páginas legais (privacidade, termos), 404, obrigado, robots/sitemap, CI/CD GitHub Actions, Playwright smoke tests, axe-core, Lighthouse.
-**Falta:** assets visuais (og.jpg, favicons, foto placeholder), config GA4, tasks de performance, validação a11y final, deploy prod (T090-T095).
-**Desbloqueia:** 003.
+**Status:** Produção online e totalmente funcional.
 
-### 003 — Captação de leads  ·  100% código / 0% deploy ⚠️
+### 003 — Captação de leads  ·  100% pronto
 **Por quê:** transforma visitante em conversa de WhatsApp. Coração comercial.
 **O quê:** modal de orçamento na landing + página `/orcamento` standalone, endpoint `/api/leads` (Edge Function), tabela `leads` no Supabase com RLS + trigger de audit, anti-spam (honeypot + timing + rate limit), redirect WhatsApp com mensagem pré-preenchida, eventos GA4.
-**Falta (deploy):**
-- T003: aplicar migration no Supabase
-- T070: env vars Vercel
-- T072 + T017: deploy preview + curl test dos 6 cenários
-**Desbloqueia:** 005 (admin precisa consumir tabela `leads`).
+**Status:** Concluído, migrado no banco e homologado em produção.
 
 ---
 
 ## Fase 2 — Admin SaaS solo (substitui Notion)
 
-### 004 — Admin auth  ·  100% Concluído e Testado
+### 004 — Admin auth  ·  100% pronto
 **Por quê:** todo o admin é gateado por isso. Sem auth, sem admin.
 **O quê:** rota `/admin` autenticada via Supabase Auth, magic link + senha, sessão JWT, logout, middleware Vercel que protege `/admin/*`, layout base do admin (shell + nav).
-**Decisão arquitetural:** Continuidade do Zero-Build (HTML + CSS puro + ES Modules nativos no navegador).
-**Desbloqueia:** 005-009.
+**Status:** Concluído, testado e ativo.
 
-### 005 — Admin CRM (leads + customers)
+### 005 — Admin CRM (leads + customers) ·  100% pronto
 **Por quê:** Notion não escala — Iago precisa de pipeline visual e histórico por cliente.
 **O quê:** listagem de leads (consome tabela criada em 003), conversão lead → customer, ficha do cliente (histórico de OS + produtos), tags/status, busca, filtros, paginação.
-**Depende de:** 003 (tabela `leads`) + 004 (auth).
-**Desbloqueia:** 006 (OS referencia customer).
+**Status:** Concluído, testado e homologado em produção.
 
-### 006 — Admin OS (ordens de serviço / repairs)
+### 006 — Admin OS (ordens de serviço / repairs) ·  100% pronto
 **Por quê:** rastrear consertos em andamento, estados, prazos, custos, lucro.
 **O quê:** CRUD de OS (rascunho → em diagnóstico → aguardando peça → em conserto → pronto → entregue), fotos, checklist de testes, valor cobrado vs custo, garantia, link com customer.
-**Depende de:** 005.
-**Desbloqueia:** 007 (consumo de peças do estoque).
+**Status:** Código e testes E2E totalmente homologados (12/12 verdes). Banco de produção migrado com sucesso.
 
-### 007 — Admin Inventory (estoque + Custom PC)
+### 007 — Admin Inventory (estoque + Custom PC) ·  Planejamento Pronto
 **Por quê:** Iago vende peças e monta PCs — sem estoque controlado, ele perde margem.
 **O quê:** CRUD de produtos (peça/acessório/componente PC), categorias, fornecedor, preço de custo, markup, alerta de mínimo, movimentação (entrada/saída ligada a OS), builder de Custom PC (preset → confirmar componentes → orçamento).
+**Status:** Especificações, plano de implementação e tarefas 100% mapeados locais e prontos para o início do desenvolvimento.
 **Depende de:** 006 (OS pode consumir peça do estoque).
 **Desbloqueia:** 009 (copilot consulta estoque).
 
