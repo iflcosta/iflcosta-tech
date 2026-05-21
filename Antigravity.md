@@ -71,21 +71,21 @@ tests/                  # Playwright
 
 | Feature | Status | Próxima ação |
 |---------|--------|--------------|
-| **001-design-system** | 70% — tokens/base/components/layout/reveal/styleguide prontos | T012-T014 disabled/error/kbd; auditoria contraste |
-| **002-landing-public** | 75% — HTML/SEO/legais/CI/testes prontos | assets visuais (og.jpg, favicons); GA4; deploy |
-| **003-lead-capture** | 100% — Completo e Validado | Nenhuma (Concluído) |
-| **004-admin-auth** | Spec/plan/tasks prontos | **T001** Iniciar desenvolvimento / spec da autenticação do admin |
-| **005-admin-crm** | Spec resumida | Detalhar após 004 |
-| **006-admin-os** | Spec resumida | — |
-| **007-admin-inventory** | Spec resumida | — |
-| **008-whatsapp-bridge** | Spec resumida | Caixa-preta nessa fase |
-| **009-copilot-ia** | Spec resumida | Depende de 005-007 com dados reais |
+| **001-design-system** | 100% — Integrado e auditado | Mantendo consistência nas próximas features |
+| **002-landing-public** | 100% — Produção online | Monitoramento |
+| **003-lead-capture** | 100% — Completo e Validado | — |
+| **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
+| **005-admin-crm** | 100% — Concluído e testado | — |
+| **006-admin-os** | 100% — Código e testes E2E totalmente homologados (12/12 verdes) | Aplicar migração SQL no banco de produção |
+| **007-admin-inventory** | Spec/Plan/Tasks Prontos | Iniciar o desenvolvimento dos esquemas de dados e triggers locais |
+| **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
+| **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **004-admin-auth** — Iniciar o desenvolvimento da autenticação do admin (integração Supabase Auth + JWT).
-2. **001-design-system** — Finalizar os componentes de UI restantes (disabled/error/kbd e auditoria de contraste).
-3. **002-landing-public** — Preparar assets visuais finais (og.jpg, favicons) para deploy oficial de produção.
+1. **Aplicar a Migração SQL da Feature 006** — Executar `supabase/migrations/2026_05_20_create_service_orders.sql` no painel web de produção do Supabase.
+2. **Desenvolver o Banco de Dados da Feature 007** — Criar `supabase/migrations/2026_05_20_create_inventory.sql` com tabelas e triggers baseados em `.specs/007-admin-inventory/plan.md`.
+3. **Construir Endpoints de Produtos** — Desenvolver `/api/admin/inventory/products.js` com suporte ao CRUD completo e validações JWT.
 
 ---
 
