@@ -75,24 +75,30 @@ tests/                  # Playwright
 | **002-landing-public** | 100% — Produção online | Monitoramento |
 | **003-lead-capture** | 100% — Concluído e homologado | — |
 | **004-admin-auth** | 100% — Concluído e ativo | — |
-| **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
-| **006-admin-os** | 100% — Migração SQL aplicada em produção (2026-05-21) | — |
-| **007-admin-inventory** | 100% T001–T007 — banco, API (products/movements/presets), UI estoque; tudo em produção | T008: peças↔OS; T009–T011: PC Builder; T012/T013: relatórios + E2E |
+| **005-admin-crm** | 100% — Concluído, testado e homologado em produção | specs retroativas: plan.md + tasks.md adicionados |
+| **006-admin-os** | 100% core + tracking upgrade implementado (código pronto, migration pendente) | Aplicar `2026_05_21_create_tracking_upgrade.sql` no Supabase |
+| **007-admin-inventory** | 100% T001–T013 — T008 (peças↔OS), T009–T011 (PC Builder), T012/T013 (relatórios + E2E) todos implementados | Validar em produção |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 
-**Próximas 3 tarefas concretas (em ordem):**
+**Próxima tarefa crítica:**
 
-1. **T008 — Integração peças↔OS** — painel "Peças de Reposição" em `admin/os/detalhes.html`: autocomplete de produtos, POST `/api/admin/inventory/movements` com `tipo='saída' + repair_id`, DELETE para estornar, custo atualizado em tempo real na OS.
-2. **T009–T011 — Custom PC Builder** — `admin/estoque/builder.html` + `assets/js/admin/builder.js`: slots de montagem, validação de soquete CPU↔Mobo, orçamento via WhatsApp.
-3. **T012/T013 — Relatórios + E2E** — canvas de margens em `admin/estoque/relatorios.html`; suite Playwright `tests/admin-inventory.spec.js`.
+1. **Aplicar migration `tracking_upgrade`** — `supabase/migrations/2026_05_21_create_tracking_upgrade.sql` via SQL editor do painel Supabase. Adiciona: `os_number`, `is_custom_pc`, `payment_status`, `digital_warranty_code` em `repairs`; `public_notes`, `private_notes` em `os_status_history`; trigger de numeração automática de OS; view pública sanitizada `public_repair_tracking`.
 
-> Migrações 006, 007 e `harden_db_functions` aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). `harden_db_functions` fixou `search_path = ''` em 8 funções e revogou EXECUTE das 6 funções SECURITY DEFINER de trigger. Aplicar migrações pelo SQL editor do painel (o projeto não usa o CLI de migrations).
+**O que foi feito (commits 999c6ac + 5e37c13):**
+- **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)
+- **T009–T011 PC Builder**: `admin/estoque/builder.html` + `assets/js/admin/builder.js` (slots, validação CPU↔Mobo, orçamento WhatsApp)
+- **T012/T013 Relatórios + E2E**: `admin/estoque/relatorios.html` + `assets/js/admin/relatorios.js`; `tests/admin-inventory.spec.js` (422 linhas); `tests/tracking-portal.spec.js` (315 linhas)
+- **Tracking upgrade (bônus)**: reescrita de `rastrear/index.html` + `assets/js/rastrear.js` com glassmorphism, timeline pública, showcase Custom PC; APIs atualizadas; spec em `.specs/006-admin-os/tracking_upgrade.md`
+- **Specs retroativas**: `plan.md` + `tasks.md` para 005 e 006
 
-**Dashboard atualizado (2026-05-21):**
+> Migrações 006, 007 e `harden_db_functions` aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). Migration `2026_05_21_create_tracking_upgrade.sql` **ainda não aplicada** — aplicar pelo SQL editor do painel. Não usar o CLI de migrations.
+
+**Dashboard (2026-05-21):**
 - Cards de stat são links clicáveis para os módulos ativos (leads/OS/estoque).
 - JS inline em `admin/index.html` carrega contagens reais via API na inicialização.
-- Badges "Fase N" substituídos por status reais ("✅ ativo" / "🔧 Próximo: T008").
+- Novo campo "Nota Técnica Pública" na OS → aparece na timeline do portal de rastreamento do cliente.
+- Novo campo `payment_status` (pendente/parcial/pago) na OS.
 
 **Contexto de negócio — Feature 007:**
 - Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).
