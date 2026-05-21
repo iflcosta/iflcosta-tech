@@ -91,7 +91,8 @@ test.describe('Navegação e Layout do Painel Admin', () => {
     await expect(page.locator('.admin-header')).toBeVisible();
     
     // Links de navegação essenciais na Sidebar
-    const dashboardLink = page.locator('.admin-sidebar a[href="/admin"]').first();
+    // href="/admin" casa logo + item de menu — mira o item de menu (.admin-nav-item)
+    const dashboardLink = page.locator('.admin-sidebar a.admin-nav-item[href="/admin"]').first();
     const leadsLink = page.locator('.admin-sidebar a[href="/admin/leads"]').first();
     const clientesLink = page.locator('.admin-sidebar a[href="/admin/clientes"]').first();
     const osLink = page.locator('.admin-sidebar a[href="/admin/os"]').first();
