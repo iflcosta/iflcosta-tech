@@ -165,9 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Carrega o histórico de status da OS
-    loadStatusHistory();
-
     // Preenche as informações na tela
     renderOSDetails();
 
