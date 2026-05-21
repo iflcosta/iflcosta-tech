@@ -77,7 +77,7 @@ tests/                  # Playwright
 | **004-admin-auth** | 100% — Concluído e ativo | — |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | specs retroativas: plan.md + tasks.md adicionados |
 | **006-admin-os** | 100% — tracking upgrade + portal /rastrear a11y concluídos; migration aplicada | — |
-| **007-admin-inventory** | 100% T001–T013 — T008 (peças↔OS), T009–T011 (PC Builder), T012/T013 (relatórios + E2E) todos implementados pelo Antigravity | Validar em produção |
+| **007-admin-inventory** | ⚠️ Código implementado mas com bugs críticos — ver "Pendências F007" abaixo | Corrigir antes de homologar em produção |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 | **010-financeiro** | 100% T001–T006 — spec/plan/tasks, API, UI, gráfico canvas, sidebar, dashboard card, suíte E2E | Em produção; homologar com dados reais |
@@ -104,6 +104,75 @@ tests/                  # Playwright
 - Bugs corrigidos: modal de conversão CRM; criação de OS (`valor_custo_peças`); botão de tema sumindo no desktop; cards do dashboard (Leads usava endpoint errado; "OS Abertas" filtrava status inexistente — agora `?aberta=true` na API).
 - `tests/admin-os.spec.js` estava corrompido (encoding) — restaurado. Suíte E2E 49 testes.
 - **Portal `/rastrear` — auditoria a11y completa:** landmarks (`<main>`, `<section>`, `<header>`), hierarquia de headings (h1→h2), `role="status/alert"` no loading/erro, `aria-live="polite"`, lightbox com `role="dialog" aria-modal="true"` + Tab-trap + Esc key + retorno de foco, `<button>` nas thumbs de foto com `aria-label`, `aria-hidden` em elementos decorativos, opacidade do estado futuro corrigida (0.4→0.7 para WCAG AA). Fallback localStorage morto removido. Specs reconciliadas: `tracking_design.md` marcada como substituída, `tracking_upgrade.md` marcada como implementada. ADR 0006 criado (tema escuro autocontido — exceção deliberada).
+
+---
+
+## PENDÊNCIAS TÉCNICAS — identificadas em auditoria 2026-05-21
+
+> Auditoria rodou: 49 testes passando, sintaxe JS OK. Os bugs abaixo **não são hipotéticos** — foram verificados linha por linha. Todos bloqueiam funcionalidade real em produção.
+
+### 🔴 Bugs que quebram F007 (estoque) com dados reais
+
+**1. `assets/js/admin/builder.js:287` — endpoint errado**
+```js
+// ERRADO (404):
+fetch('/api/admin/customers?limit=1')
+// CORRETO:
+fetch('/api/admin/crm/customers?limit=1')
+```
+Efeito: busca de cliente no PC Builder sempre falha silenciosamente.
+
+**2. `assets/js/admin/builder.js` + `assets/js/admin/relatorios.js` — campo custo inexistente**
+- Ambos usam `p.preco_custo` — campo não existe. A API (`api/admin/inventory/products.js`) retorna `custo_atual`.
+- Afeta: todos os cálculos de custo, lucro e margem (dão zero).
+- `relatorios.js:98` faz `p.preco_custo.toFixed(2)` sem guard → **TypeError** (crash) ao renderizar tabela de estoque com dados reais.
+- Linhas afetadas: `builder.js:224,252,303,369` e `relatorios.js:67,84,98,156,224`.
+
+**3. `assets/js/admin/relatorios.js:107,123` — campo qty_minimo inexistente**
+- Usa `p.qty_minimo`. Campo real no banco/API é `qty_minima` (verificado em `products.js:123`).
+- Efeito: filtro de "alerta de estoque baixo" nunca funciona (sempre 0 <= 0 = false).
+
+**4. `assets/js/admin/os-detalhes.js:536` — endpoint de fotos não existe**
+- `POST /api/admin/os/photos` — não há `api/admin/os/photos.js` no repo.
+- Efeito: upload de foto da OS cai em fallback Base64/localStorage; fotos não persistem no banco.
+
+**5. `assets/js/admin/os-detalhes.js:185-202, 332-357` — histórico de status ignorando API**
+- `loadOSHistory()` lê de `localStorage` (`iflcosta_os_history_*`), nunca da tabela `os_status_history`.
+- `saveOSStatus()` grava no localStorage de backup além da API.
+- Efeito: histórico na ficha de OS diverge do portal `/rastrear` (que lê o banco). Trocar de dispositivo apaga o histórico visto no admin.
+
+### 🟡 Código morto / scaffolding de protótipo (mesmo padrão removido de `os.js`)
+
+**6. `assets/js/admin/os.js:477-478`** — comentário "seedMockData removido" na linha 477, mas a função de 200 linhas **ainda existe** a partir da 478. É código morto — nunca chamado, mas causa confusão.
+
+**7. `assets/js/admin/estoque.js:67,507-518`** — `seedMockData()` injeta 6 produtos falsos no localStorage quando a API falha. Mesmo padrão que foi justificadamente removido de `os.js`.
+
+**8. Fallbacks de localStorage mascarando erros de API** nos seguintes arquivos (mesmo padrão):
+- `os-detalhes.js`: linhas 159-164, 726-745, 836-837, 915-937, 1055-1071
+- `estoque.js`: linhas 106-108, 289-292, 320-324, 405-409
+- `builder.js`: linhas 104-107, 119-152, 295-298, 347-389
+- `relatorios.js`: linhas 40-42, 55-57
+- `os.js:89-95` — `fetchCustomers()` cai em 4 clientes mock hardcoded (`cust-1`...`cust-4`); criar OS com esses IDs falha no servidor.
+
+### 🟡 Site cliente — único ponto
+
+**9. Imagens faltando em todas as páginas públicas**
+- `assets/img/` contém apenas `.gitkeep`.
+- Faltam: `/favicon.ico`, `/assets/img/favicon.svg`, `/assets/img/apple-touch-icon.png`, `/assets/img/og.jpg`.
+- Efeito: sem favicon em nenhuma página; compartilhamentos no WhatsApp/redes sem imagem de preview.
+- Para corrigir: criar os assets (design) e colocar na pasta. Não é código — é asset.
+
+### Como atacar na próxima sessão
+
+**Prioridade 1 (seguro, rápido):** fixes 1, 2, 3 — são 3 substituições de string em builder.js e relatorios.js. Sem risco de regressão.
+
+**Prioridade 2 (médio):** fix 4 — criar `api/admin/os/photos.js` (upload para Supabase Storage ou armazenar URL).
+
+**Prioridade 3 (profundo):** fix 5 — refatorar `loadOSHistory()` para ler de `os_status_history` via API.
+
+**Prioridade 4 (limpeza):** bugs 6-8 — remover seedMockData e fallbacks de localStorage de os.js, estoque.js, builder.js, relatorios.js. Mesmo racional da limpeza já feita em os.js.
+
+---
 
 **Contexto de negócio — Feature 007:**
 - Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).
