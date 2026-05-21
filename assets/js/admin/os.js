@@ -36,9 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let osList = [];
   let customersList = [];
 
-  // Seed default items in localStorage if empty to make the prototype usable instantly
-  seedMockData();
-
   // 1. Initial Load & Setup
   fetchCustomers();
   fetchOS();
@@ -128,9 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha ao ler OS');
       }
     } catch (err) {
-      console.log('API de OS não existente. Carregando dados locais persistidos no localStorage...');
-      const stored = localStorage.getItem('iflcosta_os_list');
-      osList = stored ? JSON.parse(stored) : [];
+      console.error('Erro ao carregar OS:', err);
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--color-error-text);padding:var(--space-6);">Erro ao carregar Ordens de Serviço. Verifique sua conexão.</td></tr>`;
+      osList = [];
     } finally {
       renderList();
       toggleLoading(false);
@@ -341,22 +338,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha ao gravar OS na API.');
       }
     } catch (err) {
-      console.warn('API /api/admin/os indisponível. Salvando no localStorage localmente...', err);
-      
-      // Auto-increment OS number local-side
-      const nextNumber = osList.length > 0 ? Math.max(...osList.map(o => o.os_number)) + 1 : 1001;
-      payload.os_number = nextNumber;
-      payload.id = 'os-' + Math.random().toString(36).substring(2, 11);
-
-      osList.push(payload);
-      localStorage.setItem('iflcosta_os_list', JSON.stringify(osList));
-
-      // Injeta também no histórico de status do mockup de rastreamento
-      saveMockStatusHistory(payload.id, 'rascunho');
-
-      closeOsModal();
-      alert(`OS #${payload.os_number} aberta com sucesso no modo offline!`);
-      window.location.href = `/admin/os/detalhes?id=${payload.id}`;
+      console.error('Erro ao criar OS:', err);
+      showModalError(`Erro ao criar OS: ${err.message}`);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
@@ -491,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return text.replace(/[&<>"']/g, m => map[m]);
   }
 
-  // Seeding localStorage for visual premium testing
+  // (seedMockData removido — era código de protótipo)
   function seedMockData() {
     if (localStorage.getItem('iflcosta_os_list')) return;
 
@@ -695,32 +678,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      localStorage.setItem(`iflcosta_os_history_${os.id}`, JSON.stringify(history));
     });
-  }
-
-  function saveMockStatusHistory(osId, newStatus) {
-    const historyKey = `iflcosta_os_history_${osId}`;
-    const stored = localStorage.getItem(historyKey);
-    let history = stored ? JSON.parse(stored) : [];
-
-    // Fechar o último se houver
-    if (history.length > 0) {
-      const last = history[history.length - 1];
-      if (!last.exited_at) {
-        last.exited_at = new Date().toISOString();
-        last.duration_seconds = Math.floor((new Date() - new Date(last.entered_at)) / 1000);
-      }
-    }
-
-    history.push({
-      id: crypto.randomUUID ? crypto.randomUUID() : 'hist-' + Math.random().toString(36).substring(2, 9),
-      os_id: osId,
-      status: newStatus,
-      entered_at: new Date().toISOString(),
-      exited_at: null
-    });
-
-    localStorage.setItem(historyKey, JSON.stringify(history));
   }
 });

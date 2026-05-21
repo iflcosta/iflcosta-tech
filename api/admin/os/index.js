@@ -230,7 +230,7 @@ async function handlePost(req, supabase, actor) {
       status: status?.trim() || 'rascunho',
       prazo_prometido: prazo_prometido ? new Date(prazo_prometido).toISOString() : null,
       valor_cobrado: typeof valor_cobrado === 'number' ? valor_cobrado : 0.00,
-      valor_custo_pecas: typeof valor_custo_pecas === 'number' ? valor_custo_pecas : 0.00,
+      'valor_custo_peças': typeof valor_custo_pecas === 'number' ? valor_custo_pecas : 0.00,
       forma_pagamento: forma_pagamento?.trim() || null,
       garantia_dias: typeof garantia_dias === 'number' ? garantia_dias : 90,
       garantia_de: garantia_de || null,
