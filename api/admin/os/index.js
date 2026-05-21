@@ -68,6 +68,7 @@ async function handleGet(req, supabase) {
     const status = url.searchParams.get('status')?.trim();
     const customerId = url.searchParams.get('customer_id')?.trim();
     const atrasado = url.searchParams.get('atrasado') === 'true';
+    const aberta = url.searchParams.get('aberta') === 'true';
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const orderBy = url.searchParams.get('order_by') || 'prazo_prometido';
@@ -135,6 +136,11 @@ async function handleGet(req, supabase) {
       query = query
         .lt('prazo_prometido', now)
         .not('status', 'in', '("entregue","cancelado","cliente_desistiu")');
+    }
+
+    // 5. Filtro por OS Abertas (qualquer estado não-terminal)
+    if (aberta) {
+      query = query.not('status', 'in', '("entregue","cancelado","cliente_desistiu")');
     }
 
     // 5. Ordenação
