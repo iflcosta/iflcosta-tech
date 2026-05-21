@@ -37,9 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha no GET');
       }
     } catch (err) {
-      console.warn('Erro ao carregar produtos. Usando localStorage...', err);
-      const stored = localStorage.getItem('iflcosta_products_list');
-      allProducts = stored ? JSON.parse(stored) : [];
+      console.error('Erro ao carregar produtos da API:', err);
+      allProducts = [];
     }
 
     // Carrega movimentações
@@ -52,9 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha no GET');
       }
     } catch (err) {
-      console.warn('Erro ao carregar movimentações. Usando localStorage...', err);
-      const stored = localStorage.getItem('iflcosta_movements_list');
-      allMovements = stored ? JSON.parse(stored) : [];
+      console.error('Erro ao carregar movimentações da API:', err);
+      allMovements = [];
     }
   }
 
@@ -64,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     allProducts.forEach(p => {
       const qty = p.qty_atual || 0;
-      totalCusto += qty * (p.preco_custo || 0);
+      totalCusto += qty * (p.custo_atual || 0);
       totalVenda += qty * (p.preco_venda || 0);
     });
 
@@ -81,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sorted = [...allProducts]
       .filter(p => p.preco_venda > 0)
       .map(p => {
-        const margem = ((p.preco_venda - p.preco_custo) / p.preco_venda) * 100;
+        const margem = ((p.preco_venda - p.custo_atual) / p.preco_venda) * 100;
         return { ...p, margem };
       })
       .sort((a, b) => b.margem - a.margem)
@@ -95,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     topProductsBody.innerHTML = sorted.map(p => `
       <tr>
         <td style="font-weight: var(--font-medium);">${escapeHtml(p.nome)}</td>
-        <td style="text-align: right;">R$ ${p.preco_custo.toFixed(2)}</td>
+        <td style="text-align: right;">R$ ${(p.custo_atual || 0).toFixed(2)}</td>
         <td style="text-align: right; font-weight: var(--font-bold);">R$ ${p.preco_venda.toFixed(2)}</td>
         <td style="text-align: right; color: var(--color-success); font-weight: var(--font-bold);">${p.margem.toFixed(0)}%</td>
       </tr>
@@ -104,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderAlerts() {
     const alerts = allProducts
-      .filter(p => p.qty_atual <= (p.qty_minimo || 0))
+      .filter(p => p.qty_atual <= (p.qty_minima || 0))
       .sort((a, b) => a.qty_atual - b.qty_atual);
 
     if (alerts.length === 0) {
@@ -120,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td style="font-weight: var(--font-medium);">${escapeHtml(p.nome)}</td>
           <td style="color: var(--color-text-tertiary);">${escapeHtml(p.sku || 'N/A')}</td>
           <td style="text-align: center; font-weight: var(--font-bold); color: ${color};">${p.qty_atual}</td>
-          <td style="text-align: center;">${p.qty_minimo || 0}</td>
+          <td style="text-align: center;">${p.qty_minima || 0}</td>
         </tr>
       `;
     }).join('');
@@ -153,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentCostVal = 0;
     allProducts.forEach(p => {
-      currentCostVal += (p.qty_atual || 0) * (p.preco_custo || 0);
+      currentCostVal += (p.qty_atual || 0) * (p.custo_atual || 0);
     });
 
     values[pointsCount - 1] = currentCostVal;

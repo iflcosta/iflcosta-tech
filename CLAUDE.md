@@ -67,7 +67,7 @@ tests/                  # Playwright
 
 ## 4. Estado atual do projeto (atualizar conforme avança)
 
-> Última atualização: 2026-05-21
+> Última atualização: 2026-05-22
 
 | Feature | Status | Próxima ação |
 |---------|--------|--------------|
@@ -76,14 +76,11 @@ tests/                  # Playwright
 | **003-lead-capture** | 100% — Concluído e homologado | — |
 | **004-admin-auth** | 100% — Concluído e ativo | — |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | specs retroativas: plan.md + tasks.md adicionados |
-| **006-admin-os** | 100% core + tracking upgrade implementado (código pronto, migration pendente) | Aplicar `2026_05_21_create_tracking_upgrade.sql` no Supabase |
-| **007-admin-inventory** | 100% T001–T013 — T008 (peças↔OS), T009–T011 (PC Builder), T012/T013 (relatórios + E2E) todos implementados pelo Antigravity | Validar em produção |
+| **006-admin-os** | 100% — tracking upgrade + portal /rastrear a11y concluídos; migration aplicada | — |
+| **007-admin-inventory** | ✅ Bugs críticos corrigidos (2026-05-22) — pronto para homologação com dados reais | Homologar em produção |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
-
-**Próxima tarefa crítica:**
-
-1. **Aplicar migration `tracking_upgrade`** — `supabase/migrations/2026_05_21_create_tracking_upgrade.sql` via SQL editor do painel Supabase. Adiciona: `os_number`, `is_custom_pc`, `payment_status`, `digital_warranty_code` em `repairs`; `public_notes`, `private_notes` em `os_status_history`; trigger de numeração automática de OS; view pública sanitizada `public_repair_tracking`.
+| **010-financeiro** | 100% T001–T006 — spec/plan/tasks, API, UI, gráfico canvas, sidebar, dashboard card, suíte E2E | Em produção; homologar com dados reais |
 
 **O que o Antigravity implementou (commits 999c6ac + 5e37c13):**
 - **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)
@@ -92,13 +89,46 @@ tests/                  # Playwright
 - **Tracking upgrade (bônus)**: reescrita de `rastrear/index.html` + `assets/js/rastrear.js` com glassmorphism, timeline pública com notas técnicas, showcase de Custom PC; API `tracking.js` + `status.js` + `os/index.js` atualizados; spec em `.specs/006-admin-os/tracking_upgrade.md`
 - **Specs retroativas**: `plan.md` + `tasks.md` para 005 e 006
 
-> Migrações 006, 007 e `harden_db_functions` aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). Migration `2026_05_21_create_tracking_upgrade.sql` **ainda não aplicada** — aplicar pelo SQL editor do painel. Não usar o CLI de migrations.
+> Migrações 006, 007, `harden_db_functions` e `2026_05_21_create_tracking_upgrade` aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). Aplicar migrações pelo SQL editor do painel. Não usar o CLI de migrations.
 
 **Dashboard (2026-05-21):**
-- Cards de stat são links clicáveis para os módulos ativos (leads/OS/estoque).
+- Cards de stat são links clicáveis para os módulos ativos (leads/OS/estoque/financeiro).
 - JS inline em `admin/index.html` carrega contagens reais via API na inicialização.
+- Card "Receita do Mês" (F010) substituiu o card WhatsApp "Em breve".
 - Novo campo "Nota Técnica Pública" na OS → aparece na timeline do portal de rastreamento do cliente.
 - Novo campo `payment_status` (pendente/parcial/pago) na OS.
+
+**Estado da sessão 2026-05-21 (Claude):**
+- **Banco de dados zerado** — TRUNCATE em todas as tabelas operacionais (leads, customers, repairs, history, products, etc.) para homologação com dados reais. Schema/migrations/auth intactos.
+- F010 (Painel Financeiro) implementada — `.specs/010-financeiro/` completo.
+- Bugs corrigidos: modal de conversão CRM; criação de OS (`valor_custo_peças`); botão de tema sumindo no desktop; cards do dashboard (Leads usava endpoint errado; "OS Abertas" filtrava status inexistente — agora `?aberta=true` na API).
+- `tests/admin-os.spec.js` estava corrompido (encoding) — restaurado. Suíte E2E 49 testes.
+- **Portal `/rastrear` — auditoria a11y completa:** landmarks (`<main>`, `<section>`, `<header>`), hierarquia de headings (h1→h2), `role="status/alert"` no loading/erro, `aria-live="polite"`, lightbox com `role="dialog" aria-modal="true"` + Tab-trap + Esc key + retorno de foco, `<button>` nas thumbs de foto com `aria-label`, `aria-hidden` em elementos decorativos, opacidade do estado futuro corrigida (0.4→0.7 para WCAG AA). Fallback localStorage morto removido. Specs reconciliadas: `tracking_design.md` marcada como substituída, `tracking_upgrade.md` marcada como implementada. ADR 0006 criado (tema escuro autocontido — exceção deliberada).
+
+---
+
+## PENDÊNCIAS TÉCNICAS — resolvidas em 2026-05-22
+
+> Bugs 1–8 corrigidos e commitados. Bug 9 é asset de design (não-código).
+
+### ✅ Bugs F007 corrigidos (2026-05-22)
+
+1. `builder.js` — endpoint `/api/admin/customers` → `/api/admin/crm/customers` ✅
+2. `builder.js` + `relatorios.js` + `os-detalhes.js` — campo `preco_custo` → `custo_atual` ✅
+3. `relatorios.js` — campo `qty_minimo` → `qty_minima` ✅
+4. `api/admin/os/photos.js` criado — upload Supabase Storage + `repair_photos` ✅
+5. `os-detalhes.js` — `loadStatusHistory()` + localStorage de histórico removidos; `saveStatusTransition()` API-only ✅
+6–8. `seedMockData` e todos os fallbacks de localStorage removidos de `os.js`, `estoque.js`, `builder.js`, `relatorios.js`, `os-detalhes.js` ✅
+
+### 🟡 Pendência remanescente (design/asset)
+
+**Bug 9 — Imagens faltando em todas as páginas públicas**
+- `assets/img/` contém apenas `.gitkeep`.
+- Faltam: `/favicon.ico`, `/assets/img/favicon.svg`, `/assets/img/apple-touch-icon.png`, `/assets/img/og.jpg`.
+- Efeito: sem favicon em nenhuma página; compartilhamentos no WhatsApp/redes sem imagem de preview.
+- Para corrigir: criar os assets (design) e colocar na pasta. Não é código — é asset.
+
+---
 
 **Contexto de negócio — Feature 007:**
 - Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).
