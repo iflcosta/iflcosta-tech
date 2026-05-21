@@ -241,6 +241,21 @@ document.addEventListener('DOMContentLoaded', () => {
     detPrazoPrometido.value = currentOS.prazo_prometido;
     detGarantiaDias.value = currentOS.garantia_dias !== undefined ? currentOS.garantia_dias : 90;
 
+    // Código de garantia digital (read-only)
+    const warrantyCodeEl = document.getElementById('det-warranty-code');
+    if (warrantyCodeEl) {
+      warrantyCodeEl.value = currentOS.digital_warranty_code || '—';
+    }
+    const btnCopyWarranty = document.getElementById('btn-copy-warranty-code');
+    if (btnCopyWarranty && currentOS.digital_warranty_code) {
+      btnCopyWarranty.onclick = () => {
+        navigator.clipboard.writeText(currentOS.digital_warranty_code).then(() => {
+          btnCopyWarranty.textContent = '✅';
+          setTimeout(() => { btnCopyWarranty.textContent = '📋'; }, 1500);
+        });
+      };
+    }
+
     // Calcular Lucro e Expiração de Garantia
     calculateProfitMargin();
     calculateWarrantyExpiry();

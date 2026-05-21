@@ -111,7 +111,9 @@ async function handleGet(req, supabase) {
         `equipamento->>marca.ilike.%${search}%`,
         `equipamento->>modelo.ilike.%${search}%`,
         `equipamento->>serial.ilike.%${search}%`,
-        `problema_reportado.ilike.%${search}%`
+        `problema_reportado.ilike.%${search}%`,
+        `os_number.ilike.%${search}%`,
+        `digital_warranty_code.ilike.%${search}%`
       );
 
       query = query.or(repairOrParams.join(','));

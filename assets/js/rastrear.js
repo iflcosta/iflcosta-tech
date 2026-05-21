@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
       estimated_delivery:   raw.prazo_prometido || null,
       digital_warranty_code:raw.digital_warranty_code || null,
       warranty_dias: raw.garantia_dias || 90,
+      warranty_ate:  raw.garantia_ate  || raw.warranty_ate || null,
       parts:  raw.pecas  || raw.parts  || [],
       photos: raw.fotos  || raw.photos || [],
     };
@@ -428,7 +429,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (osData.digital_warranty_code) {
       show(elWCodeBlock);
       elWCode.textContent = osData.digital_warranty_code;
-      elWPeriod.textContent = `${osData.warranty_dias || 90} dias de cobertura integral`;
+      const endDate = osData.warranty_ate ? fmtDate(osData.warranty_ate) : null;
+      elWPeriod.textContent = endDate
+        ? `${osData.warranty_dias || 90} dias · válida até ${endDate}`
+        : `${osData.warranty_dias || 90} dias de cobertura integral`;
     }
   }
 
