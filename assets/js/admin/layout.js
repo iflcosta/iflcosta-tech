@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { label: 'Clientes', path: '/admin/clientes', icon: '👥' },
     { label: 'Ordens de Serviço', path: '/admin/os', icon: '🛠️' },
     { label: 'Estoque', path: '/admin/estoque', icon: '📦' },
+    { label: 'Financeiro', path: '/admin/financeiro', icon: '💰' },
     { label: 'Wiki', path: '/admin/wiki', icon: '📖' },
     { label: 'Configurações', path: '/admin/configuracoes', icon: '⚙️' }
   ];

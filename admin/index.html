@@ -68,15 +68,15 @@
           </div>
         </a>
 
-        <!-- WhatsApp -->
-        <div class="stat-card" style="opacity: 0.55;">
-          <div class="stat-icon">💬</div>
+        <!-- Financeiro -->
+        <a href="/admin/financeiro/" class="stat-card" style="text-decoration: none; cursor: pointer;">
+          <div class="stat-icon">💰</div>
           <div class="stat-info">
-            <span class="stat-label">WhatsApp</span>
-            <span class="stat-value">—</span>
-            <span class="stat-badge">Em breve</span>
+            <span class="stat-label">Receita do Mês</span>
+            <span class="stat-value" id="stat-receita">—</span>
+            <span class="stat-badge">Financeiro ativo</span>
           </div>
-        </div>
+        </a>
       </div>
 
       <!-- Status dos módulos -->
@@ -100,10 +100,11 @@
   <script type="module">
     async function loadStats() {
       try {
-        const [leadsRes, osRes, estoqueRes] = await Promise.all([
+        const [leadsRes, osRes, estoqueRes, finRes] = await Promise.all([
           fetch('/api/admin/leads?limit=1&status=novo'),
           fetch('/api/admin/os?limit=1&status=aberta'),
           fetch('/api/admin/inventory/products?baixo_estoque=true&limit=1'),
+          fetch('/api/admin/financeiro?periodo=este_mes'),
         ]);
 
         if (leadsRes.ok) {
@@ -117,6 +118,12 @@
         if (estoqueRes.ok) {
           const d = await estoqueRes.json();
           document.getElementById('stat-estoque').textContent = d.count ?? '—';
+        }
+        if (finRes.ok) {
+          const d = await finRes.json();
+          const receita = d.resumo?.receita ?? 0;
+          document.getElementById('stat-receita').textContent =
+            new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita);
         }
       } catch {
         // silently fail — offline ou sem sessão
