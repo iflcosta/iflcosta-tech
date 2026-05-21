@@ -184,7 +184,9 @@ async function handlePost(req, supabase, actor) {
       valor_custo_pecas,
       forma_pagamento,
       garantia_dias,
-      garantia_de
+      garantia_de,
+      is_custom_pc,
+      payment_status
     } = body;
 
     // Validações básicas obrigatórias
@@ -232,6 +234,8 @@ async function handlePost(req, supabase, actor) {
       forma_pagamento: forma_pagamento?.trim() || null,
       garantia_dias: typeof garantia_dias === 'number' ? garantia_dias : 90,
       garantia_de: garantia_de || null,
+      is_custom_pc: typeof is_custom_pc === 'boolean' ? is_custom_pc : false,
+      payment_status: payment_status?.trim() || 'pendente',
       updated_at: new Date().toISOString()
     };
 

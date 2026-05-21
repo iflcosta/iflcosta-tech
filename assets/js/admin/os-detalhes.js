@@ -54,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const detLucroValor = document.getElementById('det-lucro-valor');
   const detLucroMargem = document.getElementById('det-lucro-margem');
   const detFormaPagamento = document.getElementById('det-forma-pagamento');
+  const detIsCustomPc = document.getElementById('det-is-custom-pc');
+  const detPaymentStatus = document.getElementById('det-payment-status');
+  const detStatusPublicNotes = document.getElementById('det-status-public-notes');
 
   // Deadlines and warranties
   const detPrazoPrometido = document.getElementById('det-prazo-prometido');
@@ -230,6 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
     detValorCobrado.value = currentOS.valor_cobrado || '';
     detCustoPecas.value = currentOS.valor_custo_peças || '';
     detFormaPagamento.value = currentOS.forma_pagamento || '';
+    
+    if (detIsCustomPc) detIsCustomPc.checked = currentOS.is_custom_pc || false;
+    if (detPaymentStatus) detPaymentStatus.value = currentOS.payment_status || 'pendente';
 
     // Prazos e Garantias
     detPrazoPrometido.value = currentOS.prazo_prometido;
@@ -287,12 +293,14 @@ document.addEventListener('DOMContentLoaded', () => {
       allowed.map(status => `<option value="${status}">${labelMap[status]}</option>`).join('');
     
     detStatusNotes.value = '';
+    if (detStatusPublicNotes) detStatusPublicNotes.value = '';
   }
 
   // Save specific status transition and record in timeline
   async function saveStatusTransition() {
     const nextStatus = detStatusSelect.value;
     const notesText = detStatusNotes.value.trim();
+    const publicNotesText = detStatusPublicNotes ? detStatusPublicNotes.value.trim() : '';
 
     if (!nextStatus) {
       alert('Selecione um status de transição válido.');
@@ -316,6 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         last.exited_at = new Date().toISOString();
         last.duration_seconds = Math.floor((new Date() - new Date(last.entered_at)) / 1000);
         last.notes = notesText || null;
+        last.public_notes = publicNotesText || null;
       }
     }
 
@@ -326,17 +335,43 @@ document.addEventListener('DOMContentLoaded', () => {
       status: nextStatus,
       entered_at: new Date().toISOString(),
       exited_at: null,
-      notes: notesText || null
+      notes: notesText || null,
+      public_notes: publicNotesText || null
     });
 
     localStorage.setItem(historyKey, JSON.stringify(osHistory));
 
-    // Salva a OS
+    // Salva a OS localmente
     saveOSDataDirectly();
+
+    // Sincroniza via API
+    try {
+      const response = await fetch('/api/admin/os/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: currentOS.id,
+          status: nextStatus,
+          notes: notesText || null,
+          public_notes: publicNotesText || null
+        })
+      });
+
+      if (response.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+
+      if (!response.ok) throw new Error('Falha ao atualizar status na API');
+
+      alert(`Status atualizado com sucesso no servidor e localmente de ${previousStatus.toUpperCase()} para ${nextStatus.toUpperCase()}!`);
+    } catch (err) {
+      console.warn('Erro ao atualizar status na API, gravado no localStorage de backup.', err);
+      alert(`Status atualizado localmente (Modo Offline) de ${previousStatus.toUpperCase()} para ${nextStatus.toUpperCase()}!`);
+    }
 
     // Rerenderiza
     renderOSDetails();
-    alert(`Status atualizado com sucesso de ${previousStatus.toUpperCase()} para ${nextStatus.toUpperCase()}!`);
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -653,6 +688,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     currentOS.prazo_prometido = detPrazoPrometido.value;
     currentOS.garantia_dias = parseInt(detGarantiaDias.value) || 0;
+    
+    currentOS.is_custom_pc = detIsCustomPc ? detIsCustomPc.checked : false;
+    currentOS.payment_status = detPaymentStatus ? detPaymentStatus.value : 'pendente';
 
     try {
       const response = await fetch('/api/admin/os', {

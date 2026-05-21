@@ -328,6 +328,10 @@
                 <input type="text" id="det-equip-serial" class="input">
               </div>
             </div>
+            <div class="field" style="margin-top: var(--space-4); display: flex; align-items: center; gap: var(--space-2);">
+              <input type="checkbox" id="det-is-custom-pc" style="width: 18px; height: 18px; cursor: pointer;">
+              <label for="det-is-custom-pc" style="font-weight: var(--font-medium); cursor: pointer; user-select: none; margin: 0;">🖥️ Layout Custom PC (Showcase de Componentes)</label>
+            </div>
           </div>
 
           <!-- Card de Defeito e Laudo Técnico -->
@@ -468,8 +472,13 @@
             </div>
 
             <div class="field">
-              <label for="det-status-notes">Notas da Transição (Histórico)</label>
-              <input type="text" id="det-status-notes" class="input" placeholder="Ex: Aguardando tela do fornecedor X">
+              <label for="det-status-notes">Notas de Auditoria (Interno)</label>
+              <input type="text" id="det-status-notes" class="input" placeholder="Ex: Peça encomendada do fornecedor X">
+            </div>
+            <div class="field">
+              <label for="det-status-public-notes">Nota Técnica Pública (Timeline do Cliente)</label>
+              <textarea id="det-status-public-notes" class="textarea" style="min-height: 60px;" placeholder="Explicação amigável sobre o progresso desta etapa..."></textarea>
+              <span class="hint">Essa mensagem ficará visível para o cliente no link de rastreamento do WhatsApp.</span>
             </div>
 
             <button type="button" id="btn-save-status" class="btn btn--primary btn--block">
@@ -511,6 +520,14 @@
                 <option value="Cartão de Crédito">Cartão de Crédito</option>
                 <option value="Cartão de Débito">Cartão de Débito</option>
                 <option value="Transferência">Transferência / TED</option>
+              </select>
+            </div>
+            <div class="field" style="margin-top: var(--space-2);">
+              <label style="color: var(--color-text-secondary);">Situação Financeira</label>
+              <select id="det-payment-status" class="select">
+                <option value="pendente">Acerto na Retirada (Pendente)</option>
+                <option value="parcial">Entrada Paga (Parcial)</option>
+                <option value="pago">Quitado / Pago</option>
               </select>
             </div>
           </div>

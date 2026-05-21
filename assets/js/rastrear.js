@@ -1,467 +1,600 @@
 // /assets/js/rastrear.js
-// Vanilla JS Module — Public Mobile-First Client Tracking & Timeline (Feature 006)
+// Módulo público de rastreamento de OS — Feature 006 (Tracking Upgrade)
+// Zero-Build · Vanilla JS ES Module · LGPD Compliant
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Parse tracking token from URL query parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get('token');
 
-  const loadingState = document.getElementById('tracking-loading');
-  const errorState = document.getElementById('tracking-error');
-  const mainContent = document.getElementById('tracking-content');
+  // ─── DOM References ───────────────────────────────────────────────────────
+  const $ = (id) => document.getElementById(id);
 
-  // Customer UI Elements
-  const clientGreeting = document.getElementById('client-greeting');
-  const clientDeviceName = document.getElementById('client-device-name');
-  const clientDeviceSerial = document.getElementById('client-device-serial');
-  const clientDeviceDeadline = document.getElementById('client-device-deadline');
-  const osNumberBadge = document.getElementById('os-number-badge');
+  const elLoading        = $('tracking-loading');
+  const elError          = $('tracking-error');
+  const elContent        = $('tracking-content');
+  const elOsBadge        = $('os-number-badge');
+  const elGreeting       = $('client-greeting');
+  const elDeviceName     = $('device-name');
+  const elDeviceSerial   = $('device-serial');
+  const elDeviceDeadline = $('device-deadline');
+  const elBadgeCustomPC  = $('badge-custom-pc');
+  const elStatusCard     = $('active-status-card');
+  const elStatusPill     = $('status-pill');
+  const elStatusLabel    = $('status-label');
+  const elStatusHeadline = $('status-headline');
+  const elActiveTimer    = $('active-timer');
+  const elActiveNote     = $('active-note');
+  const elTimeline       = $('timeline');
+  const elPartsSection   = $('parts-section');
+  const elWarrantySection= $('warranty-section');
+  const elWDeadline      = $('w-deadline');
+  const elWPayment       = $('w-payment');
+  const elWCodeBlock     = $('w-code-block');
+  const elWCode          = $('w-code');
+  const elWPeriod        = $('w-period');
+  const elBtnCopy        = $('btn-copy-warranty');
+  const elPhotosSection  = $('photos-section');
+  const elPhotosGrid     = $('photos-grid');
+  const elWaFooter       = $('wa-footer');
+  const elBtnWa          = $('btn-wa');
+  const elLightbox       = $('lightbox');
+  const elLightboxImg    = $('lightbox-img');
+  const elLightboxClose  = $('lightbox-close');
 
-  // Focus Status Card
-  const activeStatusContainer = document.getElementById('active-status-container');
-  const activeStatusBadge = document.getElementById('active-status-badge');
-  const activeStatusName = document.getElementById('active-status-name');
-  const activeStatusHeadline = document.getElementById('active-status-headline');
-  const activeStatusTimer = document.getElementById('active-status-timer');
+  // ─── State ───────────────────────────────────────────────────────────────
+  const params  = new URLSearchParams(window.location.search);
+  const token   = params.get('token');
+  let   osData  = null;
+  let   history = [];
+  let   timerID = null;
 
-  // Timeline list
-  const timelineList = document.getElementById('timeline-list');
-
-  // Photos Grid
-  const clientPhotosSection = document.getElementById('client-photos-section');
-  const clientPhotosGrid = document.getElementById('client-photos-grid');
-
-  // WhatsApp footer CTA
-  const waFooter = document.getElementById('wa-footer');
-  const btnWaClientCta = document.getElementById('btn-wa-client-cta');
+  // ─── Init ────────────────────────────────────────────────────────────────
+  if (!token) { showError(); return; }
 
   // Lightbox
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const lightboxClose = document.getElementById('lightbox-close');
+  elLightboxClose.addEventListener('click', () => elLightbox.classList.remove('open'));
+  elLightbox.addEventListener('click', (e) => { if (e.target === elLightbox) elLightbox.classList.remove('open'); });
 
-  let currentOS = null;
-  let statusHistory = [];
-  let timerInterval = null;
+  // Copy warranty code
+  elBtnCopy.addEventListener('click', () => copyWarrantyCode());
 
-  if (!token) {
-    showError();
-    return;
-  }
+  fetchData();
 
-  // 1. Fetch Sanitized Tracking Data
-  fetchTrackingData();
-
-  // Setup Lightbox Closing
-  lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) lightbox.classList.remove('open');
-  });
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Fetch & Sanitization (LGPD Compliance)
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  async function fetchTrackingData() {
-    loadingState.style.display = 'block';
-    errorState.style.display = 'none';
-    mainContent.style.display = 'none';
+  // ─── Fetch ────────────────────────────────────────────────────────────────
+  async function fetchData() {
+    show(elLoading); hide(elError); hide(elContent);
 
     try {
-      // Tenta consumir o endpoint de tracking público sanitizado
-      const response = await fetch(`/api/admin/os/tracking?token=${token}`);
-      if (response.ok) {
-        const resData = await response.json();
-        currentOS = resData.data;
-        statusHistory = resData.history || [];
-      } else {
-        throw new Error('Falha no fetch');
-      }
-    } catch (err) {
-      console.log('API de Rastreio não encontrada ou rodando localmente. Buscando em localStorage...');
-      
-      // Fallback local: Busca na lista global de OS pelo tracking_token correspondente
-      const stored = localStorage.getItem('iflcosta_os_list');
-      const list = stored ? JSON.parse(stored) : [];
-      const rawOS = list.find(o => o.tracking_token === token);
-      
-      if (rawOS) {
-        // Sanitiza os dados locais para simular o endpoint de produção (LGPD)
-        currentOS = {
-          id: rawOS.id,
-          os_number: rawOS.os_number,
-          customer_name: sanitizeCustomerName(rawOS.customer_name), // Apenas primeiro nome
-          equipamento: {
-            tipo: rawOS.equipamento.tipo,
-            marca: rawOS.equipamento.marca,
-            modelo: rawOS.equipamento.modelo,
-            serial: maskSerial(rawOS.equipamento.serial) // Máscara no serial
-          },
-          status: rawOS.status,
-          prazo_prometido: rawOS.prazo_prometido,
-          created_at: rawOS.created_at,
-          garantia_dias: rawOS.garantia_dias,
-          entregue_at: rawOS.entregue_at,
-          photos: rawOS.photos || [],
-          problema_reportado: rawOS.problema_reportado
-        };
+      const res = await fetch(`/api/admin/os/tracking?token=${encodeURIComponent(token)}`);
 
-        // Carrega histórico de status local
-        const historyKey = `iflcosta_os_history_${rawOS.id}`;
-        const storedHistory = localStorage.getItem(historyKey);
-        statusHistory = storedHistory ? JSON.parse(storedHistory) : [];
-      }
+      if (res.status === 404) { showError(); return; }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json = await res.json();
+      const raw = json.data || {};
+      // Normalizar payload da API para o shape interno do JS
+      osData  = normalizeApiPayload(raw);
+      history = raw.historico || raw.history || [];
+
+    } catch (_) {
+      // Fallback local (dev/offline)
+      console.warn('[rastrear] API indisponível — usando localStorage');
+      const raw = findInLocalStorage(token);
+      if (!raw) { showError(); return; }
+      osData  = sanitizeLocal(raw);
+      history = loadLocalHistory(raw.id) || raw.historico || [];
     }
 
-    if (!currentOS) {
-      showError();
-      return;
-    }
-
-    // Renderiza dados do cliente na tela
-    renderTrackingUI();
+    if (!osData) { showError(); return; }
+    render();
   }
 
-  // Sanitiza o nome exibindo apenas o primeiro (LGPD)
-  function sanitizeCustomerName(fullName) {
-    if (!fullName) return 'Cliente';
-    return fullName.trim().split(' ')[0];
+  // ─── Local Fallback ───────────────────────────────────────────────────────
+  function findInLocalStorage(tok) {
+    try {
+      const list = JSON.parse(localStorage.getItem('iflcosta_os_list') || '[]');
+      return list.find(o => o.tracking_token === tok) || null;
+    } catch { return null; }
   }
 
-  // Aplica máscara no serial/IMEI para privacidade: ex: DX3G7892K23 -> DX3G****2K23
-  function maskSerial(serial) {
-    if (!serial) return 'Não informado';
-    const clean = serial.trim();
-    if (clean.length <= 6) return '****';
-    
-    const start = clean.slice(0, 4);
-    const end = clean.slice(-4);
-    return `${start}****${end}`;
+  // Normaliza payload da API real para o shape interno
+  function normalizeApiPayload(raw) {
+    return {
+      os_number:            raw.os_number || `OS-${new Date().getFullYear()}-XXXX`,
+      customer_first_name:  raw.cliente?.nome || firstNameOf(raw.customer_name),
+      equip_tipo:  raw.equipamento?.tipo   || '',
+      equip_marca: raw.equipamento?.marca  || '',
+      equip_modelo:raw.equipamento?.modelo || '',
+      equip_serial:raw.equipamento?.serial || 'Não informado',
+      status:      raw.status  || 'rascunho',
+      is_custom_pc:raw.is_custom_pc || false,
+      payment_status:       raw.payment_status || 'pendente',
+      estimated_delivery:   raw.prazo_prometido || null,
+      digital_warranty_code:raw.digital_warranty_code || null,
+      warranty_dias: raw.garantia_dias || 90,
+      parts:  raw.pecas  || raw.parts  || [],
+      photos: raw.fotos  || raw.photos || [],
+    };
   }
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // UI Rendering
-  // ─────────────────────────────────────────────────────────────────────────────
+  function sanitizeLocal(raw) {
+    return {
+      os_number:           raw.os_number   || `OS-${new Date().getFullYear()}-XXXX`,
+      customer_first_name: firstNameOf(raw.customer_name || raw.cliente?.nome),
+      equip_tipo:  raw.equipamento?.tipo   || '',
+      equip_marca: raw.equipamento?.marca  || '',
+      equip_modelo:raw.equipamento?.modelo || '',
+      equip_serial:maskSerial(raw.equipamento?.serial),
+      status:      raw.status || 'rascunho',
+      is_custom_pc:raw.is_custom_pc || false,
+      payment_status: raw.payment_status || 'pendente',
+      estimated_delivery: raw.prazo_prometido || null,
+      digital_warranty_code: raw.digital_warranty_code || null,
+      warranty_dias: raw.garantia_dias || 90,
+      parts: raw.parts || [],
+      photos: raw.photos || [],
+    };
+  }
 
-  function renderTrackingUI() {
-    // Header
-    osNumberBadge.textContent = `Serviço nº ${currentOS.os_number}`;
+  function loadLocalHistory(osId) {
+    try {
+      return JSON.parse(localStorage.getItem(`iflcosta_os_history_${osId}`) || '[]');
+    } catch { return []; }
+  }
 
-    // Welcome card
-    clientGreeting.textContent = `Olá, ${currentOS.cliente?.nome || currentOS.customer_name || 'Cliente'}!`;
-    clientDeviceName.textContent = `${currentOS.equipamento.marca} ${currentOS.equipamento.modelo}`;
-    clientDeviceSerial.textContent = currentOS.equipamento.serial;
-    clientDeviceDeadline.textContent = formatDate(currentOS.prazo_prometido);
-
-    // Active Status Display
-    renderActiveStatusCard();
-
-    // Timeline list
+  // ─── Main Render ──────────────────────────────────────────────────────────
+  function render() {
+    renderHeader();
+    renderWelcome();
+    renderActiveStatus();
     renderTimeline();
+    renderParts();
+    renderWarranty();
+    renderPhotos();
+    renderWhatsApp();
 
-    // Photos Grid
-    renderPhotosGrid();
-
-    // WhatsApp CTA
-    setupWhatsAppCTA();
-
-    // Hide Loading, Show Content
-    loadingState.style.display = 'none';
-    mainContent.style.display = 'block';
-
-    // Start Dynamic Timer ticking active state every 60s
-    startActiveTimer();
+    hide(elLoading);
+    show(elContent);
+    startTimer();
   }
 
-  function renderActiveStatusCard() {
-    const status = currentOS.status;
-    
-    // Status translation maps
-    const labelMap = {
-      rascunho: 'Recebido',
-      diagnóstico: 'Em Diagnóstico',
-      aguardando_aprovação: 'Aguardando Aprovação',
-      aprovado: 'Orçamento Aprovado',
-      aguardando_peça: 'Aguardando Peça',
-      em_conserto: 'Em Manutenção',
-      pronto: 'Pronto para Retirada',
-      entregue: 'Aparelho Entregue',
-      cancelado: 'Serviço Cancelado',
-      cliente_desistiu: 'Devolvido'
-    };
-
-    const headlineMap = {
-      rascunho: 'Seu equipamento foi recebido em nosso laboratório.',
-      diagnóstico: 'Iago Lopes está diagnosticando e testando os circuitos.',
-      aguardando_aprovação: 'O laudo técnico foi finalizado! Aguardamos seu OK no WhatsApp.',
-      aprovado: 'Orçamento aprovado com sucesso! Iniciando os preparativos.',
-      aguardando_peça: 'Aguardando chegada da peça de reposição encomendada.',
-      em_conserto: 'Seu equipamento está na bancada sob reparos técnicos ativos.',
-      pronto: 'Seu aparelho está PRONTO! 🎉 Pode vir buscá-lo quando puder.',
-      entregue: 'Reparo finalizado e entregue. A sua garantia está ativa! 🛡️',
-      cancelado: 'A ordem de serviço foi cancelada internamente.',
-      cliente_desistiu: 'Reparo não autorizado. Equipamento disponível para devolução.'
-    };
-
-    activeStatusName.textContent = labelMap[status] || status;
-    activeStatusHeadline.textContent = headlineMap[status] || 'Seu serviço está em andamento.';
-
-    // Setup colors
-    activeStatusBadge.className = `status-badge-lg badge-os--${status}`;
-    activeStatusContainer.className = `active-status-card badge-os--${status}`;
+  // ─── Header ───────────────────────────────────────────────────────────────
+  function renderHeader() {
+    elOsBadge.textContent = osData.os_number || 'OS-????';
   }
+
+  // ─── Welcome Card ─────────────────────────────────────────────────────────
+  function renderWelcome() {
+    elGreeting.textContent = `Olá, ${osData.customer_first_name || 'Cliente'}!`;
+
+    const brand = osData.equip_marca  || '';
+    const model = osData.equip_modelo || '';
+    elDeviceName.textContent   = [brand, model].filter(Boolean).join(' ') || '—';
+    elDeviceSerial.textContent = osData.equip_serial || 'Não informado';
+    elDeviceDeadline.textContent = osData.estimated_delivery
+      ? fmtDate(osData.estimated_delivery)
+      : 'Em definição';
+
+    if (osData.is_custom_pc) elBadgeCustomPC.classList.add('visible');
+  }
+
+  // ─── Active Status Card ───────────────────────────────────────────────────
+  const STATUS_LABELS = {
+    rascunho:              'Equipamento Recebido',
+    diagnostico:           'Em Diagnóstico',
+    aguardando_aprovacao:  'Aguardando Aprovação',
+    aprovado:              'Orçamento Aprovado',
+    aguardando_peca:       'Aguardando Peça',
+    em_conserto:           'Em Manutenção',
+    pronto:                'Pronto para Retirada',
+    entregue:              'Entregue ✓',
+    cancelado:             'Cancelado',
+  };
+
+  const STATUS_HEADLINES = {
+    rascunho:             'Seu equipamento deu entrada no laboratório e está aguardando diagnóstico.',
+    diagnostico:          'Iago está diagnosticando seu equipamento e identificando os componentes afetados.',
+    aguardando_aprovacao: 'O laudo técnico está pronto! Aguardamos sua aprovação do orçamento pelo WhatsApp.',
+    aprovado:             'Orçamento aprovado! Iniciando os preparativos e separação de peças.',
+    aguardando_peca:      'A peça necessária foi encomendada e aguardamos a chegada para iniciar o reparo.',
+    em_conserto:          'Seu equipamento está na bancada em processo de reparo ativo.',
+    pronto:               'Tudo pronto e testado! 🎉 Pode vir buscar seu equipamento.',
+    entregue:             'Reparo concluído e entregue. Sua garantia está ativa! 🛡️',
+    cancelado:            'Esta ordem de serviço foi encerrada.',
+  };
+
+  // Colors per status (HSL)
+  const STATUS_COLORS = {
+    rascunho:             { pill: 'background:rgba(71,85,105,.3);border:1px solid rgba(100,116,139,.4);color:#94a3b8', card: '' },
+    diagnostico:          { pill: 'background:rgba(109,40,217,.25);border:1px solid rgba(139,92,246,.4);color:hsl(260,80%,80%)', card: '' },
+    aguardando_aprovacao: { pill: 'background:rgba(217,119,6,.2);border:1px solid rgba(245,158,11,.4);color:hsl(32,95%,70%)', card: '' },
+    aprovado:             { pill: 'background:rgba(2,132,199,.2);border:1px solid rgba(56,189,248,.4);color:hsl(200,80%,72%)', card: '' },
+    aguardando_peca:      { pill: 'background:rgba(194,65,12,.2);border:1px solid rgba(249,115,22,.4);color:hsl(15,85%,70%)', card: '' },
+    em_conserto:          { pill: 'background:rgba(79,70,229,.2);border:1px solid rgba(129,140,248,.4);color:hsl(240,80%,78%)', card: '' },
+    pronto:               { pill: 'background:rgba(5,150,105,.2);border:1px solid rgba(16,185,129,.4);color:hsl(142,70%,60%)', card: 'status-entregue' },
+    entregue:             { pill: 'background:rgba(5,150,105,.2);border:1px solid rgba(16,185,129,.4);color:hsl(142,70%,60%)', card: 'status-entregue' },
+    cancelado:            { pill: 'background:rgba(127,29,29,.2);border:1px solid rgba(239,68,68,.3);color:hsl(0,70%,65%)', card: 'status-cancelado' },
+  };
+
+  function renderActiveStatus() {
+    const status = normalizeStatus(osData.status);
+    const label    = STATUS_LABELS[status]    || status;
+    const headline = STATUS_HEADLINES[status] || 'Seu serviço está em andamento.';
+    const colors   = STATUS_COLORS[status]    || STATUS_COLORS.rascunho;
+
+    elStatusLabel.textContent    = label;
+    elStatusHeadline.textContent = headline;
+    elStatusPill.setAttribute('style', colors.pill);
+
+    if (colors.card) elStatusCard.classList.add(colors.card);
+
+    // Active public note (most recent from history)
+    const activeStep = history.find(h => !h.exited_at);
+    if (activeStep?.public_notes) {
+      elActiveNote.textContent = `💡 ${activeStep.public_notes}`;
+      show(elActiveNote);
+    }
+  }
+
+  // ─── Timeline ─────────────────────────────────────────────────────────────
+  const STAGE_FLOW = [
+    { key: 'rascunho',             label: 'Equipamento Recebido',    desc: 'Aparelho registrado e aguardando triagem.' },
+    { key: 'diagnostico',          label: 'Diagnóstico Técnico',     desc: 'Identificação de falhas e componentes afetados.' },
+    { key: 'aguardando_aprovacao', label: 'Aguardando Aprovação',    desc: 'Orçamento gerado, aguardando OK do cliente.' },
+    { key: 'em_conserto',          label: 'Manutenção de Bancada',   desc: 'Reparo ativo com peças e microsoldas.' },
+    { key: 'pronto',               label: 'Finalizado & Testado',    desc: 'Aprovado em todos os testes de qualidade.' },
+    { key: 'entregue',             label: 'Entregue com Garantia',   desc: 'Aparelho retirado — garantia ativa.' },
+  ];
 
   function renderTimeline() {
-    if (statusHistory.length === 0) {
-      timelineList.innerHTML = '<p style="font-size: var(--text-xs); color: var(--color-secondary);">Nenhum histórico de status registrado.</p>';
-      return;
+    const status = normalizeStatus(osData.status);
+    const sorted = [...history]
+      .filter(h => h && h.entered_at)
+      .sort((a, b) => new Date(a.entered_at) - new Date(b.entered_at));
+
+    // Resolve index of the current active stage in the visual flow
+    let activeIdx = STAGE_FLOW.findIndex(s => s.key === status);
+    if (activeIdx === -1) {
+      // Map variations to visual buckets
+      if (['aprovado', 'aguardando_peca'].includes(status)) activeIdx = 3; // em_conserto bucket
     }
 
-    // Sort history chronologically
-    const sortedHistory = [...statusHistory].sort((a, b) => new Date(a.entered_at) - new Date(b.entered_at));
-
-    // Map stages to render past, active and future ones logically
-    const allStages = [
-      { key: 'rascunho', label: 'Equipamento Recebido', desc: 'Aparelho deu entrada no laboratório.' },
-      { key: 'diagnóstico', label: 'Análise & Diagnóstico', desc: 'Identificação de falhas e teste de componentes.' },
-      { key: 'aguardando_aprovação', label: 'Orçamento Gerado', desc: 'Aguardando liberação do cliente para iniciar.' },
-      { key: 'em_conserto', label: 'Manutenção de Bancada', desc: 'Troca de peças e microssoldas sob microscópio.' },
-      { key: 'pronto', label: 'Finalizado & Testado', desc: 'Equipamento aprovado em todos os sensores de carga e toque.' },
-      { key: 'entregue', label: 'Entregue & Garantia', desc: 'Aparelho retirado pelo proprietário com garantia ativa.' }
-    ];
-
-    // Se estiver cancelado ou desistiu, alteramos o final da timeline
-    if (currentOS.status === 'cancelado') {
-      allStages.splice(3, 3, { key: 'cancelado', label: 'Serviço Cancelado', desc: 'Remontagem e arquivamento do ticket.' });
-    } else if (currentOS.status === 'cliente_desistiu') {
-      allStages.splice(2, 4, { key: 'cliente_desistiu', label: 'Devolvido sem Reparo', desc: 'Equipamento devolvido ao proprietário.' });
-    }
-
-    // Encontra o index do status atual do cliente
-    let activeStageIndex = allStages.findIndex(s => s.key === currentOS.status);
-    
-    // Tratamentos especiais para status que mapeiam para o mesmo bloco visual
-    if (activeStageIndex === -1) {
-      if (currentOS.status === 'aprovado') activeStageIndex = 3; // Em conserto
-      if (currentOS.status === 'aguardando_peça') activeStageIndex = 3; // Em conserto
-    }
-
-    timelineList.innerHTML = allStages.map((stage, idx) => {
-      let itemClass = 'future';
-      let dotContent = '⚪';
-      let metaInfo = '';
-
-      // Verifica se esse estágio já passou no histórico
-      const histItem = sortedHistory.find(h => {
-        if (h.status === stage.key) return true;
-        if (stage.key === 'em_conserto' && ['aprovado', 'aguardando_peça', 'em_conserto'].includes(h.status)) return true;
+    const html = STAGE_FLOW.map((stage, idx) => {
+      // Find matching history entry (with alias resolution)
+      const histEntry = sorted.find(h => {
+        const n = normalizeStatus(h.status);
+        if (n === stage.key) return true;
+        if (stage.key === 'em_conserto' && ['aprovado','aguardando_peca','em_conserto'].includes(n)) return true;
         return false;
       });
 
-      if (idx < activeStageIndex || currentOS.status === stage.key && histItem?.exited_at) {
-        itemClass = 'completed';
-        dotContent = '✓';
-        
-        if (histItem) {
-          const dateStr = formatDateTime(histItem.entered_at);
-          const durationStr = histItem.duration_seconds 
-            ? `Concluído em ${formatSecondsDuration(histItem.duration_seconds)}`
-            : 'Etapa concluída';
-          metaInfo = `
-            <div class="timeline-date">${dateStr}</div>
-            <div class="timeline-duration">${durationStr}</div>
-          `;
+      let stateClass = 'is-future';
+      let dotHtml    = '';
+      let metaHtml   = '';
+      let noteHtml   = '';
+
+      const isDone   = idx < activeIdx || (histEntry?.exited_at);
+      const isActive = !isDone && idx === activeIdx;
+
+      if (isDone) {
+        stateClass = 'is-done';
+        dotHtml    = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>';
+        if (histEntry) {
+          metaHtml = `<div class="tl-meta">${fmtDateTime(histEntry.entered_at)}</div>`;
+          if (histEntry.duration_seconds) {
+            metaHtml += `<div class="tl-duration">✓ ${fmtDuration(histEntry.duration_seconds)}</div>`;
+          }
         }
-      } else if (idx === activeStageIndex) {
-        itemClass = 'active';
-        dotContent = '🟢';
-        
-        if (histItem) {
-          const dateStr = formatDateTime(histItem.entered_at);
-          metaInfo = `
-            <div class="timeline-date">Iniciado em ${dateStr}</div>
-            <div class="timeline-duration" id="timeline-active-timer">⏱️ Aguardando...</div>
-          `;
+        if (histEntry?.public_notes) {
+          noteHtml = `<div class="tl-public-note">💡 ${escHtml(histEntry.public_notes)}</div>`;
+        }
+
+      } else if (isActive) {
+        stateClass = 'is-active';
+        dotHtml    = '<div style="width:8px;height:8px;border-radius:50%;background:currentColor"></div>';
+        if (histEntry) {
+          metaHtml = `<div class="tl-meta">Iniciado ${fmtDateTime(histEntry.entered_at)}</div>
+                      <div class="tl-active-timer" id="tl-active-timer">⏱️ Calculando…</div>`;
+        }
+        if (histEntry?.public_notes) {
+          noteHtml = `<div class="tl-public-note">💡 ${escHtml(histEntry.public_notes)}</div>`;
         }
       } else {
-        // Future Stage
-        dotContent = '⚪';
-        metaInfo = `<div class="timeline-date">Próxima etapa</div>`;
+        dotHtml  = '';
+        metaHtml = `<div class="tl-meta" style="font-size:0.68rem;">Próxima etapa</div>`;
       }
 
       return `
-        <div class="timeline-item ${itemClass}">
-          <div class="timeline-dot">${dotContent}</div>
-          <div class="timeline-content">
-            <div class="timeline-header">
-              <h4 class="timeline-title">${stage.label}</h4>
-              ${metaInfo}
+        <div class="timeline-item ${stateClass}">
+          <div class="tl-dot">${dotHtml}</div>
+          <div class="glass-inner tl-card">
+            <div class="tl-header">
+              <div class="tl-title">${stage.label}</div>
+              <div>${metaHtml}</div>
             </div>
-            <p class="timeline-desc">${stage.desc}</p>
+            <div style="font-size:0.78rem;color:var(--slate-500);margin-top:2px">${stage.desc}</div>
+            ${noteHtml}
           </div>
-        </div>
-      `;
+        </div>`;
     }).join('');
+
+    elTimeline.innerHTML = html;
   }
 
-  function renderPhotosGrid() {
-    const photos = currentOS.photos || [];
-    if (photos.length === 0) {
-      clientPhotosSection.style.display = 'none';
-      return;
-    }
+  // ─── Parts / Custom PC Showcase ───────────────────────────────────────────
+  const CATEGORY_ICONS = {
+    CPU:         { icon: '⚙️', label: 'Processador (CPU)' },
+    GPU:         { icon: '🎮', label: 'Placa de Vídeo (GPU)' },
+    RAM:         { icon: '🧠', label: 'Memória RAM' },
+    SSD:         { icon: '💾', label: 'Armazenamento SSD' },
+    HDD:         { icon: '🗄️', label: 'HD / Armazenamento' },
+    MOTHERBOARD: { icon: '🔌', label: 'Placa-Mãe' },
+    PSU:         { icon: '⚡', label: 'Fonte de Alimentação' },
+    GABINETE:    { icon: '🖥️', label: 'Gabinete' },
+    COOLING:     { icon: '❄️', label: 'Refrigeração' },
+  };
 
-    clientPhotosSection.style.display = 'block';
-    
-    clientPhotosGrid.innerHTML = photos.map(photo => {
-      const labelMap = { antes: 'Antes', durante: 'Reparo', depois: 'Pronto' };
-      const displayLabel = labelMap[photo.tipo] || photo.tipo;
+  function renderParts() {
+    const parts = (osData.parts || []).filter(p => p && (p.nome || p.custom_product_name));
+    if (!parts.length) { elPartsSection.innerHTML = ''; return; }
+
+    if (osData.is_custom_pc) {
+      renderShowcase(parts);
+    } else {
+      renderClassicParts(parts);
+    }
+  }
+
+  function renderClassicParts(parts) {
+    const rows = parts.map(p => `
+      <div class="part-row">
+        <div>
+          <div class="part-name">${escHtml(p.custom_product_name || p.nome || 'Peça')}</div>
+          <div class="part-cat">${escHtml(p.subcategoria || p.categoria || p.component_category || '')}</div>
+        </div>
+        <div class="part-qty">${p.qty || 1}×</div>
+      </div>`).join('');
+
+    elPartsSection.innerHTML = `
+      <div class="parts-section">
+        <div class="section-label">Materiais Aplicados</div>
+        <div class="glass-inner">${rows}</div>
+      </div>`;
+  }
+
+  function renderShowcase(parts) {
+    // Group by component_category
+    const grouped = {};
+    parts.forEach(p => {
+      const cat = (p.component_category || p.categoria || 'OUTROS').toUpperCase();
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(p);
+    });
+
+    const cards = Object.entries(grouped).map(([cat, items]) => {
+      const info = CATEGORY_ICONS[cat] || { icon: '🔧', label: cat };
+      const first = items[0];
+      const name  = first.custom_product_name || first.nome || '—';
+      const spec  = buildSpecLine(first);
 
       return `
-        <div class="photo-thumb">
-          <img src="${photo.url}" alt="Foto de Bancada ${displayLabel}" class="thumb-img">
-          <span class="photo-tag">${displayLabel}</span>
-        </div>
-      `;
+        <div class="pc-card">
+          <div class="pc-card-cat">${info.icon} ${info.label}</div>
+          <div class="pc-card-name">${escHtml(name)}</div>
+          ${spec ? `<div class="pc-card-spec">${escHtml(spec)}</div>` : ''}
+          <div class="pc-card-status">✓ Instalado</div>
+        </div>`;
     }).join('');
 
-    // Attach Lightbox triggers to gallery thumb images
-    clientPhotosGrid.querySelectorAll('.thumb-img').forEach(img => {
-      img.addEventListener('click', (e) => {
-        lightboxImg.src = e.target.src;
-        lightbox.classList.add('open');
+    elPartsSection.innerHTML = `
+      <div class="showcase-section">
+        <div class="section-label" style="color:hsl(260,80%,70%);">Setup do Seu Computador</div>
+        <div class="pc-grid">${cards}</div>
+      </div>`;
+  }
+
+  function buildSpecLine(part) {
+    const specs = part.specs;
+    if (!specs) return '';
+    const bits = [];
+    if (specs.cores)    bits.push(`${specs.cores} Núcleos`);
+    if (specs.threads)  bits.push(`${specs.threads} Threads`);
+    if (specs.speed)    bits.push(`${specs.speed} MHz`);
+    if (specs.capacity) bits.push(`${specs.capacity} GB`);
+    if (specs.vram)     bits.push(`${specs.vram} VRAM`);
+    if (specs.chipset)  bits.push(`Chipset ${specs.chipset}`);
+    if (specs.wattage)  bits.push(`${specs.wattage}W`);
+    return bits.join(' · ');
+  }
+
+  // ─── Warranty ─────────────────────────────────────────────────────────────
+  function renderWarranty() {
+    const hasWarranty = osData.digital_warranty_code || osData.estimated_delivery || osData.payment_status;
+    if (!hasWarranty) return;
+
+    show(elWarrantySection);
+
+    elWDeadline.textContent = osData.estimated_delivery ? fmtDate(osData.estimated_delivery) : 'Em definição';
+
+    // Payment badge
+    const pm = osData.payment_status || 'pendente';
+    const pmMap = {
+      pago:     { cls: 'pago',    label: '💸 Quitado / Pago' },
+      parcial:  { cls: 'parcial', label: '💸 Entrada Paga' },
+      pendente: { cls: 'pendente',label: '⏳ Acerto na Retirada' },
+    };
+    const pmInfo = pmMap[pm] || pmMap.pendente;
+    elWPayment.innerHTML = `<span class="payment-badge ${pmInfo.cls}">${pmInfo.label}</span>`;
+
+    // Warranty code
+    if (osData.digital_warranty_code) {
+      show(elWCodeBlock);
+      elWCode.textContent = osData.digital_warranty_code;
+      elWPeriod.textContent = `${osData.warranty_dias || 90} dias de cobertura integral`;
+    }
+  }
+
+  function copyWarrantyCode() {
+    const code = osData.digital_warranty_code;
+    if (!code) return;
+    navigator.clipboard.writeText(code).then(() => {
+      elBtnCopy.classList.add('copied');
+      elBtnCopy.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Copiado!`;
+      setTimeout(() => {
+        elBtnCopy.classList.remove('copied');
+        elBtnCopy.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar`;
+      }, 3000);
+    }).catch(() => {
+      // Fallback para browsers antigos
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    });
+  }
+
+  // ─── Photos ───────────────────────────────────────────────────────────────
+  function renderPhotos() {
+    const photos = osData.photos || [];
+    if (!photos.length) return;
+    show(elPhotosSection);
+
+    const tagMap = { antes: 'Antes', durante: 'Reparo', depois: 'Pronto' };
+    elPhotosGrid.innerHTML = photos.map(p => `
+      <div class="photo-thumb">
+        <img src="${escHtml(p.url)}" alt="Foto do reparo" class="thumb-img" loading="lazy">
+        <span class="photo-tag">${tagMap[p.tipo] || p.tipo || ''}</span>
+      </div>`).join('');
+
+    elPhotosGrid.querySelectorAll('.thumb-img').forEach(img => {
+      img.addEventListener('click', () => {
+        elLightboxImg.src = img.src;
+        elLightbox.classList.add('open');
       });
     });
   }
 
-  function setupWhatsAppCTA() {
-    waFooter.style.display = 'flex';
-    
-    const clientName = currentOS.customer_name;
-    const deviceStr = `${currentOS.equipamento.marca} ${currentOS.equipamento.modelo}`;
-    const osNum = currentOS.os_number;
-
-    const welcomeMsg = `Oi Iago! Estou acompanhando a OS #${osNum} do meu ${deviceStr} pelo link de rastreamento exclusivo e gostaria de tirar uma dúvida sobre o conserto...`;
-
-    // Direct corporate whatsapp redirect
-    btnWaClientCta.href = `https://wa.me/5511999999999?text=${encodeURIComponent(welcomeMsg)}`;
+  // ─── WhatsApp ─────────────────────────────────────────────────────────────
+  function renderWhatsApp() {
+    show(elWaFooter);
+    const name   = osData.customer_first_name || 'cliente';
+    const osNum  = osData.os_number || '';
+    const device = [osData.equip_marca, osData.equip_modelo].filter(Boolean).join(' ');
+    const msg    = `Olá Iago! Sou ${name} e estou acompanhando a OS ${osNum}${device ? ` do meu ${device}` : ''} pelo link de rastreamento. Tenho uma dúvida!`;
+    elBtnWa.href = `https://wa.me/5511919691542?text=${encodeURIComponent(msg)}`;
   }
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Active Timer Logic (Live updates active status duration)
-  // ─────────────────────────────────────────────────────────────────────────────
+  // ─── Active Timer ─────────────────────────────────────────────────────────
+  function startTimer() {
+    const activeEntry = history.find(h => !h.exited_at);
+    if (!activeEntry?.entered_at) return;
 
-  function startActiveTimer() {
-    // Localiza o item ativo no histórico de status
-    const activeHistoryItem = [...statusHistory]
-      .reverse()
-      .find(h => !h.exited_at);
+    const startMs = new Date(activeEntry.entered_at).getTime();
 
-    if (!activeHistoryItem) return;
-
-    const enteredTime = new Date(activeHistoryItem.entered_at).getTime();
-
-    // Função de tick imediato
     const tick = () => {
-      const now = new Date().getTime();
-      const diffSeconds = Math.floor((now - enteredTime) / 1000);
+      const elapsed = Math.floor((Date.now() - startMs) / 1000);
+      const str     = fmtElapsed(elapsed);
+      elActiveTimer.textContent = `⏱️ Há ${str} nesta etapa`;
 
-      // Formata a string de tempo gasto
-      const durationStr = formatActiveDuration(diffSeconds);
-
-      // Atualiza no Card Principal e na Timeline
-      activeStatusTimer.textContent = `⏱️ Há ${durationStr} nesta etapa`;
-      
-      const timelineActiveTimer = document.getElementById('timeline-active-timer');
-      if (timelineActiveTimer) {
-        timelineActiveTimer.textContent = `⏱️ Há ${durationStr}`;
-      }
+      const tlTimer = document.getElementById('tl-active-timer');
+      if (tlTimer) tlTimer.textContent = `⏱️ Há ${str}`;
     };
 
-    // Roda uma vez de imediato
     tick();
-
-    // Limpa intervalo anterior se existir
-    if (timerInterval) clearInterval(timerInterval);
-
-    // Roda a cada 60 segundos
-    timerInterval = setInterval(tick, 60000);
+    if (timerID) clearInterval(timerID);
+    timerID = setInterval(tick, 60_000);
   }
 
-  // Formata o contador ativo: ex: "1 dia e 4 horas", "2 horas e 15 minutos", "menos de 1 minuto"
-  function formatActiveDuration(seconds) {
-    if (seconds < 60) return 'menos de 1 minuto';
-    
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    const remainingHours = hours % 24;
-    const remainingMinutes = minutes % 60;
-
-    let parts = [];
-    if (days > 0) {
-      parts.push(`${days} ${days === 1 ? 'dia' : 'dias'}`);
-    }
-    if (remainingHours > 0) {
-      parts.push(`${remainingHours} ${remainingHours === 1 ? 'hora' : 'horas'}`);
-    }
-    if (remainingMinutes > 0 && days === 0) { // Não exibe minutos se já passaram dias pra não poluir
-      parts.push(`${remainingMinutes} ${remainingMinutes === 1 ? 'minuto' : 'minutos'}`);
-    }
-
-    return parts.join(' e ');
+  // ─── Error State ──────────────────────────────────────────────────────────
+  function showError() {
+    hide(elLoading);
+    show(elError);
+    hide(elContent);
+    hide(elWaFooter);
   }
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Helper Formatters
-  // ─────────────────────────────────────────────────────────────────────────────
+  // ─── Utilities ────────────────────────────────────────────────────────────
+  function normalizeStatus(s) {
+    if (!s) return 'rascunho';
+    // normaliza acentos e variações de snake_case
+    return s
+      .toLowerCase()
+      .replace('diagnóstico', 'diagnostico')
+      .replace('diagnose', 'diagnostico')
+      .replace('aguardando_aprovação', 'aguardando_aprovacao')
+      .replace('aguardando_peça', 'aguardando_peca')
+      .replace(/\s+/g, '_');
+  }
 
-  function formatSecondsDuration(seconds) {
-    if (!seconds || seconds < 60) return 'menos de 1 min';
-    
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+  function firstNameOf(name) {
+    if (!name) return 'Cliente';
+    return name.trim().split(/\s+/)[0];
+  }
 
-    const remainingHours = hours % 24;
-    const remainingMinutes = minutes % 60;
+  function maskSerial(serial) {
+    if (!serial) return 'Não informado';
+    const s = serial.trim();
+    if (s.length <= 6) return '****';
+    return `${s.slice(0, 4)}****${s.slice(-4)}`;
+  }
 
-    let parts = [];
-    if (days > 0) {
-      parts.push(`${days}d`);
-    }
-    if (remainingHours > 0) {
-      parts.push(`${remainingHours}h`);
-    }
-    if (remainingMinutes > 0 && days === 0) {
-      parts.push(`${remainingMinutes}min`);
-    }
+  function fmtDate(str) {
+    if (!str) return '—';
+    const d = new Date(str);
+    if (isNaN(d)) return str;
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Sao_Paulo' });
+  }
 
+  function fmtDateTime(str) {
+    if (!str) return '—';
+    const d = new Date(str);
+    if (isNaN(d)) return str;
+    return d.toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+      timeZone: 'America/Sao_Paulo',
+    });
+  }
+
+  function fmtDuration(seconds) {
+    if (!seconds || seconds < 60) return '< 1min';
+    const m = Math.floor(seconds / 60);
+    const h = Math.floor(m / 60);
+    const d = Math.floor(h / 24);
+    const rh = h % 24;
+    const rm = m % 60;
+    const parts = [];
+    if (d > 0) parts.push(`${d}d`);
+    if (rh > 0) parts.push(`${rh}h`);
+    if (rm > 0 && d === 0) parts.push(`${rm}min`);
     return parts.join(' ');
   }
 
-  function formatDate(dateStr) {
-    if (!dateStr) return '-';
-    const d = new Date(dateStr);
-    if (isNaN(d)) return dateStr;
-    return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+  function fmtElapsed(seconds) {
+    if (seconds < 60) return 'menos de 1 minuto';
+    const m  = Math.floor(seconds / 60);
+    const h  = Math.floor(m / 60);
+    const d  = Math.floor(h / 24);
+    const rh = h % 24;
+    const rm = m % 60;
+    const parts = [];
+    if (d  > 0) parts.push(`${d} ${d === 1 ? 'dia' : 'dias'}`);
+    if (rh > 0) parts.push(`${rh} ${rh === 1 ? 'hora' : 'horas'}`);
+    if (rm > 0 && d === 0) parts.push(`${rm} ${rm === 1 ? 'minuto' : 'minutos'}`);
+    return parts.join(' e ');
   }
 
-  function formatDateTime(dateStr) {
-    if (!dateStr) return '-';
-    const d = new Date(dateStr);
-    if (isNaN(d)) return dateStr;
-    
-    const dateFormatted = d.toLocaleDateString('pt-BR');
-    const timeFormatted = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    return `${dateFormatted} às ${timeFormatted}`;
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
-  function showError() {
-    loadingState.style.display = 'none';
-    errorState.style.display = 'block';
-    mainContent.style.display = 'none';
-    waFooter.style.display = 'none';
-  }
+  function show(el) { if (el) el.style.display = ''; }
+  function hide(el) { if (el) el.style.display = 'none'; }
 });

@@ -115,7 +115,8 @@ export default async function handler(req) {
     }
 
     // 7. Salvar anotação opcional no registro de histórico recém-criado
-    if (notes && notes.trim()) {
+    const { public_notes, notes: transitionNotes } = body;
+    if ((transitionNotes && transitionNotes.trim()) || (public_notes && public_notes.trim())) {
       // Busca o ID do histórico atualizado/ativo (exited_at IS NULL)
       const { data: activeHistory, error: historyFetchError } = await supabase
         .from('os_status_history')
@@ -127,9 +128,18 @@ export default async function handler(req) {
         .single();
 
       if (!historyFetchError && activeHistory) {
+        const updatePayload = {};
+        if (transitionNotes && transitionNotes.trim()) {
+          updatePayload.notes = transitionNotes.trim();
+          updatePayload.private_notes = transitionNotes.trim();
+        }
+        if (public_notes && public_notes.trim()) {
+          updatePayload.public_notes = public_notes.trim();
+        }
+
         const { error: historyUpdateError } = await supabase
           .from('os_status_history')
-          .update({ notes: notes.trim() })
+          .update(updatePayload)
           .eq('id', activeHistory.id);
 
         if (historyUpdateError) {
