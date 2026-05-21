@@ -130,7 +130,7 @@ SELECT
     r.updated_at AS ultima_atualizacao
 FROM public.repairs r
 LEFT JOIN public.customers c ON r.customer_id = c.id
-WHERE r.is_active = TRUE;
+WHERE r.deleted_at IS NULL;
 
 -- -----------------------------------------------------------------------------
 -- 5. Configuração de Row Level Security (RLS) & Permissões
