@@ -86,8 +86,9 @@ tests/                  # Playwright
 
 - Migration `2026_05_21_create_tracking_upgrade.sql` **aplicada em produção** (Supabase `togrnwxazuweuihlaljo`).
 - Feature 010 (Painel Financeiro) implementada e catalogada em `.specs/010-financeiro/`.
-- Bugs corrigidos: modal de conversão do CRM, criação de OS (`valor_custo_peças`), botão de tema sumindo no desktop.
-- `tests/admin-os.spec.js` estava corrompido (encoding + blocos embaralhados) — restaurado.
+- **Banco de dados zerado** — TRUNCATE em todas as tabelas operacionais para homologação com dados reais. Schema/migrations/auth intactos.
+- Bugs corrigidos: modal de conversão do CRM; criação de OS (`valor_custo_peças`); botão de tema sumindo no desktop; cards do dashboard (Leads usava `/api/admin/leads` em vez de `/api/admin/crm/leads`; "OS Abertas" filtrava `status=aberta` inexistente — agora filtro `?aberta=true` na API).
+- `tests/admin-os.spec.js` estava corrompido (encoding + blocos embaralhados) — restaurado. Suíte E2E com 49 testes.
 
 **O que foi feito (commits 999c6ac + 5e37c13):**
 - **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)
