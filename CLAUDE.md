@@ -76,16 +76,23 @@ tests/                  # Playwright
 | **003-lead-capture** | 100% — Concluído e homologado | — |
 | **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
-| **006-admin-os** | 100% — Código e testes E2E totalmente homologados (12/12 verdes) | Aplicar migração SQL no banco de produção |
-| **007-admin-inventory** | Spec/Plan/Tasks Prontos | Iniciar o desenvolvimento do banco e triggers locais |
+| **006-admin-os** | 100% — Migração SQL aplicada em produção (2026-05-21) | — |
+| **007-admin-inventory** | Em desenvolvimento — T001/T002/T003 concluídos | Criar endpoints de movimentos e presets, depois UI |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **Aplicar a Migração SQL da Feature 006** — Executar `supabase/migrations/2026_05_20_create_service_orders.sql` no painel web de produção do Supabase.
-2. **Criar a Migração SQL da Feature 007** — Implementar `supabase/migrations/2026_05_20_create_inventory.sql` localmente com base em `.specs/007-admin-inventory/plan.md`.
-3. **Construir Endpoints de Produtos** — Desenvolver o CRUD na API `/api/admin/inventory/products.js` integrado com RLS e autenticação JWT.
+1. **Aplicar migração 007 em produção** — Executar `supabase/migrations/2026_05_21_create_inventory.sql` no painel do Supabase.
+2. **Endpoints T004/T005** — Criar `/api/admin/inventory/movements.js` e `/api/admin/inventory/presets.js`.
+3. **UI do Estoque (T006)** — `admin/estoque/index.html` + `assets/js/admin/estoque.js`.
+
+**Contexto de negócio — Feature 007:**
+- Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).
+- Por ora, **não mantém estoque físico**: compra a peça quando aparece a OS, pelo amigo ou direto no fornecedor.
+- O amigo serve de **cavalaria** para problemas que o Iago não consegue resolver no próprio laboratório.
+- O módulo de estoque é construído agora para suportar o **B2B futuro com importação da China** — não há urgência de rastrear qty real na fase atual.
+- Campo `fornecedor` no produto é suficiente para registrar o amigo como fornecedor preferencial de cada item.
 
 ---
 

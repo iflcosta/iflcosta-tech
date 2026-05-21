@@ -13,14 +13,14 @@ Este checklist organiza a execução em pequenas tarefas atômicas e testáveis.
 
 ### Fase 1 — Infraestrutura de Dados & API
 
-- [ ] **T001 [M] — Banco de Dados: Migração SQL e Schema**
+- [x] **T001 [M] — Banco de Dados: Migração SQL e Schema**
   * **Critério de Aceite:** Criar `supabase/migrations/2026_05_20_create_inventory.sql` com tabelas `products`, `inventory_movements`, `pc_build_presets` com RLS habilitada.
   * **Políticas RLS:** Administrador autenticado tem acesso `ALL`. Usuários anônimos não têm leitura (`RESTRICTED` a anon, público bloqueado).
 
-- [ ] **T002 [L] — Triggers de Banco de Dados**
+- [x] **T002 [L] — Triggers de Banco de Dados**
   * **Critério de Aceite:** Implementar trigger PL/pgSQL `handle_inventory_movement_stock` para atualizar `qty_atual` na tabela `products` e `sync_repair_parts_cost` para recalcular `valor_custo_peças` de `repairs` a partir de movimentos associados a `repair_id`.
 
-- [ ] **T003 [M] — API: CRUD de Produtos (`/api/admin/inventory/products.js`)**
+- [x] **T003 [M] — API: CRUD de Produtos (`/api/admin/inventory/products.js`)**
   * **Critério de Aceite:** Endpoint Vercel Edge Function com suporte a `GET` (lista/busca/filtros), `POST` (inserir), `PUT` (editar), e `DELETE` (soft-delete). Validar autenticação do administrador.
 
 - [ ] **T004 [S] — API: Movimentação de Estoque (`/api/admin/inventory/movements.js`)**
