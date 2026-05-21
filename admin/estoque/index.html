@@ -10,15 +10,185 @@
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/admin.css">
-  
+
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
-    body {
-      font-family: 'Inter', var(--font-sans);
+    body { font-family: 'Inter', var(--font-sans); }
+
+    /* Ações no cabeçalho */
+    .page-header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    .page-header-actions .btn { text-decoration: none; }
+
+    /* Barra de filtros */
+    .filter-bar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-bottom: var(--space-5);
+      box-shadow: var(--shadow-sm);
+    }
+    @media (min-width: 1024px) {
+      .filter-bar { flex-direction: row; align-items: center; }
+      .filter-search { flex-grow: 2; }
+      .filter-select { flex-grow: 1; max-width: 220px; }
+      .filter-checkbox { flex-grow: 0; white-space: nowrap; }
+    }
+
+    /* Listagem responsiva */
+    .prod-table-container {
+      display: none;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+    .prod-grid-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    @media (min-width: 640px) {
+      .prod-grid-container { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .prod-table-container { display: block; }
+      .prod-grid-container { display: none; }
+    }
+
+    /* Tabela */
+    .admin-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .admin-table th, .admin-table td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border-subtle);
+      font-size: var(--text-sm);
+    }
+    .admin-table th {
+      font-weight: var(--font-semibold);
+      color: var(--color-text-secondary);
+      background: var(--color-bg-subtle);
+      text-transform: uppercase;
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wide);
+    }
+    .admin-table tbody tr {
+      cursor: pointer;
+      transition: background-color var(--duration-fast) var(--ease-out);
+    }
+    .admin-table tbody tr:hover { background-color: var(--color-bg-subtle); }
+
+    /* Cartões mobile (glassmorphism) */
+    .prod-card {
+      background: hsla(0, 0%, 100%, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      cursor: pointer;
+      transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+    }
+    [data-theme="dark"] .prod-card { background: hsla(222, 22%, 18%, 0.55); }
+    .prod-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-border-default);
+      box-shadow: var(--shadow-md);
+    }
+    .prod-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-2);
+      border-bottom: 1px solid var(--color-border-subtle);
+      padding-bottom: var(--space-2);
+    }
+    .prod-card-title { font-weight: var(--font-bold); font-size: var(--text-base); color: var(--color-text-primary); }
+    .prod-card-meta { font-size: var(--text-xs); color: var(--color-text-tertiary); margin-top: 2px; }
+    .prod-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    .prod-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--color-border-subtle);
+      padding-top: var(--space-3);
+      margin-top: var(--space-1);
+    }
+
+    /* Pílula de categoria */
+    .categoria-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+      background: var(--color-bg-subtle);
+      color: var(--color-text-secondary);
+    }
+
+    /* Badges de estoque — alertas HSL */
+    .badge-stock {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: var(--font-bold);
+      white-space: nowrap;
+    }
+    .badge-stock--ok    { background: hsla(142, 70%, 45%, 0.15); color: hsl(142, 70%, 30%); }
+    .badge-stock--zero  { background: hsla(215, 15%, 60%, 0.18); color: hsl(215, 12%, 42%); }
+    .badge-stock--baixo { background: hsla(0, 90%, 55%, 0.16);  color: hsl(0, 82%, 44%); }
+    [data-theme="dark"] .badge-stock--ok    { background: hsla(142, 70%, 45%, 0.22); color: hsl(142, 65%, 60%); }
+    [data-theme="dark"] .badge-stock--zero  { background: hsla(215, 15%, 50%, 0.25); color: hsl(215, 14%, 70%); }
+    [data-theme="dark"] .badge-stock--baixo { background: hsla(0, 90%, 58%, 0.26);  color: hsl(0, 90%, 72%); }
+
+    /* Linha com alerta de estoque baixo */
+    .prod-row-alerta { border-left: 4px solid hsl(0, 82%, 52%) !important; }
+
+    /* Botão de ação compacto */
+    .icon-btn {
+      background: var(--color-bg-subtle);
+      border: 1px solid var(--color-border-subtle);
+      color: var(--color-text-secondary);
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .icon-btn:hover { background: var(--color-brand-subtle); color: var(--color-brand); }
+
+    .loading-state, .empty-state {
+      text-align: center;
+      padding: var(--space-7);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
     }
   </style>
   <script>
@@ -30,22 +200,263 @@
 
   <div class="admin-shell">
     <main class="admin-main">
-      <div class="page-header">
-        <h1 class="page-title">Estoque & Peças</h1>
-        <p class="page-subtitle">Controle de peças de reposição e ferramentas operacionais.</p>
+      <div class="page-header" style="flex-direction: row; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+        <div>
+          <h1 class="page-title">Estoque &amp; Peças</h1>
+          <p class="page-subtitle">Catálogo de peças, componentes e movimentações.</p>
+        </div>
+        <div class="page-header-actions">
+          <button id="add-product-btn" class="btn btn--primary"><span>➕ Novo Produto</span></button>
+          <button id="add-movement-btn" class="btn btn--secondary"><span>📥 Registrar Movimento</span></button>
+          <a href="/admin/estoque/builder" class="btn btn--outline"><span>🖥️ PC Builder</span></a>
+        </div>
       </div>
 
-      <div class="stub-card">
-        <div class="stub-illustration">📦</div>
-        <h2 style="font-size: var(--text-lg); font-weight: var(--font-bold); margin: 0;">Controle de Estoque</h2>
-        <p style="color: var(--color-text-secondary); max-width: 480px; margin: 0; line-height: var(--leading-normal);">
-          Gerencie peças em estoque com alerta de níveis mínimos para telas, baterias e conectores. Vincule diretamente os itens gastos a uma Ordem de Serviço.
+      <!-- Indicadores -->
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-info">
+            <span class="stat-label">Total de Produtos</span>
+            <span class="stat-value" id="stat-total">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <span class="stat-label">Custo em Estoque</span>
+            <span class="stat-value" id="stat-custo">R$ 0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏷️</div>
+          <div class="stat-info">
+            <span class="stat-label">Venda Potencial</span>
+            <span class="stat-value" id="stat-venda">R$ 0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-info">
+            <span class="stat-label">Abaixo do Mínimo</span>
+            <span class="stat-value" id="stat-baixo">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filter-bar">
+        <div class="filter-search" style="width: 100%;">
+          <input type="text" id="prod-search" class="input" placeholder="Buscar por nome, SKU, marca ou modelo...">
+        </div>
+        <div class="filter-select" style="width: 100%;">
+          <select id="prod-categoria-filter" class="select">
+            <option value="">Todas as categorias</option>
+            <option value="peça">Peça</option>
+            <option value="acessório">Acessório</option>
+            <option value="componente_pc">Componente PC</option>
+          </select>
+        </div>
+        <div class="filter-checkbox">
+          <label class="checkbox-label" style="margin-top: 0;">
+            <input type="checkbox" id="prod-baixo-filter">
+            <span>Apenas estoque baixo</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="prod-loading" class="loading-state">
+        <div style="font-size: var(--text-2xl); margin-bottom: var(--space-2);">🔄</div>
+        <p style="color: var(--color-text-secondary);">Carregando estoque...</p>
+      </div>
+
+      <!-- Empty -->
+      <div id="prod-empty" class="empty-state" style="display: none;">
+        <div style="font-size: var(--text-3xl); margin-bottom: var(--space-3);">📦</div>
+        <h3 style="font-size: var(--text-lg); font-weight: var(--font-bold); margin: 0 0 var(--space-1) 0;">Nenhum produto encontrado</h3>
+        <p style="color: var(--color-text-secondary); max-width: 400px; margin: 0 auto;">
+          Nenhum item atende aos filtros, ou o catálogo ainda está vazio. Cadastre o primeiro produto.
         </p>
-        <span class="badge-soon">Em Breve — Feature 007</span>
+      </div>
+
+      <!-- Resultados -->
+      <div id="prod-results" style="display: none;">
+        <!-- Desktop: tabela -->
+        <div class="prod-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Custo / Venda</th>
+                <th>Estoque</th>
+                <th>Fornecedor</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="prod-table-body"></tbody>
+          </table>
+        </div>
+        <!-- Mobile: cards -->
+        <div class="prod-grid-container" id="prod-grid-container"></div>
       </div>
     </main>
   </div>
 
+  <!-- MODAL: Produto (criar / editar) -->
+  <div id="product-modal-backdrop" class="modal-backdrop">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal__header">
+        <div>
+          <h2 class="modal__title" id="product-modal-title">Novo Produto</h2>
+          <p class="modal__subtitle">Cadastro de peça, acessório ou componente de PC.</p>
+        </div>
+        <button id="product-modal-close" class="modal__close" aria-label="Fechar modal">✕</button>
+      </div>
+      <form id="product-form">
+        <div class="modal__body">
+          <div id="product-feedback" class="form-error" style="display: none; margin-bottom: var(--space-2);"></div>
+
+          <div class="field">
+            <label for="product-nome">Nome do Produto <span style="color: var(--color-danger);">*</span></label>
+            <input type="text" id="product-nome" class="input" placeholder="Ex: Tela iPhone 11, Bateria Samsung A12" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="field">
+              <label for="product-categoria">Categoria <span style="color: var(--color-danger);">*</span></label>
+              <select id="product-categoria" class="select" required>
+                <option value="peça">Peça</option>
+                <option value="acessório">Acessório</option>
+                <option value="componente_pc">Componente PC</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="product-subcategoria">Subcategoria</label>
+              <input type="text" id="product-subcategoria" class="input" placeholder="Ex: Tela, Bateria, SSD">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="field">
+              <label for="product-marca">Marca</label>
+              <input type="text" id="product-marca" class="input" placeholder="Ex: Samsung, Kingston">
+            </div>
+            <div class="field">
+              <label for="product-modelo">Modelo</label>
+              <input type="text" id="product-modelo" class="input" placeholder="Ex: A12, NV2 1TB">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="product-sku">SKU / Código de barras</label>
+            <input type="text" id="product-sku" class="input" placeholder="Opcional — código único do produto">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4);">
+            <div class="field">
+              <label for="product-custo">Custo (R$)</label>
+              <input type="number" id="product-custo" class="input" placeholder="0,00" step="0.01" min="0">
+            </div>
+            <div class="field">
+              <label for="product-venda">Venda (R$)</label>
+              <input type="number" id="product-venda" class="input" placeholder="0,00" step="0.01" min="0">
+            </div>
+            <div class="field">
+              <label for="product-qtymin">Estoque mín.</label>
+              <input type="number" id="product-qtymin" class="input" placeholder="0" step="1" min="0">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="field">
+              <label for="product-forn-nome">Fornecedor</label>
+              <input type="text" id="product-forn-nome" class="input" placeholder="Ex: Loja do amigo, AliExpress">
+            </div>
+            <div class="field">
+              <label for="product-forn-tel">Tel. do fornecedor</label>
+              <input type="text" id="product-forn-tel" class="input" placeholder="Opcional">
+            </div>
+          </div>
+
+          <span class="hint">A quantidade em estoque é controlada pelas movimentações — registre uma entrada após cadastrar.</span>
+        </div>
+
+        <div class="modal__footer">
+          <button type="button" id="product-delete-btn" class="btn btn--outline btn--sm" style="display: none; margin-right: auto; color: var(--color-danger); border-color: var(--color-danger);">
+            <span>Excluir</span>
+          </button>
+          <button type="button" id="product-cancel-btn" class="btn btn--secondary btn--sm"><span>Cancelar</span></button>
+          <button type="submit" class="btn btn--primary btn--sm"><span id="product-submit-text">Cadastrar Produto</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Movimentação de estoque -->
+  <div id="movement-modal-backdrop" class="modal-backdrop">
+    <div class="modal" style="max-width: 520px;">
+      <div class="modal__header">
+        <div>
+          <h2 class="modal__title">Registrar Movimentação</h2>
+          <p class="modal__subtitle">Entrada de mercadoria ou ajuste/baixa de estoque.</p>
+        </div>
+        <button id="movement-modal-close" class="modal__close" aria-label="Fechar modal">✕</button>
+      </div>
+      <form id="movement-form">
+        <div class="modal__body">
+          <div id="movement-feedback" class="form-error" style="display: none; margin-bottom: var(--space-2);"></div>
+
+          <div class="field">
+            <label for="movement-produto">Produto <span style="color: var(--color-danger);">*</span></label>
+            <select id="movement-produto" class="select" required>
+              <option value="">Selecione o produto...</option>
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="field">
+              <label for="movement-tipo">Tipo <span style="color: var(--color-danger);">*</span></label>
+              <select id="movement-tipo" class="select" required>
+                <option value="entrada">📥 Entrada (compra/reposição)</option>
+                <option value="ajuste">📉 Ajuste / Baixa (perda, quebra)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="movement-qty">Quantidade <span style="color: var(--color-danger);">*</span></label>
+              <input type="number" id="movement-qty" class="input" placeholder="0" step="1" min="1" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="field">
+              <label for="movement-custo">Custo unitário (R$)</label>
+              <input type="number" id="movement-custo" class="input" placeholder="0,00" step="0.01" min="0">
+            </div>
+            <div class="field" id="movement-nf-field">
+              <label for="movement-nf">Nota Fiscal</label>
+              <input type="text" id="movement-nf" class="input" placeholder="Opcional">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="movement-obs">Observação</label>
+            <textarea id="movement-obs" class="textarea" style="min-height: 70px;" placeholder="Ex: compra com fornecedor, peça quebrada na bancada..."></textarea>
+          </div>
+
+          <span class="hint" id="movement-hint">Entradas somam ao estoque. Ajustes/baixas subtraem.</span>
+        </div>
+
+        <div class="modal__footer">
+          <button type="button" id="movement-cancel-btn" class="btn btn--secondary btn--sm"><span>Cancelar</span></button>
+          <button type="submit" class="btn btn--primary btn--sm"><span id="movement-submit-text">Registrar</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="/assets/js/admin/layout.js" type="module"></script>
+  <script src="/assets/js/admin/estoque.js" type="module"></script>
 </body>
 </html>

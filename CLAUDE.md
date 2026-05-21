@@ -77,15 +77,15 @@ tests/                  # Playwright
 | **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
 | **006-admin-os** | 100% — Migração SQL aplicada em produção (2026-05-21) | — |
-| **007-admin-inventory** | Em desenvolvimento — banco + API de produtos/movimentos/presets prontos (T001–T005); migração em produção | Construir a UI do estoque (T006+) |
+| **007-admin-inventory** | Em desenvolvimento — banco, API e UI de estoque prontos (T001–T007); migração em produção | Integração peças↔OS (T008), depois PC Builder |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **UI do Estoque (T006/T007)** — `admin/estoque/index.html` + `assets/js/admin/estoque.js` + modais de movimento.
-2. **Integração peças↔OS (T008)** — painel "Peças de Reposição" em `admin/os/detalhes.html`.
-3. **Custom PC Builder (T009–T011)** — `admin/estoque/builder.html` + validação de soquete + orçamento WhatsApp.
+1. **Integração peças↔OS (T008)** — painel "Peças de Reposição" em `admin/os/detalhes.html`.
+2. **Custom PC Builder (T009–T011)** — `admin/estoque/builder.html` + validação de soquete + orçamento WhatsApp.
+3. **Relatórios + Testes E2E (T012/T013)** — relatórios em canvas e suite Playwright da 007.
 
 > Migrações 006 e 007 aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). Migração `harden_db_functions` fixou `search_path` e revogou EXECUTE das funções de trigger. Aplicar migrações pelo SQL editor do painel (o projeto não usa o CLI de migrations).
 

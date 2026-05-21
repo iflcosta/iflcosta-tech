@@ -33,10 +33,10 @@ Este checklist organiza a execução em pequenas tarefas atômicas e testáveis.
 
 ### Fase 2 — Frontend Administrativo (Zero-Build)
 
-- [ ] **T006 [L] — UI: Catálogo de Estoque (`/admin/estoque/index.html` e `/assets/js/admin/estoque.js`)**
+- [x] **T006 [L] — UI: Catálogo de Estoque (`/admin/estoque/index.html` e `/assets/js/admin/estoque.js`)**
   * **Critério de Aceite:** Listagem de produtos responsiva premium (cards de glassmorphism em viewport 360-393px, tabela no desktop). Exibição de alertas visuais brilhantes em HSL (vermelho se `qty_atual <= qty_minima`).
 
-- [ ] **T007 [M] — UI: Lançamento de Movimentos (Modais no Estoque)**
+- [x] **T007 [M] — UI: Lançamento de Movimentos (Modais no Estoque)**
   * **Critério de Aceite:** Modais modernos para inserção rápida de Entrada (NF, fornecedor, quantidade e custo unitário) e Ajuste de Estoque (perdas/contagens).
 
 - [ ] **T008 [L] — Integração: Adicionar Peças à OS (`/admin/os/detalhes.html`)**
