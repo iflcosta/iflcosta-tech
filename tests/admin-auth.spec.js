@@ -80,6 +80,8 @@ test.describe('Navegação e Layout do Painel Admin', () => {
   // Vamos validar o carregamento dos elementos de layout e navegação do admin shell.
   
   test('deve renderizar Sidebar, Header, Drawer e Menu do Usuário no Dashboard', async ({ page }) => {
+    // A sidebar é desktop-only (display:none < 1024px) — força viewport desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/admin');
 
     await expect(page).toHaveTitle(/Dashboard — Iago Lopes/);
@@ -154,6 +156,8 @@ test.describe('Navegação e Layout do Painel Admin', () => {
   });
 
   test('deve carregar stubs corretamente com o link de menu ativo correto', async ({ page }) => {
+    // O link ativo é checado na sidebar (desktop-only) — força viewport desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
     const pagesToVerify = [
       { url: '/admin/leads', title: /Leads — Iago Lopes/, text: 'Gestão de Leads' },
       { url: '/admin/clientes', title: /Clientes — Iago Lopes/, text: 'Fichas de Clientes' },
@@ -175,6 +179,8 @@ test.describe('Navegação e Layout do Painel Admin', () => {
   });
 
   test('deve conter botão de logout com redirecionamento de api', async ({ page }) => {
+    // O 1º link de logout fica na sidebar (desktop-only) — força viewport desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/admin/configuracoes');
 
     const logoutBtn = page.locator('a[href="/api/admin/auth-logout"]').first();
