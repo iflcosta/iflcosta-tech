@@ -80,7 +80,7 @@ tests/                  # Playwright
 | **007-admin-inventory** | 100% T001–T013 — T008 (peças↔OS), T009–T011 (PC Builder), T012/T013 (relatórios + E2E) todos implementados pelo Antigravity | Validar em produção |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
-| **010-financeiro** | 100% T001–T005 — spec, API, UI, gráfico canvas, sidebar, dashboard card | Validar em produção com dados reais |
+| **010-financeiro** | 100% T001–T006 — spec/plan/tasks, API, UI, gráfico canvas, sidebar, dashboard card, suíte E2E | Em produção; homologar com dados reais |
 
 **Próxima tarefa crítica:**
 

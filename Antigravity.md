@@ -80,10 +80,14 @@ tests/                  # Playwright
 | **007-admin-inventory** | 100% T001–T013 — T008 (peças↔OS), T009–T011 (PC Builder), T012/T013 (relatórios + E2E) todos implementados | Validar em produção |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
+| **010-financeiro** | 100% T001–T006 — spec/plan/tasks, API, UI, gráfico canvas, sidebar, dashboard card, suíte E2E | Em produção; homologar com dados reais |
 
-**Próxima tarefa crítica:**
+**Estado em 2026-05-21 (sessão Claude):**
 
-1. **Aplicar migration `tracking_upgrade`** — `supabase/migrations/2026_05_21_create_tracking_upgrade.sql` via SQL editor do painel Supabase. Adiciona: `os_number`, `is_custom_pc`, `payment_status`, `digital_warranty_code` em `repairs`; `public_notes`, `private_notes` em `os_status_history`; trigger de numeração automática de OS; view pública sanitizada `public_repair_tracking`.
+- Migration `2026_05_21_create_tracking_upgrade.sql` **aplicada em produção** (Supabase `togrnwxazuweuihlaljo`).
+- Feature 010 (Painel Financeiro) implementada e catalogada em `.specs/010-financeiro/`.
+- Bugs corrigidos: modal de conversão do CRM, criação de OS (`valor_custo_peças`), botão de tema sumindo no desktop.
+- `tests/admin-os.spec.js` estava corrompido (encoding + blocos embaralhados) — restaurado.
 
 **O que foi feito (commits 999c6ac + 5e37c13):**
 - **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)
