@@ -343,13 +343,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openConversionModal() {
     if (!activeLead) return;
-    
+
+    // Fecha drawer visualmente sem zerar activeLead
+    drawerBackdrop.classList.remove('is-open');
+    leadDrawer.classList.remove('is-open');
+
     // Auto-fill fields from activeLead
     convNome.value = activeLead.nome;
     convTelefone.value = activeLead.telefone.replace(/\D/g, '');
     convEmail.value = activeLead.email || '';
     convCpf.value = '';
-    
+
     // Clear Address
     convLogradouro.value = '';
     convNumero.value = '';
@@ -370,6 +374,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function closeConversionModal() {
     conversionBackdrop.classList.remove('is-open');
+    // Reabre drawer se ainda houver lead ativo (usuário cancelou conversão)
+    if (activeLead) {
+      drawerBackdrop.classList.add('is-open');
+      leadDrawer.classList.add('is-open');
+    }
   }
 
   async function handleConversionSubmit(e) {
@@ -429,10 +438,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Success feedback
       alert(resData.message || 'Cliente convertido com sucesso!');
-      
-      // Close all modals
+
+      // Zera activeLead antes de fechar para não reabrir o drawer
+      activeLead = null;
       closeConversionModal();
-      closeDrawer();
 
       // Redireciona para Ficha do Cliente
       window.location.href = `/admin/clientes/detalhes?id=${resData.customerId}`;
