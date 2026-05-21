@@ -101,7 +101,7 @@
     async function loadStats() {
       try {
         const [leadsRes, osRes, estoqueRes, finRes] = await Promise.all([
-          fetch('/api/admin/leads?limit=1&status=novo'),
+          fetch('/api/admin/crm/leads?limit=1&status=novo'),
           fetch('/api/admin/os?limit=1&status=aberta'),
           fetch('/api/admin/inventory/products?baixo_estoque=true&limit=1'),
           fetch('/api/admin/financeiro?periodo=este_mes'),
