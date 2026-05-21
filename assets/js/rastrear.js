@@ -45,13 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
   let   osData  = null;
   let   history = [];
   let   timerID = null;
+  let   lightboxReturn = null;
 
   // ─── Init ────────────────────────────────────────────────────────────────
   if (!token) { showError(); return; }
 
-  // Lightbox
-  elLightboxClose.addEventListener('click', () => elLightbox.classList.remove('open'));
-  elLightbox.addEventListener('click', (e) => { if (e.target === elLightbox) elLightbox.classList.remove('open'); });
+  // Lightbox acessível — fecha por botão, clique no fundo ou tecla Esc
+  elLightboxClose.addEventListener('click', closeLightbox);
+  elLightbox.addEventListener('click', (e) => { if (e.target === elLightbox) closeLightbox(); });
+  elLightbox.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') { e.preventDefault(); elLightboxClose.focus(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && elLightbox.classList.contains('open')) closeLightbox();
+  });
 
   // Copy warranty code
   elBtnCopy.addEventListener('click', () => copyWarrantyCode());
@@ -74,25 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
       osData  = normalizeApiPayload(raw);
       history = raw.historico || raw.history || [];
 
-    } catch (_) {
-      // Fallback local (dev/offline)
-      console.warn('[rastrear] API indisponível — usando localStorage');
-      const raw = findInLocalStorage(token);
-      if (!raw) { showError(); return; }
-      osData  = sanitizeLocal(raw);
-      history = loadLocalHistory(raw.id) || raw.historico || [];
+    } catch (err) {
+      console.error('[rastrear] Erro ao carregar rastreamento:', err);
+      showError();
+      return;
     }
 
     if (!osData) { showError(); return; }
     render();
-  }
-
-  // ─── Local Fallback ───────────────────────────────────────────────────────
-  function findInLocalStorage(tok) {
-    try {
-      const list = JSON.parse(localStorage.getItem('iflcosta_os_list') || '[]');
-      return list.find(o => o.tracking_token === tok) || null;
-    } catch { return null; }
   }
 
   // Normaliza payload da API real para o shape interno
@@ -114,31 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
       parts:  raw.pecas  || raw.parts  || [],
       photos: raw.fotos  || raw.photos || [],
     };
-  }
-
-  function sanitizeLocal(raw) {
-    return {
-      os_number:           raw.os_number   || `OS-${new Date().getFullYear()}-XXXX`,
-      customer_first_name: firstNameOf(raw.customer_name || raw.cliente?.nome),
-      equip_tipo:  raw.equipamento?.tipo   || '',
-      equip_marca: raw.equipamento?.marca  || '',
-      equip_modelo:raw.equipamento?.modelo || '',
-      equip_serial:maskSerial(raw.equipamento?.serial),
-      status:      raw.status || 'rascunho',
-      is_custom_pc:raw.is_custom_pc || false,
-      payment_status: raw.payment_status || 'pendente',
-      estimated_delivery: raw.prazo_prometido || null,
-      digital_warranty_code: raw.digital_warranty_code || null,
-      warranty_dias: raw.garantia_dias || 90,
-      parts: raw.parts || [],
-      photos: raw.photos || [],
-    };
-  }
-
-  function loadLocalHistory(osId) {
-    try {
-      return JSON.parse(localStorage.getItem(`iflcosta_os_history_${osId}`) || '[]');
-    } catch { return []; }
   }
 
   // ─── Main Render ──────────────────────────────────────────────────────────
@@ -355,10 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`).join('');
 
     elPartsSection.innerHTML = `
-      <div class="parts-section">
-        <div class="section-label">Materiais Aplicados</div>
+      <section class="parts-section" aria-label="Materiais aplicados">
+        <h2 class="section-label">Materiais Aplicados</h2>
         <div class="glass-inner">${rows}</div>
-      </div>`;
+      </section>`;
   }
 
   function renderShowcase(parts) {
@@ -386,10 +357,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
 
     elPartsSection.innerHTML = `
-      <div class="showcase-section">
-        <div class="section-label" style="color:hsl(260,80%,70%);">Setup do Seu Computador</div>
+      <section class="showcase-section" aria-label="Setup do computador">
+        <h2 class="section-label" style="color:hsl(260,80%,70%);">Setup do Seu Computador</h2>
         <div class="pc-grid">${cards}</div>
-      </div>`;
+      </section>`;
   }
 
   function buildSpecLine(part) {
@@ -466,18 +437,34 @@ document.addEventListener('DOMContentLoaded', () => {
     show(elPhotosSection);
 
     const tagMap = { antes: 'Antes', durante: 'Reparo', depois: 'Pronto' };
-    elPhotosGrid.innerHTML = photos.map(p => `
-      <div class="photo-thumb">
+    elPhotosGrid.innerHTML = photos.map(p => {
+      const tag = tagMap[p.tipo] || p.tipo || '';
+      return `
+      <button class="photo-thumb" type="button" aria-label="Ampliar foto${tag ? ': ' + escHtml(tag) : ''}">
         <img src="${escHtml(p.url)}" alt="Foto do reparo" class="thumb-img" loading="lazy">
-        <span class="photo-tag">${tagMap[p.tipo] || p.tipo || ''}</span>
-      </div>`).join('');
+        <span class="photo-tag">${escHtml(tag)}</span>
+      </button>`;
+    }).join('');
 
-    elPhotosGrid.querySelectorAll('.thumb-img').forEach(img => {
-      img.addEventListener('click', () => {
-        elLightboxImg.src = img.src;
-        elLightbox.classList.add('open');
+    elPhotosGrid.querySelectorAll('.photo-thumb').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const img = btn.querySelector('.thumb-img');
+        openLightbox(img.src, btn);
       });
     });
+  }
+
+  function openLightbox(src, trigger) {
+    elLightboxImg.src = src;
+    elLightbox.classList.add('open');
+    lightboxReturn = trigger || null;
+    elLightboxClose.focus();
+  }
+
+  function closeLightbox() {
+    elLightbox.classList.remove('open');
+    elLightboxImg.src = '';
+    if (lightboxReturn) { lightboxReturn.focus(); lightboxReturn = null; }
   }
 
   // ─── WhatsApp ─────────────────────────────────────────────────────────────
@@ -535,13 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function firstNameOf(name) {
     if (!name) return 'Cliente';
     return name.trim().split(/\s+/)[0];
-  }
-
-  function maskSerial(serial) {
-    if (!serial) return 'Não informado';
-    const s = serial.trim();
-    if (s.length <= 6) return '****';
-    return `${s.slice(0, 4)}****${s.slice(-4)}`;
   }
 
   function fmtDate(str) {

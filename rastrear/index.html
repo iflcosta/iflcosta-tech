@@ -159,7 +159,7 @@
       font-weight: 500;
     }
 
-    .welcome-text h2 {
+    .welcome-text h1 {
       font-size: 1.4rem;
       font-weight: 800;
       letter-spacing: -0.02em;
@@ -423,7 +423,7 @@
     }
 
     .timeline-item.is-future {
-      opacity: 0.4;
+      opacity: 0.7;
     }
 
     .tl-card {
@@ -737,6 +737,18 @@
       position: relative;
       cursor: pointer;
       background: rgba(0,0,0,0.3);
+      padding: 0;
+      width: 100%;
+      display: block;
+    }
+
+    /* Foco visível para navegação por teclado (acessibilidade) */
+    .btn-copy:focus-visible,
+    .btn-wa:focus-visible,
+    .lightbox-close:focus-visible,
+    .photo-thumb:focus-visible {
+      outline: 2px solid var(--violet);
+      outline-offset: 2px;
     }
     .photo-thumb img {
       width: 100%; height: 100%;
@@ -842,7 +854,7 @@
       to { transform: rotate(360deg); }
     }
 
-    .state-box h3 {
+    .state-box h1 {
       font-size: 1rem;
       font-weight: 700;
       margin-bottom: 6px;
@@ -867,31 +879,31 @@
     </header>
 
     <!-- Loading -->
-    <div id="tracking-loading" class="state-box">
+    <div id="tracking-loading" class="state-box" role="status" aria-live="polite">
       <div class="spinner"></div>
-      <h3>Localizando seu Serviço</h3>
+      <h1>Localizando seu Serviço</h1>
       <p>Conectando ao canal seguro de rastreamento…</p>
     </div>
 
     <!-- Error -->
-    <div id="tracking-error" class="state-box" style="display:none;">
-      <div class="emoji">🛑</div>
-      <h3>Código de Rastreio Inválido</h3>
+    <div id="tracking-error" class="state-box" style="display:none;" role="alert">
+      <div class="emoji" aria-hidden="true">🛑</div>
+      <h1>Código de Rastreio Inválido</h1>
       <p>Não encontramos nenhuma OS ativa com este link. Verifique o link enviado no seu WhatsApp.</p>
     </div>
 
     <!-- Main Content (rendered by JS) -->
-    <div id="tracking-content" style="display:none;">
+    <main id="tracking-content" style="display:none;">
 
       <!-- Welcome Card -->
-      <div class="glass welcome-card" id="welcome-card">
+      <section class="glass welcome-card" id="welcome-card" aria-label="Resumo do equipamento">
         <div class="welcome-top">
           <div class="welcome-text">
             <small>Acompanhamento em tempo real</small>
-            <h2 id="client-greeting">Olá!</h2>
+            <h1 id="client-greeting">Olá!</h1>
           </div>
           <div class="badge-custom-pc" id="badge-custom-pc">
-            <div class="dot-ping">
+            <div class="dot-ping" aria-hidden="true">
               <span></span><span></span>
             </div>
             🖥️ CUSTOM PC
@@ -911,33 +923,33 @@
             <span class="device-value" id="device-deadline">—</span>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Active Status Card -->
-      <div class="active-status-card" id="active-status-card">
+      <section class="active-status-card" id="active-status-card" aria-label="Status atual do serviço">
         <div class="active-content">
           <div class="status-pill" id="status-pill">
-            <div class="pulse-dot"></div>
+            <div class="pulse-dot" aria-hidden="true"></div>
             <span id="status-label">—</span>
           </div>
-          <div class="active-headline" id="status-headline">—</div>
+          <p class="active-headline" id="status-headline">—</p>
           <div class="active-timer" id="active-timer">⏱️ Calculando…</div>
-          <div class="active-public-note" id="active-note" style="display:none;"></div>
+          <p class="active-public-note" id="active-note" style="display:none;"></p>
         </div>
-      </div>
+      </section>
 
       <!-- Timeline -->
-      <div class="timeline-section">
-        <div class="section-label">Linha do Tempo</div>
+      <section class="timeline-section" aria-labelledby="timeline-label">
+        <h2 class="section-label" id="timeline-label">Linha do Tempo</h2>
         <div class="timeline" id="timeline"></div>
-      </div>
+      </section>
 
       <!-- Parts / Showcase (rendered conditionally) -->
       <div id="parts-section"></div>
 
       <!-- Warranty & Payment -->
-      <div class="warranty-section" id="warranty-section" style="display:none;">
-        <div class="section-label">Garantia &amp; Resumo</div>
+      <section class="warranty-section" id="warranty-section" style="display:none;" aria-labelledby="warranty-label">
+        <h2 class="section-label" id="warranty-label">Garantia &amp; Resumo</h2>
         <div class="glass warranty-card">
           <div class="warranty-grid">
             <div class="warranty-cell">
@@ -955,8 +967,8 @@
               <div class="warranty-code" id="w-code">—</div>
               <div class="warranty-period" id="w-period"></div>
             </div>
-            <button class="btn-copy" id="btn-copy-warranty">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <button class="btn-copy" id="btn-copy-warranty" type="button" aria-label="Copiar código de garantia">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
@@ -964,20 +976,20 @@
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Photos -->
-      <div id="photos-section" style="display:none;">
-        <div class="section-label">Fotos de Bancada</div>
+      <section id="photos-section" style="display:none;" aria-labelledby="photos-label">
+        <h2 class="section-label" id="photos-label">Fotos de Bancada</h2>
         <div class="glass photos-card">
           <p style="font-size:0.78rem; color:var(--slate-400); margin-bottom:0.75rem;">
             Fotos reais tiradas durante o processo de reparo ou montagem.
           </p>
           <div class="photos-grid" id="photos-grid"></div>
         </div>
-      </div>
+      </section>
 
-    </div><!-- /tracking-content -->
+    </main><!-- /tracking-content -->
   </div>
 
   <!-- WhatsApp Footer -->
@@ -991,9 +1003,9 @@
   </div>
 
   <!-- Lightbox -->
-  <div id="lightbox" class="lightbox">
-    <button class="lightbox-close" id="lightbox-close">✕</button>
-    <img src="" alt="Foto ampliada" class="lightbox-img" id="lightbox-img">
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Foto ampliada do reparo">
+    <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Fechar imagem">✕</button>
+    <img src="" alt="Foto ampliada do reparo" class="lightbox-img" id="lightbox-img">
   </div>
 
   <script src="/assets/js/rastrear.js" type="module"></script>

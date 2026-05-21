@@ -1,10 +1,21 @@
 # Especificação: Acompanhamento Público de OS em Tempo Real (Upgrade Visual & de Dados)
 
 **Feature:** `006-admin-os-tracking-upgrade` (Upgrade do portal `/rastrear?token=UUID`)  
-**Status:** Planejamento de UI/UX & Arquitetura de Dados  
+**Status:** Implementado em produção (2026-05-21)  
 **Criada:** 2026-05-21  
 **Depende de:** `006-admin-os` (Core OS) · `007-admin-inventory` (Estoque/Componentes) · `008-whatsapp-bridge` (Notificações)  
 **Autor:** Service Flow Designer  
+
+---
+
+> **Reconciliação (2026-05-21):** Esta é a **spec autoritativa** do portal `/rastrear`,
+> substituindo divergências do `tracking_design.md`. Decisões finais consolidadas:
+> - **URL:** `/rastrear?token=UUID` (query string), não path param.
+> - **Conteúdo da timeline:** o portal exibe **fotos de bancada E notas técnicas públicas** — ambos.
+> - **RLS:** conforme a migration `2026_05_21_create_tracking_upgrade.sql` — view sanitizada
+>   `view_public_os_tracking` + policies de SELECT restritas a `tracking_token IS NOT NULL`.
+> - **Endpoint:** `GET /api/admin/os/tracking?token=UUID` — público/anônimo, lê apenas a view sanitizada.
+> - **Tema visual:** stylesheet dark glassmorphism autocontido — exceção documentada no ADR 0006.
 
 ---
 

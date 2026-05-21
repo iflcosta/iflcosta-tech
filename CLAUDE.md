@@ -107,6 +107,7 @@ tests/                  # Playwright
 - F010 (Painel Financeiro) implementada — `.specs/010-financeiro/` completo.
 - Bugs corrigidos: modal de conversão CRM; criação de OS (`valor_custo_peças`); botão de tema sumindo no desktop; cards do dashboard (Leads usava endpoint errado; "OS Abertas" filtrava status inexistente — agora `?aberta=true` na API).
 - `tests/admin-os.spec.js` estava corrompido (encoding) — restaurado. Suíte E2E 49 testes.
+- **Portal `/rastrear` — auditoria a11y completa:** landmarks (`<main>`, `<section>`, `<header>`), hierarquia de headings (h1→h2), `role="status/alert"` no loading/erro, `aria-live="polite"`, lightbox com `role="dialog" aria-modal="true"` + Tab-trap + Esc key + retorno de foco, `<button>` nas thumbs de foto com `aria-label`, `aria-hidden` em elementos decorativos, opacidade do estado futuro corrigida (0.4→0.7 para WCAG AA). Fallback localStorage morto removido. Specs reconciliadas: `tracking_design.md` marcada como substituída, `tracking_upgrade.md` marcada como implementada. ADR 0006 criado (tema escuro autocontido — exceção deliberada).
 
 **Contexto de negócio — Feature 007:**
 - Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).

@@ -1,10 +1,18 @@
 # Especificação: Acompanhamento Público de OS em Tempo Real e Bridge WhatsApp (OpenClaw)
 
 **Feature:** `006-admin-os-tracking` (Extensão de `006-admin-os` com integração à `008-whatsapp-bridge`)  
-**Status:** Planejamento Conceitual / Arquitetura  
+**Status:** Substituída — ver `tracking_upgrade.md` (spec autoritativa do portal)  
 **Criada:** 2026-05-20  
 **Depende de:** `006-admin-os` (Core OS) · `005-admin-crm` (Clientes) · `008-whatsapp-bridge` (Fase 1)  
 **Autor:** Service Flow Designer  
+
+---
+
+> **Nota de reconciliação (2026-05-21):** Este é o estudo conceitual inicial. O portal
+> `/rastrear` foi implementado conforme `tracking_upgrade.md`, que é a **spec autoritativa**.
+> Em qualquer divergência (formato de URL, fotos vs. notas técnicas, políticas RLS), vale o
+> `tracking_upgrade.md`. Este documento permanece como referência da visão de integração
+> WhatsApp/OpenClaw, que alimenta a feature `008-whatsapp-bridge`.
 
 ---
 
