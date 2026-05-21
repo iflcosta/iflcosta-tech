@@ -76,7 +76,7 @@ tests/                  # Playwright
 | **003-lead-capture** | 100% — Concluído e homologado | — |
 | **004-admin-auth** | 100% — Concluído e ativo | — |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | specs retroativas: plan.md + tasks.md adicionados |
-| **006-admin-os** | 100% core + tracking upgrade implementado (código pronto, migration pendente) | Aplicar `2026_05_21_create_tracking_upgrade.sql` no Supabase |
+| **006-admin-os** | 100% — tracking upgrade + portal /rastrear a11y concluídos; migration aplicada | — |
 | **007-admin-inventory** | 100% T001–T013 — T008 (peças↔OS), T009–T011 (PC Builder), T012/T013 (relatórios + E2E) todos implementados | Validar em produção |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
@@ -89,6 +89,7 @@ tests/                  # Playwright
 - **Banco de dados zerado** — TRUNCATE em todas as tabelas operacionais para homologação com dados reais. Schema/migrations/auth intactos.
 - Bugs corrigidos: modal de conversão do CRM; criação de OS (`valor_custo_peças`); botão de tema sumindo no desktop; cards do dashboard (Leads usava `/api/admin/leads` em vez de `/api/admin/crm/leads`; "OS Abertas" filtrava `status=aberta` inexistente — agora filtro `?aberta=true` na API).
 - `tests/admin-os.spec.js` estava corrompido (encoding + blocos embaralhados) — restaurado. Suíte E2E com 49 testes.
+- **Portal `/rastrear` — auditoria a11y completa:** landmarks (`<main>`, `<section>`, `<header>`), hierarquia de headings (h1→h2), `role="status/alert"` no loading/erro, `aria-live="polite"`, lightbox com `role="dialog" aria-modal="true"` + Tab-trap + Esc + retorno de foco, `<button>` nas thumbs de foto com `aria-label`, `aria-hidden` em decorativos, opacidade do estado futuro 0.4→0.7 (WCAG AA). Fallback localStorage morto removido. Specs reconciliadas. ADR 0006 criado (tema escuro autocontido — exceção deliberada).
 
 **O que foi feito (commits 999c6ac + 5e37c13):**
 - **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)
@@ -97,10 +98,10 @@ tests/                  # Playwright
 - **Tracking upgrade (bônus)**: reescrita de `rastrear/index.html` + `assets/js/rastrear.js` com glassmorphism, timeline pública, showcase Custom PC; APIs atualizadas; spec em `.specs/006-admin-os/tracking_upgrade.md`
 - **Specs retroativas**: `plan.md` + `tasks.md` para 005 e 006
 
-> Migrações 006, 007 e `harden_db_functions` aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). Migration `2026_05_21_create_tracking_upgrade.sql` **ainda não aplicada** — aplicar pelo SQL editor do painel. Não usar o CLI de migrations.
+> Migrações 006, 007, `harden_db_functions` e `2026_05_21_create_tracking_upgrade` **todas aplicadas em produção** (projeto Supabase `togrnwxazuweuihlaljo`). Aplicar futuras migrações pelo SQL editor do painel. Não usar o CLI de migrations.
 
 **Dashboard (2026-05-21):**
-- Cards de stat são links clicáveis para os módulos ativos (leads/OS/estoque).
+- Cards de stat são links clicáveis para os módulos ativos (leads/OS/estoque/financeiro).
 - JS inline em `admin/index.html` carrega contagens reais via API na inicialização.
 - Novo campo "Nota Técnica Pública" na OS → aparece na timeline do portal de rastreamento do cliente.
 - Novo campo `payment_status` (pendente/parcial/pago) na OS.

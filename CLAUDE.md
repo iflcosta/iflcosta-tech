@@ -76,15 +76,11 @@ tests/                  # Playwright
 | **003-lead-capture** | 100% — Concluído e homologado | — |
 | **004-admin-auth** | 100% — Concluído e ativo | — |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | specs retroativas: plan.md + tasks.md adicionados |
-| **006-admin-os** | 100% core + tracking upgrade implementado (código pronto, migration pendente) | Aplicar `2026_05_21_create_tracking_upgrade.sql` no Supabase |
+| **006-admin-os** | 100% — tracking upgrade + portal /rastrear a11y concluídos; migration aplicada | — |
 | **007-admin-inventory** | 100% T001–T013 — T008 (peças↔OS), T009–T011 (PC Builder), T012/T013 (relatórios + E2E) todos implementados pelo Antigravity | Validar em produção |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 | **010-financeiro** | 100% T001–T006 — spec/plan/tasks, API, UI, gráfico canvas, sidebar, dashboard card, suíte E2E | Em produção; homologar com dados reais |
-
-**Próxima tarefa crítica:**
-
-1. **Aplicar migration `tracking_upgrade`** — `supabase/migrations/2026_05_21_create_tracking_upgrade.sql` via SQL editor do painel Supabase. Adiciona: `os_number`, `is_custom_pc`, `payment_status`, `digital_warranty_code` em `repairs`; `public_notes`, `private_notes` em `os_status_history`; trigger de numeração automática de OS; view pública sanitizada `public_repair_tracking`.
 
 **O que o Antigravity implementou (commits 999c6ac + 5e37c13):**
 - **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)
