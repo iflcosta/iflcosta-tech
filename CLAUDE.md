@@ -67,27 +67,32 @@ tests/                  # Playwright
 
 ## 4. Estado atual do projeto (atualizar conforme avança)
 
-> Última atualização: 2026-05-20 (Atualizado na sessão atual)
+> Última atualização: 2026-05-21
 
 | Feature | Status | Próxima ação |
 |---------|--------|--------------|
 | **001-design-system** | 100% — Integrado e auditado | Mantendo consistência nas próximas features |
 | **002-landing-public** | 100% — Produção online | Monitoramento |
 | **003-lead-capture** | 100% — Concluído e homologado | — |
-| **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
+| **004-admin-auth** | 100% — Concluído e ativo | — |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
 | **006-admin-os** | 100% — Migração SQL aplicada em produção (2026-05-21) | — |
-| **007-admin-inventory** | Em desenvolvimento — banco, API e UI de estoque prontos (T001–T007); migração em produção | Integração peças↔OS (T008), depois PC Builder |
+| **007-admin-inventory** | 100% T001–T007 — banco, API (products/movements/presets), UI estoque; tudo em produção | T008: peças↔OS; T009–T011: PC Builder; T012/T013: relatórios + E2E |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **Integração peças↔OS (T008)** — painel "Peças de Reposição" em `admin/os/detalhes.html`.
-2. **Custom PC Builder (T009–T011)** — `admin/estoque/builder.html` + validação de soquete + orçamento WhatsApp.
-3. **Relatórios + Testes E2E (T012/T013)** — relatórios em canvas e suite Playwright da 007.
+1. **T008 — Integração peças↔OS** — painel "Peças de Reposição" em `admin/os/detalhes.html`: autocomplete de produtos, POST `/api/admin/inventory/movements` com `tipo='saída' + repair_id`, DELETE para estornar, custo atualizado em tempo real na OS.
+2. **T009–T011 — Custom PC Builder** — `admin/estoque/builder.html` + `assets/js/admin/builder.js`: slots de montagem, validação de soquete CPU↔Mobo, orçamento via WhatsApp.
+3. **T012/T013 — Relatórios + E2E** — canvas de margens em `admin/estoque/relatorios.html`; suite Playwright `tests/admin-inventory.spec.js`.
 
-> Migrações 006 e 007 aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). Migração `harden_db_functions` fixou `search_path` e revogou EXECUTE das funções de trigger. Aplicar migrações pelo SQL editor do painel (o projeto não usa o CLI de migrations).
+> Migrações 006, 007 e `harden_db_functions` aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). `harden_db_functions` fixou `search_path = ''` em 8 funções e revogou EXECUTE das funções SECURITY DEFINER de trigger. Aplicar migrações pelo SQL editor do painel (o projeto não usa o CLI de migrations).
+
+**Dashboard atualizado (2026-05-21):**
+- Cards de stat agora são links clicáveis para os módulos ativos (leads/OS/estoque).
+- JS inline em `admin/index.html` carrega contagens reais via API na inicialização.
+- Badges "Fase N" substituídos por status reais ("✅ ativo" / "🔧 Próximo: T008").
 
 **Contexto de negócio — Feature 007:**
 - Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).

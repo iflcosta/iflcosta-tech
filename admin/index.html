@@ -39,60 +39,90 @@
       <!-- Grid de Indicadores Principais -->
       <div class="dashboard-grid">
         <!-- CRM Leads -->
-        <div class="stat-card">
+        <a href="/admin/leads/" class="stat-card" style="text-decoration: none; cursor: pointer;">
           <div class="stat-icon">⚡</div>
           <div class="stat-info">
             <span class="stat-label">Novos Leads</span>
-            <span class="stat-value">0</span>
-            <span class="stat-badge">CRM (Fase 5)</span>
+            <span class="stat-value" id="stat-leads">—</span>
+            <span class="stat-badge">CRM ativo</span>
           </div>
-        </div>
+        </a>
 
         <!-- Repairs / OS -->
-        <div class="stat-card">
+        <a href="/admin/os/" class="stat-card" style="text-decoration: none; cursor: pointer;">
           <div class="stat-icon">🛠️</div>
           <div class="stat-info">
             <span class="stat-label">OS Abertas</span>
-            <span class="stat-value">0</span>
-            <span class="stat-badge">Reparos (Fase 6)</span>
+            <span class="stat-value" id="stat-os">—</span>
+            <span class="stat-badge">Reparos ativo</span>
           </div>
-        </div>
+        </a>
 
         <!-- Inventory / Estoque -->
-        <div class="stat-card">
+        <a href="/admin/estoque/" class="stat-card" style="text-decoration: none; cursor: pointer;">
           <div class="stat-icon">📦</div>
           <div class="stat-info">
-            <span class="stat-label">Itens Baixos</span>
-            <span class="stat-value">0</span>
-            <span class="stat-badge">Estoque (Fase 7)</span>
+            <span class="stat-label">Alertas de Estoque</span>
+            <span class="stat-value" id="stat-estoque">—</span>
+            <span class="stat-badge">Estoque ativo</span>
           </div>
-        </div>
+        </a>
 
-        <!-- Whatsapp messages -->
-        <div class="stat-card">
+        <!-- WhatsApp -->
+        <div class="stat-card" style="opacity: 0.55;">
           <div class="stat-icon">💬</div>
           <div class="stat-info">
-            <span class="stat-label">Pendentes</span>
-            <span class="stat-value">0</span>
-            <span class="stat-badge">WhatsApp (Fase 8)</span>
+            <span class="stat-label">WhatsApp</span>
+            <span class="stat-value">—</span>
+            <span class="stat-badge">Em breve</span>
           </div>
         </div>
       </div>
 
-      <!-- Welcome Board / Placeholder de Módulos -->
+      <!-- Status dos módulos -->
       <div style="background: var(--color-bg-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-sm);">
         <h2 style="font-size: var(--text-lg); font-weight: var(--font-bold); margin-bottom: var(--space-3);">Operação Solo First</h2>
         <p style="color: var(--color-text-secondary); line-height: var(--leading-normal); margin-bottom: var(--space-4); max-width: 680px;">
-          Esta é a base do seu novo painel de gestão solo. Os módulos de controle comercial e suporte com inteligência artificial serão ativados em sequência de desenvolvimento.
+          Painel de gestão solo — módulos 004–007 ativos. Próximo: integração de peças nas OS (T008).
         </p>
         <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
-          <span style="font-size: 11px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-bg-subtle); color: var(--color-text-secondary); font-weight: var(--font-semibold);">Fase 4: Autenticação Segura (Ativa)</span>
-          <span style="font-size: 11px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: rgba(99, 102, 241, 0.1); color: var(--color-brand); font-weight: var(--font-semibold);">Próxima: CRM & Leads (Fase 5)</span>
+          <span style="font-size: 11px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-bg-subtle); color: var(--color-text-secondary); font-weight: var(--font-semibold);">✅ Auth (004)</span>
+          <span style="font-size: 11px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-bg-subtle); color: var(--color-text-secondary); font-weight: var(--font-semibold);">✅ CRM (005)</span>
+          <span style="font-size: 11px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-bg-subtle); color: var(--color-text-secondary); font-weight: var(--font-semibold);">✅ OS (006)</span>
+          <span style="font-size: 11px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-bg-subtle); color: var(--color-text-secondary); font-weight: var(--font-semibold);">✅ Estoque (007)</span>
+          <span style="font-size: 11px; padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: rgba(99, 102, 241, 0.1); color: var(--color-brand); font-weight: var(--font-semibold);">🔧 Próximo: Peças↔OS (T008)</span>
         </div>
       </div>
     </main>
   </div>
 
   <script src="/assets/js/admin/layout.js" type="module"></script>
+  <script type="module">
+    async function loadStats() {
+      try {
+        const [leadsRes, osRes, estoqueRes] = await Promise.all([
+          fetch('/api/admin/leads?limit=1&status=novo'),
+          fetch('/api/admin/os?limit=1&status=aberta'),
+          fetch('/api/admin/inventory/products?baixo_estoque=true&limit=1'),
+        ]);
+
+        if (leadsRes.ok) {
+          const d = await leadsRes.json();
+          document.getElementById('stat-leads').textContent = d.count ?? '—';
+        }
+        if (osRes.ok) {
+          const d = await osRes.json();
+          document.getElementById('stat-os').textContent = d.count ?? '—';
+        }
+        if (estoqueRes.ok) {
+          const d = await estoqueRes.json();
+          document.getElementById('stat-estoque').textContent = d.count ?? '—';
+        }
+      } catch {
+        // silently fail — offline ou sem sessão
+      }
+    }
+    loadStats();
+  </script>
 </body>
 </html>

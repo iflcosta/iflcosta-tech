@@ -67,25 +67,39 @@ tests/                  # Playwright
 
 ## 4. Estado atual do projeto (atualizar conforme avança)
 
-> Última atualização: 2026-05-20
+> Última atualização: 2026-05-21
 
 | Feature | Status | Próxima ação |
 |---------|--------|--------------|
 | **001-design-system** | 100% — Integrado e auditado | Mantendo consistência nas próximas features |
 | **002-landing-public** | 100% — Produção online | Monitoramento |
-| **003-lead-capture** | 100% — Completo e Validado | — |
-| **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
-| **005-admin-crm** | 100% — Concluído e testado | — |
-| **006-admin-os** | 100% — Código e testes E2E totalmente homologados (12/12 verdes) | Aplicar migração SQL no banco de produção |
-| **007-admin-inventory** | Spec/Plan/Tasks Prontos | Iniciar o desenvolvimento dos esquemas de dados e triggers locais |
+| **003-lead-capture** | 100% — Concluído e homologado | — |
+| **004-admin-auth** | 100% — Concluído e ativo | — |
+| **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
+| **006-admin-os** | 100% — Migração SQL aplicada em produção (2026-05-21) | — |
+| **007-admin-inventory** | 100% T001–T007 — banco, API (products/movements/presets), UI estoque; tudo em produção | T008: peças↔OS; T009–T011: PC Builder; T012/T013: relatórios + E2E |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **Aplicar a Migração SQL da Feature 006** — Executar `supabase/migrations/2026_05_20_create_service_orders.sql` no painel web de produção do Supabase.
-2. **Desenvolver o Banco de Dados da Feature 007** — Criar `supabase/migrations/2026_05_20_create_inventory.sql` com tabelas e triggers baseados em `.specs/007-admin-inventory/plan.md`.
-3. **Construir Endpoints de Produtos** — Desenvolver `/api/admin/inventory/products.js` com suporte ao CRUD completo e validações JWT.
+1. **T008 — Integração peças↔OS** — painel "Peças de Reposição" em `admin/os/detalhes.html`: autocomplete de produtos, POST `/api/admin/inventory/movements` com `tipo='saída' + repair_id`, DELETE para estornar, custo atualizado em tempo real na OS.
+2. **T009–T011 — Custom PC Builder** — `admin/estoque/builder.html` + `assets/js/admin/builder.js`: slots de montagem, validação de soquete CPU↔Mobo, orçamento via WhatsApp.
+3. **T012/T013 — Relatórios + E2E** — canvas de margens em `admin/estoque/relatorios.html`; suite Playwright `tests/admin-inventory.spec.js`.
+
+> Migrações 006, 007 e `harden_db_functions` aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). `harden_db_functions` fixou `search_path = ''` em 8 funções e revogou EXECUTE das 6 funções SECURITY DEFINER de trigger. Aplicar migrações pelo SQL editor do painel (o projeto não usa o CLI de migrations).
+
+**Dashboard atualizado (2026-05-21):**
+- Cards de stat são links clicáveis para os módulos ativos (leads/OS/estoque).
+- JS inline em `admin/index.html` carrega contagens reais via API na inicialização.
+- Badges "Fase N" substituídos por status reais ("✅ ativo" / "🔧 Próximo: T008").
+
+**Contexto de negócio — Feature 007:**
+- Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).
+- Por ora, **não mantém estoque físico**: compra a peça quando aparece a OS, pelo amigo ou direto no fornecedor.
+- O amigo serve de **cavalaria** para problemas que o Iago não consegue resolver no próprio laboratório.
+- O módulo de estoque é construído agora para suportar o **B2B futuro com importação da China** — não há urgência de rastrear qty real na fase atual.
+- Campo `fornecedor` no produto é suficiente para registrar o amigo como fornecedor preferencial de cada item.
 
 ---
 
