@@ -1,10 +1,16 @@
 # Spec: Copilot IA
 
 **Feature:** `009-copilot-ia`
-**Status:** Resumida (a expandir após 005-007 com dados reais)
+**Status:** Em backlog — spec resumida (a expandir após 005-007 com dados reais)
 **Criada:** 2026-05-19
 **Depende de:** `005-admin-crm` · `006-admin-os` · `007-admin-inventory` (precisa de dados)
 **Bloqueia:** —
+
+> **Nota SDD:** `plan.md` e `tasks.md` desta feature são intencionalmente adiados.
+> Esta feature está em backlog; os artefatos `plan` e `tasks` serão criados quando
+> ela sair do backlog e antes de qualquer código. A ausência deles aqui é decisão
+> deliberada, não lacuna de processo. A página `/admin/wiki` é um stub criado na
+> Feature 004 (T062); o conteúdo real da wiki será especificado aqui.
 
 ---
 

@@ -1,10 +1,15 @@
 # Spec: WhatsApp Bridge
 
 **Feature:** `008-whatsapp-bridge`
-**Status:** Resumida (caixa-preta nessa fase — não acelere)
+**Status:** Em backlog — spec resumida (caixa-preta nessa fase — não acelere)
 **Criada:** 2026-05-19
 **Depende de:** `005-admin-crm` · `006-admin-os` · `007-admin-inventory`
 **Bloqueia:** `009-copilot-ia` (parcial — copilot pode operar sem bridge)
+
+> **Nota SDD:** `plan.md` e `tasks.md` desta feature são intencionalmente adiados.
+> Esta feature está em backlog; os artefatos `plan` e `tasks` serão criados quando
+> ela sair do backlog e antes de qualquer código. A ausência deles aqui é decisão
+> deliberada, não lacuna de processo.
 
 ---
 
