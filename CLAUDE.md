@@ -77,15 +77,17 @@ tests/                  # Playwright
 | **004-admin-auth** | 100% — Concluído e ativo | Monitorar acessos de administração |
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
 | **006-admin-os** | 100% — Migração SQL aplicada em produção (2026-05-21) | — |
-| **007-admin-inventory** | Em desenvolvimento — T001/T002/T003 concluídos | Criar endpoints de movimentos e presets, depois UI |
+| **007-admin-inventory** | Em desenvolvimento — migração aplicada em produção (007 + hardening); T001/T002/T003 concluídos | Criar endpoints de movimentos e presets, depois UI |
 | **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 
 **Próximas 3 tarefas concretas (em ordem):**
 
-1. **Aplicar migração 007 em produção** — Executar `supabase/migrations/2026_05_21_create_inventory.sql` no painel do Supabase.
-2. **Endpoints T004/T005** — Criar `/api/admin/inventory/movements.js` e `/api/admin/inventory/presets.js`.
-3. **UI do Estoque (T006)** — `admin/estoque/index.html` + `assets/js/admin/estoque.js`.
+1. **Endpoints T004/T005** — Criar `/api/admin/inventory/movements.js` e `/api/admin/inventory/presets.js`.
+2. **UI do Estoque (T006/T007)** — `admin/estoque/index.html` + `assets/js/admin/estoque.js` + modais de movimento.
+3. **Integração peças↔OS (T008)** — painel "Peças de Reposição" em `admin/os/detalhes.html`.
+
+> Migrações 006 e 007 aplicadas em produção (projeto Supabase `togrnwxazuweuihlaljo`). Migração `harden_db_functions` fixou `search_path` e revogou EXECUTE das funções de trigger. Aplicar migrações pelo SQL editor do painel (o projeto não usa o CLI de migrations).
 
 **Contexto de negócio — Feature 007:**
 - Iago usa o mesmo fornecedor de peças de celular que seu amigo (loja de informática em Bragança Paulista).
