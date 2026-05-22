@@ -120,13 +120,17 @@ tests/                  # Playwright
 5. `os-detalhes.js` — `loadStatusHistory()` + localStorage de histórico removidos; `saveStatusTransition()` API-only ✅
 6–8. `seedMockData` e todos os fallbacks de localStorage removidos de `os.js`, `estoque.js`, `builder.js`, `relatorios.js`, `os-detalhes.js` ✅
 
-### 🟡 Pendência remanescente (design/asset)
+### 🟡 Bug 9 — favicon resolvido; falta só o `og.jpg`
 
-**Bug 9 — Imagens faltando em todas as páginas públicas**
-- `assets/img/` contém apenas `.gitkeep`.
-- Faltam: `/favicon.ico`, `/assets/img/favicon.svg`, `/assets/img/apple-touch-icon.png`, `/assets/img/og.jpg`.
-- Efeito: sem favicon em nenhuma página; compartilhamentos no WhatsApp/redes sem imagem de preview.
-- Para corrigir: criar os assets (design) e colocar na pasta. Não é código — é asset.
+**Favicon (2026-05-22): ✅ resolvido**
+- `favicon.svg` (monograma "IL" indigo, vetorial), `favicon.ico`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192/512.png` e `site.webmanifest` adicionados.
+- Bloco `<link>` de favicon + manifest presente nas 7 páginas públicas (index, orcamento, 404, obrigado, privacidade, termos, rastrear).
+- `favicon.ico` e `site.webmanifest` na raiz; demais assets em `assets/img/`.
+
+**Pendente — `og.jpg` (imagem de preview de compartilhamento)**
+- `<meta property="og:image">` aponta para `/assets/img/og.jpg`, que ainda não existe.
+- Efeito: compartilhamento no WhatsApp/redes sem imagem de preview.
+- Para corrigir: criar `og.jpg` 1200×630 (Canva, template "Open Graph") e colocar em `assets/img/`. Não é código — é asset.
 
 ---
 
