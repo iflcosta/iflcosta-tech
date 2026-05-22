@@ -120,17 +120,16 @@ tests/                  # Playwright
 5. `os-detalhes.js` — `loadStatusHistory()` + localStorage de histórico removidos; `saveStatusTransition()` API-only ✅
 6–8. `seedMockData` e todos os fallbacks de localStorage removidos de `os.js`, `estoque.js`, `builder.js`, `relatorios.js`, `os-detalhes.js` ✅
 
-### 🟡 Bug 9 — favicon resolvido; falta só o `og.jpg`
+### ✅ Bug 9 — favicon e Open Graph resolvidos (2026-05-22)
 
-**Favicon (2026-05-22): ✅ resolvido**
+**Favicon: ✅ resolvido**
 - `favicon.svg` (monograma "IL" indigo, vetorial), `favicon.ico`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192/512.png` e `site.webmanifest` adicionados.
 - Bloco `<link>` de favicon + manifest presente nas 7 páginas públicas (index, orcamento, 404, obrigado, privacidade, termos, rastrear).
 - `favicon.ico` e `site.webmanifest` na raiz; demais assets em `assets/img/`.
 
-**Pendente — `og.jpg` (imagem de preview de compartilhamento)**
-- `<meta property="og:image">` aponta para `/assets/img/og.jpg`, que ainda não existe.
-- Efeito: compartilhamento no WhatsApp/redes sem imagem de preview.
-- Para corrigir: criar `og.jpg` 1200×630 (Canva, template "Open Graph") e colocar em `assets/img/`. Não é código — é asset.
+**Open Graph: ✅ resolvido**
+- `assets/img/og.png` (1200×630) adicionado.
+- `<meta property="og:image">` e `<meta name="twitter:image">` em `index.html` e `orcamento.html` apontam para `/assets/img/og.png`.
 
 ---
 
