@@ -687,7 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     switch (currentOS.status) {
       case 'diagnóstico':
-        text = `Olá ${clientName}! O seu ${deviceStr} entrou em diagnóstico técnico em nossa assistência técnica. Acompanhe as fotos de bancada e o status em tempo real aqui: ${trackingLink}`;
+        text = `Olá ${clientName}! O seu ${deviceStr} está em diagnóstico técnico. Acompanhe as fotos de bancada e o status em tempo real aqui: ${trackingLink}`;
         break;
       case 'aguardando_aprovação':
         text = `Olá ${clientName}! O diagnóstico do seu ${deviceStr} foi finalizado. Laudo: ${currentOS.laudo || 'reparo necessário'}.\nTotal: ${valueFormatted}.\nVocê pode ver todos os detalhes e aprovar no link de rastreamento exclusivo: ${trackingLink}`;
@@ -702,14 +702,14 @@ document.addEventListener('DOMContentLoaded', () => {
         text = `Seu ${deviceStr} está na bancada sob reparos, ${clientName}! Acompanhe o progresso técnico no link: ${trackingLink}`;
         break;
       case 'pronto':
-        text = `Ótima notícia, ${clientName}! Seu ${deviceStr} está PRONTO! 🎉 Fizemos todos os testes de bancada de energia e sensores e ele passou com 100% de sucesso.\nPode retirar na loja hoje.\nVeja as fotos dele pronto no link: ${trackingLink}`;
+        text = `Ótima notícia, ${clientName}! Seu ${deviceStr} está PRONTO! 🎉 Passou em todos os testes de bancada com sucesso.\nMe fala quando quiser combinar a entrega. Veja as fotos dele pronto no link: ${trackingLink}`;
         break;
       case 'entregue':
         const expiry = detGarantiaAte.value;
         text = `Agradecemos a confiança, ${clientName}! Seu ${deviceStr} foi entregue.\nA sua garantia é válida por ${currentOS.garantia_dias || 90} dias (até ${expiry}).\nO histórico das fotos e o certificado digital de garantia estão disponíveis no link de rastreamento: ${trackingLink}`;
         break;
       case 'cancelado':
-        text = `Olá ${clientName}. Confirmamos o cancelamento do serviço para o seu ${deviceStr}. O aparelho já foi remontado e está disponível para retirada na loja.\nDetalhes adicionais: ${trackingLink}`;
+        text = `Olá ${clientName}. Confirmamos o cancelamento do serviço para o seu ${deviceStr}. O aparelho já foi remontado — me chama para combinarmos a devolução.\nDetalhes adicionais: ${trackingLink}`;
         break;
       default:
         text = `Olá ${clientName}! Acompanhe o status do conserto do seu ${deviceStr} em tempo real no nosso canal oficial: ${trackingLink}`;

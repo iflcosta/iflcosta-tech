@@ -173,7 +173,7 @@ Em `assets/css/base.css` precisa de `[hidden] { display: none !important; }` par
 Abrir `index.html` direto pelo Explorer/duplo-clique não funciona — CORS bloqueia `<script type="module">`. Sempre `npm run serve`.
 
 ### Pendências de CSS conhecidas
-- `.has-error` / `.hint--error` referenciadas em JS mas **não existem** em `components.css` → criar quando atacar T013 do 001.
+- `.has-error` / `.hint--error` — ✅ já existem em `components.css` (linha 160+). Item resolvido.
 - `orcamento.html` ainda tem CSS inline → migrar para `components.css`.
 
 ### Datas e fuso

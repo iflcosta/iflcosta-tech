@@ -44,7 +44,7 @@ export default async function handler(req) {
     }
 
     // Apenas o e-mail permitido (Iago) pode acessar a área administrativa
-    const ALLOWED_EMAIL = 'iflcosta@outlook.com';
+    const ALLOWED_EMAIL = process.env.ALLOWED_EMAIL || 'iflcosta@outlook.com';
     if (user.email !== ALLOWED_EMAIL) {
       console.warn(`Tentativa de acesso bloqueada por e-mail não autorizado: ${user.email}`);
       return new Response(JSON.stringify({ ok: false, error: 'unauthorized', message: 'Acesso negado.' }), {

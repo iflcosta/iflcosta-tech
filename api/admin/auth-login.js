@@ -36,7 +36,7 @@ export default async function handler(req) {
     );
 
     // Restrição absoluta single-user (Iago)
-    const ALLOWED_EMAIL = 'iflcosta@outlook.com';
+    const ALLOWED_EMAIL = process.env.ALLOWED_EMAIL || 'iflcosta@outlook.com';
 
     if (email !== ALLOWED_EMAIL) {
       if (token) {
