@@ -5,14 +5,19 @@
 
   "rewrites": [
     {
-      "source": "/(?!assets|api|admin|outbound|portal|favicon|robots|sitemap|site\\.webmanifest|rastrear)(.*)",
+      "source": "/",
       "has": [{ "type": "host", "value": "ia.iflcosta.tech" }],
-      "destination": "/ia/$1"
+      "destination": "/ia"
     },
     {
-      "source": "/(?!assets|api|admin|outbound|portal|favicon|robots|sitemap|site\\.webmanifest|rastrear)(.*)",
+      "source": "/demo",
+      "has": [{ "type": "host", "value": "ia.iflcosta.tech" }],
+      "destination": "/ia/demo"
+    },
+    {
+      "source": "/",
       "has": [{ "type": "host", "value": "iflcosta.tech" }],
-      "destination": "/portal/$1"
+      "destination": "/portal"
     }
   ],
 
