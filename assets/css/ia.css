@@ -272,6 +272,23 @@ body { background: var(--color-bg-ia); }
   border: 1px solid var(--color-border-subtle);
 }
 
+.ia-card__icon {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xl);
+  background: var(--color-brand-subtle);
+  margin-bottom: var(--space-4);
+  flex-shrink: 0;
+}
+.ia-card__icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: var(--color-brand);
+}
+
 .ia-card__step {
   display: inline-flex;
   width: 2.25rem;
@@ -297,6 +314,21 @@ body { background: var(--color-bg-ia); }
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
   line-height: var(--leading-relaxed);
+}
+
+/* ── FUNDADOR BOX ─────────────────────────────────────────── */
+
+.ia-fundador-box {
+  max-width: 42rem;
+  margin-inline: auto;
+  text-align: center;
+  padding: var(--space-8);
+  background: var(--color-brand-subtle);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-brand);
+}
+.ia-fundador-box .ia-section__sub {
+  margin-bottom: var(--space-6);
 }
 
 /* ── FINAL CTA (fundo brand) ──────────────────────────────── */
@@ -357,6 +389,9 @@ body { background: var(--color-bg-ia); }
   align-items: center;
   gap: var(--space-3);
 }
+
+/* IA pages: footer background matches warm palette */
+body .site-footer { background: var(--color-bg-ia); }
 
 /* ── DEMO PAGE ────────────────────────────────────────────── */
 

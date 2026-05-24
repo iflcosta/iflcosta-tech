@@ -5,17 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#F4F2EC" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0a0e10" media="(prefers-color-scheme: dark)">
-  <title>Iago Lopes | Hardware, Tech & IA</title>
+  <meta name="color-scheme" content="light dark">
+  <title>Iago Lopes | Hardware, Tech &amp; IA</title>
   <meta name="description" content="Três frentes para o seu negócio em Bragança Paulista: manutenção de hardware, suporte de tech e automação com IA. Escolha por onde começar.">
+  <link rel="canonical" href="https://iflcosta.tech/">
 
-  <meta property="og:title" content="Iago Lopes | Hardware, Tech & IA">
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Iago Lopes | Hardware, Tech &amp; IA">
+  <meta property="og:title" content="Iago Lopes | Hardware, Tech &amp; IA">
   <meta property="og:description" content="Manutenção de hardware, suporte de tech e automação com IA para PMEs de Bragança Paulista.">
+  <meta property="og:image" content="https://iflcosta.tech/assets/img/og.png">
+  <meta property="og:url" content="https://iflcosta.tech/">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:type" content="website">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Iago Lopes | Hardware, Tech &amp; IA">
+  <meta name="twitter:description" content="Manutenção de hardware, suporte de tech e automação com IA para PMEs de Bragança Paulista.">
+  <meta name="twitter:image" content="https://iflcosta.tech/assets/img/og.png">
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="icon" type="image/png" href="/assets/img/favicon-96x96.png" sizes="96x96">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
 
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/portal/style.css">
@@ -29,7 +44,9 @@
   </script>
 </head>
 <body>
-  <main class="wrap">
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <main class="wrap" id="main">
     <header class="portal-header">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">IL</span>
@@ -44,9 +61,9 @@
       </button>
     </header>
 
-    <section class="hero">
+    <section class="hero" aria-labelledby="portal-heading">
       <span class="eyebrow">Bragança · Atibaia · Itatiba</span>
-      <h1>Por onde quer começar?</h1>
+      <h1 id="portal-heading">Por onde quer começar?</h1>
       <p class="lead">
         Três frentes para a sua empresa: o hardware que mantém tudo no ar,
         o suporte de tech do dia-a-dia, e a automação com IA que faz o atendimento
@@ -54,7 +71,7 @@
       </p>
     </section>
 
-    <section class="cards">
+    <section class="cards" aria-label="Serviços disponíveis">
       <a class="card card-hardware" href="https://hardware.iflcosta.tech">
         <span class="card-tag">01 · Hardware</span>
         <h2>Manutenção &amp; TI</h2>
