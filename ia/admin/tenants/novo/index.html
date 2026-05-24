@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novo cliente — IA Admin</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/ia/admin/style.css">
+  <script>(function(){var t=localStorage.getItem('ifl-theme')||'system';if(t!=='system')document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<div class="ia-admin-shell">
+
+  <nav class="ia-admin-nav" aria-label="Menu admin IA">
+    <div class="ia-admin-nav__brand">
+      <span class="ia-admin-nav__mark" aria-hidden="true">IA</span>
+      <div><div class="ia-admin-nav__title">IA Admin</div><div class="ia-admin-nav__sub">iflcosta.tech</div></div>
+    </div>
+    <ul class="ia-admin-nav__menu" role="list">
+      <li class="ia-admin-nav__item"><a href="/ia/admin"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/tenants" aria-current="page"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/conversations"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Conversas</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/leads"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Leads</a></li>
+    </ul>
+    <div class="ia-admin-nav__footer"><a href="/admin">← Admin hardware</a></div>
+  </nav>
+
+  <div class="ia-admin-main">
+    <header class="ia-admin-header">
+      <a href="/ia/admin/tenants" class="btn btn--secondary btn--sm" aria-label="Voltar para lista de clientes">←</a>
+      <h1>Novo cliente</h1>
+    </header>
+
+    <main class="ia-admin-content" id="main" style="max-width:640px">
+
+      <form id="form-novo-tenant" novalidate>
+
+        <div class="ia-form-section">
+          <h3>Dados do cliente</h3>
+
+          <div class="field" style="margin-bottom:var(--space-4)">
+            <label class="label" for="f-name">Nome de exibição <span aria-hidden="true">*</span></label>
+            <input class="input" type="text" id="f-name" name="name" required placeholder="Ex: Imobiliária Sant'Ana" autocomplete="organization">
+            <span class="hint hint--error" id="err-name" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="field" style="margin-bottom:var(--space-4)">
+            <label class="label" for="f-biz">Razão social</label>
+            <input class="input" type="text" id="f-biz" name="biz_name" placeholder="Ex: Sant'Ana Imóveis Ltda">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)">
+            <div class="field">
+              <label class="label" for="f-segment">Segmento <span aria-hidden="true">*</span></label>
+              <select class="input" id="f-segment" name="segment" required>
+                <option value="">Selecionar…</option>
+                <option value="imobiliaria">Imobiliária</option>
+                <option value="clinica">Clínica / Consultório</option>
+                <option value="pet">Pet Shop</option>
+                <option value="outro">Outro</option>
+              </select>
+              <span class="hint hint--error" id="err-segment" role="alert" aria-live="polite"></span>
+            </div>
+            <div class="field">
+              <label class="label" for="f-plan">Plano</label>
+              <select class="input" id="f-plan" name="plan">
+                <option value="trial">Trial (30 dias)</option>
+                <option value="basico">Básico</option>
+                <option value="pro">Pro</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)">
+            <div class="field">
+              <label class="label" for="f-phone">WhatsApp do contato</label>
+              <input class="input" type="tel" id="f-phone" name="phone" placeholder="(11) 99999-9999">
+            </div>
+            <div class="field">
+              <label class="label" for="f-email">E-mail</label>
+              <input class="input" type="email" id="f-email" name="email" placeholder="contato@empresa.com">
+            </div>
+          </div>
+        </div>
+
+        <div class="ia-form-section">
+          <h3>Notas internas</h3>
+          <textarea class="input" name="notes" id="f-notes" rows="3" placeholder="Ex: cliente indicado por João, quer começar em junho…" style="resize:vertical;width:100%"></textarea>
+        </div>
+
+        <div id="form-error" role="alert" aria-live="polite" style="display:none" class="hint hint--error" style="margin-bottom:var(--space-4)"></div>
+
+        <div style="display:flex;gap:var(--space-3);align-items:center">
+          <button class="btn btn--primary" type="submit" id="btn-submit">Criar cliente</button>
+          <a href="/ia/admin/tenants" class="btn btn--secondary">Cancelar</a>
+          <span id="submit-status" style="font-size:var(--text-sm);color:var(--color-text-tertiary)"></span>
+        </div>
+
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  const form = document.getElementById('form-novo-tenant');
+  const btn  = document.getElementById('btn-submit');
+  const status = document.getElementById('submit-status');
+  const formErr = document.getElementById('form-error');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    clearErrors();
+
+    const data = Object.fromEntries(new FormData(form));
+    let valid = true;
+
+    if (!data.name?.trim()) { showErr('err-name', 'Nome é obrigatório'); valid = false; }
+    if (!data.segment)      { showErr('err-segment', 'Selecione um segmento'); valid = false; }
+    if (!valid) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Criando…';
+    status.textContent = '';
+
+    try {
+      const res = await fetch('/api/ia/admin/tenants', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:     data.name.trim(),
+          biz_name: data.biz_name?.trim() || null,
+          segment:  data.segment,
+          plan:     data.plan || 'trial',
+          phone:    data.phone?.trim() || null,
+          email:    data.email?.trim() || null,
+          notes:    data.notes?.trim() || null,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) { showFormErr(json.error ?? 'Erro ao criar cliente'); btn.disabled = false; btn.textContent = 'Criar cliente'; return; }
+
+      // Redireciona para o detalhe do tenant recém-criado
+      window.location.href = `/ia/admin/tenants/${json.id}`;
+    } catch {
+      showFormErr('Erro de conexão. Tente novamente.');
+      btn.disabled = false;
+      btn.textContent = 'Criar cliente';
+    }
+  });
+
+  function showErr(id, msg) { const el = document.getElementById(id); if (el) el.textContent = msg; }
+  function showFormErr(msg) { formErr.textContent = msg; formErr.style.display = ''; }
+  function clearErrors() {
+    formErr.style.display = 'none';
+    ['err-name','err-segment'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+  }
+</script>
+</body>
+</html>

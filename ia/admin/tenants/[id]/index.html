@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cliente — IA Admin</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/ia/admin/style.css">
+  <style>
+    .prompt-editor { font-family: var(--font-mono, monospace); font-size: 13px; min-height: 220px; resize: vertical; width: 100%; line-height: 1.6; }
+    .var-chip { display:inline-block; background:var(--color-brand-subtle); color:var(--color-brand); border-radius:var(--radius-sm); padding:1px 6px; font-size:11px; font-family:monospace; cursor:pointer; margin:2px; }
+    .var-chip:hover { background:var(--color-brand); color:#fff; }
+    .schedule-grid { display:grid; grid-template-columns: 80px 1fr 1fr; gap:var(--space-2); align-items:center; font-size:var(--text-sm); }
+    .schedule-grid label { font-weight:var(--font-medium); }
+    .faq-item { display:grid; grid-template-columns:1fr auto; gap:var(--space-3); align-items:start; padding:var(--space-3); border:1px solid var(--color-border-subtle); border-radius:var(--radius-lg); margin-bottom:var(--space-2); }
+    .faq-item__body { display:flex; flex-direction:column; gap:4px; }
+    .faq-q { font-weight:var(--font-medium); font-size:var(--text-sm); }
+    .faq-a { font-size:var(--text-sm); color:var(--color-text-secondary); }
+    .version-item { display:flex; justify-content:space-between; align-items:center; padding:var(--space-2) var(--space-3); border-bottom:1px solid var(--color-border-subtle); font-size:var(--text-sm); }
+    .version-item:last-child { border-bottom:none; }
+    .save-indicator { font-size:var(--text-xs); color:var(--color-text-tertiary); }
+    .slider-row { display:flex; align-items:center; gap:var(--space-3); }
+    .slider-row input[type=range] { flex:1; }
+    .slider-row output { min-width:2.5rem; text-align:right; font-size:var(--text-sm); font-weight:var(--font-medium); }
+    @media(max-width:600px){ .schedule-grid{grid-template-columns:1fr;} }
+  </style>
+  <script>(function(){var t=localStorage.getItem('ifl-theme')||'system';if(t!=='system')document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<div class="ia-admin-shell">
+
+  <nav class="ia-admin-nav" aria-label="Menu admin IA">
+    <div class="ia-admin-nav__brand">
+      <span class="ia-admin-nav__mark" aria-hidden="true">IA</span>
+      <div><div class="ia-admin-nav__title">IA Admin</div><div class="ia-admin-nav__sub">iflcosta.tech</div></div>
+    </div>
+    <ul class="ia-admin-nav__menu" role="list">
+      <li class="ia-admin-nav__item"><a href="/ia/admin"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/tenants" aria-current="page"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/conversations"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Conversas</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/leads"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Leads</a></li>
+    </ul>
+    <div class="ia-admin-nav__footer"><a href="/admin">← Admin hardware</a></div>
+  </nav>
+
+  <div class="ia-admin-main">
+    <header class="ia-admin-header">
+      <a href="/ia/admin/tenants" class="btn btn--secondary btn--sm" aria-label="Voltar">←</a>
+      <h1 id="page-title">Carregando…</h1>
+      <span id="tenant-status-badge"></span>
+    </header>
+
+    <main class="ia-admin-content" id="main">
+
+      <!-- Tabs -->
+      <div class="ia-tabs" role="tablist" aria-label="Seções do cliente">
+        <button class="ia-tab" role="tab" aria-selected="true"  aria-controls="tab-agent" id="tab-btn-agent">Agente</button>
+        <button class="ia-tab" role="tab" aria-selected="false" aria-controls="tab-faq"   id="tab-btn-faq">FAQ</button>
+        <button class="ia-tab" role="tab" aria-selected="false" aria-controls="tab-wa"    id="tab-btn-wa">WhatsApp</button>
+      </div>
+
+      <!-- ── TAB 1: AGENTE ────────────────────────────────────── -->
+      <div id="tab-agent" role="tabpanel" aria-labelledby="tab-btn-agent" data-active>
+
+        <form id="form-agent">
+          <div class="ia-form-section">
+            <h3>Configuração do agente</h3>
+            <div class="field" style="margin-bottom:var(--space-4)">
+              <label class="label" for="agent-name">Nome do agente</label>
+              <input class="input" type="text" id="agent-name" name="name" placeholder="Ex: Assistente Imobiliária Sant'Ana">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)">
+              <div class="field">
+                <label class="label" for="agent-model">Modelo LLM</label>
+                <select class="input" id="agent-model" name="model">
+                  <option value="llama-3.3-70b-versatile">llama-3.3-70b (recomendado)</option>
+                  <option value="llama-3.1-8b-instant">llama-3.1-8b (mais rápido/barato)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label" for="agent-tokens">Máx. tokens de resposta</label>
+                <input class="input" type="number" id="agent-tokens" name="max_tokens" min="100" max="2000" step="50">
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:var(--space-2)">
+              <label class="label" for="agent-temp">Temperatura: <output id="temp-output">0.30</output></label>
+              <div class="slider-row">
+                <input type="range" id="agent-temp" name="temperature" min="0" max="1" step="0.05">
+                <small style="color:var(--color-text-tertiary)">0 = preciso · 1 = criativo</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="ia-form-section">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3)">
+              <h3 style="margin:0;border:none;padding:0">System prompt</h3>
+              <button type="button" class="btn btn--secondary btn--sm" id="btn-versions">Histórico de versões</button>
+            </div>
+            <div style="margin-bottom:var(--space-2);font-size:var(--text-xs);color:var(--color-text-tertiary)">
+              Variáveis disponíveis (clique para inserir):
+              <span class="var-chip" data-var="{{nome_empresa}}">{{nome_empresa}}</span>
+              <span class="var-chip" data-var="{{segmento}}">{{segmento}}</span>
+              <span class="var-chip" data-var="{{horario_atendimento}}">{{horario_atendimento}}</span>
+              <span class="var-chip" data-var="{{cidade}}">{{cidade}}</span>
+            </div>
+            <textarea class="input prompt-editor" id="agent-prompt" name="system_prompt"
+              placeholder="Você é um assistente de atendimento da {{nome_empresa}}, uma {{segmento}} em Bragança Paulista..."></textarea>
+          </div>
+
+          <div class="ia-form-section">
+            <h3>Horário de atendimento</h3>
+            <label style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3);font-size:var(--text-sm)">
+              <input type="checkbox" id="allday-check"> Atendimento 24/7 (sem restrição de horário)
+            </label>
+            <div id="schedule-grid" class="schedule-grid">
+              <span style="font-weight:var(--font-semibold);font-size:var(--text-xs);text-transform:uppercase;color:var(--color-text-tertiary)">Dia</span>
+              <span style="font-weight:var(--font-semibold);font-size:var(--text-xs);text-transform:uppercase;color:var(--color-text-tertiary)">Início</span>
+              <span style="font-weight:var(--font-semibold);font-size:var(--text-xs);text-transform:uppercase;color:var(--color-text-tertiary)">Fim</span>
+            </div>
+            <div id="schedule-rows"></div>
+            <div class="field" style="margin-top:var(--space-4)">
+              <label class="label" for="off-hours-msg">Mensagem fora do horário</label>
+              <textarea class="input" id="off-hours-msg" name="off_hours_msg" rows="2" style="resize:vertical;width:100%"></textarea>
+            </div>
+          </div>
+
+          <div id="agent-save-status" class="save-indicator" style="margin-bottom:var(--space-3)"></div>
+          <button class="btn btn--primary" type="submit" id="btn-save-agent">Salvar agente</button>
+        </form>
+
+        <!-- Modal versões -->
+        <div id="modal-versions" role="dialog" aria-modal="true" aria-label="Histórico de versões" hidden
+          style="position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:300;padding:var(--space-4)">
+          <div style="background:var(--color-bg-surface);border-radius:var(--radius-2xl);width:100%;max-width:560px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column">
+            <div style="padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--color-border-subtle);display:flex;justify-content:space-between;align-items:center">
+              <h2 style="margin:0;font-size:var(--text-base)">Histórico de versões</h2>
+              <button class="btn btn--secondary btn--sm" id="btn-close-versions">Fechar</button>
+            </div>
+            <div id="versions-list" style="overflow-y:auto;flex:1"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── TAB 2: FAQ ────────────────────────────────────────── -->
+      <div id="tab-faq" role="tabpanel" aria-labelledby="tab-btn-faq" hidden>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4)">
+          <p style="margin:0;font-size:var(--text-sm);color:var(--color-text-secondary)">
+            Pares de pergunta e resposta que o agente consulta antes de chamar o LLM.
+          </p>
+          <button class="btn btn--primary btn--sm" id="btn-add-faq">+ Adicionar</button>
+        </div>
+
+        <!-- Form novo FAQ (colapsável) -->
+        <div id="faq-form-wrap" hidden style="margin-bottom:var(--space-4)">
+          <div class="ia-form-section">
+            <h3>Nova entrada FAQ</h3>
+            <div class="field" style="margin-bottom:var(--space-3)">
+              <label class="label" for="faq-q">Pergunta</label>
+              <input class="input" type="text" id="faq-q" placeholder="Ex: Qual o horário de funcionamento?">
+            </div>
+            <div class="field" style="margin-bottom:var(--space-3)">
+              <label class="label" for="faq-a">Resposta</label>
+              <textarea class="input" id="faq-a" rows="3" style="resize:vertical;width:100%" placeholder="Ex: Funcionamos de segunda a sábado, das 9h às 18h."></textarea>
+            </div>
+            <div style="display:flex;gap:var(--space-2)">
+              <button class="btn btn--primary btn--sm" id="btn-save-faq">Salvar</button>
+              <button class="btn btn--secondary btn--sm" id="btn-cancel-faq">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="faq-list">
+          <div class="ia-empty"><p>Carregando…</p></div>
+        </div>
+
+      </div>
+
+      <!-- ── TAB 3: WHATSAPP ───────────────────────────────────── -->
+      <div id="tab-wa" role="tabpanel" aria-labelledby="tab-btn-wa" hidden>
+
+        <div id="wa-instances-wrap">
+          <div class="ia-empty"><p>Carregando…</p></div>
+        </div>
+
+        <!-- Form nova instância (colapsável) -->
+        <details style="margin-top:var(--space-5)">
+          <summary class="btn btn--secondary btn--sm" style="cursor:pointer;display:inline-flex">+ Registrar nova instância</summary>
+          <div class="ia-form-section" style="margin-top:var(--space-3)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)">
+              <div class="field">
+                <label class="label" for="wa-instance-name">Nome da instância <small style="color:var(--color-text-tertiary)">(Evolution API)</small></label>
+                <input class="input" type="text" id="wa-instance-name" placeholder="Ex: santana-prod">
+              </div>
+              <div class="field">
+                <label class="label" for="wa-phone">Número WhatsApp</label>
+                <input class="input" type="tel" id="wa-phone" placeholder="5511999999999">
+              </div>
+            </div>
+            <button class="btn btn--primary btn--sm" id="btn-create-instance" style="margin-top:var(--space-3)">Criar instância</button>
+          </div>
+        </details>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  // ── Extrai tenant ID da URL ──────────────────────────────────────
+  const tenantId = location.pathname.split('/').at(-1);
+  let agentId = null;
+  let currentAgent = null;
+
+  const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const relTime = iso => { const m=Math.floor((Date.now()-new Date(iso))/60000); if(m<1)return 'agora';if(m<60)return m+'min atrás';const h=Math.floor(m/60);if(h<24)return h+'h atrás';return new Date(iso).toLocaleDateString('pt-BR'); };
+
+  // ── TABS ─────────────────────────────────────────────────────────
+  document.querySelectorAll('.ia-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ia-tab').forEach(t => { t.setAttribute('aria-selected','false'); });
+      document.querySelectorAll('[role=tabpanel]').forEach(p => { p.hidden = true; delete p.dataset.active; });
+      tab.setAttribute('aria-selected','true');
+      const panel = document.getElementById(tab.getAttribute('aria-controls'));
+      panel.hidden = false; panel.dataset.active = '';
+    });
+  });
+
+  // ── LOAD TENANT ───────────────────────────────────────────────────
+  async function loadTenant() {
+    const [tenantRes, agentRes] = await Promise.all([
+      fetch(`/api/ia/admin/tenants/${tenantId}`).catch(() => null),
+      fetch(`/api/ia/admin/agents?tenant_id=${tenantId}`).catch(() => null),
+    ]);
+
+    if (tenantRes?.ok) {
+      const t = await tenantRes.json();
+      document.getElementById('page-title').textContent = t.name;
+      const statusMap = { active:['badge--green','Ativo'], trial:['badge--blue','Trial'], inactive:['badge--gray','Inativo'] };
+      const [cls, lbl] = statusMap[t.status] ?? ['badge--gray', t.status];
+      document.getElementById('tenant-status-badge').innerHTML = `<span class="badge ${cls}">${lbl}</span>`;
+    }
+
+    if (agentRes?.ok) {
+      const agent = await agentRes.json();
+      currentAgent = agent;
+      agentId = agent.id;
+      fillAgentForm(agent);
+      renderFaq(agent.knowledge ?? []);
+    }
+  }
+
+  // ── AGENTE ─────────────────────────────────────────────────────
+  function fillAgentForm(a) {
+    document.getElementById('agent-name').value    = a.name ?? '';
+    document.getElementById('agent-model').value   = a.model ?? 'llama-3.3-70b-versatile';
+    document.getElementById('agent-tokens').value  = a.max_tokens ?? 400;
+    document.getElementById('agent-prompt').value  = a.system_prompt ?? '';
+    document.getElementById('off-hours-msg').value = a.off_hours_msg ?? '';
+    const temp = parseFloat(a.temperature ?? 0.30);
+    document.getElementById('agent-temp').value    = temp;
+    document.getElementById('temp-output').value   = temp.toFixed(2);
+
+    // Horário
+    const schedule = a.schedule ?? null;
+    if (!schedule) { document.getElementById('allday-check').checked = true; toggleSchedule(true); }
+    else { buildScheduleRows(schedule); }
+  }
+
+  document.getElementById('agent-temp').addEventListener('input', function() {
+    document.getElementById('temp-output').value = parseFloat(this.value).toFixed(2);
+  });
+
+  document.getElementById('allday-check').addEventListener('change', function() {
+    toggleSchedule(this.checked);
+  });
+
+  function toggleSchedule(allday) {
+    document.getElementById('schedule-rows').style.opacity = allday ? '0.4' : '1';
+    document.getElementById('schedule-rows').style.pointerEvents = allday ? 'none' : '';
+  }
+
+  const DAYS = ['seg','ter','qua','qui','sex','sab','dom'];
+  const LABELS = { seg:'Seg',ter:'Ter',qua:'Qua',qui:'Qui',sex:'Sex',sab:'Sáb',dom:'Dom' };
+
+  function buildScheduleRows(schedule) {
+    const container = document.getElementById('schedule-rows');
+    container.innerHTML = DAYS.map(d => {
+      const h = schedule?.[d];
+      return `<div class="schedule-grid" style="margin-bottom:var(--space-2)">
+        <label>${LABELS[d]}</label>
+        <input class="input" type="time" data-day="${d}" data-type="start" value="${h ? String(h[0]).padStart(2,'0')+':00' : '09:00'}" style="padding:var(--space-1) var(--space-2)">
+        <input class="input" type="time" data-day="${d}" data-type="end"   value="${h ? String(h[1]).padStart(2,'0')+':00' : '18:00'}" style="padding:var(--space-1) var(--space-2)">
+      </div>`;
+    }).join('');
+  }
+  buildScheduleRows(null);
+
+  function getSchedule() {
+    if (document.getElementById('allday-check').checked) return null;
+    const schedule = {};
+    DAYS.forEach(d => {
+      const start = document.querySelector(`[data-day="${d}"][data-type="start"]`)?.value;
+      const end   = document.querySelector(`[data-day="${d}"][data-type="end"]`)?.value;
+      if (start && end) schedule[d] = [parseInt(start), parseInt(end)];
+    });
+    return schedule;
+  }
+
+  // Inserir variável no cursor
+  document.querySelectorAll('.var-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const ta = document.getElementById('agent-prompt');
+      const { selectionStart: s, selectionEnd: e } = ta;
+      const v = chip.dataset.var;
+      ta.value = ta.value.slice(0, s) + v + ta.value.slice(e);
+      ta.focus(); ta.selectionStart = ta.selectionEnd = s + v.length;
+    });
+  });
+
+  document.getElementById('form-agent').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const btn = document.getElementById('btn-save-agent');
+    const status = document.getElementById('agent-save-status');
+    btn.disabled = true; btn.textContent = 'Salvando…';
+
+    const body = {
+      name:          document.getElementById('agent-name').value.trim(),
+      model:         document.getElementById('agent-model').value,
+      temperature:   document.getElementById('agent-temp').value,
+      max_tokens:    parseInt(document.getElementById('agent-tokens').value, 10),
+      system_prompt: document.getElementById('agent-prompt').value,
+      off_hours_msg: document.getElementById('off-hours-msg').value,
+      schedule:      getSchedule(),
+    };
+
+    const res = await fetch(`/api/ia/admin/agents?tenant_id=${tenantId}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    btn.disabled = false; btn.textContent = 'Salvar agente';
+    if (res.ok) { status.textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+    else { const j = await res.json(); status.textContent = '⚠ ' + (j.error ?? 'Erro ao salvar'); }
+  });
+
+  // Versões
+  document.getElementById('btn-versions').addEventListener('click', async () => {
+    if (!agentId) return;
+    const modal = document.getElementById('modal-versions');
+    modal.hidden = false; modal.style.display = 'flex';
+    const list = document.getElementById('versions-list');
+    list.innerHTML = '<div class="ia-empty"><p>Carregando…</p></div>';
+
+    const res = await fetch(`/api/ia/admin/agents?tenant_id=${tenantId}&versions=${agentId}`);
+    const versions = res.ok ? await res.json() : [];
+    if (!versions.length) { list.innerHTML = '<div class="ia-empty"><p>Nenhuma versão salva ainda.</p></div>'; return; }
+    list.innerHTML = versions.map(v => `
+      <div class="version-item">
+        <div>
+          <div style="font-weight:var(--font-medium);font-size:var(--text-sm)">${relTime(v.created_at)}</div>
+          <div style="font-size:11px;color:var(--color-text-tertiary)">${esc(v.system_prompt.slice(0,80))}…</div>
+        </div>
+        <button class="btn btn--secondary btn--sm" data-restore="${v.id}">Restaurar</button>
+      </div>`).join('');
+
+    list.querySelectorAll('[data-restore]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true; btn.textContent = '…';
+        await fetch(`/api/ia/admin/agents?tenant_id=${tenantId}&restore=${btn.dataset.restore}`, { method:'POST' });
+        await loadTenant();
+        modal.hidden = true; modal.style.display = 'none';
+      });
+    });
+  });
+
+  document.getElementById('btn-close-versions').addEventListener('click', () => {
+    const modal = document.getElementById('modal-versions');
+    modal.hidden = true; modal.style.display = 'none';
+  });
+
+  // ── FAQ ─────────────────────────────────────────────────────────
+  function renderFaq(items) {
+    const el = document.getElementById('faq-list');
+    if (!items.length) {
+      el.innerHTML = '<div class="ia-empty"><p>Nenhuma entrada ainda. Clique em "+ Adicionar" para criar.</p></div>';
+      return;
+    }
+    el.innerHTML = items.map(item => `
+      <div class="faq-item" data-faq-id="${item.id}">
+        <div class="faq-item__body">
+          <div class="faq-q">${esc(item.question)}</div>
+          <div class="faq-a">${esc(item.answer)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--space-1);align-items:flex-end">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+            <input type="checkbox" ${item.active?'checked':''} data-toggle="${item.id}"> Ativo
+          </label>
+          <button class="btn btn--secondary btn--sm" style="color:var(--color-danger,#ef4444)" data-delete="${item.id}">Remover</button>
+        </div>
+      </div>`).join('');
+
+    el.querySelectorAll('[data-toggle]').forEach(cb => {
+      cb.addEventListener('change', () => updateFaq(cb.dataset.toggle, { active: cb.checked }));
+    });
+    el.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', () => deleteFaq(btn.dataset.delete));
+    });
+  }
+
+  document.getElementById('btn-add-faq').addEventListener('click', () => {
+    document.getElementById('faq-form-wrap').hidden = false;
+    document.getElementById('faq-q').focus();
+  });
+  document.getElementById('btn-cancel-faq').addEventListener('click', () => {
+    document.getElementById('faq-form-wrap').hidden = true;
+  });
+
+  document.getElementById('btn-save-faq').addEventListener('click', async () => {
+    const q = document.getElementById('faq-q').value.trim();
+    const a = document.getElementById('faq-a').value.trim();
+    if (!q || !a) return;
+    const btn = document.getElementById('btn-save-faq');
+    btn.disabled = true;
+    await fetch(`/api/ia/admin/knowledge?agent_id=${agentId}`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ question: q, answer: a }),
+    });
+    btn.disabled = false;
+    document.getElementById('faq-q').value = '';
+    document.getElementById('faq-a').value = '';
+    document.getElementById('faq-form-wrap').hidden = true;
+    const res = await fetch(`/api/ia/admin/agents?tenant_id=${tenantId}`);
+    if (res.ok) { const a2 = await res.json(); renderFaq(a2.knowledge ?? []); }
+  });
+
+  async function updateFaq(id, patch) {
+    await fetch(`/api/ia/admin/knowledge?id=${id}`, {
+      method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(patch),
+    });
+  }
+
+  async function deleteFaq(id) {
+    if (!confirm('Remover esta entrada do FAQ?')) return;
+    await fetch(`/api/ia/admin/knowledge?id=${id}`, { method:'DELETE' });
+    const res = await fetch(`/api/ia/admin/agents?tenant_id=${tenantId}`);
+    if (res.ok) { const a = await res.json(); renderFaq(a.knowledge ?? []); }
+  }
+
+  // ── WHATSAPP INSTANCES ──────────────────────────────────────────
+  async function loadInstances() {
+    const res = await fetch(`/api/ia/admin/wa-instances?tenant_id=${tenantId}`);
+    if (!res.ok) return;
+    const instances = await res.json();
+    renderInstances(instances);
+  }
+
+  function warmupLabel(phase) {
+    const limits = ['20 msgs/dia','50 msgs/dia','100 msgs/dia','200 msgs/dia','Ilimitado'];
+    return `Fase ${phase}/5 — ${limits[phase-1]}`;
+  }
+
+  function warmupPercent(phase, startedAt) {
+    const days = startedAt ? Math.floor((Date.now()-new Date(startedAt))/86400000) : 0;
+    return Math.min(100, Math.round((days/30)*100));
+  }
+
+  const statusCls = { connected:'badge--green', disconnected:'badge--yellow', banned:'badge--red', warming:'badge--blue' };
+  const statusLbl = { connected:'Conectada', disconnected:'Desconectada', banned:'Banida', warming:'Warmup' };
+
+  function renderInstances(instances) {
+    const wrap = document.getElementById('wa-instances-wrap');
+    if (!instances.length) {
+      wrap.innerHTML = '<div class="ia-empty"><p>Nenhuma instância WhatsApp registrada para este cliente.</p></div>';
+      return;
+    }
+    wrap.innerHTML = instances.map(inst => {
+      const cfg = inst.wa_config ?? {};
+      const pct = warmupPercent(inst.warmup_phase, inst.warmup_started_at);
+      return `
+      <div class="ia-form-section" data-instance-id="${inst.id}" style="margin-bottom:var(--space-4)">
+        <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4)">
+          <span class="badge ${statusCls[inst.status]??'badge--gray'}">${statusLbl[inst.status]??inst.status}</span>
+          <code style="font-size:12px">${esc(inst.instance_name)}</code>
+          ${inst.phone_number ? `<small style="color:var(--color-text-tertiary)">${esc(inst.phone_number)}</small>` : ''}
+          <button class="btn btn--secondary btn--sm" data-ping="${inst.id}" style="margin-left:auto">Verificar status</button>
+        </div>
+
+        <div style="margin-bottom:var(--space-4)">
+          <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:4px">
+            <span>${warmupLabel(inst.warmup_phase)}</span>
+            <span style="color:var(--color-text-tertiary)">${pct}% do warmup</span>
+          </div>
+          <div class="warmup-bar"><div class="warmup-bar__fill" style="width:${pct}%"></div></div>
+        </div>
+
+        <details>
+          <summary style="cursor:pointer;font-size:var(--text-sm);font-weight:var(--font-medium);margin-bottom:var(--space-3)">Configuração anti-ban</summary>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-top:var(--space-3)">
+            <div class="field">
+              <label class="label">Delay mínimo (ms)</label>
+              <input class="input" type="number" data-cfg="delay_min_ms" value="${cfg.delay_min_ms??1500}" min="500">
+            </div>
+            <div class="field">
+              <label class="label">Delay máximo (ms)</label>
+              <input class="input" type="number" data-cfg="delay_max_ms" value="${cfg.delay_max_ms??4000}" max="15000">
+            </div>
+            <div class="field">
+              <label class="label">Máx msgs/minuto</label>
+              <input class="input" type="number" data-cfg="max_msgs_per_minute" value="${cfg.max_msgs_per_minute??8}" min="1" max="30">
+            </div>
+            <div class="field">
+              <label class="label">Máx msgs/dia (vazio = auto)</label>
+              <input class="input" type="number" data-cfg="max_msgs_per_day" value="${cfg.max_msgs_per_day??''}">
+            </div>
+            <div class="field">
+              <label class="label">Blackout início</label>
+              <input class="input" type="time" data-cfg="blackout_start" value="${cfg.blackout_start??''}">
+            </div>
+            <div class="field">
+              <label class="label">Blackout fim</label>
+              <input class="input" type="time" data-cfg="blackout_end" value="${cfg.blackout_end??''}">
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label class="label" style="display:flex;align-items:center;gap:var(--space-2)">
+                <input type="checkbox" data-cfg="typing_enabled" ${cfg.typing_enabled!==false?'checked':''}>
+                Simular "digitando…" antes de responder
+              </label>
+            </div>
+          </div>
+          <button class="btn btn--primary btn--sm" data-save-cfg="${inst.id}" style="margin-top:var(--space-3)">Salvar configuração</button>
+          <span class="save-indicator" data-cfg-status="${inst.id}"></span>
+        </details>
+      </div>`;
+    }).join('');
+
+    // Ping status
+    wrap.querySelectorAll('[data-ping]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true; btn.textContent = '…';
+        const res = await fetch(`/api/ia/admin/wa-instances?id=${btn.dataset.ping}&status=1`);
+        btn.disabled = false; btn.textContent = 'Verificar status';
+        if (res.ok) { await loadInstances(); }
+      });
+    });
+
+    // Salvar config
+    wrap.querySelectorAll('[data-save-cfg]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.saveCfg;
+        const section = btn.closest('[data-instance-id]');
+        const patch = {};
+        section.querySelectorAll('[data-cfg]').forEach(inp => {
+          const k = inp.dataset.cfg;
+          if (inp.type === 'checkbox') patch[k] = inp.checked;
+          else if (inp.value !== '') patch[k] = isNaN(inp.value) ? inp.value : Number(inp.value);
+          else if (k === 'max_msgs_per_day') patch[k] = null;
+        });
+        btn.disabled = true;
+        const res = await fetch(`/api/ia/admin/wa-instances?id=${id}&config=1`, {
+          method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(patch),
+        });
+        btn.disabled = false;
+        const statusEl = section.querySelector(`[data-cfg-status="${id}"]`);
+        statusEl.textContent = res.ok ? 'Salvo ✓' : '⚠ Erro ao salvar';
+      });
+    });
+  }
+
+  // Criar instância
+  document.getElementById('btn-create-instance').addEventListener('click', async () => {
+    const name  = document.getElementById('wa-instance-name').value.trim();
+    const phone = document.getElementById('wa-phone').value.trim();
+    if (!name) { alert('Nome da instância é obrigatório'); return; }
+    const btn = document.getElementById('btn-create-instance');
+    btn.disabled = true;
+    const res = await fetch(`/api/ia/admin/wa-instances?tenant_id=${tenantId}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ instance_name: name, phone_number: phone || null }),
+    });
+    btn.disabled = false;
+    if (res.ok) { document.getElementById('wa-instance-name').value=''; document.getElementById('wa-phone').value=''; await loadInstances(); }
+    else { const j = await res.json(); alert(j.error ?? 'Erro ao criar instância'); }
+  });
+
+  // Carrega tab WA quando selecionada (lazy)
+  document.getElementById('tab-btn-wa').addEventListener('click', loadInstances);
+
+  // ── INIT ────────────────────────────────────────────────────────
+  loadTenant();
+</script>
+</body>
+</html>
