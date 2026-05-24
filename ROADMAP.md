@@ -85,14 +85,20 @@ Produto IA (ia.iflcosta.tech):
 ### 011 — IA Landing  ·  100% pronto
 **Por quê:** vitrine do produto IA para captar clientes interessados.
 **O quê:** `ia.iflcosta.tech` landing + `/ia/demo` chat demo ao vivo com agente Groq, design system unificado, portal `iflcosta.tech` como hub de navegação entre produtos.
-**Status:** Produção. Mockup de chat corrigido (perspectiva do cliente, horário absoluto). Roteamento via Edge Middleware.
-**Pendente:** adicionar `GROQ_API_KEY` no Vercel para ativar o demo; OG image + role="list" (auditoria P1).
+**Status:** Produção. Landing totalmente polida (paridade visual com hardware): nav com âncoras, `data-reveal` animations, ícones nos cards, footer 3-col, floating WA, LGPD banner, SEO completo (og:image, twitter:image, JSON-LD Service). Portal: canonical, og:image, favicons, skip-link, a11y. Roteamento via Edge Middleware.
+**Pendente:** adicionar `GROQ_API_KEY` no Vercel para ativar o demo.
 
-### 012 — IA Admin (painel multi-tenant)  ·  🔄 Em andamento
+### 012 — IA Admin (painel multi-tenant)  ·  🔄 Em andamento — T001–T010 + T005–T008 feitos
 **Por quê:** Iago precisa provisionar clientes, configurar agentes, monitorar conversas e gerenciar instâncias WhatsApp sem tocar na VPS a cada novo cliente.
 **O quê:** painel `ia.iflcosta.tech/admin` com CRUD de tenants, editor de agente + FAQ, gestão de instâncias WA com config anti-ban (5 fases de warmup), monitor de conversas, leads do demo.
 **Stack:** HTML vanilla + Edge Functions (Vercel) + Supabase `ia.*` + n8n (VPS) via webhooks.
-**Status:** T001–T010 implementados (migration, middleware, scaffold HTML, APIs core, webhook). Aplicar migration no Supabase + env vars pendentes.
+**Status:** T001–T010 + T005–T008 implementados. Migration aplicada. Env vars adicionadas.
+  - `api/ia/admin/agents.js` — GET agente+knowledge, PATCH (snapshot automático), GET versões, POST restaurar
+  - `api/ia/admin/knowledge.js` — CRUD FAQ completo
+  - `api/ia/admin/wa-instances.js` — CRUD instâncias, GET/PATCH wa_config anti-ban, ping Evolution API
+  - `ia/admin/tenants/novo/index.html` — formulário de criação com validação
+  - `ia/admin/tenants/[id]/index.html` — detalhe 3 abas: Agente (editor, chips vars, grade horários, histórico versões) | FAQ (CRUD inline) | WhatsApp (warmup, anti-ban config, ping status)
+**Pendente:** T013 (botão "Quero isso" no /ia/demo), T014–T015 (testes E2E + revisão anti-ban).
 **Depende de:** 011.
 **Desbloqueia:** 013.
 
@@ -137,4 +143,4 @@ Produto IA (ia.iflcosta.tech):
 
 ---
 
-**Última revisão:** 2026-05-24
+**Última revisão:** 2026-05-24 (sessão 2 — T005–T008 + polish visual 011/portal)

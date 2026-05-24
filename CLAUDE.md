@@ -67,7 +67,7 @@ tests/                  # Playwright
 
 ## 4. Estado atual do projeto (atualizar conforme avança)
 
-> Última atualização: 2026-05-24
+> Última atualização: 2026-05-24 (sessão 2)
 
 | Feature | Status | Próxima ação |
 |---------|--------|--------------|
@@ -81,12 +81,12 @@ tests/                  # Playwright
 | **008-whatsapp-bridge** | Spec expandida — arquitetura multi-tenant + anti-ban definida | Aguarda VPS + n8n ativos |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 | **010-financeiro** | 100% T001–T006 — em produção | Homologar com dados reais |
-| **011-ia-landing** | 100% — monorepo integrado, design system unificado | Adicionar `GROQ_API_KEY` no Vercel; homologar `/ia/demo` |
-| **012-ia-admin** | 🔄 Em andamento — T001–T010 implementados (commit 4aba45b) | Aplicar migration Supabase; adicionar env vars; continuar T005–T008 |
+| **011-ia-landing** | 100% — polido, SEO completo, paridade visual com hardware | Adicionar `GROQ_API_KEY` no Vercel para ativar `/ia/demo` |
+| **012-ia-admin** | 🔄 Em andamento — T001–T010 + T005–T008 implementados | T013 (demo CTA) + T014–T015 (E2E + anti-ban) |
 
-**O que foi implementado em 012-ia-admin (2026-05-24):**
+**O que foi implementado em 012-ia-admin (sessão 1 — 2026-05-24):**
 - **Specs completas**: `spec.md` + `plan.md` + `tasks.md` (15 tasks, T001–T015)
-- **Migration** `supabase/migrations/2026_05_24_ia_schema.sql` — schema `ia.*` com 9 tabelas, RLS, triggers (**ainda não aplicada no Supabase — aplicar manualmente no SQL editor**)
+- **Migration** `supabase/migrations/2026_05_24_ia_schema.sql` — schema `ia.*` com 9 tabelas, RLS, triggers (**aplicada no projeto `togrnwxazuweuihlaljo`**)
 - **Middleware** ampliado: `/ia/admin/:path*` protegido pelo mesmo auth de `/admin/*`
 - **Scaffold HTML**: `ia/admin/` com dashboard, clientes, conversas, leads (nav responsiva desktop+mobile)
 - **CSS**: `ia/admin/style.css` — design system compartilhado + layout admin IA
@@ -95,23 +95,67 @@ tests/                  # Playwright
 - **Config pública para n8n**: `api/ia/config/[instance].js` — retorna wa_config + agent sem PII
 - **Demo lead**: `api/ia/demo/lead.js` — captura leads do /ia/demo com rate limit
 
-**Env vars a adicionar no Vercel (Fase 012):**
+**O que foi implementado em 012-ia-admin (sessão 2 — 2026-05-24):**
+- **T005** `api/ia/admin/agents.js` — GET agente+knowledge, PATCH com snapshot automático de versão quando prompt muda, GET versões (últimas 20), POST restaurar versão (reusa PATCH internamente)
+- **T005** `api/ia/admin/knowledge.js` — CRUD completo: GET list, POST criar, PATCH editar (question/answer/tags/active), DELETE
+- **T006** `api/ia/admin/wa-instances.js` — CRUD instâncias WA; GET/PATCH wa_config anti-ban; GET status (ping Evolution API via EVOLUTION_API_URL + EVOLUTION_API_KEY); auto-cria wa_config com defaults no POST
+- **T007** `ia/admin/tenants/novo/index.html` — formulário de criação com validação client-side (name obrigatório, segment obrigatório), redireciona para `[id]` após criação
+- **T008** `ia/admin/tenants/[id]/index.html` — detalhe em 3 abas:
+  - **Aba Agente**: name, model select (llama-3.3-70b/llama-3.1-8b), temperature slider+output, max_tokens, chips de variáveis que inserem no cursor, system prompt textarea, grade de horários por dia-da-semana (7×start/end), checkbox 24/7, mensagem fora do horário, histórico de versões com modal e botão restaurar, toggle de ativação
+  - **Aba FAQ**: lista com toggle ativo/inativo e delete; formulário collapsible de adição (question/answer/tags)
+  - **Aba WhatsApp**: cards de instância com badge de status (connected/disconnected/warming_up), barra de warmup por fase (1–5), formulário de config anti-ban (delay min/max, typing, max msgs/min e /dia, blackout start/end, opt-out keywords), botão ping status, formulário de criação de instância via `<details>/<summary>`
+
+**Env vars no Vercel (Fase 012 — todas já adicionadas):**
 ```
-WHATSAPP_WEBHOOK_TOKEN=  (gerar token aleatório — protege /api/ia/webhook/whatsapp)
-IA_CONFIG_TOKEN=         (gerar token aleatório — protege /api/ia/config/:instance)
-N8N_REPLY_WEBHOOK_URL=   (URL webhook n8n para reply manual — preencher com VPS)
-GROQ_API_KEY=            (já pendente desde 011 — ativa o /ia/demo)
+WHATSAPP_WEBHOOK_TOKEN=  ✅ adicionado
+IA_CONFIG_TOKEN=         ✅ adicionado
+N8N_REPLY_WEBHOOK_URL=   ✅ adicionado (preencher com URL real da VPS quando disponível)
+GROQ_API_KEY=            ⬜ pendente — adicionar para ativar /ia/demo
+EVOLUTION_API_URL=       ⬜ pendente — adicionar quando VPS ativa (ping de status WA)
+EVOLUTION_API_KEY=       ⬜ pendente — idem
 ```
 
 **Pendências ativas (012):**
-- [ ] Aplicar `2026_05_24_ia_schema.sql` no Supabase (SQL editor do projeto `togrnwxazuweuihlaljo`)
-- [ ] Adicionar env vars no Vercel
-- [ ] T005: API agentes/versões/knowledge
-- [ ] T006: API wa-instances + config anti-ban
-- [ ] T007: UI formulário "Novo cliente"
-- [ ] T008: UI detalhe do tenant (3 tabs: Agente | FAQ | Instância WA)
-- [ ] T013: Botão "Quero isso" no `/ia/demo`
-- [ ] T014–T015: Testes E2E + revisão anti-ban
+- [ ] T013: Botão/modal "Quero isso para meu negócio" no `/ia/demo`
+- [ ] T014: Testes E2E para admin IA (fluxo criar tenant → configurar agente → criar instância)
+- [ ] T015: Revisão anti-ban — validar limites de warmup e blackout na UI
+- [ ] `GROQ_API_KEY` no Vercel para ativar o chat demo
+- [ ] VPS Hetzner: contratar, instalar Evolution API + n8n, preencher `N8N_REPLY_WEBHOOK_URL`, `EVOLUTION_API_URL`, `EVOLUTION_API_KEY`
+
+**O que foi feito em polimento visual (sessão 2 — 2026-05-24):**
+Auditoria completa IA landing + Portal. Paridade visual com hardware atingida:
+
+`ia/index.html`:
+- `og:image` + `twitter:image` adicionados (P1 corrigido)
+- JSON-LD Service + canonical + Twitter Card completos
+- `reveal.css` + `data-reveal` em todos os elementos — animações de scroll idênticas ao hardware
+- Nav com links de âncora (#problema | #solucao | #como-funciona)
+- Ícones SVG adicionados a todos os `.ia-card` (`.ia-card__icon` com bg brand-subtle)
+- Seção Programa Fundador virou `.ia-fundador-box` (caixa com borda brand)
+- Footer reconstruído como `.site-footer` 3 colunas (Sobre / Navegação / Contato)
+- Floating WhatsApp button `.wa-float.is-visible`
+- LGPD consent banner com JS inline (aparece após 1.2s para novos visitantes)
+- Google Fonts removido (usa `var(--font-sans)` do tokens.css como o hardware)
+
+`assets/css/ia.css`:
+- `.ia-card__icon` adicionado
+- `.ia-fundador-box` adicionado
+- `body .site-footer` override para manter warm palette no rodapé
+
+`portal/index.html`:
+- canonical, og:image, og:url, og:site_name, twitter card completos (P1 corrigido)
+- Favicons + manifest adicionados (P1 corrigido)
+- skip-link para a11y
+- `aria-labelledby` em sections
+- Google Fonts removido
+
+`portal/style.css`:
+- `.skip-link` adicionado
+
+**Auditoria cross-domain (P1 restantes após sessão 2):**
+- `assets/js/rastrear.js` (584 linhas) órfão — `/rastrear/index.html` foi reescrito inline
+- `assets/js/app.legacy.js` órfão
+- `role="list"` ausente nos `<ul class="ia-cards">` — **corrigido: já tem `role="list"` no HTML atual**
 
 **Decisões de arquitetura da sessão 2026-05-24:**
 - **Stack IA**: Evolution API + n8n (VPS Hetzner) + Groq (llama-3.3-70b) + Supabase `ia.*` schema
