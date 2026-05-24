@@ -78,10 +78,55 @@ tests/                  # Playwright
 | **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
 | **006-admin-os** | 100% — tracking upgrade + portal /rastrear a11y concluídos | — |
 | **007-admin-inventory** | ✅ Bugs críticos corrigidos — pronto para homologação com dados reais | Homologar em produção |
-| **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw |
+| **008-whatsapp-bridge** | Spec expandida — arquitetura multi-tenant + anti-ban definida | Aguarda VPS + n8n ativos |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
 | **010-financeiro** | 100% T001–T006 — em produção | Homologar com dados reais |
 | **011-ia-landing** | 100% — monorepo integrado, design system unificado | Adicionar `GROQ_API_KEY` no Vercel; homologar `/ia/demo` |
+| **012-ia-admin** | 🔄 Em andamento — T001–T010 implementados (commit 4aba45b) | Aplicar migration Supabase; adicionar env vars; continuar T005–T008 |
+
+**O que foi implementado em 012-ia-admin (2026-05-24):**
+- **Specs completas**: `spec.md` + `plan.md` + `tasks.md` (15 tasks, T001–T015)
+- **Migration** `supabase/migrations/2026_05_24_ia_schema.sql` — schema `ia.*` com 9 tabelas, RLS, triggers (**ainda não aplicada no Supabase — aplicar manualmente no SQL editor**)
+- **Middleware** ampliado: `/ia/admin/:path*` protegido pelo mesmo auth de `/admin/*`
+- **Scaffold HTML**: `ia/admin/` com dashboard, clientes, conversas, leads (nav responsiva desktop+mobile)
+- **CSS**: `ia/admin/style.css` — design system compartilhado + layout admin IA
+- **Edge APIs**: `api/ia/admin/` — tenants, stats, conversations, conversations-reply, demo-leads
+- **Webhook recebedor**: `api/ia/webhook/whatsapp.js` — idempotente via evolution_id, detecção de opt-out
+- **Config pública para n8n**: `api/ia/config/[instance].js` — retorna wa_config + agent sem PII
+- **Demo lead**: `api/ia/demo/lead.js` — captura leads do /ia/demo com rate limit
+
+**Env vars a adicionar no Vercel (Fase 012):**
+```
+WHATSAPP_WEBHOOK_TOKEN=  (gerar token aleatório — protege /api/ia/webhook/whatsapp)
+IA_CONFIG_TOKEN=         (gerar token aleatório — protege /api/ia/config/:instance)
+N8N_REPLY_WEBHOOK_URL=   (URL webhook n8n para reply manual — preencher com VPS)
+GROQ_API_KEY=            (já pendente desde 011 — ativa o /ia/demo)
+```
+
+**Pendências ativas (012):**
+- [ ] Aplicar `2026_05_24_ia_schema.sql` no Supabase (SQL editor do projeto `togrnwxazuweuihlaljo`)
+- [ ] Adicionar env vars no Vercel
+- [ ] T005: API agentes/versões/knowledge
+- [ ] T006: API wa-instances + config anti-ban
+- [ ] T007: UI formulário "Novo cliente"
+- [ ] T008: UI detalhe do tenant (3 tabs: Agente | FAQ | Instância WA)
+- [ ] T013: Botão "Quero isso" no `/ia/demo`
+- [ ] T014–T015: Testes E2E + revisão anti-ban
+
+**Decisões de arquitetura da sessão 2026-05-24:**
+- **Stack IA**: Evolution API + n8n (VPS Hetzner) + Groq (llama-3.3-70b) + Supabase `ia.*` schema
+- **Multi-tenant**: schema isolado `ia.*` no mesmo projeto Supabase — sem projeto separado
+- **Anti-ban WhatsApp**: 5 fases de warmup automático (20→50→100→200→ilimitado msgs/dia), delay aleatório 1.5–4s, typing indicator, opt-out detection, idempotência por evolution_id
+- **Roteamento corrigido**: `vercel.json` has:host não funciona em projetos estáticos — roteamento via Edge Middleware (já ativo)
+- **OpenClaw**: framework de agentes IA (4GB RAM mínimo) — monitorar para Fase 3, não usar agora
+- **n8n**: orquestrador de workflows WA→LLM — não administra mensagens direto da Vercel, sempre via n8n
+
+**Auditoria cross-domain (2026-05-24 — P1 ainda abertos):**
+- `og:image` ausente em `/ia/index.html`
+- Portal (`/portal/index.html`) sem canonical, OG completo, favicon, manifest
+- `role="list"` ausente nos `<ul class="ia-cards">` da IA landing
+- `assets/js/rastrear.js` (584 linhas) órfão — `/rastrear/index.html` foi reescrito inline
+- `assets/js/app.legacy.js` órfão
 
 **O que o Antigravity implementou (commits 999c6ac + 5e37c13):**
 - **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)

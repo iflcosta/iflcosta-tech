@@ -9,11 +9,16 @@ Visão macro das 10 features. Ordem de execução é estrita: cada uma desbloque
 ## Sequência
 
 ```
-001 ──┬── 002 ──┬── 003 ───────┬── 005 ─── 006 ─── 007 ─── 010 ─── 008 ─── 009
-      │        │               │
-      └── styleguide.html      └── /api/leads + /orcamento
-                       │
-                       └── 004 (admin auth — gate de tudo abaixo)
+Hardware (iflcosta.tech/hardware.iflcosta.tech):
+001 ──┬── 002 ──┬── 003 ──────────┬── 005 ─── 006 ─── 007 ─── 010 ─── 008 ─── 009
+      │         │                 │
+      └── styleguide.html         └── /api/leads + /orcamento
+                          │
+                          └── 004 (admin auth — gate de tudo abaixo)
+
+Produto IA (ia.iflcosta.tech):
+001 (design system compartilhado)
+ └── 011 (landing IA) ─── 012 (admin IA) ─── 013 (WA bridge IA) ─── 014 (copilot avançado)
 ```
 
 ---
@@ -69,19 +74,54 @@ Visão macro das 10 features. Ordem de execução é estrita: cada uma desbloque
 
 ---
 
-## Fase 3 — Automação e IA
+## Fase 3 — Produto IA (ia.iflcosta.tech)
 
-### 008 — WhatsApp bridge
-**Por quê:** hoje o Iago responde manual. Bridge permite triagem automática, FAQ, status de OS pela conversa.
-**O quê:** integração com Evolution API + n8n (já rodando na VPS própria), bot triagem que abre OS ou cria lead, envio de status automático ("seu celular tá pronto").
-**Depende de:** 005 + 006 + 007 (precisa de entidades reais pra automatizar).
-**Notas:** essa feature **fica em caixa-preta** até validar o fluxo manual. Não acelere.
+> **Contexto novo (2026-05-24):** o produto IA foi redefinido como negócio separado do hardware.
+> Iago vende automação de atendimento via WhatsApp para PMEs (imobiliárias, clínicas, pet shops).
+> Stack: Evolution API + n8n (VPS Hetzner) + Groq (llama-3.3-70b) + Supabase `ia.*` schema.
+> Modelo multi-tenant: cada cliente = tenant isolado, 1 instância WhatsApp, 1 agente IA configurado.
+> Receita: setup R$1.500–3.000 + mensalidade R$300–800/cliente. VPS ~R$50/mês suporta 15 clientes.
 
-### 009 — Copilot IA
-**Por quê:** com tudo no Supabase + wiki indexada, o Iago consulta: "que celular Maria trouxe ano passado?", "tenho SSD M.2 NVMe em estoque?", "qual a margem média de Custom PC gamer Q1?".
-**O quê:** chat no admin com Groq (Llama 3.x), RAG via pgvector na tabela `wiki`, ferramentas (function calling) que leem leads/customers/repairs/products, log de queries.
-**Depende de:** 005 + 006 + 007 (sem dados, não há retrieval).
-**Notas:** pgvector já está no Supabase, schema da `wiki` já modelado no legado.
+### 011 — IA Landing  ·  100% pronto
+**Por quê:** vitrine do produto IA para captar clientes interessados.
+**O quê:** `ia.iflcosta.tech` landing + `/ia/demo` chat demo ao vivo com agente Groq, design system unificado, portal `iflcosta.tech` como hub de navegação entre produtos.
+**Status:** Produção. Mockup de chat corrigido (perspectiva do cliente, horário absoluto). Roteamento via Edge Middleware.
+**Pendente:** adicionar `GROQ_API_KEY` no Vercel para ativar o demo; OG image + role="list" (auditoria P1).
+
+### 012 — IA Admin (painel multi-tenant)  ·  🔄 Em andamento
+**Por quê:** Iago precisa provisionar clientes, configurar agentes, monitorar conversas e gerenciar instâncias WhatsApp sem tocar na VPS a cada novo cliente.
+**O quê:** painel `ia.iflcosta.tech/admin` com CRUD de tenants, editor de agente + FAQ, gestão de instâncias WA com config anti-ban (5 fases de warmup), monitor de conversas, leads do demo.
+**Stack:** HTML vanilla + Edge Functions (Vercel) + Supabase `ia.*` + n8n (VPS) via webhooks.
+**Status:** T001–T010 implementados (migration, middleware, scaffold HTML, APIs core, webhook). Aplicar migration no Supabase + env vars pendentes.
+**Depende de:** 011.
+**Desbloqueia:** 013.
+
+### 013 — WhatsApp Bridge IA (multi-tenant)
+**Por quê:** conectar o n8n (VPS) ao painel — n8n lê config do Supabase, processa mensagens WA, chama Groq e responde. Iago monitora e intervém pelo admin.
+**O quê:** n8n workflow template (gateway multi-tenant por instanceId), anti-ban implementado no workflow, handoff humano, notificações proativas, logs de conversa gravados via webhook.
+**Stack:** Evolution API + n8n (VPS) ← webhook → Vercel Edge (`/api/ia/webhook/whatsapp`)
+**Depende de:** 012 (admin estável + schema `ia.*` populado).
+**Notas:** OpenClaw monitorar para fase futura (4GB RAM, single-user por design — não é o momento).
+
+### 014 — IA Copilot avançado
+**Por quê:** agentes com RAG sobre base de conhecimento do cliente (catálogo de imóveis, prontuários), transcrição de áudio, handoff com contexto rico, métricas de conversão.
+**O quê:** pgvector para knowledge base, Whisper para áudio, dashboard de CSAT por tenant, A/B de prompts.
+**Depende de:** 013 (dados reais de conversas para treinar e avaliar).
+
+---
+
+## Fase 4 — Copilot hardware admin (futuro)
+
+### 008 — WhatsApp bridge hardware  ·  Backlog
+**Por quê:** hoje o Iago responde manual no hardware. Bridge permite triagem automática, FAQ, status de OS.
+**O quê:** integração com Evolution API + n8n, bot de triagem, envio de status automático.
+**Depende de:** 005 + 006 + 007 (entidades reais) + 013 (infraestrutura WA já rodando no IA).
+**Notas:** reutiliza a infra de n8n + Evolution da Fase 3. Spec em `.specs/008-whatsapp-bridge/`.
+
+### 009 — Copilot IA no admin hardware
+**Por quê:** Iago consulta o banco pelo chat: "que celular Maria trouxe?", "tenho SSD M.2 em estoque?".
+**O quê:** chat no admin com Groq, RAG via pgvector, function calling sobre leads/repairs/products.
+**Depende de:** 005 + 006 + 007 + dados reais.
 
 ---
 
@@ -97,4 +137,4 @@ Visão macro das 10 features. Ordem de execução é estrita: cada uma desbloque
 
 ---
 
-**Última revisão:** 2026-05-21
+**Última revisão:** 2026-05-24
