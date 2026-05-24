@@ -158,7 +158,10 @@ body { background: var(--color-bg-ia); }
 .chat-mockup__body {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: var(--space-3);
+  height: 280px;
+  overflow: hidden;
   padding: var(--space-4);
   background: var(--color-chat-bg);
 }
@@ -175,15 +178,18 @@ body { background: var(--color-bg-ia); }
 /* ── CHAT BUBBLES (compartilhado: mockup + demo) ──────────── */
 
 .chat-bubble {
-  max-width: 85%;
+  max-width: 75%;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-xl);
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
   box-shadow: var(--shadow-sm);
   color: var(--color-text-primary);
-  white-space: pre-wrap;
   word-break: break-word;
+}
+
+.chat-thread .chat-bubble {
+  white-space: pre-wrap;
 }
 
 .chat-bubble--them {
@@ -382,6 +388,11 @@ body { background: var(--color-bg-ia); }
   background: var(--color-chat-bg);
   border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
   overscroll-behavior: contain;
+}
+/* Spacer empurra mensagens para baixo; some quando o conteúdo transborda */
+.chat-thread::before {
+  content: '';
+  flex: 1;
 }
 
 .chat-bubble-row {

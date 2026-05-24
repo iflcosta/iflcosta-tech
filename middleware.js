@@ -5,16 +5,27 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// Configura o middleware para rodar apenas nas rotas do painel admin
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/', '/demo'],
 };
 
 export default async function middleware(req) {
   const url = new URL(req.url);
   const path = url.pathname;
+  const host = req.headers.get('host') || '';
 
-  // 1. Whitelist: rotas públicas do admin que não necessitam de auth gate
+  // ── Hostname routing ─────────────────────────────────────────
+  if (host === 'ia.iflcosta.tech') {
+    const target = path === '/demo' ? '/ia/demo' : '/ia';
+    return fetch(new URL(target, req.url).toString());
+  }
+  if (host === 'iflcosta.tech') {
+    return fetch(new URL('/portal', req.url).toString());
+  }
+  // ─────────────────────────────────────────────────────────────
+
+  // ── Admin auth (só para /admin/*) ────────────────────────────
+  if (!path.startsWith('/admin')) return;
   if (
     path === '/admin/login' || 
     path === '/admin/login.html' || 
