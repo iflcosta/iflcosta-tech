@@ -18,15 +18,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- Anti-FOUC: aplica tema antes do render -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('ifl-theme') || 'system';
+      if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
   <main class="wrap">
-    <header class="brand">
-      <span class="brand-mark" aria-hidden="true">IL</span>
-      <span class="brand-text">
-        <span class="brand-name">Iago Lopes</span>
-        <span class="brand-role">Hardware, Tech &amp; IA</span>
-      </span>
+    <header class="portal-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">IL</span>
+        <span class="brand-text">
+          <span class="brand-name">Iago Lopes</span>
+          <span class="brand-role">Hardware, Tech &amp; IA</span>
+        </span>
+      </div>
+      <button class="theme-toggle" id="theme-btn" aria-label="Alternar tema">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="icon-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-14.07 1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 17.66l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="icon-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
     </header>
 
     <section class="hero">
@@ -74,6 +88,20 @@
 
   <script>
     document.getElementById('ano').textContent = new Date().getFullYear();
+
+    (function () {
+      var STORAGE_KEY = 'ifl-theme';
+      var btn = document.getElementById('theme-btn');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var current = document.documentElement.getAttribute('data-theme');
+        var isDark = current === 'dark' ||
+          (!current && matchMedia('(prefers-color-scheme: dark)').matches);
+        var next = isDark ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem(STORAGE_KEY, next);
+      });
+    })();
   </script>
 </body>
 </html>

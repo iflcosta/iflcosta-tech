@@ -1,5 +1,8 @@
 // Vanilla ChatDemo — ia.iflcosta.tech/demo
 
+import { initTheme } from '../lib/theme.js';
+initTheme();
+
 const MAX_MESSAGES = 30;
 const MAX_CHARS = 800;
 
