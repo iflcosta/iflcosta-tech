@@ -160,7 +160,8 @@ body { background: var(--color-bg-ia); }
   flex-direction: column;
   justify-content: flex-end;
   gap: var(--space-3);
-  min-height: 280px;
+  height: 280px;
+  overflow: hidden;
   padding: var(--space-4);
   background: var(--color-chat-bg);
 }
@@ -177,7 +178,7 @@ body { background: var(--color-bg-ia); }
 /* ── CHAT BUBBLES (compartilhado: mockup + demo) ──────────── */
 
 .chat-bubble {
-  max-width: 85%;
+  max-width: 75%;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-xl);
   font-size: var(--text-sm);
