@@ -24,7 +24,8 @@ export default async function middleware(req) {
   }
   // ─────────────────────────────────────────────────────────────
 
-  // 1. Whitelist: rotas públicas do admin que não necessitam de auth gate
+  // ── Admin auth (só para /admin/*) ────────────────────────────
+  if (!path.startsWith('/admin')) return;
   if (
     path === '/admin/login' || 
     path === '/admin/login.html' || 

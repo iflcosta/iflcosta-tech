@@ -158,7 +158,9 @@ body { background: var(--color-bg-ia); }
 .chat-mockup__body {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: var(--space-3);
+  min-height: 280px;
   padding: var(--space-4);
   background: var(--color-chat-bg);
 }
@@ -382,6 +384,11 @@ body { background: var(--color-bg-ia); }
   background: var(--color-chat-bg);
   border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
   overscroll-behavior: contain;
+}
+/* Spacer empurra mensagens para baixo; some quando o conteúdo transborda */
+.chat-thread::before {
+  content: '';
+  flex: 1;
 }
 
 .chat-bubble-row {
