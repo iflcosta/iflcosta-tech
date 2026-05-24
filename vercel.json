@@ -2,6 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+
+  "rewrites": [
+    {
+      "source": "/(?!assets|api|admin|outbound|portal|favicon|robots|sitemap|site\\.webmanifest|rastrear)(.*)",
+      "has": [{ "type": "host", "value": "ia.iflcosta.tech" }],
+      "destination": "/ia/$1"
+    }
+  ],
+
   "headers": [
     {
       "source": "/(.*)",
@@ -26,6 +35,18 @@
     },
     {
       "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/ia",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/ia/:path*",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }
       ]

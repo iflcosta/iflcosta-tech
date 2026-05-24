@@ -67,20 +67,21 @@ tests/                  # Playwright
 
 ## 4. Estado atual do projeto (atualizar conforme avança)
 
-> Última atualização: 2026-05-22
+> Última atualização: 2026-05-24
 
 | Feature | Status | Próxima ação |
 |---------|--------|--------------|
-| **001-design-system** | 100% — Integrado e auditado | Mantendo consistência nas próximas features |
+| **001-design-system** | 100% — Integrado e auditado | Mantendo consistência |
 | **002-landing-public** | 100% — Produção online | Monitoramento |
 | **003-lead-capture** | 100% — Concluído e homologado | — |
 | **004-admin-auth** | 100% — Concluído e ativo | — |
-| **005-admin-crm** | 100% — Concluído, testado e homologado em produção | specs retroativas: plan.md + tasks.md adicionados |
-| **006-admin-os** | 100% — tracking upgrade + portal /rastrear a11y concluídos; migration aplicada | — |
-| **007-admin-inventory** | ✅ Bugs críticos corrigidos (2026-05-22) — pronto para homologação com dados reais | Homologar em produção |
-| **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw (conforme spec de tracking) |
+| **005-admin-crm** | 100% — Concluído, testado e homologado em produção | — |
+| **006-admin-os** | 100% — tracking upgrade + portal /rastrear a11y concluídos | — |
+| **007-admin-inventory** | ✅ Bugs críticos corrigidos — pronto para homologação com dados reais | Homologar em produção |
+| **008-whatsapp-bridge** | Spec resumida | Integrar com VPS + OpenClaw |
 | **009-copilot-ia** | Spec resumida | Depende de dados reais de OS, CRM e Estoque |
-| **010-financeiro** | 100% T001–T006 — spec/plan/tasks, API, UI, gráfico canvas, sidebar, dashboard card, suíte E2E | Em produção; homologar com dados reais |
+| **010-financeiro** | 100% T001–T006 — em produção | Homologar com dados reais |
+| **011-ia-landing** | 100% — monorepo integrado, design system unificado | Adicionar `GROQ_API_KEY` no Vercel; homologar `/ia/demo` |
 
 **O que o Antigravity implementou (commits 999c6ac + 5e37c13):**
 - **T008 peças↔OS**: card "Peças de Reposição" em `admin/os/detalhes.html`, autocomplete + tabela de consumo; `os-detalhes.js` expandido (1096 linhas)
@@ -104,6 +105,38 @@ tests/                  # Playwright
 - Bugs corrigidos: modal de conversão CRM; criação de OS (`valor_custo_peças`); botão de tema sumindo no desktop; cards do dashboard (Leads usava endpoint errado; "OS Abertas" filtrava status inexistente — agora `?aberta=true` na API).
 - `tests/admin-os.spec.js` estava corrompido (encoding) — restaurado. Suíte E2E 49 testes.
 - **Portal `/rastrear` — auditoria a11y completa:** landmarks (`<main>`, `<section>`, `<header>`), hierarquia de headings (h1→h2), `role="status/alert"` no loading/erro, `aria-live="polite"`, lightbox com `role="dialog" aria-modal="true"` + Tab-trap + Esc key + retorno de foco, `<button>` nas thumbs de foto com `aria-label`, `aria-hidden` em elementos decorativos, opacidade do estado futuro corrigida (0.4→0.7 para WCAG AA). Fallback localStorage morto removido. Specs reconciliadas: `tracking_design.md` marcada como substituída, `tracking_upgrade.md` marcada como implementada. ADR 0006 criado (tema escuro autocontido — exceção deliberada).
+
+---
+
+## Monorepo + Design System (2026-05-24)
+
+**Estrutura de domínios (um único projeto Vercel):**
+- `hardware.iflcosta.tech` → root do repo (index.html, orcamento.html, etc.)
+- `ia.iflcosta.tech` → `/ia/` (rewrite via `vercel.json` `has.host`)
+- `iflcosta.tech` → portal separado (referência em `/portal/`, deploy independente)
+
+**Design System unificado (tokens.css):**
+- Primitivos: slate, indigo, warm (bone/cream IA), wa-green (WhatsApp)
+- Semânticos IA adicionados: `--color-bg-ia`, `--color-accent`, `--color-accent-hover`
+- Chat tokens: `--color-chat-bg`, `--color-chat-bubble-us/them`
+- Dark mode agora tem fallback via `@media (prefers-color-scheme: dark)` (melhoria global)
+- `[data-theme="dark"]` permanece com prioridade sobre media query
+- `.btn--accent` e `.btn--pill` adicionados a `components.css`
+- `assets/css/ia.css` — estilos exclusivos das páginas IA
+
+**Arquivos da integração:**
+- `ia/index.html` — landing `ia.iflcosta.tech`
+- `ia/demo/index.html` — chat demo ao vivo
+- `assets/js/ia/demo.js` — vanilla ChatDemo
+- `api/demo/chat.js` — Edge Function → Groq (llama-3.3-70b-versatile)
+- `outbound/` — Python CLI de auditoria PageSpeed (movido de iflcosta-automation)
+- `portal/` — referência do hub iflcosta.tech (HTML estático)
+
+**Ação pendente:** adicionar `GROQ_API_KEY` nas env vars do Vercel para ativar o demo.
+Sem a key, o endpoint retorna 503 graceful (demo indisponível — não quebra nada).
+
+**Admin IA** (`ia.iflcosta.tech/admin`) — adiado para feature 012. O scaffold do Next.js
+(Supabase Auth, login/logout, dashboard placeholder) será portado como vanilla HTML + Edge Function.
 
 ---
 

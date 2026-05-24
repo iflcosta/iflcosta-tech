@@ -82,6 +82,17 @@
 
 .btn--block { width: 100%; }
 
+/* Accent (WhatsApp green) — usado nas páginas IA */
+.btn--accent {
+  background: var(--color-accent);
+  color: var(--color-text-primary);
+  border-color: transparent;
+}
+.btn--accent:hover { background: var(--color-accent-hover); }
+
+/* Pill — border-radius total (modificador ortogonal a qualquer variante) */
+.btn--pill { border-radius: var(--radius-full); }
+
 .btn .icon { width: 1.1em; height: 1.1em; flex-shrink: 0; }
 
 /* ---------- Badge ---------- */

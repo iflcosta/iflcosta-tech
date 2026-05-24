@@ -1,0 +1,25 @@
+{
+  "id": "https://exemplo.com.br/",
+  "lighthouseResult": {
+    "categories": {
+      "performance": { "score": 0.42 }
+    },
+    "audits": {
+      "largest-contentful-paint": {
+        "id": "largest-contentful-paint",
+        "numericValue": 4321.5,
+        "displayValue": "4,3 s"
+      },
+      "cumulative-layout-shift": {
+        "id": "cumulative-layout-shift",
+        "numericValue": 0.182,
+        "displayValue": "0,18"
+      },
+      "speed-index": {
+        "id": "speed-index",
+        "numericValue": 5123.4,
+        "displayValue": "5,1 s"
+      }
+    }
+  }
+}

@@ -28,6 +28,16 @@
   --indigo-800: #3730A3;
   --indigo-900: #312E81;
 
+  /* Primitives — Warm (fundo bone/cream — IA brand) */
+  --warm-50:  #FAFAF7;
+  --warm-100: #F4F2EC;
+  --warm-200: #EAE6DC;
+  --warm-300: #D4CDB8;
+
+  /* Primitives — WhatsApp green */
+  --wa-green-500: #25D366;
+  --wa-green-600: #20B358;
+
   /* Functional */
   --green-100: #D1FAE5; --green-500: #10B981; --green-700: #047857;
   --amber-100: #FEF3C7; --amber-500: #F59E0B; --amber-700: #B45309;
@@ -58,6 +68,14 @@
   --color-brand-active:   var(--indigo-800);
   --color-brand-subtle:   var(--indigo-50);
 
+  /* IA — accent + bone bg + chat tokens */
+  --color-bg-ia:            var(--warm-100);
+  --color-accent:           var(--wa-green-500);
+  --color-accent-hover:     var(--wa-green-600);
+  --color-chat-bg:          #ECE5DD;
+  --color-chat-bubble-us:   #DCF8C6;
+  --color-chat-bubble-them: #FFFFFF;
+
   --color-success:        var(--green-500);
   --color-success-subtle: var(--green-100);
   --color-warning:        var(--amber-500);
@@ -68,8 +86,8 @@
   --color-info-subtle:    var(--sky-100);
 
   /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-               "Helvetica Neue", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+               "Helvetica Neue", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono",
                Menlo, Consolas, monospace;
 
@@ -147,7 +165,49 @@
   :root { --container-gutter: var(--space-6); }
 }
 
-/* Dark theme */
+/* Dark theme — sistema de preferência (fallback quando data-theme não foi definido) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-base:       #0B1220;
+    --color-bg-surface:    #111827;
+    --color-bg-elevated:   #1A2333;
+    --color-bg-subtle:     #0F172A;
+    --color-bg-inverse:    var(--slate-50);
+    --color-bg-ia:         #0A0E10;
+
+    --color-text-primary:   var(--slate-50);
+    --color-text-secondary: var(--slate-300);
+    --color-text-tertiary:  var(--slate-400);
+    --color-text-inverse:   var(--slate-900);
+    --color-text-brand:     var(--indigo-300);
+    --color-text-on-brand:  #FFFFFF;
+
+    --color-border-subtle:  #1E293B;
+    --color-border-default: #334155;
+    --color-border-strong:  var(--slate-600);
+    --color-border-focus:   var(--indigo-400);
+
+    --color-brand:          var(--indigo-500);
+    --color-brand-hover:    var(--indigo-400);
+    --color-brand-active:   var(--indigo-300);
+    --color-brand-subtle:   rgba(99, 102, 241, 0.12);
+
+    --color-success-subtle: rgba(16, 185, 129, 0.15);
+    --color-warning-subtle: rgba(245, 158, 11, 0.15);
+    --color-danger-subtle:  rgba(239, 68, 68, 0.15);
+    --color-info-subtle:    rgba(14, 165, 233, 0.15);
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+    --color-chat-bg:          #111518;
+    --color-chat-bubble-us:   #1A4026;
+    --color-chat-bubble-them: #242930;
+  }
+}
+
+/* Dark theme — override explícito via toggle */
 [data-theme="dark"] {
   --color-bg-base:       #0B1220;
   --color-bg-surface:    #111827;
@@ -171,6 +231,12 @@
   --color-brand-hover:    var(--indigo-400);
   --color-brand-active:   var(--indigo-300);
   --color-brand-subtle:   rgba(99, 102, 241, 0.12);
+
+  /* IA dark tokens */
+  --color-bg-ia:            #0A0E10;
+  --color-chat-bg:          #111518;
+  --color-chat-bubble-us:   #1A4026;
+  --color-chat-bubble-them: #242930;
 
   --color-success-subtle: rgba(16, 185, 129, 0.15);
   --color-warning-subtle: rgba(245, 158, 11, 0.15);

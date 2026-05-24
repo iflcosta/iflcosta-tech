@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo ao vivo — Iago Lopes | Tech &amp; IA</title>
+  <meta name="description" content="Teste o agente de IA ao vivo. Converse com o atendimento automatizado da Imobiliária Sant'Ana — o mesmo motor que montamos para clientes.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#F4F2EC" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0A0E10" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="icon" type="image/png" href="/assets/img/favicon-96x96.png" sizes="96x96">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Anti-FOUC -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('ifl-theme') || 'system';
+      if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/ia.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <header class="site-header" data-site-header>
+    <div class="container">
+      <a href="/ia" class="wordmark" aria-label="Iago Lopes — Tech e IA">
+        <span class="wordmark__mono" aria-hidden="true">IL</span>
+        <span class="wordmark__text">
+          <span class="wordmark__name">Iago Lopes</span>
+          <span class="wordmark__role">Tech &amp; IA</span>
+        </span>
+      </a>
+      <div class="header-actions">
+        <a href="/ia" class="ia-nav-portal" aria-label="Voltar para a landing IA">
+          <span aria-hidden="true">←</span>
+          <span>Voltar</span>
+        </a>
+        <a href="https://wa.me/5511919691542" class="btn btn--accent btn--sm btn--pill" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container">
+      <div class="ia-demo-hero">
+        <h1>Teste o agente ao vivo</h1>
+        <p>
+          Converse como se fosse um cliente buscando imóvel. O agente é o mesmo motor que
+          configuro para cada cliente — só o conteúdo (tom, regras, base de dados) muda por negócio.
+        </p>
+      </div>
+
+      <div class="chat-demo-wrap">
+        <div class="chat-header" role="banner">
+          <div class="chat-mockup__avatar" aria-hidden="true">IS</div>
+          <div>
+            <div class="chat-mockup__name">Imobiliária Sant'Ana</div>
+            <div class="chat-mockup__status">
+              <span class="ia-pulse" aria-hidden="true"></span>
+              atendimento automatizado · demo público
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="chat-thread"
+          class="chat-thread"
+          role="log"
+          aria-live="polite"
+          aria-label="Conversa com o agente"
+        ></div>
+
+        <form id="chat-form" class="chat-input-row" novalidate>
+          <input
+            id="chat-input"
+            type="text"
+            class="chat-input"
+            placeholder="Manda uma mensagem como se fosse o cliente…"
+            maxlength="800"
+            autocomplete="off"
+            aria-label="Sua mensagem"
+          >
+          <button type="submit" id="chat-send" class="chat-send">Enviar</button>
+        </form>
+
+        <div id="chat-error" class="chat-error" hidden aria-live="assertive" role="alert"></div>
+
+        <p class="chat-footer-note">
+          Demonstração pública com agente de IA. Máximo 30 mensagens por sessão.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="/assets/js/ia/demo.js"></script>
+</body>
+</html>
