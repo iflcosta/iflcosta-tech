@@ -185,8 +185,11 @@ body { background: var(--color-bg-ia); }
   line-height: var(--leading-snug);
   box-shadow: var(--shadow-sm);
   color: var(--color-text-primary);
-  white-space: pre-wrap;
   word-break: break-word;
+}
+
+.chat-thread .chat-bubble {
+  white-space: pre-wrap;
 }
 
 .chat-bubble--them {
