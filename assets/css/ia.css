@@ -202,11 +202,11 @@ body { background: var(--color-bg-ia); }
 }
 
 .chat-bubble__time {
+  float: right;
+  margin: 0.35rem 0 -0.1rem 0.5rem;
   font-size: 0.625rem;
+  line-height: 1;
   opacity: 0.45;
-  margin-top: 0.2rem;
-  display: block;
-  text-align: right;
 }
 
 /* ── IA SECTIONS ──────────────────────────────────────────── */
