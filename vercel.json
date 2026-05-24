@@ -8,6 +8,11 @@
       "source": "/(?!assets|api|admin|outbound|portal|favicon|robots|sitemap|site\\.webmanifest|rastrear)(.*)",
       "has": [{ "type": "host", "value": "ia.iflcosta.tech" }],
       "destination": "/ia/$1"
+    },
+    {
+      "source": "/(?!assets|api|admin|outbound|portal|favicon|robots|sitemap|site\\.webmanifest|rastrear)(.*)",
+      "has": [{ "type": "host", "value": "iflcosta.tech" }],
+      "destination": "/portal/$1"
     }
   ],
 
