@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leads — IA Admin</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/ia/admin/style.css">
+  <script>(function(){var t=localStorage.getItem('ifl-theme')||'system';if(t!=='system')document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<div class="ia-admin-shell">
+
+  <nav class="ia-admin-nav" aria-label="Menu admin IA">
+    <div class="ia-admin-nav__brand">
+      <span class="ia-admin-nav__mark" aria-hidden="true">IA</span>
+      <div><div class="ia-admin-nav__title">IA Admin</div><div class="ia-admin-nav__sub">iflcosta.tech</div></div>
+    </div>
+    <ul class="ia-admin-nav__menu" role="list">
+      <li class="ia-admin-nav__item"><a href="/ia/admin"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/tenants"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/conversations"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Conversas<span class="ia-admin-nav__badge" id="nav-badge-human"></span></a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/leads" aria-current="page"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Leads</a></li>
+    </ul>
+    <div class="ia-admin-nav__footer"><a href="/admin">← Admin hardware</a></div>
+  </nav>
+
+  <div class="ia-admin-main">
+    <header class="ia-admin-header">
+      <h1>Leads do Demo</h1>
+    </header>
+
+    <main class="ia-admin-content" id="main">
+
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-4)" role="group" aria-label="Filtrar por status">
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="" aria-pressed="true">Todos</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="new" aria-pressed="false">Novos</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="contacted" aria-pressed="false">Contatados</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="converted" aria-pressed="false">Convertidos</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="discarded" aria-pressed="false">Descartados</button>
+      </div>
+
+      <div class="ia-table-wrap" id="leads-wrap">
+        <div class="ia-empty"><p>Carregando…</p></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  let filter = '';
+  const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const relTime = iso => {
+    const m = Math.floor((Date.now()-new Date(iso))/60000);
+    if(m<1)return 'agora';if(m<60)return m+'min atrás';const h=Math.floor(m/60);
+    if(h<24)return h+'h atrás';return new Date(iso).toLocaleDateString('pt-BR');
+  };
+  const statusMap = { new:['badge--blue','Novo'], contacted:['badge--yellow','Contatado'], converted:['badge--green','Convertido'], discarded:['badge--gray','Descartado'] };
+
+  async function load() {
+    const res = await fetch(`/api/ia/admin/demo-leads${filter?'?status='+filter:''}`);
+    if (!res.ok) { renderError(); return; }
+    const leads = await res.json();
+    render(leads);
+  }
+
+  function render(leads) {
+    const wrap = document.getElementById('leads-wrap');
+    if (!leads.length) {
+      wrap.innerHTML = '<div class="ia-empty"><p>Nenhum lead ainda. Leads aparecem quando alguém usa o demo e pede contato.</p></div>';
+      return;
+    }
+    wrap.innerHTML = `
+      <table class="ia-table">
+        <thead><tr><th>Contato</th><th>Tipo</th><th>Trecho do demo</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody>
+          ${leads.map(l => {
+            const [cls, lbl] = statusMap[l.status] ?? ['badge--gray', l.status];
+            const waMsg = encodeURIComponent(`Oi! Vi que você testou o agente de IA. Posso explicar como funciona para o seu negócio?`);
+            return `<tr>
+              <td><strong>${esc(l.contact??'—')}</strong></td>
+              <td><span class="badge badge--gray">${l.contact_type==='phone'?'📱 Tel':'✉️ Email'}</span></td>
+              <td style="max-width:280px"><small style="color:var(--color-text-secondary)">${esc((l.demo_snippet??'').substring(0,120))}${(l.demo_snippet??'').length>120?'…':''}</small></td>
+              <td><small style="color:var(--color-text-tertiary)">${relTime(l.created_at)}</small></td>
+              <td><span class="badge ${cls}">${lbl}</span></td>
+              <td>
+                <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+                  ${l.contact_type==='phone' ? `<a href="https://wa.me/55${l.contact.replace(/\D/g,'')}?text=${waMsg}" target="_blank" rel="noopener" class="btn btn--secondary btn--sm">WhatsApp</a>` : `<a href="mailto:${esc(l.contact)}" class="btn btn--secondary btn--sm">Email</a>`}
+                  <select class="btn btn--secondary btn--sm" style="cursor:pointer" data-id="${l.id}" aria-label="Mudar status do lead">
+                    <option value="new"${l.status==='new'?' selected':''}>Novo</option>
+                    <option value="contacted"${l.status==='contacted'?' selected':''}>Contatado</option>
+                    <option value="converted"${l.status==='converted'?' selected':''}>Convertido</option>
+                    <option value="discarded"${l.status==='discarded'?' selected':''}>Descartado</option>
+                  </select>
+                </div>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+
+    wrap.querySelectorAll('select[data-id]').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        await fetch(`/api/ia/admin/demo-leads?id=${sel.dataset.id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ status: sel.value }) });
+        load();
+      });
+    });
+  }
+
+  function renderError() { document.getElementById('leads-wrap').innerHTML = '<div class="ia-empty"><p>Erro ao carregar leads.</p></div>'; }
+
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filter = btn.dataset.filter;
+      document.querySelectorAll('.filter-pill').forEach(b => b.setAttribute('aria-pressed', b===btn?'true':'false'));
+      load();
+    });
+  });
+
+  load();
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard — IA Admin</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/ia/admin/style.css">
+  <script>(function(){var t=localStorage.getItem('ifl-theme')||'system';if(t!=='system')document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<div class="ia-admin-shell">
+
+  <!-- Sidebar / Bottom nav -->
+  <nav class="ia-admin-nav" aria-label="Menu admin IA">
+    <div class="ia-admin-nav__brand">
+      <span class="ia-admin-nav__mark" aria-hidden="true">IA</span>
+      <div>
+        <div class="ia-admin-nav__title">IA Admin</div>
+        <div class="ia-admin-nav__sub">iflcosta.tech</div>
+      </div>
+    </div>
+    <ul class="ia-admin-nav__menu" role="list">
+      <li class="ia-admin-nav__item">
+        <a href="/ia/admin" aria-current="page">
+          <svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+      </li>
+      <li class="ia-admin-nav__item">
+        <a href="/ia/admin/tenants">
+          <svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Clientes
+        </a>
+      </li>
+      <li class="ia-admin-nav__item">
+        <a href="/ia/admin/conversations">
+          <svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Conversas
+          <span class="ia-admin-nav__badge" id="nav-badge-human" aria-label="conversas aguardando resposta"></span>
+        </a>
+      </li>
+      <li class="ia-admin-nav__item">
+        <a href="/ia/admin/leads">
+          <svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Leads
+        </a>
+      </li>
+    </ul>
+    <div class="ia-admin-nav__footer">
+      <a href="/admin">← Admin hardware</a>
+    </div>
+  </nav>
+
+  <!-- Conteúdo principal -->
+  <div class="ia-admin-main">
+    <header class="ia-admin-header">
+      <h1>Dashboard</h1>
+      <span id="last-update" style="font-size:var(--text-xs);color:var(--color-text-tertiary)"></span>
+    </header>
+
+    <main class="ia-admin-content" id="main">
+
+      <!-- Stat cards -->
+      <div class="ia-stat-grid" id="stat-grid">
+        <a class="ia-stat-card" href="/ia/admin/tenants">
+          <div class="ia-stat-card__label">Clientes ativos</div>
+          <div class="ia-stat-card__value" id="stat-tenants">—</div>
+        </a>
+        <a class="ia-stat-card" href="/ia/admin/conversations">
+          <div class="ia-stat-card__label">Conversas abertas</div>
+          <div class="ia-stat-card__value" id="stat-conversations">—</div>
+        </a>
+        <div class="ia-stat-card">
+          <div class="ia-stat-card__label">Msgs hoje</div>
+          <div class="ia-stat-card__value" id="stat-msgs-today">—</div>
+        </div>
+        <a class="ia-stat-card ia-stat-card--alert" href="/ia/admin/conversations?status=needs_human" id="stat-card-human">
+          <div class="ia-stat-card__label">Aguardando resposta</div>
+          <div class="ia-stat-card__value" id="stat-needs-human">—</div>
+        </a>
+      </div>
+
+      <!-- Instâncias WA -->
+      <div class="ia-table-wrap" style="margin-bottom:var(--space-5)">
+        <div class="ia-table-head">
+          <h2>Instâncias WhatsApp</h2>
+        </div>
+        <div id="instances-list">
+          <div class="ia-empty"><p>Carregando…</p></div>
+        </div>
+      </div>
+
+      <!-- Últimas conversas -->
+      <div class="ia-table-wrap">
+        <div class="ia-table-head">
+          <h2>Atividade recente</h2>
+          <a href="/ia/admin/conversations" class="btn btn--secondary btn--sm">Ver todas</a>
+        </div>
+        <div id="recent-conversations">
+          <div class="ia-empty"><p>Carregando…</p></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  async function loadStats() {
+    try {
+      const res = await fetch('/api/ia/admin/stats');
+      if (!res.ok) throw new Error(res.status);
+      const d = await res.json();
+
+      document.getElementById('stat-tenants').textContent = d.tenants_active ?? 0;
+      document.getElementById('stat-conversations').textContent = d.conversations_open ?? 0;
+      document.getElementById('stat-msgs-today').textContent = d.msgs_today ?? 0;
+      document.getElementById('stat-needs-human').textContent = d.needs_human ?? 0;
+
+      const badge = document.getElementById('nav-badge-human');
+      if (d.needs_human > 0) badge.textContent = d.needs_human;
+
+      const alert = document.getElementById('stat-card-human');
+      if ((d.needs_human ?? 0) === 0) alert.classList.remove('ia-stat-card--alert');
+
+      renderInstances(d.instances ?? []);
+      renderRecent(d.recent_conversations ?? []);
+
+      document.getElementById('last-update').textContent =
+        'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      document.getElementById('stat-tenants').textContent = '—';
+    }
+  }
+
+  function statusBadge(status) {
+    const map = {
+      connected:    ['badge--green',  '🟢 Conectada'],
+      disconnected: ['badge--yellow', '🟡 Desconectada'],
+      banned:       ['badge--red',    '🔴 Banida'],
+      warming:      ['badge--blue',   '🔵 Warmup'],
+    };
+    const [cls, label] = map[status] ?? ['badge--gray', status];
+    return `<span class="badge ${cls}">${label}</span>`;
+  }
+
+  function warmupLabel(phase) {
+    const max = [20,50,100,200,'∞'];
+    return `Fase ${phase}/5 · máx ${max[phase-1]} msgs/dia`;
+  }
+
+  function renderInstances(instances) {
+    const el = document.getElementById('instances-list');
+    if (!instances.length) {
+      el.innerHTML = '<div class="ia-empty"><p>Nenhuma instância registrada.</p></div>';
+      return;
+    }
+    el.innerHTML = `
+      <table class="ia-table">
+        <thead><tr>
+          <th>Instância</th><th>Cliente</th><th>Status</th><th>Warmup</th><th>Última atividade</th>
+        </tr></thead>
+        <tbody>
+          ${instances.map(i => `
+            <tr>
+              <td><code style="font-size:12px">${escHtml(i.instance_name)}</code></td>
+              <td>${escHtml(i.tenant_name ?? '—')}</td>
+              <td>${statusBadge(i.status)}</td>
+              <td><small>${warmupLabel(i.warmup_phase)}</small></td>
+              <td><small style="color:var(--color-text-tertiary)">${i.last_seen_at ? relTime(i.last_seen_at) : '—'}</small></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function renderRecent(convs) {
+    const el = document.getElementById('recent-conversations');
+    if (!convs.length) {
+      el.innerHTML = '<div class="ia-empty"><p>Nenhuma conversa ainda.</p></div>';
+      return;
+    }
+    el.innerHTML = `
+      <table class="ia-table">
+        <thead><tr><th>Contato</th><th>Cliente</th><th>Última msg</th><th>Status</th></tr></thead>
+        <tbody>
+          ${convs.map(c => `
+            <tr>
+              <td><a href="/ia/admin/conversations?id=${c.id}">${escHtml(c.contact_phone)}</a></td>
+              <td>${escHtml(c.tenant_name ?? '—')}</td>
+              <td><small style="color:var(--color-text-tertiary)">${relTime(c.last_message_at)}</small></td>
+              <td>${statusBadge(c.status)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function escHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function relTime(iso) {
+    const diff = Date.now() - new Date(iso).getTime();
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return 'agora';
+    if (m < 60) return `${m}min atrás`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h atrás`;
+    return new Date(iso).toLocaleDateString('pt-BR');
+  }
+
+  loadStats();
+  setInterval(loadStats, 60000);
+</script>
+</body>
+</html>

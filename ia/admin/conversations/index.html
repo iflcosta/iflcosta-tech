@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conversas — IA Admin</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/ia/admin/style.css">
+  <style>
+    .conv-layout { display:grid; grid-template-columns:320px 1fr; gap:var(--space-4); height:calc(100vh - 140px); }
+    .conv-list { overflow-y:auto; display:flex; flex-direction:column; gap:var(--space-2); }
+    .conv-item { background:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-radius:var(--radius-lg); padding:var(--space-3) var(--space-4); cursor:pointer; transition:border-color var(--duration-fast) ease; }
+    .conv-item:hover,.conv-item[aria-selected=true] { border-color:var(--color-brand); }
+    .conv-item__top { display:flex; justify-content:space-between; align-items:flex-start; gap:var(--space-2); margin-bottom:4px; }
+    .conv-item__phone { font-weight:var(--font-semibold); font-size:var(--text-sm); }
+    .conv-item__time { font-size:10px; color:var(--color-text-tertiary); white-space:nowrap; }
+    .conv-item__preview { font-size:12px; color:var(--color-text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .msg-bubble { max-width:75%; padding:var(--space-2) var(--space-3); border-radius:var(--radius-xl); font-size:var(--text-sm); line-height:1.45; }
+    .msg-bubble--user { align-self:flex-start; background:var(--color-chat-bubble-them); border-bottom-left-radius:var(--radius-sm); }
+    .msg-bubble--assistant,.msg-bubble--human_agent { align-self:flex-end; background:var(--color-chat-bubble-us); border-bottom-right-radius:var(--radius-sm); }
+    .msg-bubble--system { align-self:center; background:transparent; color:var(--color-text-tertiary); font-size:11px; font-style:italic; }
+    .msg-row { display:flex; }
+    .msg-row--user { justify-content:flex-start; }
+    .msg-row--assistant,.msg-row--human_agent { justify-content:flex-end; }
+    .msg-row--system { justify-content:center; }
+    .msg-meta { font-size:10px; color:var(--color-text-tertiary); margin-top:2px; }
+    .msg-row--assistant .msg-meta,.msg-row--human_agent .msg-meta { text-align:right; }
+    @media(max-width:767px){ .conv-layout{grid-template-columns:1fr;} .ia-conv-panel{display:none;} .ia-conv-panel.is-open{display:flex;position:fixed;inset:0;z-index:200;border-radius:0;} }
+  </style>
+  <script>(function(){var t=localStorage.getItem('ifl-theme')||'system';if(t!=='system')document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<div class="ia-admin-shell">
+
+  <nav class="ia-admin-nav" aria-label="Menu admin IA">
+    <div class="ia-admin-nav__brand">
+      <span class="ia-admin-nav__mark" aria-hidden="true">IA</span>
+      <div><div class="ia-admin-nav__title">IA Admin</div><div class="ia-admin-nav__sub">iflcosta.tech</div></div>
+    </div>
+    <ul class="ia-admin-nav__menu" role="list">
+      <li class="ia-admin-nav__item"><a href="/ia/admin"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/tenants"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/conversations" aria-current="page"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Conversas<span class="ia-admin-nav__badge" id="nav-badge-human"></span></a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/leads"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Leads</a></li>
+    </ul>
+    <div class="ia-admin-nav__footer"><a href="/admin">← Admin hardware</a></div>
+  </nav>
+
+  <div class="ia-admin-main">
+    <header class="ia-admin-header">
+      <h1>Conversas</h1>
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap" role="group">
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="" aria-pressed="true">Todas</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="needs_human" aria-pressed="false">Aguardando <span id="human-count"></span></button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="bot" aria-pressed="false">Bot ativo</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="closed" aria-pressed="false">Fechadas</button>
+      </div>
+    </header>
+
+    <main class="ia-admin-content" id="main">
+      <div class="conv-layout">
+
+        <!-- Lista -->
+        <div class="conv-list" id="conv-list">
+          <div class="ia-empty"><p>Carregando…</p></div>
+        </div>
+
+        <!-- Painel de conversa -->
+        <div class="ia-conv-panel" id="conv-panel" role="region" aria-label="Conversa selecionada">
+          <div class="ia-conv-panel__header" id="conv-panel-header">
+            <button class="btn btn--secondary btn--sm" id="btn-back" style="display:none" aria-label="Voltar à lista">←</button>
+            <span id="conv-panel-title" style="font-weight:var(--font-semibold);font-size:var(--text-sm)">Selecione uma conversa</span>
+            <div id="conv-panel-actions" style="margin-left:auto;display:flex;gap:var(--space-2)"></div>
+          </div>
+          <div class="ia-conv-panel__thread" id="conv-thread" aria-live="polite">
+            <div class="ia-empty"><p>Nenhuma conversa selecionada.</p></div>
+          </div>
+          <div class="ia-conv-panel__input" id="conv-input-area" style="display:none">
+            <textarea id="reply-input" placeholder="Responder como Iago…" rows="1" aria-label="Mensagem de resposta"></textarea>
+            <button class="btn btn--primary btn--sm" id="btn-reply">Enviar</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  let convs = [], activeId = null, filter = '';
+
+  const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const relTime = iso => {
+    const m = Math.floor((Date.now() - new Date(iso)) / 60000);
+    if (m < 1) return 'agora'; if (m < 60) return m+'min'; const h = Math.floor(m/60);
+    if (h < 24) return h+'h'; return new Date(iso).toLocaleDateString('pt-BR');
+  };
+
+  async function loadList() {
+    const res = await fetch(`/api/ia/admin/conversations${filter ? '?status='+filter : ''}`);
+    if (!res.ok) return;
+    convs = await res.json();
+    const humanCount = convs.filter(c => c.status === 'needs_human').length;
+    document.getElementById('human-count').textContent = humanCount > 0 ? `(${humanCount})` : '';
+    document.getElementById('nav-badge-human').textContent = humanCount > 0 ? humanCount : '';
+    renderList();
+    if (activeId) await loadMessages(activeId);
+  }
+
+  function renderList() {
+    const el = document.getElementById('conv-list');
+    if (!convs.length) { el.innerHTML = '<div class="ia-empty"><p>Nenhuma conversa.</p></div>'; return; }
+    el.innerHTML = convs.map(c => `
+      <div class="conv-item" data-id="${c.id}" role="button" tabindex="0" aria-selected="${c.id===activeId}">
+        <div class="conv-item__top">
+          <span class="conv-item__phone">${esc(c.contact_phone)}</span>
+          <span class="conv-item__time">${relTime(c.last_message_at)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-2)">
+          <span class="conv-item__preview">${esc(c.last_content ?? '…')}</span>
+          ${c.status==='needs_human' ? '<span class="badge badge--red" style="flex-shrink:0;font-size:10px">!</span>' : ''}
+        </div>
+        <div style="margin-top:4px"><small style="color:var(--color-text-tertiary);font-size:10px">${esc(c.tenant_name??'')}</small></div>
+      </div>`).join('');
+    el.querySelectorAll('.conv-item').forEach(item => {
+      item.addEventListener('click', () => selectConv(item.dataset.id));
+      item.addEventListener('keydown', e => { if (e.key==='Enter') selectConv(item.dataset.id); });
+    });
+  }
+
+  async function selectConv(id) {
+    activeId = id;
+    renderList();
+    await loadMessages(id);
+    document.getElementById('conv-panel').classList.add('is-open');
+    document.getElementById('btn-back').style.display = '';
+  }
+
+  async function loadMessages(id) {
+    const conv = convs.find(c => c.id === id);
+    if (!conv) return;
+
+    document.getElementById('conv-panel-title').textContent = conv.contact_phone + (conv.tenant_name ? ` · ${conv.tenant_name}` : '');
+
+    const res = await fetch(`/api/ia/admin/conversations/${id}`);
+    if (!res.ok) return;
+    const { messages, conversation } = await res.json();
+
+    const thread = document.getElementById('conv-thread');
+    if (!messages.length) { thread.innerHTML = '<div class="ia-empty"><p>Sem mensagens.</p></div>'; }
+    else {
+      thread.innerHTML = messages.map(m => `
+        <div>
+          <div class="msg-row msg-row--${m.role}">
+            <div class="msg-bubble msg-bubble--${m.role}">${esc(m.content)}</div>
+          </div>
+          <div class="msg-meta">${m.role==='human_agent'?'🙋 Iago':m.role==='assistant'?'🤖 Bot':'👤'} · ${relTime(m.created_at)}</div>
+        </div>`).join('');
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    const actions = document.getElementById('conv-panel-actions');
+    const inputArea = document.getElementById('conv-input-area');
+    if (conversation.status === 'closed') {
+      actions.innerHTML = `<button class="btn btn--secondary btn--sm" data-action="bot">Reabrir</button>`;
+      inputArea.style.display = 'none';
+    } else {
+      actions.innerHTML = `
+        ${conversation.status !== 'bot' ? '<button class="btn btn--secondary btn--sm" data-action="bot">Devolver ao bot</button>' : ''}
+        <button class="btn btn--secondary btn--sm" data-action="closed">Fechar</button>`;
+      inputArea.style.display = conversation.opted_out ? 'none' : '';
+    }
+    actions.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => setStatus(id, btn.dataset.action));
+    });
+  }
+
+  async function setStatus(id, status) {
+    await fetch(`/api/ia/admin/conversations/${id}/status`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ status }) });
+    await loadList();
+  }
+
+  document.getElementById('btn-reply').addEventListener('click', async () => {
+    const input = document.getElementById('reply-input');
+    const content = input.value.trim();
+    if (!content || !activeId) return;
+    const btn = document.getElementById('btn-reply');
+    btn.disabled = true;
+    btn.textContent = '…';
+    const res = await fetch(`/api/ia/admin/conversations/${activeId}/reply`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ content }) });
+    btn.disabled = false; btn.textContent = 'Enviar';
+    if (res.ok) { input.value = ''; await loadMessages(activeId); }
+  });
+
+  document.getElementById('btn-back').addEventListener('click', () => {
+    document.getElementById('conv-panel').classList.remove('is-open');
+    activeId = null;
+  });
+
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filter = btn.dataset.filter;
+      document.querySelectorAll('.filter-pill').forEach(b => b.setAttribute('aria-pressed', b===btn?'true':'false'));
+      loadList();
+    });
+  });
+
+  // Pré-seleciona por query string
+  const qid = new URLSearchParams(location.search).get('id');
+  if (qid) { activeId = qid; }
+  const qstatus = new URLSearchParams(location.search).get('status');
+  if (qstatus) { filter = qstatus; document.querySelectorAll('.filter-pill').forEach(b => b.setAttribute('aria-pressed', b.dataset.filter===qstatus?'true':'false')); }
+
+  loadList();
+  setInterval(loadList, 30000);
+</script>
+</body>
+</html>

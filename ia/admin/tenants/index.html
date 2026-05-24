@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clientes — IA Admin</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/ia/admin/style.css">
+  <script>(function(){var t=localStorage.getItem('ifl-theme')||'system';if(t!=='system')document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<div class="ia-admin-shell">
+
+  <nav class="ia-admin-nav" aria-label="Menu admin IA">
+    <div class="ia-admin-nav__brand">
+      <span class="ia-admin-nav__mark" aria-hidden="true">IA</span>
+      <div>
+        <div class="ia-admin-nav__title">IA Admin</div>
+        <div class="ia-admin-nav__sub">iflcosta.tech</div>
+      </div>
+    </div>
+    <ul class="ia-admin-nav__menu" role="list">
+      <li class="ia-admin-nav__item"><a href="/ia/admin"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/tenants" aria-current="page"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clientes</a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/conversations"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Conversas<span class="ia-admin-nav__badge" id="nav-badge-human"></span></a></li>
+      <li class="ia-admin-nav__item"><a href="/ia/admin/leads"><svg class="ia-admin-nav__icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Leads</a></li>
+    </ul>
+    <div class="ia-admin-nav__footer"><a href="/admin">← Admin hardware</a></div>
+  </nav>
+
+  <div class="ia-admin-main">
+    <header class="ia-admin-header">
+      <h1>Clientes</h1>
+      <a href="/ia/admin/tenants/novo" class="btn btn--primary btn--sm">+ Novo cliente</a>
+    </header>
+
+    <main class="ia-admin-content" id="main">
+
+      <!-- Filtros -->
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-4)" role="group" aria-label="Filtrar por status">
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="all" aria-pressed="true">Todos</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="active" aria-pressed="false">Ativos</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="trial" aria-pressed="false">Trial</button>
+        <button class="btn btn--secondary btn--sm filter-pill" data-filter="inactive" aria-pressed="false">Inativos</button>
+      </div>
+
+      <div class="ia-table-wrap" id="tenants-wrap">
+        <div class="ia-empty"><p>Carregando…</p></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  let allTenants = [];
+  let currentFilter = 'all';
+
+  const segmentLabel = { imobiliaria:'Imobiliária', clinica:'Clínica', pet:'Pet Shop', outro:'Outro' };
+  const planLabel    = { trial:'Trial', basico:'Básico', pro:'Pro' };
+
+  async function load() {
+    const res = await fetch('/api/ia/admin/tenants');
+    if (!res.ok) { renderError(); return; }
+    allTenants = await res.json();
+    render();
+  }
+
+  function render() {
+    const list = currentFilter === 'all'
+      ? allTenants
+      : allTenants.filter(t => t.status === currentFilter);
+
+    const wrap = document.getElementById('tenants-wrap');
+
+    if (!list.length) {
+      wrap.innerHTML = `<div class="ia-empty"><p>${currentFilter === 'all' ? 'Nenhum cliente cadastrado.' : 'Nenhum cliente com este status.'}</p>${currentFilter === 'all' ? '<a href="/ia/admin/tenants/novo" class="btn btn--primary btn--sm" style="margin-top:var(--space-3)">+ Criar primeiro cliente</a>' : ''}</div>`;
+      return;
+    }
+
+    wrap.innerHTML = `
+      <table class="ia-table">
+        <thead><tr>
+          <th>Nome</th><th>Segmento</th><th>Plano</th><th>Status</th><th>WA</th><th>Ação</th>
+        </tr></thead>
+        <tbody>
+          ${list.map(t => `
+            <tr>
+              <td><a href="/ia/admin/tenants/${t.id}">${esc(t.name)}</a>${t.biz_name ? `<br><small style="color:var(--color-text-tertiary)">${esc(t.biz_name)}</small>` : ''}</td>
+              <td><span class="badge badge--gray">${segmentLabel[t.segment] ?? t.segment}</span></td>
+              <td>${planLabel[t.plan] ?? t.plan}</td>
+              <td>${statusBadge(t.status)}</td>
+              <td>${t.wa_status ? waDot(t.wa_status) : '<span style="color:var(--color-text-tertiary);font-size:12px">—</span>'}</td>
+              <td><a href="/ia/admin/tenants/${t.id}" class="btn btn--secondary btn--sm">Abrir</a></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function statusBadge(s) {
+    const map = { active:['badge--green','Ativo'], trial:['badge--blue','Trial'], inactive:['badge--gray','Inativo'] };
+    const [cls, lbl] = map[s] ?? ['badge--gray', s];
+    return `<span class="badge ${cls}">${lbl}</span>`;
+  }
+
+  function waDot(s) {
+    const cls = { connected:'connected', disconnected:'disconnected', banned:'banned', warming:'warming' }[s] ?? 'disconnected';
+    const lbl = { connected:'Conectada', disconnected:'Desconectada', banned:'Banida', warming:'Warmup' }[s] ?? s;
+    return `<span style="display:inline-flex;align-items:center;gap:6px;font-size:12px"><span class="wa-dot wa-dot--${cls}"></span>${lbl}</span>`;
+  }
+
+  function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function renderError() { document.getElementById('tenants-wrap').innerHTML = '<div class="ia-empty"><p>Erro ao carregar clientes.</p></div>'; }
+
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll('.filter-pill').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      render();
+    });
+  });
+
+  load();
+</script>
+</body>
+</html>

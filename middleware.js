@@ -6,7 +6,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 export const config = {
-  matcher: ['/admin/:path*', '/', '/demo'],
+  matcher: ['/admin/:path*', '/ia/admin/:path*', '/', '/demo'],
 };
 
 export default async function middleware(req) {
@@ -24,11 +24,14 @@ export default async function middleware(req) {
   }
   // ─────────────────────────────────────────────────────────────
 
-  // ── Admin auth (só para /admin/*) ────────────────────────────
-  if (!path.startsWith('/admin')) return;
+  // ── Admin auth (/admin/* e /ia/admin/*) ─────────────────────
+  const isHardwareAdmin = path.startsWith('/admin');
+  const isIaAdmin = path.startsWith('/ia/admin');
+  if (!isHardwareAdmin && !isIaAdmin) return;
+
   if (
-    path === '/admin/login' || 
-    path === '/admin/login.html' || 
+    path === '/admin/login' ||
+    path === '/admin/login.html' ||
     path.startsWith('/admin/auth/')
   ) {
     return; // Pass-through
