@@ -6,7 +6,12 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "hardware.iflcosta.tech" }],
-      "destination": "/portfolio/hardware-tech"
+      "destination": "/portfolio/hardware-tech/index.html"
+    },
+    {
+      "source": "/(index|index.html)",
+      "has": [{ "type": "host", "value": "hardware.iflcosta.tech" }],
+      "destination": "/portfolio/hardware-tech/index.html"
     },
     {
       "source": "/:path*",
