@@ -17,7 +17,7 @@
 
   <!-- ===================== NAVBAR ===================== -->
   <nav class="navbar" id="navbar" role="navigation" aria-label="Menu principal">
-    <div class="container nav-inner">
+    <div class="container navbar-inner">
       <a href="#hero" class="logo" aria-label="ifl Studio - Início">
         <span class="logo-icon">⚡</span>
         <span class="logo-text">ifl<span class="logo-accent">Studio</span></span>
@@ -34,7 +34,7 @@
       </button>
     </div>
     <!-- Mobile menu -->
-    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile">
+    <div class="mobile-nav" id="mobile-menu" role="dialog" aria-label="Menu mobile">
       <ul role="list">
         <li><a href="#servicos" class="nav-link">Serviços</a></li>
         <li><a href="#tradutor" class="nav-link">ROI Real</a></li>
@@ -52,30 +52,32 @@
       <div class="hero-bg-grid" aria-hidden="true"></div>
       <div class="container hero-inner">
 
-        <div class="hero-badge" aria-label="Badge de especialização">
-          <span class="badge-dot" aria-hidden="true"></span>
-          Especialista em Performance &amp; Automação para Agências
-        </div>
+        <div class="hero-content">
+          <div class="hero-tag" aria-label="Badge de especialização">
+            <span class="tag-dot" aria-hidden="true"></span>
+            Especialista em Performance &amp; Automação para Agências
+          </div>
 
-        <h1 id="hero-headline" class="hero-headline">
-          Páginas que carregam<br />
-          <span class="gradient-text">antes do seu cliente piscar.</span><br />
-          Automações que reduzem seus<br />
-          custos operacionais pela metade.
-        </h1>
+          <h1 id="hero-headline" class="hero-headline">
+            Páginas que carregam<br />
+            <span class="gradient-text">antes do seu cliente piscar.</span><br />
+            Automações que reduzem seus<br />
+            custos operacionais pela metade.
+          </h1>
 
-        <p class="hero-subheadline">
-          Desenvolvimento de Landing Pages de ultra-performance <strong>(nota 100/100 no PageSpeed)</strong> e integrações personalizadas com IA para agências que escalam tráfego pago e exigem eficiência brutal.
-        </p>
+          <p class="hero-desc">
+            Desenvolvimento de Landing Pages de ultra-performance <strong>(nota 100/100 no PageSpeed)</strong> e integrações personalizadas com IA para agências que escalam tráfego pago e exigem eficiência brutal.
+          </p>
 
-        <div class="hero-ctas">
-          <a href="#contato" class="btn btn-primary btn-lg" id="hero-cta-primary">
-            <span>Garantir minha Auditoria Gratuita</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-          <a href="#portfolio" class="btn btn-secondary btn-lg" id="hero-cta-secondary">
-            <span>Ver Cases de Escala</span>
-          </a>
+          <div class="hero-ctas">
+            <a href="#contato" class="btn btn-primary btn-lg" id="hero-cta-primary">
+              <span>Garantir minha Auditoria Gratuita</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#portfolio" class="btn btn-secondary btn-lg" id="hero-cta-secondary">
+              <span>Ver Cases de Escala</span>
+            </a>
+          </div>
         </div>
 
         <!-- PageSpeed Dashboard Mockup -->
@@ -95,8 +97,8 @@
             </div>
             <div class="ps-scores" role="list" aria-label="Notas de performance">
               <div class="ps-score-card ps-active" role="listitem">
-                <div class="ps-circle" data-score="100" aria-label="Performance: 100">
-                  <svg class="ps-ring" viewBox="0 0 100 100" aria-hidden="true">
+                <div class="ps-score-circle" data-score="100" aria-label="Performance: 100">
+                  <svg class="ps-score-ring" viewBox="0 0 100 100" aria-hidden="true">
                     <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="8"/>
                     <circle cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="8"
                       stroke-dasharray="263.9" stroke-dashoffset="0"
@@ -105,11 +107,14 @@
                   </svg>
                   <span class="ps-score-num">100</span>
                 </div>
-                <span class="ps-label">Performance</span>
+                <div class="ps-score-label">
+                  <h3>Performance</h3>
+                  <p>Nota máxima</p>
+                </div>
               </div>
               <div class="ps-score-card" role="listitem">
-                <div class="ps-circle ps-circle-sm" data-score="100" aria-label="Acessibilidade: 100">
-                  <svg class="ps-ring" viewBox="0 0 100 100" aria-hidden="true">
+                <div class="ps-score-circle" data-score="100" aria-label="Acessibilidade: 100">
+                  <svg class="ps-score-ring" viewBox="0 0 100 100" aria-hidden="true">
                     <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="8"/>
                     <circle cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="8"
                       stroke-dasharray="263.9" stroke-dashoffset="0"
@@ -118,11 +123,14 @@
                   </svg>
                   <span class="ps-score-num">100</span>
                 </div>
-                <span class="ps-label">Acessibilidade</span>
+                <div class="ps-score-label">
+                  <h3>Acessibilidade</h3>
+                  <p>Acessível</p>
+                </div>
               </div>
               <div class="ps-score-card" role="listitem">
-                <div class="ps-circle ps-circle-sm" data-score="100" aria-label="SEO: 100">
-                  <svg class="ps-ring" viewBox="0 0 100 100" aria-hidden="true">
+                <div class="ps-score-circle" data-score="100" aria-label="SEO: 100">
+                  <svg class="ps-score-ring" viewBox="0 0 100 100" aria-hidden="true">
                     <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="8"/>
                     <circle cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="8"
                       stroke-dasharray="263.9" stroke-dashoffset="0"
@@ -131,7 +139,10 @@
                   </svg>
                   <span class="ps-score-num">100</span>
                 </div>
-                <span class="ps-label">SEO</span>
+                <div class="ps-score-label">
+                  <h3>SEO</h3>
+                  <p>Otimizado</p>
+                </div>
               </div>
             </div>
             <!-- Core Web Vitals -->
@@ -475,7 +486,7 @@
 
           <!-- ===================== PERFORMANCE CASES ===================== -->
           <!-- Card 1 - Performance 1 (Largo) -->
-          <article class="bento-card bento-wide filtered-out" data-category="performance" role="listitem" aria-labelledby="proj1-title">
+          <article class="bento-card bento-large filtered-out" data-category="performance" role="listitem" aria-labelledby="proj1-title">
             <div class="bento-accent" aria-hidden="true" style="--accent: #10b981;"></div>
             <div class="bento-metric" aria-label="Resultado: +240% conversão">
               <span class="metric-number">+240%</span>
@@ -524,7 +535,7 @@
 
           <!-- ===================== AUTOMAÇÃO IA CASES ===================== -->
           <!-- Card 4 - Automação 1 (Largo) -->
-          <article class="bento-card bento-wide filtered-out" data-category="automacao" role="listitem" aria-labelledby="proj4-title">
+          <article class="bento-card bento-large filtered-out" data-category="automacao" role="listitem" aria-labelledby="proj4-title">
             <div class="bento-accent" aria-hidden="true" style="--accent: #06b6d4;"></div>
             <div class="bento-metric" aria-label="Resultado: 15s para qualificação de lead">
               <span class="metric-number">15s</span>
@@ -568,7 +579,7 @@
 
           <!-- ===================== INFRAESTRUTURA CASES ===================== -->
           <!-- Card 7 - Infra 1 (Largo) -->
-          <article class="bento-card bento-wide filtered-out" data-category="infra" role="listitem" aria-labelledby="proj7-title">
+          <article class="bento-card bento-large filtered-out" data-category="infra" role="listitem" aria-labelledby="proj7-title">
             <div class="bento-accent" aria-hidden="true" style="--accent: #c9a84c;"></div>
             <div class="bento-metric" aria-label="Resultado: 99.99% Uptime">
               <span class="metric-number">99.99%</span>

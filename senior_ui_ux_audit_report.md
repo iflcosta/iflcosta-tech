@@ -83,3 +83,52 @@ Com foco extremo em dispositivos móveis e seguindo as melhores práticas de usa
 ### 5.4. Colapso de Spacing e Margens Laterais
 *   **Problema:** Em telas móveis muito pequenas, o padding interno e as margens desenhadas para desktop comprimiam excessivamente a largura útil de leitura do conteúdo de texto.
 *   **Solução:** Reduzido o espaçamento lateral (padding) nos contêineres principais e cards internos (`.diagnostic-form`, `.service-card`, `.bento-card`, `.roi-card`, `.contact-form`, `.property-card .card-body`) para **1.25rem** ou **1rem** sob o breakpoint de 768px, maximizando a área de leitura e a legibilidade em aparelhos móveis sem comprometer o alinhamento visual.
+
+---
+
+## 6. Correções e Adições Detalhadas de CSS e Alinhamento
+
+### 6.1. Resolução do Contraste dos Cards Escuros do Bento Grid
+*   **Ações Realizadas:**
+    1.  Adicionado seletor robusto no `style.css` para forçar a visibilidade de títulos claros tanto no estado estático quanto no hover:
+        ```css
+        .bento-stat .bento-title,
+        .bento-large-stat .bento-title,
+        .bento-banner .bento-title,
+        .bento-stat:hover .bento-title,
+        .bento-large-stat:hover .bento-title,
+        .bento-banner:hover .bento-title {
+          color: var(--c-white) !important;
+        }
+        ```
+    2.  Melhorado o contraste de textos informativos (`.bento-context`, `.bento-action`, `.bento-result` e tags `strong`) em todos os cards com fundo escuro:
+        ```css
+        .bento-large-stat .bento-context,
+        .bento-large-stat .bento-action,
+        .bento-large-stat .bento-result,
+        .bento-banner .bento-context,
+        .bento-banner .bento-action,
+        .bento-banner .bento-result {
+          color: rgba(255,255,255,0.7);
+        }
+        .bento-large-stat .bento-context strong,
+        .bento-large-stat .bento-action strong,
+        .bento-large-stat .bento-result strong,
+        .bento-banner .bento-context strong,
+        .bento-banner .bento-action strong,
+        .bento-banner .bento-result strong {
+          color: var(--c-white);
+        }
+        ```
+    Isso assegura conformidade estrita com o padrão WCAG AA (taxa de contraste superior a 4.5:1) em todos os estados de interação.
+
+### 6.2. Alinhamento Matemático das Grid Spans (Evitando Gaps e Lacunas)
+*   **Problema:** A inclusão de 5 cards de demonstração (modelos de LP) gerava quebras visuais e vazios na lateral direita em diferentes larguras de tela, pois 5 elementos de `span 6` (padrão) ou `span 4` (telas 1440px) não preenchem uniformemente uma linha do grid de 12 colunas.
+*   **Soluções Matemáticas Implementadas:**
+    1.  **Desktop Padrão (Grid de 12 colunas):** Definido que o último card (`.bento-demo:last-child`) ocupa todas as 12 colunas, enquanto os outros ocupam 6. Assim, temos duas linhas completas de 6+6 e uma linha final completa de 12.
+    2.  **Telas Larga (>= 1440px):** Os cards ocupam originalmente 4 colunas. Para fechar a conta dos 5 itens, aplicou-se span 6 aos itens 13 e 14 (os dois últimos visíveis). Linha 1: 3 cards * 4 = 12 colunas. Linha 2: 2 cards * 6 = 12 colunas. Layout perfeitamente equilibrado e sem gaps!
+    3.  **Tablet (max-width: 1024px, Grid de 6 colunas):** Os cards ocupam originalmente 3 colunas. O último card foi configurado para ocupar 6 colunas completas. Linha 1: 3+3=6. Linha 2: 3+3=6. Linha 3: 6=6.
+
+### 6.3. Criação das Classes Estilísticas Faltantes
+*   **PageSpeed Widget:** Implementada toda a folha de estilos necessária para `.pagespeed-widget` e seus sub-elementos (`.ps-header`, `.ps-dots`, `.ps-dot`, `.ps-title`, `.ps-body`, `.ps-url-bar`, `.ps-lock`), que exibe a simulação premium 100/100 na Hero.
+*   **Botões Auxiliares e ROI:** Estilizado o botão menor `.btn-sm` (com área de toque assegurada de 44px na navegação) e o elemento de suporte `.roi-hint` (estilo menor e discreto abaixo dos inputs da calculadora).
