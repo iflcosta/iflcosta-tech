@@ -1,22 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    {
-      "source": "/",
-      "has": [{ "type": "host", "value": "hardware.iflcosta.tech" }],
-      "destination": "/portfolio/hardware-tech/index.html"
-    },
-    {
-      "source": "/(index|index.html)",
-      "has": [{ "type": "host", "value": "hardware.iflcosta.tech" }],
-      "destination": "/portfolio/hardware-tech/index.html"
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "hardware.iflcosta.tech" }],
-      "destination": "/portfolio/hardware-tech/:path*"
-    }
-  ]
+  "trailingSlash": false
 }
