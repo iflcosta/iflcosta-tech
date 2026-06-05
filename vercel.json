@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "hardware.iflcosta.tech" }],
+      "destination": "/portfolio/hardware-tech"
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "hardware.iflcosta.tech" }],
+      "destination": "/portfolio/hardware-tech/:path*"
+    }
+  ]
+}
