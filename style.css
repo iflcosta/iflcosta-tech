@@ -1333,23 +1333,6 @@ h1, h2, h3, h4 {
 .bento-stat   { grid-column: span 5; background: linear-gradient(145deg, #0d1422, #111827); }
 .bento-large-stat { grid-column: span 7; background: linear-gradient(145deg, #0d1422, #111827); }
 
-/* Dynamic layouts and gaps fixes when filtering */
-#portfolio-grid.filter-lps .bento-demo:last-of-type {
-  grid-column: span 12;
-}
-
-@media (min-width: 1440px) {
-  #portfolio-grid.filter-lps .bento-demo:nth-child(13),
-  #portfolio-grid.filter-lps .bento-demo:nth-child(14) {
-    grid-column: span 6;
-  }
-}
-
-@media (max-width: 1024px) {
-  #portfolio-grid.filter-lps .bento-demo:last-of-type {
-    grid-column: span 6;
-  }
-}
 .bento-banner {
   grid-column: span 12;
   background: linear-gradient(135deg, #0d1422 0%, #111827 50%, #141b2e 100%);
@@ -1359,7 +1342,7 @@ h1, h2, h3, h4 {
   gap: 3rem;
   padding: 2.5rem 3.5rem;
 }
-.bento-demo { grid-column: span 6; padding: 0; }
+.bento-demo { grid-column: span 4; padding: 0; }
 
 /* Accent strip */
 .bento-accent {
@@ -2261,8 +2244,6 @@ h1, h2, h3, h4 {
   .bento-large-stat { grid-column: span 8; }
   .bento-banner { grid-column: span 12; }
   .bento-demo   { grid-column: span 4; }
-  .bento-demo:nth-child(13),
-  .bento-demo:nth-child(14) { grid-column: span 6; }
 }
 
 /* ── Missing utility classes ── */
