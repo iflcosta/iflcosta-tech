@@ -316,6 +316,19 @@ h1, h2, h3, h4 {
 .btn-lg { padding: 1rem 2rem; font-size: 1rem; }
 .btn-sm { padding: 0.5rem 1.125rem; font-size: 0.875rem; }
 
+#nav-whatsapp-btn {
+  background: rgba(34, 211, 165, 0.06);
+  color: var(--c-green);
+  border: 1px solid rgba(34, 211, 165, 0.2);
+  transition: all var(--t-base);
+}
+
+#nav-whatsapp-btn:hover {
+  background: rgba(34, 211, 165, 0.14);
+  border-color: rgba(34, 211, 165, 0.4);
+  transform: translateY(-2px);
+}
+
 /* ============================================================
    NAVBAR
    ============================================================ */
