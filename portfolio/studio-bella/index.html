@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Studio Bella — Estética & Beleza. Tratamentos faciais, corporais e autocuidado premium no coração de São Paulo. Agende sua consulta." />
+  <meta name="theme-color" content="#2d1b2e" />
+  <title>Studio Bella — Estética & Beleza</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" role="banner">
+    <div class="navbar__inner container" aria-label="Navegação principal">
+      <a href="#hero" class="navbar__logo" aria-label="Studio Bella - Início">
+        <span>✦</span> Studio Bella
+      </a>
+
+      <ul class="navbar__links" role="list">
+        <li><a href="#features" class="navbar__link">Diferenciais</a></li>
+        <li><a href="#sobre" class="navbar__link">O Studio</a></li>
+        <li><a href="#tratamentos" class="navbar__link">Tratamentos</a></li>
+        <li><a href="#resultados" class="navbar__link">Depoimentos</a></li>
+        <li>
+          <a href="#agendar" class="btn btn--primary" aria-label="Agendar um tratamento">
+            Agendar
+          </a>
+        </li>
+      </ul>
+
+      <button class="navbar__hamburger" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile" aria-hidden="true">
+      <ul class="mobile-menu__links" role="list">
+        <li><a href="#features" class="mobile-menu__link">Diferenciais</a></li>
+        <li><a href="#sobre" class="mobile-menu__link">O Studio</a></li>
+        <li><a href="#tratamentos" class="mobile-menu__link">Tratamentos</a></li>
+        <li><a href="#resultados" class="mobile-menu__link">Depoimentos</a></li>
+        <li>
+          <a href="#agendar" class="mobile-menu__link mobile-menu__cta btn btn--primary">
+            Agendar
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="hero" class="hero" aria-label="Apresentação do Studio">
+      <div class="hero__content container">
+        <div class="hero__text">
+          <span class="hero__eyebrow" aria-hidden="true">SPA & CLÍNICA DE ESTÉTICA</span>
+          <h1 class="hero__headline">
+            Beleza que <em>transforma.</em><br />
+            Cuidado que renova.
+          </h1>
+          <p class="hero__subheadline">
+            Um refúgio de bem-estar dedicado a realçar sua beleza natural. Combinamos tecnologia de ponta com um toque acolhedor de autocuidado para criar tratamentos estéticos inesquecíveis.
+          </p>
+          <div class="hero__actions">
+            <a href="#agendar" class="btn btn--primary" aria-label="Fazer um agendamento online">Agendar Consulta</a>
+            <a href="#tratamentos" class="btn btn--ghost">Nossos Serviços</a>
+          </div>
+        </div>
+
+        <div class="hero__image-wrap">
+          <div class="hero__image-glow" aria-hidden="true"></div>
+          <img
+            src="images/hero-beauty.png"
+            alt="Mulher elegante recebendo um tratamento estético facial relaxante em uma maca de spa"
+            class="hero__image"
+            width="540"
+            height="460"
+            loading="eager"
+          />
+          <div class="hero__image-badge" aria-label="Certificado de excelência">
+            <span class="hero__badge-icon" aria-hidden="true">✦</span>
+            <span class="hero__badge-title">100%</span>
+            <span class="hero__badge-sub">Personalizado</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURES / DIFERENCIAIS ===================== -->
+    <section id="features" class="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Por que nos escolher</span>
+          <h2 class="section-title" id="features-title">A Experiência Bella</h2>
+          <p class="section-subtitle">Acreditamos que a estética vai além da superfície. Cuidamos do seu bem-estar geral em um ambiente acolhedor e luxuoso.</p>
+        </div>
+
+        <div class="features__grid">
+          <article class="feature-card reveal reveal-delay-1">
+            <div class="feature-card__icon-wrap" aria-hidden="true">✦</div>
+            <h3 class="feature-card__title">Equipe Certificada</h3>
+            <p class="feature-card__desc">Nossas profissionais são pós-graduadas em estética e passam por treinamentos internacionais constantes.</p>
+          </article>
+
+          <article class="feature-card reveal reveal-delay-2">
+            <div class="feature-card__icon-wrap" aria-hidden="true">🧴</div>
+            <h3 class="feature-card__title">Cosméticos Premium</h3>
+            <p class="feature-card__desc">Utilizamos exclusivamente produtos de marcas mundiais de luxo, livres de parabenos e dermatologicamente testados.</p>
+          </article>
+
+          <article class="feature-card reveal reveal-delay-3">
+            <div class="feature-card__icon-wrap" aria-hidden="true">✨</div>
+            <h3 class="feature-card__title">Avaliação Científica</h3>
+            <p class="feature-card__desc">Fazemos um mapeamento profundo da sua pele para recomendar os tratamentos com a melhor eficácia para o seu caso.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT / SOBRE ===================== -->
+    <section id="sobre" class="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about__grid">
+          <div class="about__image-col reveal">
+            <div class="about__image-wrap">
+              <img
+                src="images/hero-beauty.png"
+                alt="Ambiente interno do Studio Bella com mármore, iluminação suave e orquídeas"
+                class="about__image"
+                width="540"
+                height="400"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <div class="about__text-col reveal reveal-delay-2">
+            <span class="section-eyebrow">O Studio</span>
+            <h2 class="section-title" id="about-title">Sua jornada de autocuidado começa aqui</h2>
+            <p class="about__body">
+              Idealizado por Isabela Bella há mais de 8 anos, o Studio Bella foi criado com o propósito de oferecer tratamentos estéticos que vão muito além de procedimentos rápidos. Criamos um ecossistema de acolhimento focado no luxo discreto.
+            </p>
+            <p class="about__body">
+              Localizado no coração de Moema, nosso estúdio oferece cabines individuais com isolamento acústico, aromaterapia personalizada e chás orgânicos para você se desligar do ritmo acelerado de São Paulo durante sua sessão.
+            </p>
+            <blockquote class="about__quote">
+              "A verdadeira beleza floresce quando damos a nós mesmos o tempo de respirar e ser cuidados."
+            </blockquote>
+            <div class="about__founder">
+              <div class="about__founder-avatar" aria-hidden="true">IB</div>
+              <div>
+                <span class="about__founder-name">Isabela Bella</span>
+                <span class="about__founder-title">Fundadora & Esteticista-Chefe</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES / TRATAMENTOS ===================== -->
+    <section id="tratamentos" class="services" aria-labelledby="services-title">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Nossas Terapias</span>
+          <h2 class="section-title" id="services-title">Tratamentos Exclusivos</h2>
+          <p class="section-subtitle">Procedimentos de alta performance para face e corpo. Clique para agendar o seu momento.</p>
+        </div>
+
+        <div class="services__grid">
+          <article class="service-card reveal reveal-delay-1">
+            <span class="service-card__icon" aria-hidden="true">✦</span>
+            <h3 class="service-card__title">Limpeza de Pele</h3>
+            <p class="service-card__desc">Protocolo profundo com vapor de ozônio, extração manual cuidadosa, peeling de diamante e máscara calmante hidratante.</p>
+            <span class="service-card__price">R$ 180</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-2">
+            <span class="service-card__icon" aria-hidden="true">✦</span>
+            <h3 class="service-card__title">Peeling Iluminador</h3>
+            <p class="service-card__desc">Aplicação de ácidos suaves combinados com vitamina C pura para restaurar a luminosidade e uniformizar o tom da pele.</p>
+            <span class="service-card__price">R$ 240</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-3">
+            <span class="service-card__icon" aria-hidden="true">✦</span>
+            <h3 class="service-card__title">Drenagem Miracle</h3>
+            <p class="service-card__desc">Técnica manual corporal exclusiva que combina manobras redutoras e drenantes. Ideal para desinchar e modelar.</p>
+            <span class="service-card__price">R$ 220</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-1">
+            <span class="service-card__icon" aria-hidden="true">✦</span>
+            <h3 class="service-card__title">Design de Sobrancelha</h3>
+            <p class="service-card__desc">Estudo das proporções faciais (visagismo) com remoção detalhada e preenchimento opcional com tintura natural.</p>
+            <span class="service-card__price">R$ 90</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-2">
+            <span class="service-card__icon" aria-hidden="true">✦</span>
+            <h3 class="service-card__title">Laser Rejuvenescedor</h3>
+            <p class="service-card__desc">Procedimento inovador não-invasivo para estímulo de colágeno, redução de linhas finas e fechamento de poros.</p>
+            <span class="service-card__price">R$ 450</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-3">
+            <span class="service-card__icon" aria-hidden="true">✦</span>
+            <h3 class="service-card__title">Massagem Relaxante</h3>
+            <p class="service-card__desc">Terapia com óleos essenciais aquecidos focada no alívio de tensões musculares profundas do pescoço e costas.</p>
+            <span class="service-card__price">R$ 190</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RESULTS / DEPOIMENTOS ===================== -->
+    <section id="resultados" class="results" aria-labelledby="results-title">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Resultados Reais</span>
+          <h2 class="section-title" id="results-title">Quem experimenta recomenda</h2>
+          <p class="section-subtitle">Conheça algumas histórias de transformação de clientes fiéis do nosso estúdio.</p>
+        </div>
+
+        <div class="results__grid">
+          <article class="result-card reveal reveal-delay-1">
+            <div class="result-card__image-col">
+              <img src="images/testimonial-helena.png" alt="Helena Albuquerque" class="result-card__image" loading="lazy" />
+              <div class="result-card__image-glow"></div>
+              <span class="result-card__label">Pele Iluminada</span>
+            </div>
+            <div class="result-card__body">
+              <div class="result-card__stars">★★★★★</div>
+              <p class="result-card__quote">
+                "Minha pele mudou completamente após o protocolo de Peeling Iluminador. As manchas de acne clarearam muito e o viço natural voltou. O Studio Bella é maravilhoso!"
+              </p>
+              <cite class="result-card__author">Helena Albuquerque</cite>
+              <span class="result-card__treatment">Peeling & Cuidados Faciais</span>
+            </div>
+          </article>
+
+          <article class="result-card reveal reveal-delay-2">
+            <div class="result-card__image-col">
+              <img src="images/testimonial-fernanda.png" alt="Fernanda Vasconcellos" class="result-card__image" loading="lazy" />
+              <div class="result-card__image-glow"></div>
+              <span class="result-card__label">Efeito Renovador</span>
+            </div>
+            <div class="result-card__body">
+              <div class="result-card__stars">★★★★★</div>
+              <p class="result-card__quote">
+                "A Drenagem Miracle mudou minha autoestima para o casamento. Desinchei na hora e a textura da pele ficou ultra lisa. Atendimento de rainha, nota mil!"
+              </p>
+              <cite class="result-card__author">Fernanda Vasconcellos</cite>
+              <span class="result-card__treatment">Drenagem Miracle</span>
+            </div>
+          </article>
+
+          <article class="result-card reveal reveal-delay-3">
+            <div class="result-card__image-col">
+              <img src="images/testimonial-carolina.png" alt="Carolina Silveira" class="result-card__image" loading="lazy" />
+              <div class="result-card__image-glow"></div>
+              <span class="result-card__label">Autocuidado Completo</span>
+            </div>
+            <div class="result-card__body">
+              <div class="result-card__stars">★★★★★</div>
+              <p class="result-card__quote">
+                "Faço a limpeza de pele e a massagem relaxante todo mês. É o meu dia de spa particular. O cuidado e o carinho que as meninas têm é indescritível."
+              </p>
+              <cite class="result-card__author">Carolina Silveira</cite>
+              <span class="result-card__treatment">Limpeza de Pele & Massagem</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA BANNER ===================== -->
+    <section id="agendar" class="cta-banner" aria-labelledby="cta-title">
+      <div class="container cta-banner__inner reveal">
+        <span class="section-eyebrow">Momento Único</span>
+        <h2 class="cta-banner__title">Reserve seu momento de <em>cuidado</em></h2>
+        <p class="cta-banner__subtitle">
+          Agende uma primeira consulta de avaliação estética gratuita com nossas especialistas pelo WhatsApp comercial.
+        </p>
+        <div class="cta-banner__actions">
+          <a href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o%20est%C3%A9tica%20gratuita%20no%20Studio%20Bella" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="btn btn--primary"
+             aria-label="Agendar via WhatsApp comercial com o Studio Bella">
+            Agendar no WhatsApp
+          </a>
+          <a href="tel:+5511999999999" class="btn btn--outline" aria-label="Ligar para o Studio Bella">Ligar Agora</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="#hero" class="footer__logo" aria-label="Studio Bella - Início">
+            <span>✦</span> Studio Bella
+          </a>
+          <p class="footer__tagline">
+            Especialistas em realçar sua beleza natural e proporcionar momentos inesquecíveis de relaxamento no coração de Moema, São Paulo.
+          </p>
+          <div class="footer__socials" role="list" aria-label="Redes sociais">
+            <a href="https://instagram.com/studiobella" class="footer__social-link" role="listitem" aria-label="Instagram">📸</a>
+            <a href="https://facebook.com/studiobella" class="footer__social-link" role="listitem" aria-label="Facebook">👥</a>
+            <a href="https://pinterest.com/studiobella" class="footer__social-link" role="listitem" aria-label="Pinterest">📌</a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="footer__col-title">Tratamentos</h3>
+          <ul class="footer__links" role="list">
+            <li><a href="#tratamentos" class="footer__link">Limpeza de Pele</a></li>
+            <li><a href="#tratamentos" class="footer__link">Peeling Iluminador</a></li>
+            <li><a href="#tratamentos" class="footer__link">Drenagem Miracle</a></li>
+            <li><a href="#tratamentos" class="footer__link">Laser Rejuvenescedor</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="footer__col-title">O Studio</h3>
+          <ul class="footer__links" role="list">
+            <li><a href="#sobre" class="footer__link">Nossa História</a></li>
+            <li><a href="#features" class="footer__link">Diferenciais</a></li>
+            <li><a href="#resultados" class="footer__link">Resultados</a></li>
+            <li><a href="#" class="footer__link">Trabalhe Conosco</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="footer__col-title">Contato & Endereço</h3>
+          <address class="footer__address">
+            <p>📍 Al. dos Anapurus, 1420 - Moema, São Paulo - SP</p>
+            <p>📞 (11) 9 9999-9999</p>
+            <p>📧 oi@studiobellaestetica.com.br</p>
+          </address>
+          <div class="footer__hours">
+            <p><strong>Segunda a Sexta:</strong> 09h às 20h</p>
+            <p><strong>Sábado:</strong> 09h às 18h</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copy">© 2024 Studio Bella Estética Avançada. Todos os direitos reservados.</p>
+        <div class="footer__legal">
+          <a href="#" class="footer__link">Política de Privacidade</a>
+          <span>·</span>
+          <a href="#" class="footer__link">Termos de Uso</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

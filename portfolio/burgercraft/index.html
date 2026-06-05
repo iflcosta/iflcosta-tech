@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BurgerCraft — Hambúrgueres Artesanais. Feitos com ingredientes frescos, receitas exclusivas e entrega rápida. Peça agora e ganhe 15% OFF no primeiro pedido." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>BurgerCraft — Hambúrgueres Artesanais</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" role="banner">
+    <nav class="navbar__inner container" aria-label="Navegação principal">
+      <a href="#hero" class="navbar__logo" aria-label="BurgerCraft - Página inicial">
+        BurgerCraft <span class="navbar__logo-icon" aria-hidden="true">⚡</span>
+      </a>
+
+      <ul class="navbar__links" role="list">
+        <li><a href="#cardapio" class="navbar__link">Cardápio</a></li>
+        <li><a href="#sobre" class="navbar__link">Sobre</a></li>
+        <li><a href="#depoimentos" class="navbar__link">Depoimentos</a></li>
+        <li>
+          <a href="#pedir" class="navbar__cta btn btn--primary" aria-label="Pedir agora via delivery">
+            Pedir Agora
+          </a>
+        </li>
+      </ul>
+
+      <button class="navbar__hamburger" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="hamburger__bar"></span>
+        <span class="hamburger__bar"></span>
+        <span class="hamburger__bar"></span>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile" aria-hidden="true">
+      <ul class="mobile-menu__links" role="list">
+        <li><a href="#cardapio" class="mobile-menu__link">Cardápio</a></li>
+        <li><a href="#sobre" class="mobile-menu__link">Sobre</a></li>
+        <li><a href="#depoimentos" class="mobile-menu__link">Depoimentos</a></li>
+        <li>
+          <a href="#pedir" class="mobile-menu__link mobile-menu__cta btn btn--primary">
+            Pedir Agora
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="hero" class="hero" aria-label="Seção principal">
+      <div class="hero__bg-overlay" aria-hidden="true"></div>
+
+      <div class="hero__content container">
+        <div class="hero__text">
+          <p class="hero__eyebrow" aria-hidden="true">🔥 Desde 2019 — São Paulo, SP</p>
+          <h1 class="hero__headline">
+            Artesanal.<br />
+            <span class="hero__headline--accent">Intenso.</span><br />
+            Irresistível.
+          </h1>
+          <p class="hero__subheadline">
+            Cada hambúrguer é uma obra de arte feita à mão. Carne fresca, pão brioche quentinho e sabores que você nunca vai esquecer — na sua porta em até 40 minutos.
+          </p>
+          <div class="hero__actions">
+            <a href="#pedir" class="btn btn--primary btn--large" aria-label="Fazer pedido agora">
+              <span>Pedir Agora</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#cardapio" class="btn btn--ghost btn--large">Ver Cardápio</a>
+          </div>
+          <div class="hero__stats" role="list" aria-label="Estatísticas da BurgerCraft">
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-number">4.9★</span>
+              <span class="hero__stat-label">Avaliação</span>
+            </div>
+            <div class="hero__stat-divider" aria-hidden="true"></div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-number">+12k</span>
+              <span class="hero__stat-label">Pedidos</span>
+            </div>
+            <div class="hero__stat-divider" aria-hidden="true"></div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-number">40min</span>
+              <span class="hero__stat-label">Entrega</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__image-wrap">
+          <div class="hero__image-glow" aria-hidden="true"></div>
+          <img
+            src="images/hero-burger.png"
+            alt="Smash burger artesanal com queijo cheddar derretido e cebolas caramelizadas em tábua de ardósia escura"
+            class="hero__image"
+            width="680"
+            height="460"
+            loading="eager"
+          />
+        </div>
+      </div>
+
+      <div class="hero__diagonal" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===================== FEATURES ===================== -->
+    <section id="features" class="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow">Por que a BurgerCraft?</p>
+          <h2 class="section-title" id="features-title">O que nos torna diferentes</h2>
+        </div>
+
+        <div class="features__grid" role="list">
+
+          <article class="feature-card" role="listitem">
+            <div class="feature-card__icon-wrap" aria-hidden="true">
+              <svg class="feature-card__icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="32" cy="32" r="28" fill="rgba(232,93,4,0.12)" stroke="rgba(232,93,4,0.4)" stroke-width="1.5"/>
+                <path d="M20 38c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M26 38V28M32 38V24M38 38V30" stroke="#ffba08" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M18 40h28" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="feature-card__title">Ingredientes Frescos</h3>
+            <p class="feature-card__desc">
+              Nossas carnes chegam do açougue todo dia. Sem congelados, sem conservantes. Do campo direto para o seu hambúrguer.
+            </p>
+            <div class="feature-card__badge">100% Fresco</div>
+          </article>
+
+          <article class="feature-card feature-card--highlight" role="listitem">
+            <div class="feature-card__icon-wrap" aria-hidden="true">
+              <svg class="feature-card__icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="32" cy="32" r="28" fill="rgba(255,186,8,0.12)" stroke="rgba(255,186,8,0.4)" stroke-width="1.5"/>
+                <path d="M22 44l10-24 10 24" stroke="#ffba08" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M25 38h14" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="32" cy="22" r="3" fill="#ffba08"/>
+              </svg>
+            </div>
+            <h3 class="feature-card__title">Receitas Exclusivas</h3>
+            <p class="feature-card__desc">
+              Desenvolvidas por chefs apaixonados. Combinações únicas que você só encontra aqui, equilibrando sabores brasileiros e americanos.
+            </p>
+            <div class="feature-card__badge">Exclusivo</div>
+          </article>
+
+          <article class="feature-card" role="listitem">
+            <div class="feature-card__icon-wrap" aria-hidden="true">
+              <svg class="feature-card__icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="32" cy="32" r="28" fill="rgba(232,93,4,0.12)" stroke="rgba(232,93,4,0.4)" stroke-width="1.5"/>
+                <circle cx="32" cy="32" r="12" stroke="#e85d04" stroke-width="2.5"/>
+                <path d="M32 22v10l6 4" stroke="#ffba08" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 20l2 2M44 20l-2 2" stroke="#e85d04" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="feature-card__title">Entrega Rápida</h3>
+            <p class="feature-card__desc">
+              Embalagem especial que mantém o calor e a crocância. Entregamos em até 40 minutos ou você ganha desconto na próxima.
+            </p>
+            <div class="feature-card__badge">Até 40 min</div>
+          </article>
+
+        </div>
+      </div>
+      <div class="section-diagonal section-diagonal--down" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section id="sobre" class="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about__grid">
+          <div class="about__image-col">
+            <div class="about__image-frame">
+              <img
+                src="images/about-kitchen.png"
+                alt="Chefs de avental preto grelhando hambúrgueres em cozinha aberta com iluminação âmbar e paredes de tijolo"
+                class="about__image"
+                width="560"
+                height="420"
+                loading="lazy"
+              />
+              <div class="about__image-badge" aria-label="Desde 2019">
+                <span class="about__badge-year">2019</span>
+                <span class="about__badge-text">Fundada com paixão</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="about__text-col">
+            <p class="section-eyebrow">Nossa História</p>
+            <h2 class="section-title" id="about-title">
+              Nascemos da obsessão<br/>pelo hambúrguer perfeito
+            </h2>
+            <p class="about__body">
+              Em 2019, Pedro e Camila trocaram seus empregos corporativos por um sonho: criar o hambúrguer artesanal que nenhuma lanchonete de São Paulo ainda tinha feito. Começaram num food truck no Bom Retiro e foram tomados pela força dos clientes apaixonados.
+            </p>
+            <p class="about__body">
+              Hoje, a BurgerCraft tem sua própria cozinha no coração da Vila Madalena — mas a filosofia não mudou: cada hambúrguer é tratado como uma obra de arte. Nenhum detalhe é esquecido, do blend de carnes ao brioche assado na casa.
+            </p>
+
+            <ul class="about__pillars" aria-label="Nossos pilares">
+              <li class="about__pillar">
+                <span class="about__pillar-icon" aria-hidden="true">🥩</span>
+                <span>Blend exclusivo de carnes selecionadas</span>
+              </li>
+              <li class="about__pillar">
+                <span class="about__pillar-icon" aria-hidden="true">🍞</span>
+                <span>Pão brioche assado na casa, diariamente</span>
+              </li>
+              <li class="about__pillar">
+                <span class="about__pillar-icon" aria-hidden="true">🧀</span>
+                <span>Queijos importados e molhos autorais</span>
+              </li>
+              <li class="about__pillar">
+                <span class="about__pillar-icon" aria-hidden="true">♻️</span>
+                <span>Embalagem 100% biodegradável</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="section-diagonal section-diagonal--up" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===================== MENU / CARDÁPIO ===================== -->
+    <section id="cardapio" class="menu" aria-labelledby="menu-title">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow">Nosso Cardápio</p>
+          <h2 class="section-title" id="menu-title">Burgers que são experiências</h2>
+          <p class="section-subtitle">Cada um com sua personalidade. Qual vai ser o seu?</p>
+        </div>
+
+        <div class="menu__grid">
+
+          <article class="menu-card">
+            <div class="menu-card__image-wrap">
+              <img
+                src="images/menu-combo.png"
+                alt="O Clássico BurgerCraft — hambúrguer artesanal com batata frita e cerveja artesanal"
+                class="menu-card__image"
+                width="400"
+                height="400"
+                loading="lazy"
+              />
+              <span class="menu-card__tag">⭐ Mais Pedido</span>
+            </div>
+            <div class="menu-card__body">
+              <div class="menu-card__header">
+                <h3 class="menu-card__name">O Clássico</h3>
+                <span class="menu-card__price">R$ 38,90</span>
+              </div>
+              <p class="menu-card__desc">
+                Blend de fraldinha e acém (180g), queijo cheddar americano, alface americana, tomate, cebola roxa crispy e nosso molho secreto no brioche tostado na manteiga.
+              </p>
+              <a href="#pedir" class="btn btn--menu" aria-label="Pedir O Clássico por R$ 38,90">
+                Pedir Este
+              </a>
+            </div>
+          </article>
+
+          <article class="menu-card menu-card--featured">
+            <div class="menu-card__image-wrap">
+              <img
+                src="images/hero-burger.png"
+                alt="O Duplo Inferno — smash burger duplo com jalapeño e molho barbecue defumado"
+                class="menu-card__image"
+                width="400"
+                height="400"
+                loading="lazy"
+              />
+              <span class="menu-card__tag menu-card__tag--fire">🔥 Destaque</span>
+            </div>
+            <div class="menu-card__body">
+              <div class="menu-card__header">
+                <h3 class="menu-card__name">O Duplo Inferno</h3>
+                <span class="menu-card__price">R$ 52,90</span>
+              </div>
+              <p class="menu-card__desc">
+                Dois smash patties de 120g, duplo cheddar defumado, jalapeño em conserva, bacon crocante, cebola caramelizada e molho barbecue com pimenta chipotle. Para os corajosos.
+              </p>
+              <a href="#pedir" class="btn btn--primary" aria-label="Pedir O Duplo Inferno por R$ 52,90">
+                Pedir Este
+              </a>
+            </div>
+          </article>
+
+          <article class="menu-card">
+            <div class="menu-card__image-wrap">
+              <img
+                src="images/about-kitchen.png"
+                alt="O Vegano Gourmet — hambúrguer vegano artesanal com shiitake e pesto de castanhas"
+                class="menu-card__image"
+                width="400"
+                height="400"
+                loading="lazy"
+              />
+              <span class="menu-card__tag menu-card__tag--green">🌱 Vegano</span>
+            </div>
+            <div class="menu-card__body">
+              <div class="menu-card__header">
+                <h3 class="menu-card__name">O Vegano Gourmet</h3>
+                <span class="menu-card__price">R$ 44,90</span>
+              </div>
+              <p class="menu-card__desc">
+                Blend de grão-de-bico e cogumelo shiitake, queijo vegano defumado, rúcula, tomate seco, cebola roxa, pesto de castanhas e aioli de limão siciliano no pão de batata-doce.
+              </p>
+              <a href="#pedir" class="btn btn--menu" aria-label="Pedir O Vegano Gourmet por R$ 44,90">
+                Pedir Este
+              </a>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="menu__cta-row">
+          <p class="menu__cta-text">Quer ver o cardápio completo com combos e sobremesas?</p>
+          <a href="#pedir" class="btn btn--outline">Ver Cardápio Completo</a>
+        </div>
+      </div>
+      <div class="section-diagonal section-diagonal--down" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section id="depoimentos" class="testimonials" aria-labelledby="testimonials-title">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow">Depoimentos</p>
+          <h2 class="section-title" id="testimonials-title">O que nossos clientes falam</h2>
+        </div>
+
+        <div class="testimonials__grid" role="list">
+
+          <article class="testimonial-card" role="listitem">
+            <div class="testimonial-card__stars" aria-label="5 estrelas de 5">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <blockquote class="testimonial-card__quote">
+              "Faz tempo que não encontrava um hambúrguer com esse nível de cuidado em SP. O Duplo Inferno é absurdo — aquela combinação de chipotle com cheddar defumado é viciante. Já pedi quatro vezes esse mês."
+            </blockquote>
+            <footer class="testimonial-card__author">
+              <div class="testimonial-card__avatar" aria-hidden="true">RM</div>
+              <div>
+                <cite class="testimonial-card__name">Rafael Mendes</cite>
+                <span class="testimonial-card__role">Designer Gráfico · São Paulo, SP</span>
+              </div>
+            </footer>
+          </article>
+
+          <article class="testimonial-card testimonial-card--highlight" role="listitem">
+            <div class="testimonial-card__stars" aria-label="5 estrelas de 5">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <blockquote class="testimonial-card__quote">
+              "Sou vegana e sempre fico de fora nas hamburguerias com meu namorado. Pela primeira vez, o meu pedido foi tão bom quanto o dele! O Vegano Gourmet é sério — não parece substituto, é o hambúrguer completo."
+            </blockquote>
+            <footer class="testimonial-card__author">
+              <div class="testimonial-card__avatar" aria-hidden="true">JS</div>
+              <div>
+                <cite class="testimonial-card__name">Juliana Souza</cite>
+                <span class="testimonial-card__role">Nutricionista · Vila Madalena, SP</span>
+              </div>
+            </footer>
+          </article>
+
+          <article class="testimonial-card" role="listitem">
+            <div class="testimonial-card__stars" aria-label="5 estrelas de 5">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <blockquote class="testimonial-card__quote">
+              "Entrega impecável — chegou quente e tudo no lugar certo. O pão brioche é de outro nível, não desmontou nem depois de 35 minutos de entrega. BurgerCraft é o padrão que todos deveriam seguir."
+            </blockquote>
+            <footer class="testimonial-card__author">
+              <div class="testimonial-card__avatar" aria-hidden="true">LC</div>
+              <div>
+                <cite class="testimonial-card__name">Lucas Carvalho</cite>
+                <span class="testimonial-card__role">Engenheiro de Software · Pinheiros, SP</span>
+              </div>
+            </footer>
+          </article>
+
+        </div>
+      </div>
+      <div class="section-diagonal section-diagonal--up" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===================== CTA BANNER ===================== -->
+    <section id="pedir" class="cta-banner" aria-labelledby="cta-title">
+      <div class="cta-banner__bg" aria-hidden="true"></div>
+      <div class="cta-banner__embers" aria-hidden="true">
+        <span class="ember ember--1"></span>
+        <span class="ember ember--2"></span>
+        <span class="ember ember--3"></span>
+        <span class="ember ember--4"></span>
+        <span class="ember ember--5"></span>
+      </div>
+      <div class="container cta-banner__inner">
+        <div class="cta-banner__badge" aria-label="Oferta especial">🔥 OFERTA ESPECIAL</div>
+        <h2 class="cta-banner__title" id="cta-title">
+          Primeiro pedido com <span class="cta-banner__title--accent">15% OFF</span>
+        </h2>
+        <p class="cta-banner__subtitle">
+          Use o cupom abaixo no checkout e aproveite o melhor hambúrguer artesanal de São Paulo na sua casa.
+        </p>
+        <div class="cta-banner__coupon" role="group" aria-label="Código de cupom de desconto">
+          <span class="cta-banner__coupon-code" id="coupon-code" aria-label="Código: CRAFT15">CRAFT15</span>
+          <button class="cta-banner__copy-btn" onclick="copyCoupon()" aria-label="Copiar código do cupom">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copiar</span>
+          </button>
+        </div>
+        <div class="cta-banner__actions">
+          <a href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Quero%20fazer%20um%20pedido%20com%20o%20cupom%20CRAFT15" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="btn btn--primary btn--large btn--glow"
+             aria-label="Fazer pedido pelo WhatsApp com 15% de desconto">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Pedir pelo WhatsApp
+          </a>
+          <a href="tel:+5511999999999" class="btn btn--ghost btn--large" aria-label="Ligar para a BurgerCraft">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.12 2.19 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-.85a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            Ligar Agora
+          </a>
+        </div>
+        <p class="cta-banner__fine">*Válido apenas para novos clientes. Não cumulativo com outras promoções.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+
+        <div class="footer__brand">
+          <a href="#hero" class="footer__logo" aria-label="BurgerCraft - Início">
+            BurgerCraft <span aria-hidden="true">⚡</span>
+          </a>
+          <p class="footer__tagline">Hambúrgueres artesanais feitos com paixão desde 2019. Vila Madalena, São Paulo.</p>
+          <div class="footer__social" role="list" aria-label="Redes sociais">
+            <a href="https://instagram.com/burgercraft" target="_blank" rel="noopener noreferrer" class="footer__social-link" role="listitem" aria-label="Instagram da BurgerCraft">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://facebook.com/burgercraft" target="_blank" rel="noopener noreferrer" class="footer__social-link" role="listitem" aria-label="Facebook da BurgerCraft">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://tiktok.com/@burgercraft" target="_blank" rel="noopener noreferrer" class="footer__social-link" role="listitem" aria-label="TikTok da BurgerCraft">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.26 8.26 0 004.84 1.55V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <nav class="footer__nav" aria-label="Links do cardápio">
+          <h3 class="footer__nav-title">Cardápio</h3>
+          <ul role="list">
+            <li><a href="#cardapio" class="footer__link">O Clássico</a></li>
+            <li><a href="#cardapio" class="footer__link">O Duplo Inferno</a></li>
+            <li><a href="#cardapio" class="footer__link">O Vegano Gourmet</a></li>
+            <li><a href="#cardapio" class="footer__link">Combos & Extras</a></li>
+            <li><a href="#cardapio" class="footer__link">Sobremesas</a></li>
+          </ul>
+        </nav>
+
+        <nav class="footer__nav" aria-label="Informações da empresa">
+          <h3 class="footer__nav-title">A BurgerCraft</h3>
+          <ul role="list">
+            <li><a href="#sobre" class="footer__link">Nossa História</a></li>
+            <li><a href="#depoimentos" class="footer__link">Depoimentos</a></li>
+            <li><a href="#pedir" class="footer__link">Delivery</a></li>
+            <li><a href="#" class="footer__link">Trabalhe Conosco</a></li>
+            <li><a href="#" class="footer__link">Contato</a></li>
+          </ul>
+        </nav>
+
+        <div class="footer__contact">
+          <h3 class="footer__nav-title">Contato & Horários</h3>
+          <address class="footer__address">
+            <p>📍 R. Aspicuelta, 142 — Vila Madalena, SP</p>
+            <p>📞 <a href="tel:+5511999999999" class="footer__link">(11) 9 9999-9999</a></p>
+            <p>📧 <a href="mailto:oi@burgercraft.com.br" class="footer__link">oi@burgercraft.com.br</a></p>
+          </address>
+          <div class="footer__hours">
+            <p><strong>Seg–Sex:</strong> 17h às 23h</p>
+            <p><strong>Sáb–Dom:</strong> 12h às 00h</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copy">© 2024 BurgerCraft Hambúrgueres Artesanais LTDA. Todos os direitos reservados.</p>
+        <div class="footer__legal">
+          <a href="#" class="footer__link footer__link--small">Política de Privacidade</a>
+          <span aria-hidden="true">·</span>
+          <a href="#" class="footer__link footer__link--small">Termos de Uso</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

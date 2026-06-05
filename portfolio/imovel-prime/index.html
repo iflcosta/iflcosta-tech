@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ImóvelPrime — Imobiliária de Alto Padrão em São Paulo. Encontre coberturas, mansões e apartamentos de luxo nos bairros mais nobres." />
+  <meta name="theme-color" content="#0d1b2a" />
+  <title>ImóvelPrime — Alto Padrão</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" role="banner">
+    <div class="navbar-inner">
+      <a href="#hero" class="navbar-logo" aria-label="ImóvelPrime - Início">
+        <span class="logo-diamond" aria-hidden="true">◆</span>
+        <span>Imóvel<span class="logo-prime">Prime</span></span>
+      </a>
+
+      <ul class="navbar-nav" role="list">
+        <li><a href="#properties">Imóveis</a></li>
+        <li><a href="#features">Diferenciais</a></li>
+        <li><a href="#about">Sobre Nós</a></li>
+        <li><a href="#showcase">Showcase</a></li>
+        <li><a href="#testimonials">Depoimentos</a></li>
+      </ul>
+
+      <div class="navbar-cta">
+        <a href="#contato" class="btn btn-gold" aria-label="Falar com um consultor de alto padrão">Falar com Consultor</a>
+      </div>
+
+      <button class="hamburger" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <nav class="mobile-nav" id="mobile-nav" role="dialog" aria-label="Menu mobile" aria-hidden="true">
+      <a href="#properties">Imóveis</a>
+      <a href="#features">Diferenciais</a>
+      <a href="#about">Sobre Nós</a>
+      <a href="#showcase">Showcase</a>
+      <a href="#testimonials">Depoimentos</a>
+      <a href="#contato" class="btn btn-gold">Falar com Consultor</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="hero" class="hero" aria-label="Apresentação de imóveis de luxo">
+      <div class="hero-bg" id="hero-bg"></div>
+      <div class="hero-overlay"></div>
+
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span> Portfólio Exclusivo São Paulo
+          </div>
+          <h1 class="hero-headline">
+            O imóvel dos seus sonhos <span class="line-gold">está aqui.</span>
+          </h1>
+          <p class="hero-subheadline">
+            Curadoria especializada de coberturas lineares, mansões suspensas e residências de alto padrão nos bairros mais cobiçados de São Paulo.
+          </p>
+
+          <!-- Search Bar Mockup -->
+          <div class="hero-search" role="search" aria-label="Buscar imóveis">
+            <div class="search-group">
+              <label for="search-location">Localização</label>
+              <select id="search-location">
+                <option value="jardins">Jardins, SP</option>
+                <option value="itaim">Itaim Bibi, SP</option>
+                <option value="moema">Moema, SP</option>
+                <option value="panamby">Panamby, SP</option>
+              </select>
+            </div>
+            <div class="search-group">
+              <label for="search-type">Tipo</label>
+              <select id="search-type">
+                <option value="cobertura">Cobertura</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="mansao">Casa / Mansão</option>
+              </select>
+            </div>
+            <div class="search-group">
+              <label for="search-price">Faixa de Preço</label>
+              <select id="search-price">
+                <option value="3-5">R$ 3M - R$ 5M</option>
+                <option value="5-10">R$ 5M - R$ 10M</option>
+                <option value="10+">Acima de R$ 10M</option>
+              </select>
+            </div>
+            <a href="#properties" class="btn btn-gold" aria-label="Buscar imóveis com filtros selecionados">Buscar</a>
+          </div>
+
+          <div class="hero-cta-row">
+            <a href="#orcamento" class="btn btn-outline-white btn-lg" aria-hidden="true">Ver Mapa Interativo</a>
+            <div class="hero-scroll-hint" aria-hidden="true">
+              <span>Role para explorar</span>
+              <div class="scroll-arrow">↓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATS BAR ===================== -->
+    <section class="stats-bar" aria-label="Estatísticas da imobiliária">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-value">500+</span>
+            <span class="stat-label">Imóveis Disponíveis</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">12 Anos</span>
+            <span class="stat-label">de Mercado</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">R$ 2Bi</span>
+            <span class="stat-label">em Vendas</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">98%</span>
+            <span class="stat-label">Clientes Satisfeitos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURED PROPERTIES ===================== -->
+    <section id="properties" class="properties" aria-labelledby="properties-title">
+      <div class="container">
+        <div class="section-header reveal">
+          <div>
+            <span class="section-label">Destaques</span>
+            <h2 class="section-title" id="properties-title">Residências Exclusivas</h2>
+          </div>
+          <p class="section-subtitle">Casas e coberturas prontas para morar que definem o conceito de luxo e sofisticação arquitetônica.</p>
+        </div>
+
+        <div class="properties-grid">
+          <!-- Property 1 -->
+          <article class="property-card reveal reveal-delay-1">
+            <div class="card-img">
+              <img src="images/property-penthouse.png" alt="Penthouse de luxo nos Jardins" loading="lazy" />
+              <span class="card-badge">Venda</span>
+              <span class="card-tag">Cobertura</span>
+            </div>
+            <div class="card-body">
+              <div class="card-location">
+                <span aria-hidden="true">📍</span> JARDINS, SÃO PAULO
+              </div>
+              <h3 class="card-title">Penthouse Lumina Jardins</h3>
+              <div class="card-price">
+                <span class="price-prefix">A partir de</span>
+                <span class="price-value">R$ 7.900.000</span>
+              </div>
+              <div class="card-specs" role="list">
+                <span class="spec" role="listitem">420m²</span>
+                <span class="spec" role="listitem">4 Suítes</span>
+                <span class="spec" role="listitem">5 Vagas</span>
+              </div>
+              <div class="card-footer">
+                <a href="#contato" class="btn btn-navy" aria-label="Ver detalhes do Lumina Jardins">Ver Detalhes</a>
+                <button class="btn-fav" aria-label="Favoritar Lumina Jardins">❤</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 2 -->
+          <article class="property-card property-card--featured reveal reveal-delay-2">
+            <div class="card-img">
+              <img src="images/property-moema.png" alt="Apartamento moderno em Moema" loading="lazy" />
+              <span class="card-badge" style="background: var(--navy); color: var(--white);">Destaque</span>
+              <span class="card-tag">Apartamento</span>
+            </div>
+            <div class="card-body">
+              <div class="card-location">
+                <span aria-hidden="true">📍</span> MOEMA, SÃO PAULO
+              </div>
+              <h3 class="card-title">Reserva Moema Suspenso</h3>
+              <div class="card-price">
+                <span class="price-prefix">A partir de</span>
+                <span class="price-value">R$ 5.400.000</span>
+              </div>
+              <div class="card-specs" role="list">
+                <span class="spec" role="listitem">310m²</span>
+                <span class="spec" role="listitem">3 Suítes</span>
+                <span class="spec" role="listitem">4 Vagas</span>
+              </div>
+              <div class="card-footer">
+                <a href="#contato" class="btn btn-gold" aria-label="Ver detalhes do Reserva Moema">Ver Detalhes</a>
+                <button class="btn-fav" aria-label="Favoritar Reserva Moema">❤</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 3 -->
+          <article class="property-card reveal reveal-delay-3">
+            <div class="card-img">
+              <img src="images/property-bauhaus.png" alt="Mansão moderna no Cidade Jardim" loading="lazy" />
+              <span class="card-badge">Venda</span>
+              <span class="card-tag">Mansão</span>
+            </div>
+            <div class="card-body">
+              <div class="card-location">
+                <span aria-hidden="true">📍</span> CIDADE JARDIM, SÃO PAULO
+              </div>
+              <h3 class="card-title">Casa Bauhaus Cidade Jardim</h3>
+              <div class="card-price">
+                <span class="price-prefix">Sob Consulta</span>
+                <span class="price-value">R$ 14.200.000</span>
+              </div>
+              <div class="card-specs" role="list">
+                <span class="spec" role="listitem">850m²</span>
+                <span class="spec" role="listitem">5 Suítes</span>
+                <span class="spec" role="listitem">8 Vagas</span>
+              </div>
+              <div class="card-footer">
+                <a href="#contato" class="btn btn-navy" aria-label="Ver detalhes da Casa Bauhaus">Ver Detalhes</a>
+                <button class="btn-fav" aria-label="Favoritar Casa Bauhaus">❤</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURES / DIFFERENTIALS ===================== -->
+    <section id="features" class="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-header reveal">
+          <div>
+            <span class="section-label">Nossos Serviços</span>
+            <h2 class="section-title" id="features-title">A diferença ImóvelPrime</h2>
+          </div>
+          <p class="section-subtitle" style="color: rgba(255,255,255,0.7);">Garantimos uma experiência segura, transparente e altamente personalizada do primeiro contato à entrega das chaves.</p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card reveal reveal-delay-1">
+            <div class="feature-icon" aria-hidden="true">🔑</div>
+            <h3 class="feature-title">Consultoria Sob Medida</h3>
+            <p class="feature-desc">Nossos corretores são especialistas em mercado de luxo. Entendemos suas necessidades para encontrar o imóvel perfeito sem perda de tempo.</p>
+          </article>
+
+          <article class="feature-card reveal reveal-delay-2">
+            <div class="feature-icon" aria-hidden="true">📜</div>
+            <h3>Segurança Jurídica</h3>
+            <p class="feature-desc">Departamento jurídico próprio responsável por analisar todas as certidões e contratos, garantindo uma transação 100% segura.</p>
+          </article>
+
+          <article class="feature-card reveal reveal-delay-3">
+            <div class="feature-icon" aria-hidden="true">🤝</div>
+            <h3 class="feature-title">Atendimento Pós-Venda</h3>
+            <p class="feature-desc">Acompanhamos você na reforma, mudança, e indicações de design de interiores. O relacionamento com nosso cliente é duradouro.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section id="about" class="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-img-wrap reveal">
+            <img
+              src="images/about-office.png"
+              alt="Reunião corporativa moderna com corretores profissionais da ImóvelPrime"
+              class="main-img"
+              width="540"
+              height="400"
+              loading="lazy"
+            />
+            <div class="about-badge-float" aria-label="Tempo de mercado">
+              <span class="badge-num">12</span>
+              <span class="badge-text">Anos de<br />Excelência</span>
+            </div>
+          </div>
+
+          <div class="about-content reveal reveal-delay-2">
+            <span class="section-label">A Imobiliária</span>
+            <h2 class="section-title" id="about-title">Líderes no mercado de luxo em São Paulo</h2>
+            <p class="section-subtitle" style="margin-bottom: var(--space-lg);">
+              Fundada em 2012 com o objetivo de redefinir o atendimento no segmento de altíssimo padrão, a ImóvelPrime tornou-se a boutique imobiliária de maior prestígio na capital paulista.
+            </p>
+            <p class="section-subtitle">
+              Não vendemos apenas metros quadrados; intermediamos patrimônios e realizamos transições de vida com extrema discrição e inteligência de mercado.
+            </p>
+            <ul class="about-list" role="list">
+              <li>
+                <div class="list-check" aria-hidden="true">✓</div>
+                <span>Acesso exclusivo a propriedades em formato *off-market*</span>
+              </li>
+              <li>
+                <div class="list-check" aria-hidden="true">✓</div>
+                <span>Corretores bilíngues focados em investidores globais</span>
+              </li>
+              <li>
+                <div class="list-check" aria-hidden="true">✓</div>
+                <span>Relatórios mensais de inteligência e valorização imobiliária</span>
+              </li>
+            </ul>
+            <div class="about-cta-row">
+              <a href="#contato" class="btn btn-navy">Falar Conosco</a>
+              <span class="cta-note">Atendimento disponível das <strong>08h às 21h</strong>.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SHOWCASE / GALLERY ===================== -->
+    <section id="showcase" class="showcase" aria-labelledby="showcase-title">
+      <div class="container">
+        <div class="showcase-header reveal">
+          <div>
+            <span class="section-label">Galeria</span>
+            <h2 class="section-title" id="showcase-title">Nossos Bairros Atendidos</h2>
+          </div>
+          <p class="section-subtitle">Os metros quadrados mais valorizados e desejados da América Latina.</p>
+        </div>
+
+        <div class="showcase-grid">
+          <!-- Item 1 -->
+          <div class="showcase-item reveal">
+            <img src="images/neighborhood-jardins.png" alt="Bairro Jardins" class="showcase-img" loading="lazy" />
+            <div class="showcase-overlay">
+              <div class="showcase-info">
+                <h4>Jardins</h4>
+                <p>Sofisticação urbana e alta gastronomia a pé.</p>
+              </div>
+            </div>
+            <span class="showcase-label">Jardins</span>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="showcase-item reveal reveal-delay-1">
+            <img src="images/neighborhood-itaim.png" alt="Bairro Itaim Bibi" class="showcase-img" loading="lazy" />
+            <div class="showcase-overlay">
+              <div class="showcase-info">
+                <h4>Itaim Bibi</h4>
+                <p>O coração corporativo e financeiro de luxo da capital.</p>
+              </div>
+            </div>
+            <span class="showcase-label">Itaim Bibi</span>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="showcase-item reveal reveal-delay-2">
+            <img src="images/neighborhood-moema.png" alt="Bairro Moema" class="showcase-img" loading="lazy" />
+            <div class="showcase-overlay">
+              <div class="showcase-info">
+                <h4>Moema</h4>
+                <p>Qualidade de vida, arborização e proximidade do Ibirapuera.</p>
+              </div>
+            </div>
+            <span class="showcase-label">Moema</span>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="showcase-item reveal reveal-delay-1">
+            <img src="images/neighborhood-pinheiros.png" alt="Bairro Pinheiros" class="showcase-img" loading="lazy" />
+            <div class="showcase-overlay">
+              <div class="showcase-info">
+                <h4>Pinheiros</h4>
+                <p>Cultura, design e atmosfera vibrante contemporânea.</p>
+              </div>
+            </div>
+            <span class="showcase-label">Pinheiros</span>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="showcase-item reveal reveal-delay-2">
+            <img src="images/neighborhood-cidade-jardim.png" alt="Bairro Cidade Jardim" class="showcase-img" loading="lazy" />
+            <div class="showcase-overlay">
+              <div class="showcase-info">
+                <h4>Cidade Jardim</h4>
+                <p>Mansões exclusivas e condomínios fechados arborizados.</p>
+              </div>
+            </div>
+            <span class="showcase-label">Cidade Jardim</span>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="showcase-item reveal reveal-delay-3">
+            <img src="images/neighborhood-vila-nova.png" alt="Bairro Vila Nova Conceição" class="showcase-img" loading="lazy" />
+            <div class="showcase-overlay">
+              <div class="showcase-info">
+                <h4>Vila Nova Conceição</h4>
+                <p>O bairro mais valorizado e luxuoso de São Paulo.</p>
+              </div>
+            </div>
+            <span class="showcase-label">Vila Nova</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section id="testimonials" class="testimonials" aria-labelledby="testimonials-title">
+      <div class="container">
+        <div class="section-header reveal">
+          <div>
+            <span class="section-label">Depoimentos</span>
+            <h2 class="section-title" id="testimonials-title">A opinião de quem confia</h2>
+          </div>
+          <p class="section-subtitle">Histórias de investidores e famílias que realizaram suas melhores transações conosco.</p>
+        </div>
+
+        <div class="testimonials-grid">
+          <!-- Card 1 -->
+          <article class="testimonial-card reveal reveal-delay-1">
+            <div class="stars" aria-label="5 estrelas de 5">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <p class="testimonial-text">
+              "A discrição da equipe da ImóvelPrime é o grande diferencial deles. Fizeram a busca pelo meu apartamento de forma rápida, segura e com acesso a imóveis off-market de altíssimo nível."
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">EG</div>
+              <div class="author-info">
+                <span class="author-name">Eduardo G.</span>
+                <span class="author-role">Empresário · Cobertura Jardins</span>
+              </div>
+            </footer>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="testimonial-card reveal reveal-delay-2">
+            <div class="stars" aria-label="5 estrelas de 5">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <p class="testimonial-text">
+              "Fomos assessorados do início ao fim com extrema maestria jurídica. Comprar um imóvel de alto padrão envolve muitos detalhes, e a tranquilidade que a ImóvelPrime nos passou foi impagável."
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">AM</div>
+              <div class="author-info">
+                <span class="author-name">Ana Maria M.</span>
+                <span class="author-role">Investidora · Mansão Cidade Jardim</span>
+              </div>
+            </footer>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="testimonial-card reveal reveal-delay-3">
+            <div class="stars" aria-label="5 estrelas de 5">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <p class="testimonial-text">
+              "Atendimento espetacular. Eles realmente entendem o valor do tempo do cliente. Só visitamos imóveis altamente qualificados e que se encaixavam no perfil exato que queríamos."
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">FB</div>
+              <div class="author-info">
+                <span class="author-name">Felipe B.</span>
+                <span class="author-role">Diretor de Tecnologia · Moema</span>
+              </div>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA BANNER ===================== -->
+    <section class="cta-banner" aria-labelledby="cta-banner-title">
+      <div class="container">
+        <div class="cta-content reveal">
+          <span class="section-label">Fale com um Especialista</span>
+          <h2 class="section-title" id="cta-banner-title">Pronto para encontrar sua próxima residência?</h2>
+          <p>Nossos consultores especializados estão à disposição para agendar uma reunião ou enviar um portfólio exclusivo de imóveis adequados ao seu perfil.</p>
+          <div class="cta-buttons">
+            <a href="#contato" class="btn btn-gold btn-lg">Falar no WhatsApp</a>
+            <a href="tel:+5511999999999" class="cta-phone" aria-label="Ligar para nós">
+              <span class="phone-icon" aria-hidden="true">📞</span>
+              <span>(11) 9 9999-9999</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT / FORM ===================== -->
+    <section id="contato" class="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-info reveal">
+            <span class="section-label">Contato</span>
+            <h2 class="section-title" id="contact-title" style="margin-bottom: var(--space-2xl);">Boutique Imobiliária</h2>
+            <div class="contact-detail">
+              <div class="contact-icon" aria-hidden="true" style="color: var(--gold);">📍</div>
+              <div>
+                <span class="contact-label">Sede Moema</span>
+                <div class="contact-value">Av. Hélio Pellegrino, 1200</div>
+                <div class="contact-value" style="font-weight: 400; font-size: 0.85rem; color: var(--text-light);">Vila Nova Conceição, SP</div>
+              </div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-icon" aria-hidden="true" style="color: var(--gold);">📞</div>
+              <div>
+                <span class="contact-label">Atendimento</span>
+                <div class="contact-value">(11) 9 9999-9999</div>
+                <div class="contact-value" style="font-weight: 400; font-size: 0.85rem; color: var(--text-light);">Disponível 7 dias por semana</div>
+              </div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-icon" aria-hidden="true" style="color: var(--gold);">📧</div>
+              <div>
+                <span class="contact-label">E-mail comercial</span>
+                <div class="contact-value">consultoria@imovelprime.com.br</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form reveal reveal-delay-1">
+            <h3 class="form-title">Preencha o perfil do imóvel desejado</h3>
+            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Perfil enviado com sucesso! Nosso consultor especializado entrará em contato em até 15 minutos.');">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">Nome Completo</label>
+                  <input type="text" id="name" placeholder="Seu nome" required />
+                </div>
+                <div class="form-group">
+                  <label for="phone">Telefone de Contato</label>
+                  <input type="tel" id="phone" placeholder="(11) 99999-9999" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="bairro">Bairro de Preferência</label>
+                  <select id="bairro" required>
+                    <option value="">Selecione...</option>
+                    <option value="jardins">Jardins</option>
+                    <option value="itaim">Itaim Bibi</option>
+                    <option value="moema">Moema</option>
+                    <option value="vila-nova">Vila Nova Conceição</option>
+                    <option value="cidade-jardim">Cidade Jardim</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="dormitorios">Número de Suítes</label>
+                  <select id="dormitorios" required>
+                    <option value="">Selecione...</option>
+                    <option value="3">3 Suítes</option>
+                    <option value="4">4 Suítes</option>
+                    <option value="5">5+ Suítes</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="comments">Observações Especiais</label>
+                <textarea id="comments" placeholder="Deseja piscina, vaga para carros esportivos, andar alto, etc. Conte-nos o seu perfil."></textarea>
+              </div>
+              <button type="submit" class="btn btn-gold form-submit">Enviar Perfil</button>
+              <p class="form-privacy">Suas informações são tratadas sob estrito sigilo de segurança de dados.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="logo-diamond" aria-hidden="true">◆</span>
+            <span>Imóvel<span class="logo-prime">Prime</span></span>
+          </div>
+          <p>Curadoria de alto padrão e transações com segurança, discrição e sofisticação desde 2012 na capital paulista.</p>
+          <div class="social-links" role="list" aria-label="Redes sociais">
+            <a href="https://instagram.com/imovelprime" class="social-link" role="listitem" aria-label="Instagram">📸</a>
+            <a href="https://facebook.com/imovelprime" class="social-link" role="listitem" aria-label="Facebook">👥</a>
+            <a href="https://linkedin.com/company/imovelprime" class="social-link" role="listitem" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Bairros</h4>
+          <ul role="list">
+            <li><a href="#showcase">Jardins</a></li>
+            <li><a href="#showcase">Itaim Bibi</a></li>
+            <li><a href="#showcase">Vila Nova Conceição</a></li>
+            <li><a href="#showcase">Moema</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Imóveis</h4>
+          <ul role="list">
+            <li><a href="#properties">Coberturas</a></li>
+            <li><a href="#properties">Mansões Suspensas</a></li>
+            <li><a href="#properties">Casas de Condomínio</a></li>
+            <li><a href="#properties">Lançamentos</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>A Imobiliária</h4>
+          <ul role="list">
+            <li><a href="#about">Sobre Nós</a></li>
+            <li><a href="#features">Diferenciais</a></li>
+            <li><a href="#testimonials">Depoimentos</a></li>
+            <li><a href="#contato">Fale Conosco</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2024 ImóvelPrime Boutique Real Estate. Todos os direitos reservados. CRECI J-99999.</p>
+        <div class="footer-links" role="navigation" aria-label="Links legais">
+          <a href="#">Política de Privacidade</a>
+          <a href="#">Termos de Uso</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

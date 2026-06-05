@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Verde Vivo — Paisagismo & Jardinagem. Transformamos seus espaços externos com projetos residenciais e comerciais sob medida. Solicite um orçamento." />
+  <meta name="theme-color" content="#1a3a2a" />
+  <title>Verde Vivo — Paisagismo & Jardinagem</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress" id="progress-bar"></div>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header id="navbar" role="banner">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Verde Vivo - Início">
+        <span class="logo-icon" aria-hidden="true">🌿</span>
+        <span class="logo-text">Verde <span>Vivo</span></span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#features">Diferenciais</a></li>
+        <li><a href="#about">Sobre Nós</a></li>
+        <li><a href="#services">Serviços</a></li>
+        <li><a href="#showcase">Projetos</a></li>
+        <li><a href="#testimonials">Depoimentos</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="#orcamento" class="btn btn-primary" aria-label="Solicitar orçamento gratuito">Orçamento Grátis</a>
+      </div>
+
+      <button class="hamburger" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <nav class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile" aria-hidden="true">
+      <a href="#features">Diferenciais</a>
+      <a href="#about">Sobre Nós</a>
+      <a href="#services">Serviços</a>
+      <a href="#showcase">Projetos</a>
+      <a href="#testimonials">Depoimentos</a>
+      <a href="#orcamento" class="btn btn-primary">Orçamento Grátis</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="hero" class="hero" aria-label="Seção de entrada">
+      <div class="hero-bg">
+        <img
+          src="images/hero-garden.png"
+          alt="Lindo jardim residencial de luxo com caminhos de pedra, gramado impecável e iluminação de fim de tarde"
+          width="1920"
+          height="1080"
+          loading="eager"
+        />
+      </div>
+
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="dot"></span> Projetos Exclusivos & Manutenção
+          </div>
+          <h1>Transformamos espaços em <em>paraísos verdes.</em></h1>
+          <p class="hero-sub">
+            Criamos projetos paisagísticos sob medida que unem estética, funcionalidade e natureza. Valorize seu imóvel e proporcione bem-estar para sua família ou empresa.
+          </p>
+          <div class="hero-actions">
+            <a href="#orcamento" class="btn btn-highlight">Solicitar Visita</a>
+            <a href="#showcase" class="btn btn-outline">Ver Projetos</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-num">+150</span>
+              <span class="stat-label">Jardins Criados</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">10 Anos</span>
+              <span class="stat-label">de Experiência</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">99%</span>
+              <span class="stat-label">Clientes Satisfeitos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wave divider -->
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 120H1440V46.6C1312 87.2 1104 98 864 74.6C544 43.4 336 -10.6 0 1.4V120Z" fill="#ffffff"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURES / DIFERENCIAIS ===================== -->
+    <section id="features">
+      <div class="container">
+        <div class="features-header reveal">
+          <span class="section-label">Diferenciais</span>
+          <h2 class="section-title">O padrão Verde Vivo</h2>
+          <p>Profissionalismo, sustentabilidade e cuidado artesanal em cada detalhe do seu espaço ao ar livre.</p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card reveal reveal-delay-1">
+            <div class="feature-icon" aria-hidden="true">📐</div>
+            <h3>Projetos Autorais</h3>
+            <p>Cada jardim é único. Analisamos a arquitetura do local, o clima e a incidência solar para desenvolver um design personalizado.</p>
+          </article>
+
+          <article class="feature-card reveal reveal-delay-2">
+            <h3>Seleção Premium</h3>
+            <p>Utilizamos apenas plantas saudáveis e insumos orgânicos de alta qualidade, garantindo que o seu jardim cresça forte e exuberante.</p>
+          </article>
+
+          <article class="feature-card reveal reveal-delay-3">
+            <div class="feature-icon" aria-hidden="true">💧</div>
+            <h3>Irrigação Inteligente</h3>
+            <p>Sistemas automatizados de rega que economizam água e garantem que as plantas recebam a quantidade exata de umidade que precisam.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section id="about">
+      <div class="container">
+        <div class="about-inner">
+          <div class="about-image-wrap reveal">
+            <img
+              src="images/about-garden.png"
+              alt="Membro da equipe Verde Vivo cuidando com carinho de um canteiro de flores"
+              width="570"
+              height="420"
+              loading="lazy"
+            />
+            <div class="about-badge" aria-label="Anos de confiança">
+              <span class="badge-num">+10</span>
+              <span class="badge-txt">Anos de Confiança</span>
+            </div>
+          </div>
+
+          <div class="about-text reveal reveal-delay-2">
+            <span class="section-label">Sobre Nós</span>
+            <h2 class="section-title">Cuidamos da natureza com paixão e técnica</h2>
+            <p>
+              A Verde Vivo nasceu do amor pela terra e da convicção de que espaços verdes integrados à arquitetura transformam a vida das pessoas. Nesses mais de 10 anos de história, construímos jardins que convidam à contemplação e ao relaxamento.
+            </p>
+            <p>
+              Nossa equipe reúne arquitetos paisagistas, botânicos e jardineiros qualificados prontos para realizar desde pequenos canteiros residenciais até amplos projetos de paisagismo corporativo e condominial.
+            </p>
+            <ul class="about-list" role="list">
+              <li>Desenho em 3D prévio para visualização do projeto</li>
+              <li>Compromisso com plantas nativas e ecologicamente adequadas</li>
+              <li>Acompanhamento pós-plantio e orientação de cuidados</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section id="services">
+      <div class="services-bg-deco" aria-hidden="true"></div>
+      <div class="services-bg-deco-2" aria-hidden="true"></div>
+
+      <div class="container">
+        <div class="services-header reveal">
+          <span class="section-label">Serviços</span>
+          <h2 class="section-title">Soluções completas para sua área externa</h2>
+          <p>Desde a concepção criativa até a manutenção diária, cuidamos de tudo para você ter zero preocupações.</p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card reveal reveal-delay-1">
+            <span class="service-emoji" aria-hidden="true">🏡</span>
+            <h3>Paisagismo Residencial</h3>
+            <p>Projetos residenciais charmosos, pérgulas, caminhos de pedra, iluminação e jardins verticais para varandas.</p>
+            <span class="service-tag">Projetos</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-2">
+            <span class="service-emoji" aria-hidden="true">🏢</span>
+            <h3>Paisagismo Comercial</h3>
+            <p>Áreas de descompressão corporativas, halls de entrada e recepções decoradas com plantas elegantes e funcionais.</p>
+            <span class="service-tag">Corporativo</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-3">
+            <span class="service-emoji" aria-hidden="true">🌿</span>
+            <h3>Jardinagem & Podas</h3>
+            <p>Serviços recorrentes ou pontuais de adubação, controle de pragas, corte de grama e podas de árvores e arbustos.</p>
+            <span class="service-tag">Manutenção</span>
+          </article>
+
+          <article class="service-card reveal reveal-delay-4">
+            <span class="service-emoji" aria-hidden="true">💧</span>
+            <h3>Sistemas de Rega</h3>
+            <p>Projetos de irrigação localizada por gotejamento ou aspersão com sensores de chuva inteligentes.</p>
+            <span class="service-tag">Tecnologia</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SHOWCASE / GALERIA ===================== -->
+    <section id="showcase">
+      <div class="container">
+        <div class="showcase-header reveal">
+          <span class="section-label">Galeria</span>
+          <h2 class="section-title">Nossos projetos mais recentes</h2>
+          <p>Conheça um pouco do nosso portfólio de transformações de áreas externas em São Paulo.</p>
+        </div>
+
+        <div class="showcase-grid">
+          <div class="showcase-item featured reveal">
+            <img src="images/showcase-tropical.png" alt="Projeto Jardim Tropical com piscina" loading="lazy" />
+            <div class="showcase-overlay">
+              <h4>Jardim Tropical Vila Nova</h4>
+              <p>Paisagismo residencial com árvores nativas integradas à área de lazer.</p>
+            </div>
+          </div>
+
+          <div class="showcase-item reveal reveal-delay-1">
+            <img src="images/showcase-vertical.png" alt="Varanda e Jardim Vertical" loading="lazy" />
+            <div class="showcase-overlay">
+              <h4>Varanda Verde Higienópolis</h4>
+              <p>Jardim vertical inteligente instalado em apartamento com rega automática.</p>
+            </div>
+          </div>
+
+          <div class="showcase-item tall reveal reveal-delay-2">
+            <img src="images/showcase-corporate.png" alt="Paisagismo corporativo" loading="lazy" />
+            <div class="showcase-overlay">
+              <h4>Praça Corporativa Pinheiros</h4>
+              <p>Área externa com canteiros elevados e plantas resistentes ao sol.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section id="testimonials">
+      <div class="testimonials-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="testimonials-header reveal">
+          <span class="section-label">Depoimentos</span>
+          <h2 class="section-title">O que dizem sobre nós</h2>
+        </div>
+
+        <div class="testimonials-grid">
+          <article class="testimonial-card reveal reveal-delay-1">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <div class="stars" aria-label="5 estrelas de 5">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <p class="testimonial-text">
+              "A Verde Vivo transformou a nossa varanda de uma forma inacreditável. O jardim vertical mudou a energia do nosso apartamento. A rega automática funciona super bem e as plantas estão lindas!"
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">MC</div>
+              <div class="author-info">
+                <strong>Mariana Costa</strong>
+                <span>Apartamento Higienópolis</span>
+              </div>
+            </footer>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-2">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <div class="stars" aria-label="5 estrelas de 5">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <p class="testimonial-text">
+              "Contratamos para refazer toda a área de lazer da nossa casa de campo e o resultado superou todas as expectativas. O projeto de iluminação que eles fizeram à noite fica espetacular."
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">RF</div>
+              <div class="author-info">
+                <strong>Roberto Fonseca</strong>
+                <span>Casa de Campo - Cotia</span>
+              </div>
+            </footer>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-3">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <div class="stars" aria-label="5 estrelas de 5">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+            <p class="testimonial-text">
+              "Excelente serviço corporativo. Cumpriram rigorosamente os prazos e mantêm a manutenção do nosso jardim de entrada sempre impecável. Recomendo muito!"
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar">AS</div>
+              <div class="author-info">
+                <strong>Ana Silva</strong>
+                <span>Gerente de Facilities - Berrini</span>
+              </div>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CTA BANNER ===================== -->
+    <section id="cta-banner">
+      <div class="container">
+        <div class="cta-banner-inner reveal">
+          <span class="section-label">Orçamento sem compromisso</span>
+          <h2>Pronto para iniciar seu projeto paisagístico?</h2>
+          <p>
+            Agende uma visita técnica gratuita com um dos nossos consultores. Nós analisamos o seu espaço e criamos uma proposta sob medida.
+          </p>
+          <div class="cta-actions">
+            <a href="#orcamento" class="btn btn-highlight">Agendar Visita Grátis</a>
+            <a href="tel:+5511999999999" class="btn btn-outline">Ligar para Nós</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT / ORÇAMENTO ===================== -->
+    <section id="orcamento">
+      <div class="container">
+        <div class="form-section-inner">
+          <div class="form-info reveal">
+            <span class="section-label">Contato</span>
+            <h2>Solicite um orçamento gratuito</h2>
+            <p>Preencha o formulário ao lado com suas informações e detalhes do serviço que você deseja. Responderemos em menos de 24 horas úteis.</p>
+            <div class="form-contact-list">
+              <div class="contact-item">
+                <div class="contact-icon" aria-hidden="true">📞</div>
+                <div>
+                  <strong>Telefone / WhatsApp</strong>
+                  <span>(11) 9 9999-9999</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon" aria-hidden="true">📧</div>
+                <div>
+                  <strong>E-mail</strong>
+                  <span>contato@verdevivo.com.br</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon" aria-hidden="true">📍</div>
+                <div>
+                  <strong>Sede</strong>
+                  <span>Pinheiros, São Paulo - SP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quote-form reveal reveal-delay-1">
+            <h3>Fale com nossos especialistas</h3>
+            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Mensagem enviada com sucesso! Entraremos em contato brevemente.');">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="form-name">Nome Completo</label>
+                  <input type="text" id="form-name" placeholder="Seu nome" required />
+                </div>
+                <div class="form-group">
+                  <label for="form-phone">Telefone (WhatsApp)</label>
+                  <input type="tel" id="form-phone" placeholder="(11) 99999-9999" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="form-service">Tipo de Serviço</label>
+                  <select id="form-service" required>
+                    <option value="">Selecione...</option>
+                    <option value="residencial">Paisagismo Residencial</option>
+                    <option value="comercial">Paisagismo Comercial</option>
+                    <option value="manutencao">Jardinagem & Manutenção</option>
+                    <option value="irrigacao">Sistemas de Rega</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="form-area">Área Aproximada (m²)</label>
+                  <input type="text" id="form-area" placeholder="Ex: 50m²" />
+                </div>
+              </div>
+              <div class="form-group" style="margin-top: var(--sp-sm);">
+                <label for="form-message">Conte-nos sobre o seu projeto</label>
+                <textarea id="form-message" placeholder="Como podemos ajudar você? (Ex: desejo fazer um jardim vertical e refazer o canteiro da garagem)"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary form-submit">Enviar Solicitação</button>
+              <p class="form-note">Nós respeitamos sua privacidade. Seus dados nunca serão compartilhados.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer id="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="nav-logo">
+            <span class="logo-icon" aria-hidden="true">🌿</span>
+            <span class="logo-text" style="color: var(--clr-white);">Verde <span>Vivo</span></span>
+          </div>
+          <p>Construindo refúgios naturais e promovendo a harmonia entre as pessoas e o meio ambiente desde 2014.</p>
+          <div class="footer-socials">
+            <a href="https://instagram.com/verdevivo" class="social-link" aria-label="Siga-nos no Instagram">📸</a>
+            <a href="https://facebook.com/verdevivo" class="social-link" aria-label="Siga-nos no Facebook">👥</a>
+            <a href="https://pinterest.com/verdevivo" class="social-link" aria-label="Siga-nos no Pinterest">📌</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Nossos Serviços</h4>
+          <ul role="list">
+            <li><a href="#services">Paisagismo Residencial</a></li>
+            <li><a href="#services">Paisagismo Comercial</a></li>
+            <li><a href="#services">Jardinagem & Podas</a></li>
+            <li><a href="#services">Irrigação Automatizada</a></li>
+            <li><a href="#services">Jardins Verticais</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>A Empresa</h4>
+          <ul role="list">
+            <li><a href="#about">Sobre Nós</a></li>
+            <li><a href="#features">Diferenciais</a></li>
+            <li><a href="#showcase">Projetos Realizados</a></li>
+            <li><a href="#testimonials">Depoimentos</a></li>
+            <li><a href="#orcamento">Contato</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Atendimento</h4>
+          <ul role="list" style="color: rgba(255,255,255,0.6); font-size: 0.88rem; gap: 0.5rem;">
+            <li>📍 R. Cardeal Arcoverde, 1200 - Pinheiros, São Paulo - SP</li>
+            <li>📞 (11) 9 9999-9999</li>
+            <li>📧 contato@verdevivo.com.br</li>
+            <li>⏰ Seg - Sex: 8h às 18h</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-divider" aria-hidden="true"></div>
+
+      <div class="footer-bottom">
+        <p>© 2024 Verde Vivo Paisagismo LTDA. Todos os direitos reservados.</p>
+        <p><a href="#">Política de Privacidade</a> | <a href="#">Termos de Uso</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Float Button -->
+  <a href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Gostaria%20de%20solicitar%20um%20or%C3%A7amento%20para%20paisagismo%20com%20a%20Verde%20Vivo" 
+     class="whatsapp-float" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Fale conosco via WhatsApp">
+    💬
+  </a>
+
+  <script src="main.js"></script>
+</body>
+</html>

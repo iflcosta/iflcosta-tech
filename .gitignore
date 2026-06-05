@@ -1,0 +1,14 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup / Recovery files
+style_recovered_partial.css
+recovered_main.js
+
+# Temp files
+*.tmp
+*.log
+.gemini/
+erickbin/
+*.pdf

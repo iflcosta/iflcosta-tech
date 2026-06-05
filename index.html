@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Desenvolvimento de Landing Pages de ultra-performance (100/100 PageSpeed) e automações com IA para agências de marketing digital que escalam tráfego pago e exigem eficiência brutal." />
+  <meta name="theme-color" content="#0f172a" />
+  <title>ifl Studio | Landing Pages de Alta Conversão &amp; Performance</title>
+
+  <!-- Preload critical font -->
+  <link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Menu principal">
+    <div class="container nav-inner">
+      <a href="#hero" class="logo" aria-label="ifl Studio - Início">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">ifl<span class="logo-accent">Studio</span></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="#servicos" class="nav-link">Serviços</a></li>
+        <li><a href="#tradutor" class="nav-link">ROI Real</a></li>
+        <li><a href="#portfolio" class="nav-link">Cases</a></li>
+        <li><a href="#contato" class="nav-link">Diagnóstico</a></li>
+      </ul>
+      <a href="#contato" class="btn btn-primary btn-sm nav-cta" id="nav-cta-btn">Auditoria Gratuita</a>
+      <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile">
+      <ul role="list">
+        <li><a href="#servicos" class="nav-link">Serviços</a></li>
+        <li><a href="#tradutor" class="nav-link">ROI Real</a></li>
+        <li><a href="#portfolio" class="nav-link">Cases</a></li>
+        <li><a href="#contato" class="nav-link">Diagnóstico</a></li>
+        <li><a href="#contato" class="btn btn-primary">Auditoria Gratuita</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="hero" class="hero-section" aria-labelledby="hero-headline">
+      <div class="hero-bg-grid" aria-hidden="true"></div>
+      <div class="container hero-inner">
+
+        <div class="hero-badge" aria-label="Badge de especialização">
+          <span class="badge-dot" aria-hidden="true"></span>
+          Especialista em Performance &amp; Automação para Agências
+        </div>
+
+        <h1 id="hero-headline" class="hero-headline">
+          Páginas que carregam<br />
+          <span class="gradient-text">antes do seu cliente piscar.</span><br />
+          Automações que reduzem seus<br />
+          custos operacionais pela metade.
+        </h1>
+
+        <p class="hero-subheadline">
+          Desenvolvimento de Landing Pages de ultra-performance <strong>(nota 100/100 no PageSpeed)</strong> e integrações personalizadas com IA para agências que escalam tráfego pago e exigem eficiência brutal.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="#contato" class="btn btn-primary btn-lg" id="hero-cta-primary">
+            <span>Garantir minha Auditoria Gratuita</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#portfolio" class="btn btn-secondary btn-lg" id="hero-cta-secondary">
+            <span>Ver Cases de Escala</span>
+          </a>
+        </div>
+
+        <!-- PageSpeed Dashboard Mockup -->
+        <div class="pagespeed-widget" aria-label="Simulação de nota PageSpeed 100/100">
+          <div class="ps-header">
+            <div class="ps-dots" aria-hidden="true">
+              <span class="ps-dot ps-red"></span>
+              <span class="ps-dot ps-yellow"></span>
+              <span class="ps-dot ps-green"></span>
+            </div>
+            <span class="ps-title">PageSpeed Insights — Relatório de Performance</span>
+          </div>
+          <div class="ps-body">
+            <div class="ps-url-bar" aria-hidden="true">
+              <span class="ps-lock">🔒</span>
+              <span>seusite.com.br</span>
+            </div>
+            <div class="ps-scores" role="list" aria-label="Notas de performance">
+              <div class="ps-score-card ps-active" role="listitem">
+                <div class="ps-circle" data-score="100" aria-label="Performance: 100">
+                  <svg class="ps-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="8"
+                      stroke-dasharray="263.9" stroke-dashoffset="0"
+                      stroke-linecap="round" transform="rotate(-90 50 50)"
+                      class="ps-ring-fill"/>
+                  </svg>
+                  <span class="ps-score-num">100</span>
+                </div>
+                <span class="ps-label">Performance</span>
+              </div>
+              <div class="ps-score-card" role="listitem">
+                <div class="ps-circle ps-circle-sm" data-score="100" aria-label="Acessibilidade: 100">
+                  <svg class="ps-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="8"
+                      stroke-dasharray="263.9" stroke-dashoffset="0"
+                      stroke-linecap="round" transform="rotate(-90 50 50)"
+                      class="ps-ring-fill"/>
+                  </svg>
+                  <span class="ps-score-num">100</span>
+                </div>
+                <span class="ps-label">Acessibilidade</span>
+              </div>
+              <div class="ps-score-card" role="listitem">
+                <div class="ps-circle ps-circle-sm" data-score="100" aria-label="SEO: 100">
+                  <svg class="ps-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#10b981" stroke-width="8"
+                      stroke-dasharray="263.9" stroke-dashoffset="0"
+                      stroke-linecap="round" transform="rotate(-90 50 50)"
+                      class="ps-ring-fill"/>
+                  </svg>
+                  <span class="ps-score-num">100</span>
+                </div>
+                <span class="ps-label">SEO</span>
+              </div>
+            </div>
+            <!-- Core Web Vitals -->
+            <div class="ps-vitals" aria-label="Core Web Vitals">
+              <div class="ps-vital-row">
+                <span class="ps-vital-label">LCP</span>
+                <div class="ps-vital-bar-wrap"><div class="ps-vital-bar" style="width:15%;" aria-label="LCP: 0.4s"></div></div>
+                <span class="ps-vital-val good">0.4s</span>
+              </div>
+              <div class="ps-vital-row">
+                <span class="ps-vital-label">CLS</span>
+                <div class="ps-vital-bar-wrap"><div class="ps-vital-bar" style="width:5%;" aria-label="CLS: 0"></div></div>
+                <span class="ps-vital-val good">0</span>
+              </div>
+              <div class="ps-vital-row">
+                <span class="ps-vital-label">TBT</span>
+                <div class="ps-vital-bar-wrap"><div class="ps-vital-bar" style="width:3%;" aria-label="TBT: 0ms"></div></div>
+                <span class="ps-vital-val good">0ms</span>
+              </div>
+              <div class="ps-vital-row">
+                <span class="ps-vital-label">FCP</span>
+                <div class="ps-vital-bar-wrap"><div class="ps-vital-bar" style="width:20%;" aria-label="FCP: 0.6s"></div></div>
+                <span class="ps-vital-val good">0.6s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trust bar -->
+        <div class="trust-bar" aria-label="Indicadores de confiança">
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">✓</span>
+            <span>+15 Projetos entregues</span>
+          </div>
+          <div class="trust-divider" aria-hidden="true"></div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">✓</span>
+            <span>100/100 PageSpeed garantido</span>
+          </div>
+          <div class="trust-divider" aria-hidden="true"></div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">✓</span>
+            <span>Resposta em até 24h</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================== SPEED SIMULATOR ===================== -->
+    <section id="simulador" class="speed-section" aria-labelledby="speed-headline">
+      <div class="container">
+        <div class="speed-card">
+          <h2 id="speed-headline" class="speed-title">Veja a diferença em tempo real</h2>
+          <p class="speed-subtitle">Simule o carregamento de uma LP otimizada vs. WordPress convencional</p>
+          <div class="speed-compare" role="group" aria-label="Comparação de velocidade">
+            <div class="speed-col">
+              <div class="speed-col-header">
+                <span class="speed-badge speed-fast">Ultra-Performance</span>
+                <span class="speed-tech">Astro / Next.js SSG</span>
+              </div>
+              <div class="speed-bar-wrap" aria-label="Barra de carregamento rápido">
+                <div class="speed-bar speed-bar-fast" id="bar-fast" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="speed-time" id="time-fast" aria-live="polite">0.0s</div>
+            </div>
+            <div class="speed-col">
+              <div class="speed-col-header">
+                <span class="speed-badge speed-slow">WordPress Convencional</span>
+                <span class="speed-tech">Elementor + Plugins</span>
+              </div>
+              <div class="speed-bar-wrap" aria-label="Barra de carregamento lento">
+                <div class="speed-bar speed-bar-slow" id="bar-slow" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="speed-time" id="time-slow" aria-live="polite">0.0s</div>
+            </div>
+          </div>
+          <div class="speed-impact" id="speed-impact" aria-live="polite">
+            <span class="speed-impact-stat">Cada segundo de atraso custa até <strong>7% de conversão</strong>. Com CPC médio de R$3,00 e 10k cliques/mês, isso significa <strong>R$2.100 desperdiçados</strong> todo mês.</span>
+          </div>
+          <button class="btn btn-primary" id="simulate-btn" aria-label="Simular velocidade de carregamento">
+            ▶ Simular Velocidade
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SERVIÇOS ===================== -->
+    <section id="servicos" class="services-section" aria-labelledby="services-headline">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag" aria-label="Indicador de seção">O que eu entrego</div>
+          <h2 id="services-headline" class="section-title">
+            Não vendo tecnologia.<br />
+            <span class="gradient-text">Vendo resultado financeiro.</span>
+          </h2>
+          <p class="section-subtitle">Três soluções desenhadas para as dores reais de Diretores de Operações e Donos de Agências.</p>
+        </div>
+
+        <div class="services-grid" role="list">
+
+          <!-- Service 1 -->
+          <article class="service-card" role="listitem" aria-labelledby="svc1-title">
+            <div class="service-icon-wrap" aria-hidden="true">
+              <div class="service-icon">⚡</div>
+            </div>
+            <div class="service-number" aria-hidden="true">01</div>
+            <h3 id="svc1-title" class="service-title">Landing Pages &amp; Web Apps de Ultra-Performance</h3>
+            <p class="service-desc">Cada décimo de segundo importa quando seu orçamento de tráfego está ativo. LPs lentas desperdiçam até 40% dos seus cliques — cliques que você já pagou.</p>
+            <div class="service-gains" aria-label="Ganhos financeiros">
+              <div class="gain-item">
+                <span class="gain-icon" aria-hidden="true">📉</span>
+                <div>
+                  <strong>Redução imediata do CPA</strong>
+                  <span>Custo por Aquisição cai em média 30–45% com velocidade.</span>
+                </div>
+              </div>
+              <div class="gain-item">
+                <span class="gain-icon" aria-hidden="true">📈</span>
+                <div>
+                  <strong>Aumento do ROAS</strong>
+                  <span>Mais conversões com o mesmo orçamento = ROI multiplicado.</span>
+                </div>
+              </div>
+            </div>
+            <div class="service-tags" aria-label="Tecnologias utilizadas">
+              <span class="tag">Astro</span>
+              <span class="tag">Next.js SSG</span>
+              <span class="tag">Core Web Vitals</span>
+              <span class="tag">100/100 PageSpeed</span>
+            </div>
+            <a href="#contato" class="service-cta" aria-label="Solicitar auditoria de performance">Quero reduzir meu CPA →</a>
+          </article>
+
+          <!-- Service 2 -->
+          <article class="service-card service-card-featured" role="listitem" aria-labelledby="svc2-title">
+            <div class="service-featured-badge" aria-label="Mais popular">Mais demandado</div>
+            <div class="service-icon-wrap" aria-hidden="true">
+              <div class="service-icon">🤖</div>
+            </div>
+            <div class="service-number" aria-hidden="true">02</div>
+            <h3 id="svc2-title" class="service-title">Automações e Sistemas com Inteligência Artificial</h3>
+            <p class="service-desc">Cada tarefa manual repetitiva da sua equipe é dinheiro saindo pelo ralo. Onboarding, relatórios, triagem de leads — tudo isso pode ser zero minuto de trabalho humano.</p>
+            <div class="service-gains" aria-label="Ganhos financeiros">
+              <div class="gain-item">
+                <span class="gain-icon" aria-hidden="true">⏱️</span>
+                <div>
+                  <strong>Centenas de horas devolvidas</strong>
+                  <span>Robôs trabalham 24/7 sem salário, férias ou erro humano.</span>
+                </div>
+              </div>
+              <div class="gain-item">
+                <span class="gain-icon" aria-hidden="true">🎯</span>
+                <div>
+                  <strong>Leads atendidos em 15 segundos</strong>
+                  <span>Proposta personalizada via IA entregue no WhatsApp do vendedor.</span>
+                </div>
+              </div>
+            </div>
+            <div class="service-tags" aria-label="Tecnologias utilizadas">
+              <span class="tag">LLMs / GPT</span>
+              <span class="tag">n8n / Zapier</span>
+              <span class="tag">Webhooks</span>
+              <span class="tag">WhatsApp API</span>
+            </div>
+            <a href="#contato" class="service-cta service-cta-featured" aria-label="Mapear automações da equipe">Mapear automações da minha equipe →</a>
+          </article>
+
+          <!-- Service 3 -->
+          <article class="service-card" role="listitem" aria-labelledby="svc3-title">
+            <div class="service-icon-wrap" aria-hidden="true">
+              <div class="service-icon">🚀</div>
+            </div>
+            <div class="service-number" aria-hidden="true">03</div>
+            <h3 id="svc3-title" class="service-title">Desenvolvimento de SaaS e MVPs Escaláveis</h3>
+            <p class="service-desc">Sua agência tem ideias de produto ou ferramentas internas que nunca saem do papel por falta de braço técnico. Transformo conceitos em software funcional em semanas, não meses.</p>
+            <div class="service-gains" aria-label="Ganhos financeiros">
+              <div class="gain-item">
+                <span class="gain-icon" aria-hidden="true">🏗️</span>
+                <div>
+                  <strong>Ferramentas internas proprietárias</strong>
+                  <span>Diferencial competitivo que sua concorrência não tem.</span>
+                </div>
+              </div>
+              <div class="gain-item">
+                <span class="gain-icon" aria-hidden="true">⚖️</span>
+                <div>
+                  <strong>Pronto para 50k usuários simultâneos</strong>
+                  <span>Arquitetura serverless que escala com sua demanda.</span>
+                </div>
+              </div>
+            </div>
+            <div class="service-tags" aria-label="Tecnologias utilizadas">
+              <span class="tag">Serverless</span>
+              <span class="tag">APIs REST</span>
+              <span class="tag">Banco Vetorial</span>
+              <span class="tag">Cloud</span>
+            </div>
+            <a href="#contato" class="service-cta" aria-label="Discutir desenvolvimento de produto">Criar minha ferramenta →</a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRADUTOR DE JARGÕES ===================== -->
+    <section id="tradutor" class="tradutor-section" aria-labelledby="tradutor-headline">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Tradutor de Jargões</div>
+          <h2 id="tradutor-headline" class="section-title">
+            Tecnologia que você não entende<br />
+            <span class="gradient-text">= dinheiro que você não vê.</span>
+          </h2>
+          <p class="section-subtitle">Clique nos termos técnicos e veja o impacto real no seu caixa.</p>
+        </div>
+
+        <div class="tradutor-wrapper">
+          <div class="tradutor-tabs" role="tablist" aria-label="Termos técnicos">
+            <button class="tradutor-tab active" role="tab" aria-selected="true" aria-controls="term-panel-1" id="term-tab-1" data-term="0">
+              <span class="tab-term">SSR com Astro</span>
+              <span class="tab-arrow" aria-hidden="true">→</span>
+            </button>
+            <button class="tradutor-tab" role="tab" aria-selected="false" aria-controls="term-panel-2" id="term-tab-2" data-term="1">
+              <span class="tab-term">APIs &amp; Webhooks &amp; Banco Vetorial</span>
+              <span class="tab-arrow" aria-hidden="true">→</span>
+            </button>
+            <button class="tradutor-tab" role="tab" aria-selected="false" aria-controls="term-panel-3" id="term-tab-3" data-term="2">
+              <span class="tab-term">Arquitetura Serverless</span>
+              <span class="tab-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div class="tradutor-panels">
+
+            <div class="tradutor-panel active" id="term-panel-1" role="tabpanel" aria-labelledby="term-tab-1">
+              <div class="panel-before">
+                <div class="panel-label panel-label-tech" aria-label="Termo técnico">
+                  <span class="panel-label-icon" aria-hidden="true">💻</span>
+                  Técnico
+                </div>
+                <h3 class="panel-term">Server-Side Rendering (SSR) com Astro</h3>
+                <p class="panel-tech-desc">Framework web que gera HTML estático no servidor, eliminando JavaScript no client-side e servindo conteúdo pré-renderizado via CDN global.</p>
+              </div>
+              <div class="panel-arrow" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="panel-after">
+                <div class="panel-label panel-label-biz" aria-label="Impacto no negócio">
+                  <span class="panel-label-icon" aria-hidden="true">💰</span>
+                  Impacto no seu negócio
+                </div>
+                <h3 class="panel-impact">Sua página carrega em menos de 1 segundo</h3>
+                <p class="panel-biz-desc">Eliminando a desistência de cliques de anúncios frios. Se você gasta R$20k/mês em tráfego e tem 6s de carregamento, está desperdiçando <strong>~R$8k por mês</strong> em bounce.</p>
+                <div class="panel-metric" aria-label="Métrica de impacto">
+                  <span class="metric-big">0.4s</span>
+                  <span class="metric-label">Tempo de carregamento</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tradutor-panel" id="term-panel-2" role="tabpanel" aria-labelledby="term-tab-2" hidden>
+              <div class="panel-before">
+                <div class="panel-label panel-label-tech">
+                  <span class="panel-label-icon" aria-hidden="true">💻</span>
+                  Técnico
+                </div>
+                <h3 class="panel-term">Integração de APIs, Webhooks e Bancos de Dados Vetoriais</h3>
+                <p class="panel-tech-desc">Conexão em tempo real entre sistemas heterogêneos via endpoints REST, eventos assíncronos e busca semântica por embeddings para recuperação de contexto em LLMs.</p>
+              </div>
+              <div class="panel-arrow" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="panel-after">
+                <div class="panel-label panel-label-biz">
+                  <span class="panel-label-icon" aria-hidden="true">💰</span>
+                  Impacto no seu negócio
+                </div>
+                <h3 class="panel-impact">Lead no Instagram → Proposta no WhatsApp do vendedor em 15 segundos</h3>
+                <p class="panel-biz-desc">O robô consulta o perfil do cliente, analisa o histórico, cria uma proposta personalizada usando IA e envia para o seu time de vendas — tudo enquanto você dorme.</p>
+                <div class="panel-metric" aria-label="Métrica de velocidade">
+                  <span class="metric-big">15s</span>
+                  <span class="metric-label">Do lead à proposta personalizada</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tradutor-panel" id="term-panel-3" role="tabpanel" aria-labelledby="term-tab-3" hidden>
+              <div class="panel-before">
+                <div class="panel-label panel-label-tech">
+                  <span class="panel-label-icon" aria-hidden="true">💻</span>
+                  Técnico
+                </div>
+                <h3 class="panel-term">Arquitetura Serverless e Banco de Dados Não-Relacional</h3>
+                <p class="panel-tech-desc">Funções stateless executadas em containers efêmeros com escalonamento automático horizontal e armazenamento schema-less para alta disponibilidade e throughput.</p>
+              </div>
+              <div class="panel-arrow" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="panel-after">
+                <div class="panel-label panel-label-biz">
+                  <span class="panel-label-icon" aria-hidden="true">💰</span>
+                  Impacto no seu negócio
+                </div>
+                <h3 class="panel-impact">Sua plataforma nunca sai do ar, mesmo com 50.000 acessos simultâneos</h3>
+                <p class="panel-biz-desc">Campanha com influenciador explodiu? Sua plataforma escala automaticamente. Você paga só pelo que usa — sem servidor fixo caro parado 90% do tempo.</p>
+                <div class="panel-metric" aria-label="Capacidade de usuários">
+                  <span class="metric-big">50k</span>
+                  <span class="metric-label">Usuários simultâneos sem queda</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PORTFÓLIO BENTO GRID ===================== -->
+    <section id="portfolio" class="portfolio-section" aria-labelledby="portfolio-headline">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Portfólio</div>
+          <h2 id="portfolio-headline" class="section-title">
+            Projetos reais.<br />
+            <span class="gradient-text">Resultados mensuráveis.</span>
+          </h2>
+          <p class="section-subtitle">Cases de impacto financeiro + landing pages publicadas e acessíveis ao vivo.</p>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="portfolio-filters" role="group" aria-label="Filtros de portfólio">
+          <button class="filter-btn" data-filter="all" aria-pressed="false">Todos</button>
+          <button class="filter-btn active" data-filter="lps" aria-pressed="true">Modelos LPs</button>
+          <button class="filter-btn" data-filter="performance" aria-pressed="false">Performance</button>
+          <button class="filter-btn" data-filter="automacao" aria-pressed="false">Automação IA</button>
+          <button class="filter-btn" data-filter="infra" aria-pressed="false">Infraestrutura B2B</button>
+        </div>
+
+        <div class="bento-grid" role="list" id="portfolio-grid" aria-label="Cases de resultado">
+
+          <!-- ===================== PERFORMANCE CASES ===================== -->
+          <!-- Card 1 - Performance 1 (Largo) -->
+          <article class="bento-card bento-wide filtered-out" data-category="performance" role="listitem" aria-labelledby="proj1-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #10b981;"></div>
+            <div class="bento-metric" aria-label="Resultado: +240% conversão">
+              <span class="metric-number">+240%</span>
+              <span class="metric-unit">conversão</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Landing Page · Performance</div>
+              <h3 id="proj1-title" class="bento-title">LP de Ultra-Performance para Agência de Seguros</h3>
+              <p class="bento-context"><strong>Contexto:</strong> Agência gastando R$35k/mês em tráfego pago com LP no Elementor (7.2s de carregamento). Taxa de conversão em 1.4%.</p>
+              <p class="bento-action"><strong>Ação:</strong> Reconstrução completa em Astro com design orientado a conversão, imagens AVIF, fonte local e zero JavaScript bloqueante.</p>
+              <p class="bento-result"><strong>Resultado:</strong> Carregamento em 0.6s. Conversão subiu para 4.8%. ROAS aumentou de 1.8x para 4.2x no mesmo orçamento.</p>
+            </div>
+          </article>
+
+          <!-- Card 2 - Performance 2 (Médio) -->
+          <article class="bento-card bento-medium filtered-out" data-category="performance" role="listitem" aria-labelledby="proj2-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #059669;"></div>
+            <div class="bento-metric" aria-label="Resultado: +87% vendas">
+              <span class="metric-number">+87%</span>
+              <span class="metric-unit">vendas convertidas</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">E-commerce · Headless</div>
+              <h3 id="proj2-title" class="bento-title">Headless Commerce para Marca de Moda</h3>
+              <p class="bento-context"><strong>Contexto:</strong> Loja Shopify com tema pesado carregando em 5.4s no mobile. Alta taxa de abandono de checkout.</p>
+              <p class="bento-action"><strong>Ação:</strong> Migração para frontend headless usando Next.js SSG + Shopify Storefront API + otimização extrema de imagem.</p>
+              <p class="bento-result"><strong>Resultado:</strong> Carregamento caiu para 0.8s. Taxa de conversão de checkout subiu 87% em 30 dias.</p>
+            </div>
+          </article>
+
+          <!-- Card 3 - Performance 3 (Banner) -->
+          <article class="bento-card bento-stat bento-banner filtered-out" data-category="performance" role="listitem" aria-labelledby="proj3-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #10b981;"></div>
+            <div class="bento-metric" aria-label="Resultado: 100/100 Mobile">
+              <span class="metric-number">100/100</span>
+              <span class="metric-unit">Mobile PageSpeed</span>
+            </div>
+            <div class="bento-banner-content">
+              <div class="bento-category-tag" style="background: rgba(255,255,255,0.1); color: var(--c-white); border: 1px solid rgba(255,255,255,0.2);">SEO · Core Web Vitals</div>
+              <h3 id="proj3-title" class="bento-title" style="color: var(--c-white); margin-top: 0.5rem;">Core Web Vitals para Portal de Conteúdo</h3>
+              <p class="bento-context" style="margin-top: 0.5rem;"><strong>Contexto:</strong> Portal com 500k visitas/mês perdendo tráfego orgânico por notas vermelhas no Google Core Web Vitals.</p>
+              <p class="bento-action"><strong>Ação:</strong> Refatoração estrutural em Astro, eliminação de render-blocking assets e scripts de anúncios carregados de forma assíncrona.</p>
+              <p class="bento-result"><strong>Resultado:</strong> Nota 100/100 mobile atingida. Recuperação e ganho de 40% em tráfego orgânico em 3 meses.</p>
+            </div>
+          </article>
+
+          <!-- ===================== AUTOMAÇÃO IA CASES ===================== -->
+          <!-- Card 4 - Automação 1 (Largo) -->
+          <article class="bento-card bento-wide filtered-out" data-category="automacao" role="listitem" aria-labelledby="proj4-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #06b6d4;"></div>
+            <div class="bento-metric" aria-label="Resultado: 15s para qualificação de lead">
+              <span class="metric-number">15s</span>
+              <span class="metric-unit">do lead à proposta</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Automação IA · CRM</div>
+              <h3 id="proj4-title" class="bento-title">Pipeline de Qualificação de Leads com IA</h3>
+              <p class="bento-context"><strong>Contexto:</strong> Agência de educação com 200+ leads/dia sendo qualificados manualmente por SDR. Tempo médio de resposta: 4 horas.</p>
+              <p class="bento-action"><strong>Ação:</strong> Webhook no formulário → consulta CRM → scoring por LLM → proposta personalizada → disparo no WhatsApp do SDR.</p>
+              <p class="bento-result"><strong>Resultado:</strong> Tempo de resposta caiu para 15 segundos. Conversão de leads em reuniões agendadas subiu 35% sem novos SDRs.</p>
+            </div>
+          </article>
+
+          <!-- Card 5 - Automação 2 (Stat) -->
+          <article class="bento-card bento-stat filtered-out" data-category="automacao" role="listitem" aria-labelledby="proj5-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #8b5cf6;"></div>
+            <div class="bento-metric" aria-label="Resultado: 100% automatizado">
+              <span class="metric-number">100%</span>
+              <span class="metric-unit">onboarding automatizado</span>
+            </div>
+            <h3 id="proj5-title" class="bento-title" style="color: var(--c-white);">Onboarding Automático de Clientes</h3>
+            <p class="bento-stat-desc">Contrato assinado → ambiente de desenvolvimento configurado e credenciais geradas → e-mail e WhatsApp de boas-vindas enviados de forma 100% integrada. Sem nenhuma intervenção humana.</p>
+          </article>
+
+          <!-- Card 6 - Automação 3 (Banner) -->
+          <article class="bento-card bento-stat bento-banner filtered-out" data-category="automacao" role="listitem" aria-labelledby="proj6-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #6366f1;"></div>
+            <div class="bento-metric" aria-label="Resultado: -18h por semana">
+              <span class="metric-number">-18h</span>
+              <span class="metric-unit">semanais eliminadas</span>
+            </div>
+            <div class="bento-banner-content">
+              <div class="bento-category-tag" style="background: rgba(255,255,255,0.1); color: var(--c-white); border: 1px solid rgba(255,255,255,0.2);">Automação IA · Backoffice</div>
+              <h3 id="proj6-title" class="bento-title" style="color: var(--c-white); margin-top: 0.5rem;">SaaS Interno de Automação de Relatórios</h3>
+              <p class="bento-context" style="margin-top: 0.5rem;"><strong>Contexto:</strong> Agência com 3 analistas gastando 6h cada por semana em geração manual de relatórios de performance para clientes.</p>
+              <p class="bento-action"><strong>Ação:</strong> Sistema de raspagem de dados integrado às APIs do Meta Ads e Google Ads + LLM que gera narrativa executiva automaticamente.</p>
+              <p class="bento-result"><strong>Resultado:</strong> 18 horas semanais de trabalho manual reduzidas a zero. Economia de R$4.200/mês em horas operacionais.</p>
+            </div>
+          </article>
+
+          <!-- ===================== INFRAESTRUTURA CASES ===================== -->
+          <!-- Card 7 - Infra 1 (Largo) -->
+          <article class="bento-card bento-wide filtered-out" data-category="infra" role="listitem" aria-labelledby="proj7-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #c9a84c;"></div>
+            <div class="bento-metric" aria-label="Resultado: 99.99% Uptime">
+              <span class="metric-number">99.99%</span>
+              <span class="metric-unit">uptime garantido</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Infraestrutura · Serverless</div>
+              <h3 id="proj7-title" class="bento-title">API Gateway Serverless para FinTech</h3>
+              <p class="bento-context"><strong>Contexto:</strong> Gateway de pagamento legado sofrendo quedas constantes sob carga e custando R$8.000/mês em instâncias fixas na nuvem.</p>
+              <p class="bento-action"><strong>Ação:</strong> Migração para arquitetura serverless orientada a eventos usando AWS Lambda + DynamoDB + API Gateway com auto-scaling automático.</p>
+              <p class="bento-result"><strong>Resultado:</strong> Estabilidade de 99.99% atingida e custos operacionais reduzidos para R$1.200/mês (economia de 85%).</p>
+            </div>
+          </article>
+
+          <!-- Card 8 - Infra 2 (Médio) -->
+          <article class="bento-card bento-medium filtered-out" data-category="infra" role="listitem" aria-labelledby="proj8-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #64748b;"></div>
+            <div class="bento-metric" aria-label="Resultado: LGPD OK">
+              <span class="metric-number">100%</span>
+              <span class="metric-unit">em conformidade LGPD</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Segurança · Multi-Tenant</div>
+              <h3 id="proj8-title" class="bento-title">Arquitetura Multi-Tenant para SaaS</h3>
+              <p class="bento-context"><strong>Contexto:</strong> Plataforma SaaS vulnerável devido a banco de dados compartilhado sem isolamento seguro entre contas de clientes.</p>
+              <p class="bento-action"><strong>Ação:</strong> Implementação de isolamento lógico de dados (Row-Level Security) no PostgreSQL + criptografia de dados em trânsito e repouso.</p>
+              <p class="bento-result"><strong>Resultado:</strong> Conformidade legal total e segurança homologada por auditoria externa de segurança (Pentest).</p>
+            </div>
+          </article>
+
+          <!-- Card 9 - Infra 3 (Banner) -->
+          <article class="bento-card bento-stat bento-banner filtered-out" data-category="infra" role="listitem" aria-labelledby="proj9-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #ef4444;"></div>
+            <div class="bento-metric" aria-label="Resultado: -42% custo de servidor">
+              <span class="metric-number">-42%</span>
+              <span class="metric-unit">custo de servidores</span>
+            </div>
+            <div class="bento-banner-content">
+              <div class="bento-category-tag" style="background: rgba(255,255,255,0.1); color: var(--c-white); border: 1px solid rgba(255,255,255,0.2);">Infraestrutura · Serverless</div>
+              <h3 id="proj9-title" class="bento-title" style="color: var(--c-white); margin-top: 0.5rem;">Migração Serverless & Latência</h3>
+              <p class="bento-context" style="margin-top: 0.5rem;"><strong>Contexto:</strong> Sistema legado sofrendo gargalos em horários de pico e custos elevados de computação ociosa.</p>
+              <p class="bento-action"><strong>Ação:</strong> Transição completa para microsserviços autoescaláveis em containers efêmeros e cache distribuído na borda (Edge CDNs).</p>
+              <p class="bento-result"><strong>Resultado:</strong> Redução de 42% no custo mensal de nuvem. Latência de resposta estabilizada em 180ms com zero quedas.</p>
+            </div>
+          </article>
+
+          <!-- ===================== PORTFÓLIO MODELOS LPS ===================== -->
+          <!-- Card 10 - BurgerCraft -->
+          <article class="bento-card bento-demo" data-category="lps" role="listitem" aria-labelledby="demo1-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #e85d04;"></div>
+            <div class="bento-demo-img-wrap">
+              <img src="portfolio/burgercraft/images/hero-burger.png" alt="BurgerCraft Preview" class="bento-demo-img" />
+              <span class="pagespeed-badge">100/100 PageSpeed</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Landing Page · Alimentação</div>
+              <h3 id="demo1-title" class="bento-title">BurgerCraft — Hambúrgueres Artesanais</h3>
+              <p class="bento-desc">Landing Page de alta conversão para hamburguerias artesanais. Inclui cardápio interativo, integração com WhatsApp para pedidos e design otimizado mobile-first.</p>
+              <div class="bento-demo-actions">
+                <a href="portfolio/burgercraft/index.html" target="_blank" class="btn btn-outline" style="border-color: #e85d04; color: #e85d04;">Ver Demo Ao Vivo</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 11 - Aroma Café -->
+          <article class="bento-card bento-demo" data-category="lps" role="listitem" aria-labelledby="demo2-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #c8853a;"></div>
+            <div class="bento-demo-img-wrap">
+              <img src="portfolio/aroma-cafe/images/hero-coffee.png" alt="Aroma Café Preview" class="bento-demo-img" />
+              <span class="pagespeed-badge">100/100 PageSpeed</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Landing Page · Cafés Especiais</div>
+              <h3 id="demo2-title" class="bento-title">Aroma Café — Experiência Sensorial</h3>
+              <p class="bento-desc">Design aconchegante e minimalista focado em cafeterias gourmet. Apresentação de especialidades, história da marca, localização integrada e carregamento instantâneo.</p>
+              <div class="bento-demo-actions">
+                <a href="portfolio/aroma-cafe/index.html" target="_blank" class="btn btn-outline" style="border-color: #c8853a; color: #c8853a;">Ver Demo Ao Vivo</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 12 - Verde Vivo -->
+          <article class="bento-card bento-demo" data-category="lps" role="listitem" aria-labelledby="demo3-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #4a9b6f;"></div>
+            <div class="bento-demo-img-wrap">
+              <img src="portfolio/verde-vivo/images/hero-garden.png" alt="Verde Vivo Preview" class="bento-demo-img" />
+              <span class="pagespeed-badge">100/100 PageSpeed</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Landing Page · Serviços Locais</div>
+              <h3 id="demo3-title" class="bento-title">Verde Vivo — Paisagismo & Jardinagem</h3>
+              <p class="bento-desc">Estrutura clean e natural voltada a prestadores de serviços. Galeria de projetos integrada, formulário de conversão para orçamento gratuito e carregamento ultra-otimizado.</p>
+              <div class="bento-demo-actions">
+                <a href="portfolio/verde-vivo/index.html" target="_blank" class="btn btn-outline" style="border-color: #4a9b6f; color: #4a9b6f;">Ver Demo Ao Vivo</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 13 - Studio Bella -->
+          <article class="bento-card bento-demo" data-category="lps" role="listitem" aria-labelledby="demo4-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #c9847a;"></div>
+            <div class="bento-demo-img-wrap">
+              <img src="portfolio/studio-bella/images/hero-beauty.png" alt="Studio Bella Preview" class="bento-demo-img" />
+              <span class="pagespeed-badge">100/100 PageSpeed</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Landing Page · Estética & Beleza</div>
+              <h3 id="demo4-title" class="bento-title">Studio Bella — Estética & Bem-Estar</h3>
+              <p class="bento-desc">Design premium com tipografia serifada de alta costura para estúdios de beleza e clínicas de estética. Foco em captação de leads e agendamentos no WhatsApp.</p>
+              <div class="bento-demo-actions">
+                <a href="portfolio/studio-bella/index.html" target="_blank" class="btn btn-outline" style="border-color: #c9847a; color: #c9847a;">Ver Demo Ao Vivo</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 14 - ImóvelPrime -->
+          <article class="bento-card bento-demo" data-category="lps" role="listitem" aria-labelledby="demo5-title">
+            <div class="bento-accent" aria-hidden="true" style="--accent: #c9a84c;"></div>
+            <div class="bento-demo-img-wrap">
+              <img src="portfolio/imovel-prime/images/hero-property.png" alt="ImóvelPrime Preview" class="bento-demo-img" />
+              <span class="pagespeed-badge">100/100 PageSpeed</span>
+            </div>
+            <div class="bento-content">
+              <div class="bento-category-tag">Landing Page · Imobiliária</div>
+              <h3 id="demo5-title" class="bento-title">ImóvelPrime — Alto Padrão</h3>
+              <p class="bento-desc">Layout luxuoso para mercado imobiliário e corretores. Showcase de imóveis com fotos expansivas, barra de busca responsiva e formulário de qualificação avançada.</p>
+              <div class="bento-demo-actions">
+                <a href="portfolio/imovel-prime/index.html" target="_blank" class="btn btn-outline" style="border-color: #c9a84c; color: #c9a84c;">Ver Demo Ao Vivo</a>
+              </div>
+            </div>
+          </article>
+
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ROI CALCULATOR ===================== -->
+    <section id="roi" class="roi-section" aria-labelledby="roi-headline">
+      <div class="container">
+        <div class="roi-card">
+          <div class="roi-left">
+            <div class="section-tag">Calculadora de ROI</div>
+            <h2 id="roi-headline" class="roi-title">
+              Quanto você está<br />
+              <span class="gradient-text">perdendo agora?</span>
+            </h2>
+            <p class="roi-subtitle">Insira seus dados e veja o impacto financeiro da lentidão.</p>
+            <div class="roi-inputs" role="group" aria-label="Dados para cálculo de ROI">
+              <label class="roi-label" for="monthly-spend">
+                Gasto mensal com tráfego (R$)
+              </label>
+              <input type="number" id="monthly-spend" class="roi-input" value="10000" min="1000" max="1000000" step="1000" aria-describedby="monthly-spend-hint" />
+              <span id="monthly-spend-hint" class="roi-hint">Soma de todos os canais: Meta, Google, TikTok</span>
+
+              <label class="roi-label" for="page-speed">
+                Velocidade atual da sua LP (segundos)
+              </label>
+              <input type="range" id="page-speed" class="roi-slider" value="5" min="1" max="12" step="0.5" aria-valuenow="5" aria-valuemin="1" aria-valuemax="12" aria-label="Velocidade da página em segundos" />
+              <div class="roi-slider-labels" aria-hidden="true">
+                <span>1s ⚡</span>
+                <span id="speed-display" class="roi-slider-val">5s</span>
+                <span>12s 🐌</span>
+              </div>
+            </div>
+          </div>
+          <div class="roi-right" aria-live="polite" aria-label="Resultados do cálculo de ROI">
+            <div class="roi-result-card">
+              <div class="roi-result-label">Dinheiro desperdiçado por mês</div>
+              <div class="roi-result-big" id="roi-wasted" aria-label="Valor desperdiçado">R$ 4.200</div>
+              <div class="roi-result-label" style="margin-top: 1.5rem;">Você poderia recuperar</div>
+              <div class="roi-result-big roi-result-green" id="roi-recover" aria-label="Valor a recuperar">R$ 2.940</div>
+              <div class="roi-result-note" id="roi-note">
+                Com LCP de 0.4s, sua taxa de conversão aumentaria ~42%, recuperando esse valor todo mês.
+              </div>
+              <a href="#contato" class="btn btn-primary roi-cta" id="roi-cta-btn">
+                Quero recuperar esse dinheiro
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROCESSO ===================== -->
+    <section id="processo" class="process-section" aria-labelledby="process-headline">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Como funciona</div>
+          <h2 id="process-headline" class="section-title">
+            Da auditoria ao resultado<br />
+            <span class="gradient-text">em semanas, não meses.</span>
+          </h2>
+        </div>
+        <div class="process-steps" role="list" aria-label="Etapas do processo">
+          <div class="process-step" role="listitem">
+            <div class="step-num" aria-label="Etapa 1">01</div>
+            <div class="step-content">
+              <h3 class="step-title">Auditoria Técnica Gratuita</h3>
+              <p class="step-desc">Análise profunda da sua LP atual: PageSpeed, Core Web Vitals, análise de código, identificação de gargalos de conversão. Entregue em 48h.</p>
+            </div>
+          </div>
+          <div class="process-connector" aria-hidden="true"></div>
+          <div class="process-step" role="listitem">
+            <div class="step-num" aria-label="Etapa 2">02</div>
+            <div class="step-content">
+              <h3 class="step-title">Diagnóstico e Proposta</h3>
+              <p class="step-desc">Reunião de 15 min onde apresento o plano de otimização com projeção de ROI baseada em dados reais do seu setor e volume de tráfego.</p>
+            </div>
+          </div>
+          <div class="process-connector" aria-hidden="true"></div>
+          <div class="process-step" role="listitem">
+            <div class="step-num" aria-label="Etapa 3">03</div>
+            <div class="step-content">
+              <h3 class="step-title">Execução e Entrega</h3>
+              <p class="step-desc">Desenvolvimento com sprints semanais, comunicação transparente e entrega com 100/100 garantido — ou refaço sem custo adicional.</p>
+            </div>
+          </div>
+          <div class="process-connector" aria-hidden="true"></div>
+          <div class="process-step" role="listitem">
+            <div class="step-num" aria-label="Etapa 4">04</div>
+            <div class="step-content">
+              <h3 class="step-title">Monitoramento e Escala</h3>
+              <p class="step-desc">Relatório de performance pós-lançamento, A/B testing de elementos críticos e suporte contínuo para escalar os resultados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FORMULÁRIO DE DIAGNÓSTICO ===================== -->
+    <section id="contato" class="contact-section" aria-labelledby="contact-headline">
+      <div class="container">
+        <div class="contact-inner">
+          <div class="contact-left">
+            <div class="section-tag">Diagnóstico Gratuito</div>
+            <h2 id="contact-headline" class="contact-title">
+              Responda 3 perguntas.<br />
+              <span class="gradient-text">Receba um plano de ação.</span>
+            </h2>
+            <p class="contact-subtitle">Não é um formulário de "Fale Conosco". É um diagnóstico técnico que vira um plano prático entregue em 48h.</p>
+            <div class="contact-guarantees" aria-label="Garantias">
+              <div class="guarantee-item">
+                <span aria-hidden="true">🔒</span>
+                <span>Seus dados são confidenciais</span>
+              </div>
+              <div class="guarantee-item">
+                <span aria-hidden="true">⚡</span>
+                <span>Resposta em até 24 horas úteis</span>
+              </div>
+              <div class="guarantee-item">
+                <span aria-hidden="true">✓</span>
+                <span>Sem compromisso de contratação</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-right">
+            <!-- Multi-step form -->
+            <form class="diagnostic-form" id="diagnostic-form" novalidate aria-label="Formulário de diagnóstico">
+              
+              <!-- Step indicator -->
+              <div class="form-steps" aria-label="Progresso do formulário">
+                <div class="form-step-dot active" id="step-dot-1" aria-label="Passo 1 atual"></div>
+                <div class="form-step-line" aria-hidden="true"></div>
+                <div class="form-step-dot" id="step-dot-2" aria-label="Passo 2"></div>
+                <div class="form-step-line" aria-hidden="true"></div>
+                <div class="form-step-dot" id="step-dot-3" aria-label="Passo 3"></div>
+              </div>
+
+              <!-- Step 1 -->
+              <div class="form-step" id="form-step-1" aria-labelledby="step1-question">
+                <p class="step-question" id="step1-question">
+                  <span class="step-counter" aria-hidden="true">Pergunta 1 de 3</span>
+                  Qual o maior gargalo da sua operação hoje?
+                </p>
+                <div class="options-grid" role="group" aria-label="Opções de gargalo">
+                  <label class="option-card" for="opt-speed">
+                    <input type="radio" name="gargalo" id="opt-speed" value="velocidade" required />
+                    <span class="option-icon" aria-hidden="true">⚡</span>
+                    <span class="option-text">Velocidade das LPs dos meus clientes</span>
+                  </label>
+                  <label class="option-card" for="opt-manual">
+                    <input type="radio" name="gargalo" id="opt-manual" value="manual" />
+                    <span class="option-icon" aria-hidden="true">🔄</span>
+                    <span class="option-text">Trabalho manual repetitivo da equipe</span>
+                  </label>
+                  <label class="option-card" for="opt-tool">
+                    <input type="radio" name="gargalo" id="opt-tool" value="ferramenta" />
+                    <span class="option-icon" aria-hidden="true">🛠️</span>
+                    <span class="option-text">Falta de braço técnico para criar ferramentas</span>
+                  </label>
+                </div>
+                <button type="button" class="btn btn-primary form-next" id="step1-next" aria-label="Próxima pergunta">
+                  Próxima Pergunta →
+                </button>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="form-step hidden" id="form-step-2" aria-labelledby="step2-question">
+                <p class="step-question" id="step2-question">
+                  <span class="step-counter" aria-hidden="true">Pergunta 2 de 3</span>
+                  Qual a sua média de gastos mensais com tráfego ou equipe?
+                </p>
+                <div class="options-grid" role="group" aria-label="Opções de gasto mensal">
+                  <label class="option-card" for="opt-budget1">
+                    <input type="radio" name="orcamento" id="opt-budget1" value="ate5k" required />
+                    <span class="option-icon" aria-hidden="true">💼</span>
+                    <span class="option-text">Até R$ 5.000/mês</span>
+                  </label>
+                  <label class="option-card" for="opt-budget2">
+                    <input type="radio" name="orcamento" id="opt-budget2" value="5k-20k" />
+                    <span class="option-icon" aria-hidden="true">📈</span>
+                    <span class="option-text">R$ 5.000 – R$ 20.000/mês</span>
+                  </label>
+                  <label class="option-card" for="opt-budget3">
+                    <input type="radio" name="orcamento" id="opt-budget3" value="20k-100k" />
+                    <span class="option-icon" aria-hidden="true">🚀</span>
+                    <span class="option-text">R$ 20.000 – R$ 100.000/mês</span>
+                  </label>
+                  <label class="option-card" for="opt-budget4">
+                    <input type="radio" name="orcamento" id="opt-budget4" value="acima100k" />
+                    <span class="option-icon" aria-hidden="true">🏆</span>
+                    <span class="option-text">Acima de R$ 100.000/mês</span>
+                  </label>
+                </div>
+                <div class="form-nav">
+                  <button type="button" class="btn btn-ghost form-prev" id="step2-prev">← Voltar</button>
+                  <button type="button" class="btn btn-primary form-next" id="step2-next">Próxima Pergunta →</button>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="form-step hidden" id="form-step-3" aria-labelledby="step3-question">
+                <p class="step-question" id="step3-question">
+                  <span class="step-counter" aria-hidden="true">Pergunta 3 de 3</span>
+                  Para onde enviamos o plano de otimização?
+                </p>
+                <div class="contact-fields">
+                  <div class="field-group">
+                    <label class="field-label" for="contact-name">Seu nome</label>
+                    <input type="text" id="contact-name" class="field-input" placeholder="João Silva" required autocomplete="name" />
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="contact-email">E-mail corporativo</label>
+                    <input type="email" id="contact-email" class="field-input" placeholder="joao@agencia.com.br" required autocomplete="email" />
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="contact-whatsapp">WhatsApp corporativo</label>
+                    <input type="tel" id="contact-whatsapp" class="field-input" placeholder="(11) 99999-9999" required autocomplete="tel" />
+                  </div>
+                </div>
+                <div class="form-nav">
+                  <button type="button" class="btn btn-ghost form-prev" id="step3-prev">← Voltar</button>
+                  <button type="submit" class="btn btn-primary btn-lg form-submit" id="form-submit-btn">
+                    <span>Quero meu Diagnóstico Gratuito</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Success state -->
+              <div class="form-success hidden" id="form-success" role="alert" aria-live="assertive">
+                <div class="success-icon" aria-hidden="true">🎯</div>
+                <h3 class="success-title">Analisamos suas respostas!</h3>
+                <p class="success-desc">Para acelerar o diagnóstico, clique abaixo e agende uma reunião de <strong>15 minutos</strong>. Você vai receber um plano prático de otimização para o seu maior gargalo.</p>
+                <a href="https://calendly.com/seu-link" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg calendly-btn" id="calendly-link">
+                  <span>📅 Agendar Reunião de 15min Agora</span>
+                </a>
+                <p class="success-note">Sem e-mail. Sem espera. Você escolhe o horário agora.</p>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <a href="#hero" class="logo" aria-label="ifl Studio - Início">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">ifl<span class="logo-accent">Studio</span></span>
+        </a>
+        <p class="footer-tagline">Design que impressiona. Páginas que convertem.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#servicos" class="footer-link">Serviços</a>
+        <a href="#portfolio" class="footer-link">Cases</a>
+        <a href="#contato" class="footer-link">Diagnóstico Gratuito</a>
+      </div>
+      <div class="footer-right">
+        <p class="footer-copy">© 2026 ifl Studio. Todos os direitos reservados.</p>
+        <p class="footer-made">Feito com ⚡ e 0ms de TBT</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating CTA -->
+  <div class="floating-cta" id="floating-cta" aria-label="Botão flutuante de contato" role="complementary">
+    <a href="#contato" class="floating-btn" id="floating-cta-btn" aria-label="Obter auditoria gratuita">
+      <span class="floating-icon" aria-hidden="true">⚡</span>
+      <span>Auditoria Gratuita</span>
+    </a>
+  </div>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
