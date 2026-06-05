@@ -436,7 +436,47 @@
       e.preventDefault();
 
       if (validateStep(2)) {
-        // Mock Form Submission
+        // Capturar dados selecionados
+        const gargaloEl = diagnosticForm.querySelector('input[name="gargalo"]:checked');
+        const gargaloVal = gargaloEl ? gargaloEl.value : '';
+        const gargaloMap = {
+          'velocidade': 'Velocidade das LPs dos meus clientes',
+          'manual': 'Trabalho manual repetitivo da equipe',
+          'ferramenta': 'Falta de braço técnico para criar ferramentas'
+        };
+        const gargaloTexto = gargaloMap[gargaloVal] || gargaloVal;
+
+        const orcamentoEl = diagnosticForm.querySelector('input[name="orcamento"]:checked');
+        const orcamentoVal = orcamentoEl ? orcamentoEl.value : '';
+        const orcamentoMap = {
+          'ate5k': 'Até R$ 5.000/mês',
+          '5k-20k': 'R$ 5.000 – R$ 20.000/mês',
+          '20k-100k': 'R$ 20.000 – R$ 100.000/mês',
+          'acima100k': 'Acima de R$ 100.000/mês'
+        };
+        const orcamentoTexto = orcamentoMap[orcamentoVal] || orcamentoVal;
+
+        const nome = document.getElementById('contact-name').value;
+        const email = document.getElementById('contact-email').value;
+        const whatsapp = document.getElementById('contact-whatsapp').value;
+
+        // Formatar mensagem do WhatsApp
+        const msg = `Olá, Iago! Acabei de responder o diagnóstico no site. Aqui estão minhas respostas:
+
+*Nome:* ${nome}
+*E-mail:* ${email}
+*WhatsApp:* ${whatsapp}
+*Maior Gargalo:* ${gargaloTexto}
+*Investimento mensal:* ${orcamentoTexto}
+
+Gostaria de agendar a reunião de 15 minutos.`;
+
+        // Atualizar o link de agendamento na tela de sucesso
+        const calendlyLink = document.getElementById('calendly-link');
+        if (calendlyLink) {
+          calendlyLink.href = `https://wa.me/5511919691542?text=${encodeURIComponent(msg)}`;
+        }
+
         // Hide form steps and progress indicator
         formSteps.forEach(step => step.classList.add('hidden'));
         
