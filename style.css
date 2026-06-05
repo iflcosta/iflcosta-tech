@@ -1315,10 +1315,28 @@ h1, h2, h3, h4 {
 .bento-card.filtered-out { display: none !important; }
 
 /* Sizes */
-.bento-large  { grid-column: span 7; grid-row: span 2; }
+.bento-large  { grid-column: span 7; }
 .bento-medium { grid-column: span 5; }
 .bento-stat   { grid-column: span 5; background: linear-gradient(145deg, #0d1422, #111827); }
 .bento-large-stat { grid-column: span 7; background: linear-gradient(145deg, #0d1422, #111827); }
+
+/* Dynamic layouts and gaps fixes when filtering */
+#portfolio-grid.filter-lps .bento-demo:last-of-type {
+  grid-column: span 12;
+}
+
+@media (min-width: 1440px) {
+  #portfolio-grid.filter-lps .bento-demo:nth-child(13),
+  #portfolio-grid.filter-lps .bento-demo:nth-child(14) {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 1024px) {
+  #portfolio-grid.filter-lps .bento-demo:last-of-type {
+    grid-column: span 6;
+  }
+}
 .bento-banner {
   grid-column: span 12;
   background: linear-gradient(135deg, #0d1422 0%, #111827 50%, #141b2e 100%);
@@ -1395,8 +1413,15 @@ h1, h2, h3, h4 {
   color: var(--c-text);
 }
 
+/* WCAG AA Contrast compliance for dark bento cards (statically and on hover) */
 .bento-stat .bento-title,
-.bento-banner .bento-title { color: var(--c-white) !important; }
+.bento-banner .bento-title,
+.bento-stat:hover .bento-title,
+.bento-banner:hover .bento-title,
+.bento-large-stat .bento-title,
+.bento-large-stat:hover .bento-title {
+  color: var(--c-white) !important;
+}
 
 .bento-context, .bento-action, .bento-result {
   font-size: 0.875rem;
@@ -1405,12 +1430,26 @@ h1, h2, h3, h4 {
   margin-bottom: 0.5rem;
 }
 
+/* Improve contrast of description and context inside dark cards */
+.bento-stat-desc,
+.bento-stat:hover .bento-stat-desc {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
 .bento-stat .bento-context,
 .bento-stat .bento-action,
 .bento-stat .bento-result,
 .bento-banner .bento-context,
 .bento-banner .bento-action,
-.bento-banner .bento-result { color: rgba(255,255,255,0.6); }
+.bento-banner .bento-result,
+.bento-stat:hover .bento-context,
+.bento-stat:hover .bento-action,
+.bento-stat:hover .bento-result,
+.bento-banner:hover .bento-context,
+.bento-banner:hover .bento-action,
+.bento-banner:hover .bento-result {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
 
 .bento-context strong, .bento-action strong, .bento-result strong { color: var(--c-text); }
 .bento-stat .bento-context strong,
@@ -1418,7 +1457,15 @@ h1, h2, h3, h4 {
 .bento-stat .bento-result strong,
 .bento-banner .bento-context strong,
 .bento-banner .bento-action strong,
-.bento-banner .bento-result strong { color: rgba(255,255,255,0.9); }
+.bento-banner .bento-result strong,
+.bento-stat:hover .bento-context strong,
+.bento-stat:hover .bento-action strong,
+.bento-stat:hover .bento-result strong,
+.bento-banner:hover .bento-context strong,
+.bento-banner:hover .bento-action strong,
+.bento-banner:hover .bento-result strong {
+  color: var(--c-white) !important;
+}
 
 .bento-stat-desc {
   font-size: 0.9rem;

@@ -31,6 +31,18 @@ Este relatório detalha a auditoria sênior de UI/UX e as consequentes correçõ
 *   **Problema:** Ao clicar nos links da barra de navegação (ex: `#sobre`), o topo das seções era ocultado pela navbar que possui posicionamento fixo/sticky.
 *   **Solução:** Adicionada a regra `scroll-padding-top: var(--nav-h, 72px)` diretamente no seletor do elemento `html` no `style.css` do site principal.
 
+### 2.4. Reordenamento Estratégico de Seções (Fluxo Narrativo Premium)
+*   **Problema:** O simulador de velocidade e o tradutor de jargões técnicos apareciam no topo da página, imediatamente após o Hero. Isso desviava o foco do usuário corporativo antes que ele conhecesse os serviços ou visse prova social.
+*   **Solução:** 
+    1. Reordenado o fluxo das seções para a sequência ideal de conversão: **Hero -> Serviços -> Portfólio (Bento Grid) -> Simulador de Velocidade -> Calculadora de ROI -> Tradutor de Jargões -> Processo -> Contato**.
+    2. Reordenados os links de navegação na Navbar (desktop e mobile) para seguir a nova hierarquia ("Serviços", "Cases", "ROI Real", "Diagnóstico"), apontando o item "ROI Real" para a seção ativa `#roi` (Calculadora de ROI) em vez da seção de termos técnicos.
+
+### 2.5. Correção e Sincronização da Calculadora de ROI
+*   **Problema:** Os seletores JavaScript da Calculadora de ROI no `main.js` estavam dessincronizados dos IDs das tags do HTML (e.g. buscando `monthly-spend` enquanto o HTML usava `input-investment`), tornando a calculadora totalmente inoperante.
+*   **Solução:**
+    1. Vinculados os IDs corretos no script (`input-investment`, `slider-investment`, `input-speed`, `slider-speed`, `roi-loss` e `roi-desc`).
+    2. Implementada a sincronização bidirecional em tempo real entre os inputs numéricos e seus respectivos sliders de arrastar, mantendo a reatividade e exibindo os cálculos dinamicamente.
+
 ---
 
 ## 3. Auditoria do Portfólio (Sub-páginas)

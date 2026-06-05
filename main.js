@@ -216,13 +216,15 @@
   }
 
   function applyPortfolioFilter(filter) {
+    const gridEl = document.getElementById('portfolio-grid');
+    if (gridEl) {
+      gridEl.classList.remove('filter-all', 'filter-lps', 'filter-performance', 'filter-automacao', 'filter-infra');
+      gridEl.classList.add('filter-' + filter);
+    }
+
     portfolioCards.forEach(card => {
       const cardCategory = card.dataset.category;
       if (filter === 'all') {
-        // Show non-demo items for 'all', hide demos or show everything?
-        // Let's match original requirement: 'all' shows cases, and filters demo models under 'lps'.
-        // Wait, if filter is 'all', let's show all cases (both performance, automacao, infra, and demos!)
-        // Wait, in index.html, there are portfolio cases and LPs. Let's make "all" show everything.
         card.classList.remove('filtered-out');
       } else if (cardCategory === filter) {
         card.classList.remove('filtered-out');
@@ -233,14 +235,14 @@
   }
 
   /* ─── ROI Calculator ─── */
-  const monthlySpendInput = document.getElementById('monthly-spend');
-  const pageSpeedSlider = document.getElementById('page-speed');
-  const speedDisplay = document.getElementById('speed-display');
-  const roiWasted = document.getElementById('roi-wasted');
-  const roiRecover = document.getElementById('roi-recover');
-  const roiNote = document.getElementById('roi-note');
+  const inputInvestment = document.getElementById('input-investment');
+  const sliderInvestment = document.getElementById('slider-investment');
+  const inputSpeed = document.getElementById('input-speed');
+  const sliderSpeed = document.getElementById('slider-speed');
+  const roiLoss = document.getElementById('roi-loss');
+  const roiDesc = document.getElementById('roi-desc');
 
-  if (monthlySpendInput && pageSpeedSlider) {
+  if (inputInvestment && sliderInvestment && inputSpeed && sliderSpeed) {
     const formatBRL = (val) => {
       return val.toLocaleString('pt-BR', {
         style: 'currency',
@@ -250,8 +252,8 @@
     };
 
     function calculateROI() {
-      const spend = parseFloat(monthlySpendInput.value) || 10000;
-      const speed = parseFloat(pageSpeedSlider.value) || 5;
+      const spend = parseFloat(inputInvestment.value) || 10000;
+      const speed = parseFloat(inputSpeed.value) || 5;
 
       /**
        * Model based on Google/Deloitte mobile speed research:
@@ -272,29 +274,47 @@
         ? Math.round(((targetEfficiency / currentEfficiency) - 1) * 100)
         : 0;
 
-      // Recoverable budget (80% of waste is reasonably salvageable)
-      const recovered = wasted * 0.80;
+      // Update slider backgrounds (optional styling, but nice)
+      const investmentPct = ((spend - 1000) / (100000 - 1000)) * 100;
+      sliderInvestment.style.background = `linear-gradient(to right, var(--c-primary) 0%, var(--c-primary) ${investmentPct}%, var(--c-border) ${investmentPct}%)`;
 
-      // Update slider display and progress background
-      const sliderPct = ((speed - 1) / (12 - 1)) * 100;
-      pageSpeedSlider.style.background = `linear-gradient(to right, var(--c-primary) 0%, var(--c-primary) ${sliderPct}%, var(--c-border) ${sliderPct}%)`;
+      const speedPct = ((speed - 0.5) / (15 - 0.5)) * 100;
+      sliderSpeed.style.background = `linear-gradient(to right, var(--c-primary) 0%, var(--c-primary) ${speedPct}%, var(--c-border) ${speedPct}%)`;
 
-      speedDisplay.textContent = speed + 's';
+      if (roiLoss) roiLoss.textContent = formatBRL(wasted);
 
-      if (roiWasted) roiWasted.textContent = formatBRL(wasted);
-      if (roiRecover) roiRecover.textContent = formatBRL(recovered);
-
-      if (roiNote) {
+      if (roiDesc) {
         if (speed <= 1) {
-          roiNote.textContent = `Sua página já está na velocidade ideal! Fantástico.`;
+          roiDesc.textContent = `Sua página já está na velocidade ideal! Fantástico.`;
         } else {
-          roiNote.textContent = `Com LCP de 0.4s, sua taxa de conversão aumentaria ~${conversionGainPercent}%, recuperando esse valor todo mês.`;
+          roiDesc.textContent = `Com LCP de 0.4s, sua taxa de conversão aumentaria ~${conversionGainPercent}%, recuperando esse valor todo mês.`;
         }
       }
     }
 
-    monthlySpendInput.addEventListener('input', calculateROI);
-    pageSpeedSlider.addEventListener('input', calculateROI);
+    // Sync Investment Input -> Slider
+    inputInvestment.addEventListener('input', () => {
+      sliderInvestment.value = inputInvestment.value;
+      calculateROI();
+    });
+
+    // Sync Investment Slider -> Input
+    sliderInvestment.addEventListener('input', () => {
+      inputInvestment.value = sliderInvestment.value;
+      calculateROI();
+    });
+
+    // Sync Speed Input -> Slider
+    inputSpeed.addEventListener('input', () => {
+      sliderSpeed.value = inputSpeed.value;
+      calculateROI();
+    });
+
+    // Sync Speed Slider -> Input
+    sliderSpeed.addEventListener('input', () => {
+      inputSpeed.value = sliderSpeed.value;
+      calculateROI();
+    });
     
     // Initial run
     calculateROI();

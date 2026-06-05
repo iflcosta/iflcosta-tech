@@ -23,8 +23,8 @@
       </a>
       <ul class="nav-links" role="list">
         <li><a href="#servicos" class="nav-link">Serviços</a></li>
-        <li><a href="#tradutor" class="nav-link">ROI Real</a></li>
         <li><a href="#portfolio" class="nav-link">Cases</a></li>
+        <li><a href="#roi" class="nav-link">ROI Real</a></li>
         <li><a href="#contato" class="nav-link">Diagnóstico</a></li>
       </ul>
       <a href="#contato" class="btn btn-primary btn-sm" id="nav-cta-btn">Auditoria Gratuita</a>
@@ -36,8 +36,8 @@
     <div class="mobile-nav" id="mobile-menu" role="dialog" aria-label="Menu mobile">
       <ul role="list">
         <li><a href="#servicos" class="nav-link">Serviços</a></li>
-        <li><a href="#tradutor" class="nav-link">ROI Real</a></li>
         <li><a href="#portfolio" class="nav-link">Cases</a></li>
+        <li><a href="#roi" class="nav-link">ROI Real</a></li>
         <li><a href="#contato" class="nav-link">Diagnóstico</a></li>
         <li><a href="#contato" class="btn btn-primary">Auditoria Gratuita</a></li>
       </ul>
@@ -191,44 +191,6 @@
       </div>
     </section>
 
-    <!-- ===================== SPEED SIMULATOR ===================== -->
-    <section id="simulador" class="speed-section" aria-labelledby="speed-headline">
-      <div class="container">
-        <div class="speed-card">
-          <h2 id="speed-headline" class="speed-title">Veja a diferença em tempo real</h2>
-          <p class="speed-subtitle">Simule o carregamento de uma LP otimizada vs. WordPress convencional</p>
-          <div class="speed-compare" role="group" aria-label="Comparação de velocidade">
-            <div class="speed-col">
-              <div class="speed-col-header">
-                <span class="speed-badge speed-fast">Ultra-Performance</span>
-                <span class="speed-tech">Astro / Next.js SSG</span>
-              </div>
-              <div class="speed-bar-wrap" aria-label="Barra de carregamento rápido">
-                <div class="speed-bar speed-bar-fast" id="bar-fast" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              <div class="speed-time" id="time-fast" aria-live="polite">0.0s</div>
-            </div>
-            <div class="speed-col">
-              <div class="speed-col-header">
-                <span class="speed-badge speed-slow">WordPress Convencional</span>
-                <span class="speed-tech">Elementor + Plugins</span>
-              </div>
-              <div class="speed-bar-wrap" aria-label="Barra de carregamento lento">
-                <div class="speed-bar speed-bar-slow" id="bar-slow" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              <div class="speed-time" id="time-slow" aria-live="polite">0.0s</div>
-            </div>
-          </div>
-          <div class="speed-impact" id="speed-impact" aria-live="polite">
-            <span class="speed-impact-stat">Cada segundo de atraso custa até <strong>7% de conversão</strong>. Com CPC médio de R$3,00 e 10k cliques/mês, isso significa <strong>R$2.100 desperdiçados</strong> todo mês.</span>
-          </div>
-          <button class="btn btn-primary" id="simulate-btn" aria-label="Simular velocidade de carregamento">
-            ▶ Simular Velocidade
-          </button>
-        </div>
-      </div>
-    </section>
-
     <!-- ===================== SERVIÇOS ===================== -->
     <section id="servicos" class="services-section" aria-labelledby="services-headline">
       <div class="container">
@@ -343,119 +305,6 @@
             <a href="#contato" class="service-cta" aria-label="Discutir desenvolvimento de produto">Criar minha ferramenta →</a>
           </article>
 
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== TRADUTOR DE JARGÕES ===================== -->
-    <section id="tradutor" class="tradutor-section" aria-labelledby="tradutor-headline">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-tag">Tradutor de Jargões</div>
-          <h2 id="tradutor-headline" class="section-title">
-            Tecnologia que você não entende<br />
-            <span class="gradient-text">= dinheiro que você não vê.</span>
-          </h2>
-          <p class="section-subtitle">Clique nos termos técnicos e veja o impacto real no seu caixa.</p>
-        </div>
-
-        <div class="tradutor-wrapper">
-          <div class="tradutor-tabs" role="tablist" aria-label="Termos técnicos">
-            <button class="tradutor-tab active" role="tab" aria-selected="true" aria-controls="term-panel-1" id="term-tab-1" data-term="0">
-              <span class="tab-term">SSR com Astro</span>
-              <span class="tab-arrow" aria-hidden="true">→</span>
-            </button>
-            <button class="tradutor-tab" role="tab" aria-selected="false" aria-controls="term-panel-2" id="term-tab-2" data-term="1">
-              <span class="tab-term">APIs &amp; Webhooks &amp; Banco Vetorial</span>
-              <span class="tab-arrow" aria-hidden="true">→</span>
-            </button>
-            <button class="tradutor-tab" role="tab" aria-selected="false" aria-controls="term-panel-3" id="term-tab-3" data-term="2">
-              <span class="tab-term">Arquitetura Serverless</span>
-              <span class="tab-arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-
-          <div class="tradutor-panels">
-
-            <div class="tradutor-panel active" id="term-panel-1" role="tabpanel" aria-labelledby="term-tab-1">
-              <div class="panel-before">
-                <div class="panel-label panel-label-tech" aria-label="Termo técnico">
-                  <span class="panel-label-icon" aria-hidden="true">💻</span>
-                  Técnico
-                </div>
-                <h3 class="panel-term">Server-Side Rendering (SSR) com Astro</h3>
-                <p class="panel-tech-desc">Framework web que gera HTML estático no servidor, eliminando JavaScript no client-side e servindo conteúdo pré-renderizado via CDN global.</p>
-              </div>
-              <div class="panel-arrow" aria-hidden="true">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-              <div class="panel-after">
-                <div class="panel-label panel-label-biz" aria-label="Impacto no negócio">
-                  <span class="panel-label-icon" aria-hidden="true">💰</span>
-                  Impacto no seu negócio
-                </div>
-                <h3 class="panel-impact">Sua página carrega em menos de 1 segundo</h3>
-                <p class="panel-biz-desc">Eliminando a desistência de cliques de anúncios frios. Se você gasta R$20k/mês em tráfego e tem 6s de carregamento, está desperdiçando <strong>~R$8k por mês</strong> em bounce.</p>
-                <div class="panel-metric" aria-label="Métrica de impacto">
-                  <span class="metric-big">0.4s</span>
-                  <span class="metric-label">Tempo de carregamento</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="tradutor-panel" id="term-panel-2" role="tabpanel" aria-labelledby="term-tab-2" hidden>
-              <div class="panel-before">
-                <div class="panel-label panel-label-tech">
-                  <span class="panel-label-icon" aria-hidden="true">💻</span>
-                  Técnico
-                </div>
-                <h3 class="panel-term">Integração de APIs, Webhooks e Bancos de Dados Vetoriais</h3>
-                <p class="panel-tech-desc">Conexão em tempo real entre sistemas heterogêneos via endpoints REST, eventos assíncronos e busca semântica por embeddings para recuperação de contexto em LLMs.</p>
-              </div>
-              <div class="panel-arrow" aria-hidden="true">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-              <div class="panel-after">
-                <div class="panel-label panel-label-biz">
-                  <span class="panel-label-icon" aria-hidden="true">💰</span>
-                  Impacto no seu negócio
-                </div>
-                <h3 class="panel-impact">Lead no Instagram → Proposta no WhatsApp do vendedor em 15 segundos</h3>
-                <p class="panel-biz-desc">O robô consulta o perfil do cliente, analisa o histórico, cria uma proposta personalizada usando IA e envia para o seu time de vendas — tudo enquanto você dorme.</p>
-                <div class="panel-metric" aria-label="Métrica de velocidade">
-                  <span class="metric-big">15s</span>
-                  <span class="metric-label">Do lead à proposta personalizada</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="tradutor-panel" id="term-panel-3" role="tabpanel" aria-labelledby="term-tab-3" hidden>
-              <div class="panel-before">
-                <div class="panel-label panel-label-tech">
-                  <span class="panel-label-icon" aria-hidden="true">💻</span>
-                  Técnico
-                </div>
-                <h3 class="panel-term">Arquitetura Serverless e Banco de Dados Não-Relacional</h3>
-                <p class="panel-tech-desc">Funções stateless executadas em containers efêmeros com escalonamento automático horizontal e armazenamento schema-less para alta disponibilidade e throughput.</p>
-              </div>
-              <div class="panel-arrow" aria-hidden="true">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-              <div class="panel-after">
-                <div class="panel-label panel-label-biz">
-                  <span class="panel-label-icon" aria-hidden="true">💰</span>
-                  Impacto no seu negócio
-                </div>
-                <h3 class="panel-impact">Sua plataforma nunca sai do ar, mesmo com 50.000 acessos simultâneos</h3>
-                <p class="panel-biz-desc">Campanha com influenciador explodiu? Sua plataforma escala automaticamente. Você paga só pelo que usa — sem servidor fixo caro parado 90% do tempo.</p>
-                <div class="panel-metric" aria-label="Capacidade de usuários">
-                  <span class="metric-big">50k</span>
-                  <span class="metric-label">Usuários simultâneos sem queda</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
         </div>
       </div>
     </section>
@@ -711,7 +560,44 @@
             </div>
           </article>
 
+        </div>
+      </div>
+    </section>
 
+    <!-- ===================== SPEED SIMULATOR ===================== -->
+    <section id="simulador" class="speed-section" aria-labelledby="speed-headline">
+      <div class="container">
+        <div class="speed-card">
+          <h2 id="speed-headline" class="speed-title">Veja a diferença em tempo real</h2>
+          <p class="speed-subtitle">Simule o carregamento de uma LP otimizada vs. WordPress convencional</p>
+          <div class="speed-compare" role="group" aria-label="Comparação de velocidade">
+            <div class="speed-col">
+              <div class="speed-col-header">
+                <span class="speed-badge speed-fast">Ultra-Performance</span>
+                <span class="speed-tech">Astro / Next.js SSG</span>
+              </div>
+              <div class="speed-bar-wrap" aria-label="Barra de carregamento rápido">
+                <div class="speed-bar speed-bar-fast" id="bar-fast" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="speed-time" id="time-fast" aria-live="polite">0.0s</div>
+            </div>
+            <div class="speed-col">
+              <div class="speed-col-header">
+                <span class="speed-badge speed-slow">WordPress Convencional</span>
+                <span class="speed-tech">Elementor + Plugins</span>
+              </div>
+              <div class="speed-bar-wrap" aria-label="Barra de carregamento lento">
+                <div class="speed-bar speed-bar-slow" id="bar-slow" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="speed-time" id="time-slow" aria-live="polite">0.0s</div>
+            </div>
+          </div>
+          <div class="speed-impact" id="speed-impact" aria-live="polite">
+            <span class="speed-impact-stat">Cada segundo de atraso custa até <strong>7% de conversão</strong>. Com CPC médio de R$3,00 e 10k cliques/mês, isso significa <strong>R$2.100 desperdiçados</strong> todo mês.</span>
+          </div>
+          <button class="btn btn-primary" id="simulate-btn" aria-label="Simular velocidade de carregamento">
+            ▶ Simular Velocidade
+          </button>
         </div>
       </div>
     </section>
@@ -728,36 +614,152 @@
             </h2>
             <p class="roi-subtitle">Insira seus dados e veja o impacto financeiro da lentidão.</p>
             <div class="roi-inputs" role="group" aria-label="Dados para cálculo de ROI">
-              <label class="roi-label" for="monthly-spend">
-                Gasto mensal com tráfego (R$)
-              </label>
-              <input type="number" id="monthly-spend" class="roi-input" value="10000" min="1000" max="1000000" step="1000" aria-describedby="monthly-spend-hint" />
-              <span id="monthly-spend-hint" class="roi-hint">Soma de todos os canais: Meta, Google, TikTok</span>
-
-              <label class="roi-label" for="page-speed">
-                Velocidade atual da sua LP (segundos)
-              </label>
-              <input type="range" id="page-speed" class="roi-slider" value="5" min="1" max="12" step="0.5" aria-valuenow="5" aria-valuemin="1" aria-valuemax="12" aria-label="Velocidade da página em segundos" />
-              <div class="roi-slider-labels" aria-hidden="true">
-                <span>1s ⚡</span>
-                <span id="speed-display" class="roi-slider-val">5s</span>
-                <span>12s 🐌</span>
+              <div class="roi-input-group">
+                <label for="input-investment" class="roi-label">Investimento mensal em tráfego</label>
+                <div class="roi-field-wrap">
+                  <span class="roi-currency">R$</span>
+                  <input type="number" id="input-investment" class="roi-input" value="10000" min="0" step="1000" />
+                </div>
+                <div class="roi-slider-wrap">
+                  <input type="range" id="slider-investment" class="roi-slider" min="1000" max="100000" step="1000" value="10000" aria-label="Investimento mensal slider" />
+                </div>
+              </div>
+              <div class="roi-input-group">
+                <label for="input-speed" class="roi-label">Tempo de carregamento atual (PageSpeed)</label>
+                <div class="roi-field-wrap">
+                  <input type="number" id="input-speed" class="roi-input" value="5.2" min="0.5" max="15" step="0.1" />
+                  <span class="roi-unit">segundos</span>
+                </div>
+                <div class="roi-slider-wrap">
+                  <input type="range" id="slider-speed" class="roi-slider" min="0.5" max="15" step="0.1" value="5.2" aria-label="Tempo de carregamento slider" />
+                </div>
               </div>
             </div>
           </div>
-          <div class="roi-right" aria-live="polite" aria-label="Resultados do cálculo de ROI">
+          <div class="roi-right">
             <div class="roi-result-card">
-              <div class="roi-result-label">Dinheiro desperdiçado por mês</div>
-              <div class="roi-result-big" id="roi-wasted" aria-label="Valor desperdiçado">R$ 4.200</div>
-              <div class="roi-result-label" style="margin-top: 1.5rem;">Você poderia recuperar</div>
-              <div class="roi-result-big roi-result-green" id="roi-recover" aria-label="Valor a recuperar">R$ 2.940</div>
-              <div class="roi-result-note" id="roi-note">
+              <span class="roi-result-tag">Perda mensal estimada</span>
+              <div class="roi-result-value" id="roi-loss" aria-live="polite">R$ 2.940</div>
+              <div class="roi-result-desc" id="roi-desc" aria-live="polite">
                 Com LCP de 0.4s, sua taxa de conversão aumentaria ~42%, recuperando esse valor todo mês.
               </div>
               <a href="#contato" class="btn btn-primary roi-cta" id="roi-cta-btn">
                 Quero recuperar esse dinheiro
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRADUTOR DE JARGÕES ===================== -->
+    <section id="tradutor" class="tradutor-section" aria-labelledby="tradutor-headline">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Tradutor de Jargões</div>
+          <h2 id="tradutor-headline" class="section-title">
+            Tecnologia que você não entende<br />
+            <span class="gradient-text">= dinheiro que você não vê.</span>
+          </h2>
+          <p class="section-subtitle">Clique nos termos técnicos e veja o impacto real no seu caixa.</p>
+        </div>
+
+        <div class="tradutor-wrapper">
+          <div class="tradutor-tabs" role="tablist" aria-label="Termos técnicos">
+            <button class="tradutor-tab active" role="tab" aria-selected="true" aria-controls="term-panel-1" id="term-tab-1" data-term="0">
+              <span class="tab-term">SSR com Astro</span>
+              <span class="tab-arrow" aria-hidden="true">→</span>
+            </button>
+            <button class="tradutor-tab" role="tab" aria-selected="false" aria-controls="term-panel-2" id="term-tab-2" data-term="1">
+              <span class="tab-term">APIs &amp; Webhooks &amp; Banco Vetorial</span>
+              <span class="tab-arrow" aria-hidden="true">→</span>
+            </button>
+            <button class="tradutor-tab" role="tab" aria-selected="false" aria-controls="term-panel-3" id="term-tab-3" data-term="2">
+              <span class="tab-term">Arquitetura Serverless</span>
+              <span class="tab-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div class="tradutor-panels">
+
+            <div class="tradutor-panel active" id="term-panel-1" role="tabpanel" aria-labelledby="term-tab-1">
+              <div class="panel-before">
+                <div class="panel-label panel-label-tech" aria-label="Termo técnico">
+                  <span class="panel-label-icon" aria-hidden="true">💻</span>
+                  Técnico
+                </div>
+                <h3 class="panel-term">Server-Side Rendering (SSR) com Astro</h3>
+                <p class="panel-tech-desc">Framework web que gera HTML estático no servidor, eliminando JavaScript no client-side e servindo conteúdo pré-renderizado via CDN global.</p>
+              </div>
+              <div class="panel-arrow" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="panel-after">
+                <div class="panel-label panel-label-biz" aria-label="Impacto no negócio">
+                  <span class="panel-label-icon" aria-hidden="true">💰</span>
+                  Impacto no seu negócio
+                </div>
+                <h3 class="panel-impact">Sua página carrega em menos de 1 segundo</h3>
+                <p class="panel-biz-desc">Eliminando a desistência de cliques de anúncios frios. Se você gasta R$20k/mês em tráfego e tem 6s de carregamento, está desperdiçando <strong>~R$8k por mês</strong> em bounce.</p>
+                <div class="panel-metric" aria-label="Métrica de impacto">
+                  <span class="metric-big">0.4s</span>
+                  <span class="metric-label">Tempo de carregamento</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tradutor-panel" id="term-panel-2" role="tabpanel" aria-labelledby="term-tab-2" hidden>
+              <div class="panel-before">
+                <div class="panel-label panel-label-tech">
+                  <span class="panel-label-icon" aria-hidden="true">💻</span>
+                  Técnico
+                </div>
+                <h3 class="panel-term">Integração de APIs, Webhooks e Bancos de Dados Vetoriais</h3>
+                <p class="panel-tech-desc">Conexão em tempo real entre sistemas heterogêneos via endpoints REST, eventos assíncronos e busca semântica por embeddings para recuperação de contexto em LLMs.</p>
+              </div>
+              <div class="panel-arrow" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="panel-after">
+                <div class="panel-label panel-label-biz">
+                  <span class="panel-label-icon" aria-hidden="true">💰</span>
+                  Impacto no seu negócio
+                </div>
+                <h3 class="panel-impact">Lead no Instagram → Proposta no WhatsApp do vendedor em 15 segundos</h3>
+                <p class="panel-biz-desc">O robô consulta o perfil do cliente, analisa o histórico, cria uma proposta personalizada usando IA e envia para o seu time de vendas — tudo enquanto você dorme.</p>
+                <div class="panel-metric" aria-label="Métrica de velocidade">
+                  <span class="metric-big">15s</span>
+                  <span class="metric-label">Do lead à proposta personalizada</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tradutor-panel" id="term-panel-3" role="tabpanel" aria-labelledby="term-tab-3" hidden>
+              <div class="panel-before">
+                <div class="panel-label panel-label-tech">
+                  <span class="panel-label-icon" aria-hidden="true">💻</span>
+                  Técnico
+                </div>
+                <h3 class="panel-term">Arquitetura Serverless e Banco de Dados Não-Relacional</h3>
+                <p class="panel-tech-desc">Funções stateless executadas em containers efêmeros com escalonamento automático horizontal e armazenamento schema-less para alta disponibilidade e throughput.</p>
+              </div>
+              <div class="panel-arrow" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+              <div class="panel-after">
+                <div class="panel-label panel-label-biz">
+                  <span class="panel-label-icon" aria-hidden="true">💰</span>
+                  Impacto no seu negócio
+                </div>
+                <h3 class="panel-impact">Sua plataforma nunca sai do ar, mesmo com 50.000 acessos simultâneos</h3>
+                <p class="panel-biz-desc">Campanha com influenciador explodiu? Sua plataforma escala automaticamente. Você paga só pelo que usa — sem servidor fixo caro parado 90% do tempo.</p>
+                <div class="panel-metric" aria-label="Capacidade de usuários">
+                  <span class="metric-big">50k</span>
+                  <span class="metric-label">Usuários simultâneos sem queda</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
