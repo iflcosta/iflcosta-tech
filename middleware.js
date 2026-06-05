@@ -9,8 +9,7 @@ export const config = {
     '/obrigado',
     '/privacidade',
     '/termos',
-    '/assets/:path*',
-    '/admin/:path*'
+    '/assets/:path*'
   ],
 };
 
@@ -31,7 +30,7 @@ export default async function middleware(req) {
       targetPath = '/portfolio/hardware-tech/privacidade.html';
     } else if (path === '/termos') {
       targetPath = '/portfolio/hardware-tech/termos.html';
-    } else if (path.startsWith('/assets/') || path.startsWith('/admin/')) {
+    } else if (path.startsWith('/assets/')) {
       targetPath = `/portfolio/hardware-tech${path}`;
     }
     
