@@ -2195,6 +2195,7 @@ h1, h2, h3, h4 {
   :root { --nav-h: 64px; }
 
   .nav-links  { display: none; }
+  .nav-ctas-group { display: none !important; }
   .hamburger  { display: flex; }
 
   .hero-section {

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamento online — Iago Lopes | Hardware &amp; Tech</title>
+  <meta name="description" content="Pede orçamento de conserto de celular, notebook, PC, Custom PC ou suporte TI. Resposta em até 1 hora útil. Sem compromisso, direto no WhatsApp.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://iflcosta.tech/orcamento">
+  <meta name="theme-color" content="#4F46E5">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Iago Lopes | Hardware &amp; Tech">
+  <meta property="og:title" content="Orçamento online — Iago Lopes | Hardware &amp; Tech">
+  <meta property="og:description" content="Pede orçamento de conserto de celular, notebook, PC, Custom PC ou suporte TI. Resposta em até 1 hora útil.">
+  <meta property="og:image" content="https://iflcosta.tech/assets/img/og.png">
+  <meta property="og:url" content="https://iflcosta.tech/orcamento">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Orçamento online — Iago Lopes | Hardware &amp; Tech">
+  <meta name="twitter:description" content="Pede orçamento de conserto de celular, notebook, PC, Custom PC ou suporte TI. Resposta em até 1 hora útil.">
+  <meta name="twitter:image" content="https://iflcosta.tech/assets/img/og.png">
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="./assets/img/favicon.svg">
+  <link rel="icon" type="image/png" href="./assets/img/favicon-96x96.png" sizes="96x96">
+  <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Anti-FOUC: aplica tema antes do render -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('ifl-theme') || 'system';
+      if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="./assets/css/tokens.css">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/components.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/reveal.css">
+
+  <style>
+    /* TODO: move to components.css */
+
+    /* Chip-group com radio inputs ocultos (versão semântica para página) */
+    .chip-group--radio {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    .chip-group--radio input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .chip-group--radio .chip {
+      cursor: pointer;
+      user-select: none;
+    }
+    .chip-group--radio input[type="radio"]:checked + .chip,
+    .chip-group--radio .chip:has(+ input[type="radio"]:checked) {
+      background: var(--color-brand-subtle);
+      border-color: var(--color-brand);
+      color: var(--color-text-brand);
+    }
+    /* Foco visível no label quando radio recebe foco */
+    .chip-group--radio input[type="radio"]:focus-visible + .chip {
+      outline: 2px solid var(--color-brand);
+      outline-offset: 2px;
+    }
+
+    /* Wrapper label para radio chip: label envolve input + chip */
+    .chip-radio-label {
+      display: inline-flex;
+      position: relative;
+    }
+    .chip-radio-label input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .chip-radio-label input[type="radio"]:checked ~ .chip {
+      background: var(--color-brand-subtle);
+      border-color: var(--color-brand);
+      color: var(--color-text-brand);
+    }
+    .chip-radio-label input[type="radio"]:focus-visible ~ .chip {
+      outline: 2px solid var(--color-brand);
+      outline-offset: 2px;
+    }
+
+    /* Campos condicionais ocultos */
+    [hidden] { display: none !important; }
+
+    /* Contador de caracteres */
+    .char-count {
+      font-size: var(--text-xs);
+      color: var(--color-text-tertiary);
+      text-align: right;
+      display: block;
+    }
+    .char-count.is-warn { color: var(--color-warning, #b45309); }
+    .char-count.is-max  { color: var(--red-600, #dc2626); font-weight: var(--font-medium); }
+
+    /* Fieldset reset */
+    fieldset {
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+    fieldset legend {
+      font-size: var(--text-sm);
+      font-weight: var(--font-medium);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-2);
+      padding: 0;
+    }
+
+    /* Stack de campos com espaçamento consistente */
+    .page-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      margin-top: var(--space-8);
+    }
+
+    /* Grid 2 colunas em telas maiores (nome + telefone, cidade + urgência) */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+    }
+    @media (min-width: 540px) {
+      .field-row { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Hint de erro com cor */
+    .field .hint.is-error {
+      color: var(--red-600, #dc2626);
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <header class="site-header" data-site-header>
+    <div class="container">
+      <a href="./index.html" class="wordmark" aria-label="Iago Lopes — Hardware e Tech">
+        <span class="wordmark__mono" aria-hidden="true">IL</span>
+        <span class="wordmark__text">
+          <span class="wordmark__name">Iago Lopes</span>
+          <span class="wordmark__role">Hardware &amp; Tech</span>
+        </span>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" data-theme-toggle aria-label="Alternar tema">
+          <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <a href="https://iflcosta.tech" class="btn btn--secondary btn--sm header-cta-desktop" aria-label="Voltar ao portal iflcosta.tech">Voltar ao portal</a>
+        <a class="btn btn--primary btn--sm" href="./index.html">Voltar pra home</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section>
+      <div class="container" style="max-width: 720px;">
+
+        <div class="section-head">
+          <span class="eyebrow">Orçamento</span>
+          <h1 style="font-size: var(--text-3xl); font-weight: var(--font-bold); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight);">Me conta o que está acontecendo</h1>
+          <p>Quanto mais detalhe, mais preciso o orçamento. Vou responder em até 1 hora útil.</p>
+        </div>
+
+        <form data-orcamento-form data-mode="page" class="page-form" novalidate>
+
+          <!-- Honeypot anti-spam (não tocar) -->
+          <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+            <label>Website</label>
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <!-- Tipo de serviço — chips radio -->
+          <div class="field">
+            <fieldset>
+              <legend>Tipo de serviço <span aria-hidden="true">*</span></legend>
+              <div class="chip-group--radio" role="group" aria-required="true" id="servico-group">
+                <label class="chip-radio-label">
+                  <input type="radio" name="servico" value="celular_tablet" required aria-describedby="field-error-servico">
+                  <span class="chip">Celular / Tablet</span>
+                </label>
+                <label class="chip-radio-label">
+                  <input type="radio" name="servico" value="notebook_pc" required>
+                  <span class="chip">Notebook / PC</span>
+                </label>
+                <label class="chip-radio-label">
+                  <input type="radio" name="servico" value="custom_pc" required data-triggers-cond="custom_pc">
+                  <span class="chip">Custom PC</span>
+                </label>
+                <label class="chip-radio-label">
+                  <input type="radio" name="servico" value="suporte_ti" required>
+                  <span class="chip">Suporte TI / Redes</span>
+                </label>
+                <label class="chip-radio-label">
+                  <input type="radio" name="servico" value="outro" required>
+                  <span class="chip">Outro</span>
+                </label>
+              </div>
+              <span class="hint is-error" id="field-error-servico" role="alert" aria-live="polite"></span>
+            </fieldset>
+          </div>
+
+          <!-- Nome + Telefone -->
+          <div class="field-row">
+            <div class="field">
+              <label for="nome">Seu nome <span aria-hidden="true">*</span></label>
+              <input
+                class="input"
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Como prefere ser chamado(a)"
+                required
+                minlength="2"
+                maxlength="80"
+                autocomplete="name"
+                aria-describedby="field-error-nome"
+              >
+              <span class="hint" id="field-error-nome" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="field">
+              <label for="telefone">WhatsApp <span aria-hidden="true">*</span></label>
+              <input
+                class="input"
+                type="tel"
+                id="telefone"
+                name="telefone"
+                placeholder="(11) 9 0000-0000"
+                required
+                autocomplete="tel"
+                inputmode="tel"
+                aria-describedby="field-hint-telefone field-error-telefone"
+              >
+              <span class="hint" id="field-hint-telefone">Vou responder por aqui mesmo, sem ligar sem aviso.</span>
+              <span class="hint" id="field-error-telefone" role="alert" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <!-- Email (opcional) -->
+          <div class="field">
+            <label for="email">Email <span style="font-weight: var(--font-normal); color: var(--color-text-tertiary);">(opcional)</span></label>
+            <input
+              class="input"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="voce@exemplo.com"
+              autocomplete="email"
+              inputmode="email"
+              aria-describedby="field-error-email"
+            >
+            <span class="hint" id="field-error-email" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Cidade + Urgência -->
+          <div class="field-row">
+            <div class="field">
+              <label for="cidade">Cidade</label>
+              <select class="select" id="cidade" name="cidade" aria-describedby="field-error-cidade">
+                <option value="">Selecione a cidade</option>
+                <option value="Bragança Paulista">Bragança Paulista</option>
+                <option value="Atibaia">Atibaia</option>
+                <option value="Itatiba">Itatiba</option>
+                <option value="Jundiaí">Jundiaí</option>
+                <option value="Vinhedo">Vinhedo</option>
+                <option value="Campinas">Campinas</option>
+                <option value="Outra">Outra</option>
+                <option value="Remoto">Remoto</option>
+              </select>
+              <span class="hint" id="field-error-cidade" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="field">
+              <label for="urgencia">Urgência</label>
+              <select class="select" id="urgencia" name="urgencia" aria-describedby="field-error-urgencia">
+                <option value="">Selecione a urgência</option>
+                <option value="hoje">Hoje, se possível</option>
+                <option value="essa_semana">Essa semana</option>
+                <option value="sem_pressa">Sem pressa</option>
+              </select>
+              <span class="hint" id="field-error-urgencia" role="alert" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <!-- Campos condicionais: só aparecem quando Custom PC é selecionado -->
+          <div data-cond-servico="custom_pc" hidden>
+            <div class="field-row">
+              <div class="field">
+                <label for="tipo_uso">Tipo de uso</label>
+                <select class="select" id="tipo_uso" name="tipo_uso" aria-describedby="field-error-tipo_uso">
+                  <option value="">Selecione o uso</option>
+                  <option value="gamer">Gamer</option>
+                  <option value="produtividade">Produtividade / Escritório</option>
+                  <option value="workstation">Workstation / Criação</option>
+                </select>
+                <span class="hint" id="field-error-tipo_uso" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="field">
+                <label for="faixa_orcamento">Faixa de orçamento</label>
+                <input
+                  class="input"
+                  type="text"
+                  id="faixa_orcamento"
+                  name="faixa_orcamento"
+                  placeholder="Ex: R$ 3.000 – R$ 5.000"
+                  aria-describedby="field-hint-faixa_orcamento field-error-faixa_orcamento"
+                >
+                <span class="hint" id="field-hint-faixa_orcamento">Valor aproximado que você tem em mente.</span>
+                <span class="hint" id="field-error-faixa_orcamento" role="alert" aria-live="polite"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mensagem detalhada -->
+          <div class="field">
+            <label for="mensagem">O que está acontecendo?</label>
+            <textarea
+              class="textarea"
+              id="mensagem"
+              name="mensagem"
+              placeholder="Modelo do aparelho, sintoma, quando começou, o que já tentou fazer. Quanto mais detalhe, melhor o diagnóstico."
+              maxlength="1500"
+              rows="5"
+              aria-describedby="char-count-mensagem field-error-mensagem"
+              style="min-height: 140px;"
+            ></textarea>
+            <small class="char-count" id="char-count-mensagem" aria-live="polite">0 / 1500</small>
+            <span class="hint" id="field-error-mensagem" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Feedback de sucesso (oculto até submeter) -->
+          <div data-form-success hidden class="form-success" role="status" aria-live="polite">
+            Recebido! Vou responder no WhatsApp em até 1 hora útil.
+          </div>
+
+          <!-- Feedback de erro de servidor (oculto até precisar) -->
+          <div data-form-error hidden class="form-error" role="alert" aria-live="assertive"></div>
+
+          <!-- Consentimento LGPD -->
+          <div class="field field--consent">
+            <label class="checkbox-label">
+              <input type="checkbox" name="consent" required aria-describedby="field-error-consent">
+              <span>Concordo com a <a href="./privacidade.html">Política de Privacidade</a> e autorizo o contato pelos dados fornecidos.</span>
+            </label>
+            <span class="hint" id="field-error-consent" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Submit -->
+          <div>
+            <button type="submit" class="btn btn--primary btn--lg btn--block">
+              Enviar orçamento
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: 0;">
+        <span>© 2026 Iago Lopes · Bragança Paulista – SP</span>
+        <a href="./index.html" style="color: var(--color-text-brand);">Voltar pra home</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a class="wa-float" data-wa-float href="https://wa.me/5511919691542" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+    <span class="pulse" aria-hidden="true"></span>
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: relative;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  </a>
+
+  <script type="module" src="./assets/js/main.js"></script>
+</body>
+</html>

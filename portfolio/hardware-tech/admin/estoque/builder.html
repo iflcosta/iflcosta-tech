@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom PC Builder — Iago Lopes | Hardware & Tech</title>
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/admin.css">
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', var(--font-sans); }
+
+    /* Builder Grid */
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+      margin-top: var(--space-4);
+    }
+    @media (min-width: 1024px) {
+      .builder-layout {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    /* Slots de Componentes */
+    .slots-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .component-slot {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+    }
+    .component-slot:hover {
+      border-color: var(--color-border-default);
+      box-shadow: var(--shadow-md);
+    }
+    @media (min-width: 640px) {
+      .component-slot {
+        grid-template-columns: 180px 1fr 120px;
+        align-items: center;
+        gap: var(--space-4);
+      }
+    }
+
+    .slot-label {
+      font-weight: var(--font-bold);
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+    }
+    .slot-label span {
+      font-size: var(--text-lg);
+    }
+
+    .slot-price {
+      font-weight: var(--font-bold);
+      color: var(--color-text-secondary);
+      text-align: left;
+      font-size: var(--text-sm);
+    }
+    @media (min-width: 640px) {
+      .slot-price {
+        text-align: right;
+      }
+    }
+
+    /* Painel de Cotação Fixo / Lateral */
+    .quote-card {
+      background: hsla(0, 0%, 100%, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-lg);
+      position: sticky;
+      top: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    [data-theme="dark"] .quote-card {
+      background: hsla(222, 22%, 18%, 0.55);
+    }
+
+    .quote-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+    .quote-stat-label {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    .quote-stat-value {
+      font-weight: var(--font-bold);
+      font-size: var(--text-base);
+      color: var(--color-text-primary);
+    }
+
+    /* Alerta de Incompatibilidade HSL */
+    .warning-banner {
+      background: hsla(0, 80%, 50%, 0.08);
+      border: 1px solid hsl(0, 80%, 50%);
+      color: hsl(0, 80%, 40%);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    [data-theme="dark"] .warning-banner {
+      background: hsla(0, 90%, 58%, 0.12);
+      color: hsl(0, 90%, 72%);
+    }
+
+    .preset-container {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    @media (min-width: 640px) {
+      .preset-container {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  </style>
+  <script>
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</head>
+<body>
+
+  <div class="admin-shell">
+    <main class="admin-main">
+      <div class="page-header" style="flex-direction: row; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+        <div>
+          <h1 class="page-title">Custom PC Builder</h1>
+          <p class="page-subtitle">Monte, valide e crie orçamentos inteligentes de computadores sob medida.</p>
+        </div>
+        <div>
+          <a href="../../admin/estoque" class="btn btn--secondary" style="text-decoration: none;"><span>← Voltar ao Estoque</span></a>
+        </div>
+      </div>
+
+      <!-- Alerta de incompatibilidade -->
+      <div id="builder-compatibility-warning" class="warning-banner" style="display: none;">
+        <span>⚠️</span>
+        <div id="warning-text">Aviso de Compatibilidade</div>
+      </div>
+
+      <!-- Seletor de Presets -->
+      <div class="preset-container">
+        <div style="display: flex; align-items: center; gap: var(--space-3);">
+          <span style="font-size: var(--text-xl);">🖥️</span>
+          <div>
+            <h3 style="font-weight: var(--font-bold); font-size: var(--text-sm); margin: 0;">Presilhas &amp; Perfis Recomendados</h3>
+            <p style="font-size: var(--text-xs); color: var(--color-text-tertiary); margin: 0;">Escolha uma base para preencher os slots automaticamente.</p>
+          </div>
+        </div>
+        <div style="min-width: 250px;">
+          <select id="builder-preset-select" class="select">
+            <option value="">Selecione um Preset...</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="builder-layout">
+        <!-- Slots de Componentes -->
+        <div class="slots-grid">
+          
+          <!-- CPU -->
+          <div class="component-slot" data-slot="cpu">
+            <div class="slot-label">
+              <span>💻</span>
+              <div>
+                <div>Processador (CPU)</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Nenhum socket</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-cpu" class="select builder-component-select" data-category="Processador">
+                <option value="">Selecione um Processador...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-cpu">R$ 0,00</div>
+          </div>
+
+          <!-- Placa-mãe -->
+          <div class="component-slot" data-slot="motherboard">
+            <div class="slot-label">
+              <span>🔌</span>
+              <div>
+                <div>Placa-mãe</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Nenhum socket</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-motherboard" class="select builder-component-select" data-category="Placa-mãe">
+                <option value="">Selecione uma Placa-mãe...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-motherboard">R$ 0,00</div>
+          </div>
+
+          <!-- Memória RAM -->
+          <div class="component-slot" data-slot="ram">
+            <div class="slot-label">
+              <span>🧠</span>
+              <div>
+                <div>Memória RAM</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Não especificado</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-ram" class="select builder-component-select" data-category="Memória RAM">
+                <option value="">Selecione a Memória RAM...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-ram">R$ 0,00</div>
+          </div>
+
+          <!-- SSD / Armazenamento -->
+          <div class="component-slot" data-slot="ssd">
+            <div class="slot-label">
+              <span>💾</span>
+              <div>
+                <div>Armazenamento (SSD/HD)</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Não especificado</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-ssd" class="select builder-component-select" data-category="Armazenamento">
+                <option value="">Selecione o Armazenamento...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-ssd">R$ 0,00</div>
+          </div>
+
+          <!-- GPU -->
+          <div class="component-slot" data-slot="gpu">
+            <div class="slot-label">
+              <span>🎮</span>
+              <div>
+                <div>Placa de Vídeo (GPU)</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Não especificado</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-gpu" class="select builder-component-select" data-category="Placa de Vídeo">
+                <option value="">Selecione a Placa de Vídeo...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-gpu">R$ 0,00</div>
+          </div>
+
+          <!-- Fonte -->
+          <div class="component-slot" data-slot="psu">
+            <div class="slot-label">
+              <span>⚡</span>
+              <div>
+                <div>Fonte de Alimentação</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Não especificado</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-psu" class="select builder-component-select" data-category="Fonte">
+                <option value="">Selecione a Fonte...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-psu">R$ 0,00</div>
+          </div>
+
+          <!-- Gabinete -->
+          <div class="component-slot" data-slot="case">
+            <div class="slot-label">
+              <span>🗄️</span>
+              <div>
+                <div>Gabinete</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Não especificado</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-case" class="select builder-component-select" data-category="Gabinete">
+                <option value="">Selecione o Gabinete...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-case">R$ 0,00</div>
+          </div>
+
+          <!-- Cooler -->
+          <div class="component-slot" data-slot="cooler">
+            <div class="slot-label">
+              <span>❄️</span>
+              <div>
+                <div>Cooler</div>
+                <div style="font-size: var(--text-xxs); color: var(--color-text-tertiary); font-weight: var(--font-normal);" class="slot-spec-label">Não especificado</div>
+              </div>
+            </div>
+            <div>
+              <select id="select-cooler" class="select builder-component-select" data-category="Cooler">
+                <option value="">Selecione o Cooler...</option>
+              </select>
+            </div>
+            <div class="slot-price" id="price-cooler">R$ 0,00</div>
+          </div>
+
+        </div>
+
+        <!-- Painel de Margens e Cotação -->
+        <div>
+          <div class="quote-card">
+            <h2 style="font-size: var(--text-md); font-weight: var(--font-bold); margin: 0; display: flex; align-items: center; gap: var(--space-2);">
+              <span>💰</span> Cotação da Build
+            </h2>
+
+            <div class="quote-stat">
+              <span class="quote-stat-label">Custo das Peças</span>
+              <span class="quote-stat-value" id="total-cost">R$ 0,00</span>
+            </div>
+
+            <div class="field" style="margin: 0;">
+              <label for="markup-margin" style="display: flex; justify-content: space-between;">
+                <span>Margem de Lucro (Markup)</span>
+                <span id="markup-val" style="font-weight: var(--font-bold); color: var(--color-primary);">30%</span>
+              </label>
+              <input type="range" id="markup-margin" min="0" max="100" value="30" class="input" style="padding: 0; height: 8px; cursor: pointer;">
+            </div>
+
+            <div class="quote-stat" style="border-bottom: none; padding-bottom: 0; margin-top: var(--space-2);">
+              <span class="quote-stat-label" style="font-size: var(--text-base); font-weight: var(--font-bold);">Preço Sugerido</span>
+              <span class="quote-stat-value" id="suggested-price" style="font-size: var(--text-xl); color: var(--color-success);">R$ 0,00</span>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--color-border-subtle); margin: var(--space-2) 0;">
+
+            <button type="button" id="btn-copy-wa" class="btn btn--secondary w-full" style="justify-content: center; min-height: 44px;">
+              <span>💬 Copiar para WhatsApp</span>
+            </button>
+
+            <button type="button" id="btn-create-os" class="btn btn--primary w-full" style="justify-content: center; min-height: 44px;">
+              <span>🛠️ Gerar OS Rascunho</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../../assets/js/admin/layout.js" type="module"></script>
+  <script src="../../assets/js/admin/builder.js" type="module"></script>
+</body>
+</html>

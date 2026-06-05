@@ -1,0 +1,249 @@
+/* ============================================================
+   Design Tokens — Iago Lopes | Hardware & Tech
+   ============================================================ */
+
+:root {
+  /* Primitives — Slate (neutros frios) */
+  --slate-50:  #F8FAFC;
+  --slate-100: #F1F5F9;
+  --slate-200: #E2E8F0;
+  --slate-300: #CBD5E1;
+  --slate-400: #94A3B8;
+  --slate-500: #64748B;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1E293B;
+  --slate-900: #0F172A;
+  --slate-950: #020617;
+
+  /* Primitives — Indigo (brand) */
+  --indigo-50:  #EEF2FF;
+  --indigo-100: #E0E7FF;
+  --indigo-200: #C7D2FE;
+  --indigo-300: #A5B4FC;
+  --indigo-400: #818CF8;
+  --indigo-500: #6366F1;
+  --indigo-600: #4F46E5;
+  --indigo-700: #4338CA;
+  --indigo-800: #3730A3;
+  --indigo-900: #312E81;
+
+  /* Primitives — Warm (fundo bone/cream — IA brand) */
+  --warm-50:  #FAFAF7;
+  --warm-100: #F4F2EC;
+  --warm-200: #EAE6DC;
+  --warm-300: #D4CDB8;
+
+  /* Primitives — WhatsApp green */
+  --wa-green-500: #25D366;
+  --wa-green-600: #20B358;
+
+  /* Functional */
+  --green-100: #D1FAE5; --green-500: #10B981; --green-700: #047857;
+  --amber-100: #FEF3C7; --amber-500: #F59E0B; --amber-700: #B45309;
+  --red-100:   #FEE2E2; --red-500:   #EF4444; --red-700:   #B91C1C;
+  --sky-100:   #E0F2FE; --sky-500:   #0EA5E9; --sky-700:   #0369A1;
+
+  /* Semantic — Light */
+  --color-bg-base:       var(--slate-50);
+  --color-bg-surface:    #FFFFFF;
+  --color-bg-elevated:   #FFFFFF;
+  --color-bg-subtle:     var(--slate-100);
+  --color-bg-inverse:    var(--slate-900);
+
+  --color-text-primary:   var(--slate-900);
+  --color-text-secondary: var(--slate-600);
+  --color-text-tertiary:  var(--slate-500);
+  --color-text-inverse:   var(--slate-50);
+  --color-text-brand:     var(--indigo-700);
+  --color-text-on-brand:  #FFFFFF;
+
+  --color-border-subtle:  var(--slate-200);
+  --color-border-default: var(--slate-300);
+  --color-border-strong:  var(--slate-400);
+  --color-border-focus:   var(--indigo-600);
+
+  --color-brand:          var(--indigo-600);
+  --color-brand-hover:    var(--indigo-700);
+  --color-brand-active:   var(--indigo-800);
+  --color-brand-subtle:   var(--indigo-50);
+
+  /* IA — accent + bone bg + chat tokens */
+  --color-bg-ia:            var(--warm-100);
+  --color-accent:           var(--wa-green-500);
+  --color-accent-hover:     var(--wa-green-600);
+  --color-chat-bg:          #ECE5DD;
+  --color-chat-bubble-us:   #DCF8C6;
+  --color-chat-bubble-them: #FFFFFF;
+
+  --color-success:        var(--green-500);
+  --color-success-subtle: var(--green-100);
+  --color-warning:        var(--amber-500);
+  --color-warning-subtle: var(--amber-100);
+  --color-danger:         var(--red-500);
+  --color-danger-subtle:  var(--red-100);
+  --color-info:           var(--sky-500);
+  --color-info-subtle:    var(--sky-100);
+
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+               "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono",
+               Menlo, Consolas, monospace;
+
+  --text-xs:      0.75rem;
+  --text-sm:      clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+  --text-base:    clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+  --text-lg:      clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
+  --text-xl:      clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-2xl:     clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+  --text-3xl:     clamp(1.875rem, 1.4rem + 1.6vw, 2.5rem);
+  --text-display: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+
+  --font-regular:  400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  --font-bold:     700;
+
+  --leading-tight:   1.15;
+  --leading-snug:    1.3;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+
+  /* Spacing */
+  --space-0:  0;
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-7:  3rem;
+  --space-8:  4rem;
+  --space-9:  6rem;
+  --space-10: 8rem;
+
+  /* Container */
+  --container-max:    1200px;
+  --container-gutter: var(--space-4);
+
+  /* Radius */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08),
+               0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08),
+               0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1),
+               0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-focus: 0 0 0 3px rgba(79, 70, 229, 0.3);
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --duration-instant: 100ms;
+  --duration-fast:    150ms;
+  --duration-base:    200ms;
+  --duration-slow:    300ms;
+  --duration-slower:  500ms;
+}
+
+@media (min-width: 768px) {
+  :root { --container-gutter: var(--space-6); }
+}
+
+/* Dark theme — sistema de preferência (fallback quando data-theme não foi definido) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-base:       #0B1220;
+    --color-bg-surface:    #111827;
+    --color-bg-elevated:   #1A2333;
+    --color-bg-subtle:     #0F172A;
+    --color-bg-inverse:    var(--slate-50);
+    --color-bg-ia:         #0A0E10;
+
+    --color-text-primary:   var(--slate-50);
+    --color-text-secondary: var(--slate-300);
+    --color-text-tertiary:  var(--slate-400);
+    --color-text-inverse:   var(--slate-900);
+    --color-text-brand:     var(--indigo-300);
+    --color-text-on-brand:  #FFFFFF;
+
+    --color-border-subtle:  #1E293B;
+    --color-border-default: #334155;
+    --color-border-strong:  var(--slate-600);
+    --color-border-focus:   var(--indigo-400);
+
+    --color-brand:          var(--indigo-500);
+    --color-brand-hover:    var(--indigo-400);
+    --color-brand-active:   var(--indigo-300);
+    --color-brand-subtle:   rgba(99, 102, 241, 0.12);
+
+    --color-success-subtle: rgba(16, 185, 129, 0.15);
+    --color-warning-subtle: rgba(245, 158, 11, 0.15);
+    --color-danger-subtle:  rgba(239, 68, 68, 0.15);
+    --color-info-subtle:    rgba(14, 165, 233, 0.15);
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+    --color-chat-bg:          #111518;
+    --color-chat-bubble-us:   #1A4026;
+    --color-chat-bubble-them: #242930;
+  }
+}
+
+/* Dark theme — override explícito via toggle */
+[data-theme="dark"] {
+  --color-bg-base:       #0B1220;
+  --color-bg-surface:    #111827;
+  --color-bg-elevated:   #1A2333;
+  --color-bg-subtle:     #0F172A;
+  --color-bg-inverse:    var(--slate-50);
+
+  --color-text-primary:   var(--slate-50);
+  --color-text-secondary: var(--slate-300);
+  --color-text-tertiary:  var(--slate-400);
+  --color-text-inverse:   var(--slate-900);
+  --color-text-brand:     var(--indigo-300);
+  --color-text-on-brand:  #FFFFFF;
+
+  --color-border-subtle:  #1E293B;
+  --color-border-default: #334155;
+  --color-border-strong:  var(--slate-600);
+  --color-border-focus:   var(--indigo-400);
+
+  --color-brand:          var(--indigo-500);
+  --color-brand-hover:    var(--indigo-400);
+  --color-brand-active:   var(--indigo-300);
+  --color-brand-subtle:   rgba(99, 102, 241, 0.12);
+
+  /* IA dark tokens */
+  --color-bg-ia:            #0A0E10;
+  --color-chat-bg:          #111518;
+  --color-chat-bubble-us:   #1A4026;
+  --color-chat-bubble-them: #242930;
+
+  --color-success-subtle: rgba(16, 185, 129, 0.15);
+  --color-warning-subtle: rgba(245, 158, 11, 0.15);
+  --color-danger-subtle:  rgba(239, 68, 68, 0.15);
+  --color-info-subtle:    rgba(14, 165, 233, 0.15);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}

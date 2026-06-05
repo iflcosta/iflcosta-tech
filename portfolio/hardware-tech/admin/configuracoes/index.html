@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações — Iago Lopes | Hardware & Tech</title>
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/admin.css">
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', var(--font-sans);
+    }
+  </style>
+  <script>
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</head>
+<body>
+
+  <div class="admin-shell">
+    <main class="admin-main">
+      <div class="page-header">
+        <h1 class="page-title">Configurações</h1>
+        <p class="page-subtitle">Ajustes do sistema e segurança da conta administrativa.</p>
+      </div>
+
+      <div class="stub-card">
+        <div class="stub-illustration">⚙️</div>
+        <h2 style="font-size: var(--text-lg); font-weight: var(--font-bold); margin: 0;">Ajustes do Painel</h2>
+        <p style="color: var(--color-text-secondary); max-width: 480px; margin: 0; line-height: var(--leading-normal); text-align: center;">
+          Configurações globais do sistema, alteração de temas persistentes e gerenciamento da sessão do administrador.
+        </p>
+        
+        <div style="margin-top: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); width: 100%; max-width: 320px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-3); background: var(--color-bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border-subtle);">
+            <span style="font-size: var(--text-sm); font-weight: var(--font-medium);">Tema do Sistema</span>
+            <button id="config-theme-toggle" class="btn btn--outline" style="padding: var(--space-1) var(--space-2); font-size: var(--text-xs); border-radius: var(--radius-sm);">Alternar</button>
+          </div>
+          
+          <a href="/api/admin/auth-logout" class="btn btn--primary" style="text-decoration: none; text-align: center; font-size: var(--text-sm); border-radius: var(--radius-md); display: block; width: 100%;">
+            🚪 Sair do Painel
+          </a>
+        </div>
+
+        <span class="badge-soon" style="margin-top: var(--space-4);">Módulo Ativo — Feature 004</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../assets/js/admin/layout.js" type="module"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const configThemeToggle = document.getElementById('config-theme-toggle');
+      if (configThemeToggle) {
+        configThemeToggle.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

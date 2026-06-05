@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iago Lopes | Hardware & Tech — Técnico em Bragança Paulista, Atibaia e Itatiba</title>
+  <meta name="description" content="Conserto de celular, manutenção de notebook e PC, manutenção em placa (microsoldagem), montagem de Custom PC e suporte de TI. Atendimento direto, sem balcão, com garantia de 90 dias.">
+  <meta name="theme-color" content="#4F46E5">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://iflcosta.tech/">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Iago Lopes | Hardware & Tech">
+  <meta property="og:title" content="Iago Lopes | Hardware & Tech — Técnico em Informática">
+  <meta property="og:description" content="Conserto de celular, notebook, PC, manutenção em placa e suporte TI em Bragança, Atibaia e Itatiba. Direto, com garantia.">
+  <meta property="og:image" content="https://iflcosta.tech/assets/img/og.png">
+  <meta property="og:url" content="https://iflcosta.tech/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Iago Lopes | Hardware & Tech">
+  <meta name="twitter:description" content="Conserto de celular, notebook, PC, manutenção em placa e suporte TI. Direto, com garantia.">
+  <meta name="twitter:image" content="https://iflcosta.tech/assets/img/og.png">
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="./assets/img/favicon.svg">
+  <link rel="icon" type="image/png" href="./assets/img/favicon-96x96.png" sizes="96x96">
+  <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Theme init (anti-FOUC) -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('ifl-theme') || 'system';
+      if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="./assets/css/tokens.css">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/components.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/reveal.css">
+
+  <!-- JSON-LD: LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://iflcosta.tech/#business",
+    "name": "Iago Lopes | Hardware & Tech",
+    "alternateName": "Iago Lopes Hardware & Tech",
+    "description": "Especialista em hardware e TI — conserto de celular, manutenção de notebook/PC, manutenção em placa (microsoldagem), montagem de Custom PC e suporte técnico em Bragança Paulista, Atibaia e Itatiba.",
+    "url": "https://iflcosta.tech",
+    "telephone": "+5511919691542",
+    "email": "iflcosta@outlook.com",
+    "image": "https://iflcosta.tech/assets/img/og.png",
+    "priceRange": "R$",
+    "currenciesAccepted": "BRL",
+    "paymentAccepted": "Cash, Credit Card, Pix",
+    "areaServed": [
+      { "@type": "City", "name": "Bragança Paulista" },
+      { "@type": "City", "name": "Atibaia" },
+      { "@type": "City", "name": "Itatiba" }
+    ],
+    "openingHoursSpecification": [{
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      "opens": "09:00",
+      "closes": "19:00"
+    }]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Quanto custa para trocar a tela do meu celular?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Depende do modelo. iPhone vai de R$ 250 a R$ 1.200; Android genérico de R$ 80 a R$ 600. Manda o modelo no WhatsApp que eu fecho o preço antes." }
+      },
+      {
+        "@type": "Question",
+        "name": "Você faz orçamento pelo WhatsApp?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Sim, sempre. Mando faixa de preço pela mensagem mesmo, e fecho só depois que você aprova." }
+      },
+      {
+        "@type": "Question",
+        "name": "As peças são originais?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Trabalho com originais e com compatíveis premium. Antes de aprovar o orçamento eu te falo qual vou usar e o porquê." }
+      },
+      {
+        "@type": "Question",
+        "name": "Você faz manutenção em placa? (reballing, microsoldagem)",
+        "acceptedAnswer": { "@type": "Answer", "text": "Faço. Trabalho com BGA, reparo de trilha, troca de CI e diagnóstico de placa. Quando dá pra reparar em vez de trocar a placa inteira, eu prefiro — quase sempre fica mais barato pra você." }
+      },
+      {
+        "@type": "Question",
+        "name": "Quanto tempo demora?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Conserto simples de celular: mesmo dia. Notebook/PC: 1 a 3 dias. Reparo em placa: 2 a 5 dias dependendo do diagnóstico. Custom PC: até 2 dias úteis após aprovar orçamento." }
+      },
+      {
+        "@type": "Question",
+        "name": "Tem garantia mesmo se eu mexer depois?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A garantia cobre a peça e o serviço. Se o problema voltar sem indício de novo dano, eu refaço sem cobrar. Quebra nova, queda ou líquido não entram." }
+      },
+      {
+        "@type": "Question",
+        "name": "Você emite nota fiscal?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Sim, NFe eletrônica sempre que solicitada." }
+      },
+      {
+        "@type": "Question",
+        "name": "Atende urgência?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Atendo. Manda no WhatsApp marcando urgente que eu encaixo no mesmo dia se possível." }
+      },
+      {
+        "@type": "Question",
+        "name": "Atende empresas?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Sim. Tenho clientes com contrato mensal de suporte. Posso fazer proposta sob medida." }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <!-- =============================================
+       HEADER
+       ============================================= -->
+  <header class="site-header" data-site-header>
+    <div class="container">
+      <a href="./index.html" class="wordmark" aria-label="Iago Lopes — Hardware e Tech">
+        <span class="wordmark__mono" aria-hidden="true">IL</span>
+        <span class="wordmark__text">
+          <span class="wordmark__name">Iago Lopes</span>
+          <span class="wordmark__role">Hardware &amp; Tech</span>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Principal">
+        <a href="#servicos">Serviços</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" data-theme-toggle aria-label="Alternar tema">
+          <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <a href="https://iflcosta.tech" class="btn btn--secondary btn--sm header-cta-desktop" aria-label="Voltar ao portal iflcosta.tech">Voltar ao portal</a>
+        <button class="btn btn--primary btn--sm header-cta-desktop" data-modal-open data-cta-location="header">
+          Pedir orçamento
+        </button>
+        <button class="btn btn--primary btn--sm header-cta-mobile" data-modal-open data-cta-location="header" aria-label="Pedir orçamento">
+          Orçamento
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- =============================================
+         HERO
+         ============================================= -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="hero__layout">
+          <div class="hero__content">
+            <span class="eyebrow" data-reveal>Bragança · Atibaia · Itatiba</span>
+            <h1 id="hero-title" class="hero__title" data-reveal data-reveal-delay="1">
+              Quebrou, travou ou ficou lento? <em>Eu resolvo.</em>
+            </h1>
+            <p class="hero__sub" data-reveal data-reveal-delay="2">
+              Especialista em TI atendendo direto, sem balcão, com <strong>garantia de 90 dias</strong>.
+              Conserto de celular, notebook, PC e suporte técnico onde você estiver.
+            </p>
+            <div class="hero__ctas" data-reveal data-reveal-delay="3">
+              <button class="btn btn--primary btn--lg" data-modal-open data-cta-location="hero">
+                Pedir orçamento agora
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+              <a class="btn btn--secondary btn--lg" href="https://wa.me/5511919691542" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                Falar no WhatsApp
+              </a>
+            </div>
+
+            <div class="trust-strip" data-reveal data-reveal-delay="4">
+              <div class="trust-item">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span class="trust-item__label">Garantia<br>90 dias</span>
+              </div>
+              <div class="trust-item">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v6"/><path d="M12 17v6"/><path d="m4.22 4.22 4.24 4.24"/><path d="m15.54 15.54 4.24 4.24"/><path d="M1 12h6"/><path d="M17 12h6"/></svg>
+                <span class="trust-item__label">Manutenção<br>em placa</span>
+              </div>
+              <div class="trust-item">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span class="trust-item__label">Sem balcão,<br>direto comigo</span>
+              </div>
+              <div class="trust-item">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                <span class="trust-item__label">Pix, dinheiro<br>ou cartão</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero visual: stylized diagnostic ticket -->
+          <div class="hero__visual" aria-hidden="true" data-reveal data-reveal-delay="2">
+            <div class="diag-ticket">
+              <div class="diag-ticket__head">
+                <div class="diag-ticket__id">
+                  <span class="diag-ticket__hash">#</span>
+                  <span class="diag-ticket__num">2604-A</span>
+                </div>
+                <span class="badge badge--success"><span class="dot"></span>Em reparo</span>
+              </div>
+
+              <div class="diag-ticket__device">
+                <div class="diag-ticket__device-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                </div>
+                <div>
+                  <div class="diag-ticket__model">iPhone 13 Pro</div>
+                  <div class="diag-ticket__note">Sem imagem · Touch funcional</div>
+                </div>
+              </div>
+
+              <div class="diag-ticket__steps">
+                <div class="diag-step is-done">
+                  <span class="diag-step__dot"></span>
+                  <span class="diag-step__label">Diagnóstico</span>
+                  <span class="diag-step__time">14:02</span>
+                </div>
+                <div class="diag-step is-done">
+                  <span class="diag-step__dot"></span>
+                  <span class="diag-step__label">Orçamento enviado</span>
+                  <span class="diag-step__time">14:18</span>
+                </div>
+                <div class="diag-step is-active">
+                  <span class="diag-step__dot"></span>
+                  <span class="diag-step__label">Reparo em andamento</span>
+                  <span class="diag-step__time">agora</span>
+                </div>
+                <div class="diag-step">
+                  <span class="diag-step__dot"></span>
+                  <span class="diag-step__label">Testes &amp; entrega</span>
+                  <span class="diag-step__time">17:30</span>
+                </div>
+              </div>
+
+              <div class="diag-ticket__foot">
+                <div>
+                  <div class="diag-ticket__label">Garantia</div>
+                  <div class="diag-ticket__val">90 dias</div>
+                </div>
+                <div>
+                  <div class="diag-ticket__label">Total</div>
+                  <div class="diag-ticket__val">R$ 480</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="floating-chip floating-chip--1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Aprovado pelo cliente
+            </div>
+            <div class="floating-chip floating-chip--2">
+              <span class="floating-chip__dot"></span>
+              Microsoldagem · BGA
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================
+         SERVIÇOS
+         ============================================= -->
+    <section id="servicos" aria-labelledby="servicos-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Serviços</span>
+          <h2 id="servicos-title">O que eu faço</h2>
+          <p>Quatro frentes, todas com a mesma garantia de 90 dias e a mesma transparência no orçamento.</p>
+        </div>
+
+        <div class="services-grid">
+
+          <article class="card service-card" data-reveal data-reveal-delay="1">
+            <div class="service-card__icon">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+            <h3 class="service-card__title">Celular e tablet</h3>
+            <p class="service-card__desc">Troca de tela, bateria, conector de carga, recuperação de dados e reparo em placa.</p>
+            <div class="service-card__footer">
+              <span class="badge badge--info">A partir de R$ 80</span>
+              <button class="service-card__cta" data-modal-open data-service="celular" data-cta-location="servicos">
+                Pedir orçamento
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <article class="card service-card" data-reveal data-reveal-delay="2">
+            <div class="service-card__icon">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M2 20h20"/></svg>
+            </div>
+            <h3 class="service-card__title">Notebook e PC</h3>
+            <p class="service-card__desc">Manutenção preventiva, troca de SSD/RAM, formatação, limpeza, recuperação e reparo em placa.</p>
+            <div class="service-card__footer">
+              <span class="badge badge--info">A partir de R$ 120</span>
+              <button class="service-card__cta" data-modal-open data-service="notebook-pc" data-cta-location="servicos">
+                Pedir orçamento
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <article class="card service-card" data-reveal data-reveal-delay="3">
+            <div class="service-card__icon">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h2v2H8z" fill="currentColor"/><path d="M14 8h2v2h-2z" fill="currentColor"/><path d="M8 14h8v2H8z" fill="currentColor"/></svg>
+            </div>
+            <h3 class="service-card__title">Custom PC</h3>
+            <p class="service-card__desc">Montagem do zero, upgrade, escolha de peças, bench e otimização para jogos ou trabalho.</p>
+            <div class="service-card__footer">
+              <span class="badge badge--brand">Sob medida</span>
+              <button class="service-card__cta" data-modal-open data-service="custom-pc" data-cta-location="servicos">
+                Pedir orçamento
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <article class="card service-card" data-reveal data-reveal-delay="4">
+            <div class="service-card__icon">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <h3 class="service-card__title">Suporte TI / Redes</h3>
+            <p class="service-card__desc">Wi-Fi, roteador, impressora, NAS, configuração de loja, escritório e suporte remoto.</p>
+            <div class="service-card__footer">
+              <span class="badge badge--info">A partir de R$ 150</span>
+              <button class="service-card__cta" data-modal-open data-service="suporte-ti" data-cta-location="servicos">
+                Pedir orçamento
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================
+         COMO FUNCIONA
+         ============================================= -->
+    <section id="como-funciona" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Processo</span>
+          <h2 id="how-title">Como funciona, do oi ao conserto</h2>
+          <p>Sem pegadinha, sem técnico diferente toda semana, sem fila de balcão. Três passos e pronto.</p>
+        </div>
+
+        <ol class="steps">
+          <li class="step" data-reveal data-reveal-delay="1">
+            <span class="step__num">01</span>
+            <div class="step__body">
+              <h3 class="step__title">Você manda o problema</h3>
+              <p class="step__desc">Pelo formulário ou direto no WhatsApp. Pode mandar foto — quanto mais detalhe, melhor o pré-diagnóstico.</p>
+            </div>
+          </li>
+          <li class="step" data-reveal data-reveal-delay="2">
+            <span class="step__num">02</span>
+            <div class="step__body">
+              <h3 class="step__title">Eu dou orçamento e prazo</h3>
+              <p class="step__desc">Faixa de preço fechada antes de qualquer reparo. Você aprova; só aí eu começo.</p>
+            </div>
+          </li>
+          <li class="step" data-reveal data-reveal-delay="3">
+            <span class="step__num">03</span>
+            <div class="step__body">
+              <h3 class="step__title">Conserto com garantia</h3>
+              <p class="step__desc">90 dias cobrindo a peça e o serviço. Se voltar a apresentar o mesmo defeito, eu refaço.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =============================================
+         POR QUE COMIGO
+         ============================================= -->
+    <section id="por-que" aria-labelledby="why-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Diferenciais</span>
+          <h2 id="why-title">Por que escolher um especialista direto</h2>
+          <p>Sem intermediário, sem balcão lotado, sem técnico que troca toda semana. Você fala com quem conserta.</p>
+        </div>
+
+        <div class="why-grid">
+          <div class="why-item" data-reveal data-reveal-delay="1">
+            <div class="why-item__check">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="why-item__body">
+              <h3 class="why-item__title">Garantia de 90 dias</h3>
+              <p class="why-item__desc">Peça e serviço cobertos. Defeito ressurgindo sem novo dano, eu refaço sem cobrar.</p>
+            </div>
+          </div>
+
+          <div class="why-item" data-reveal data-reveal-delay="2">
+            <div class="why-item__check">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="why-item__body">
+              <h3 class="why-item__title">Manutenção em placa</h3>
+              <p class="why-item__desc">Microsoldagem, BGA e reparo de trilhas — não troco tudo na primeira tentativa.</p>
+            </div>
+          </div>
+
+          <div class="why-item" data-reveal data-reveal-delay="3">
+            <div class="why-item__check">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="why-item__body">
+              <h3 class="why-item__title">Atendimento direto</h3>
+              <p class="why-item__desc">Você fala comigo, não com atendente. Sem ruído entre o problema e o diagnóstico.</p>
+            </div>
+          </div>
+
+          <div class="why-item" data-reveal data-reveal-delay="1">
+            <div class="why-item__check">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="why-item__body">
+              <h3 class="why-item__title">Sem balcão</h3>
+              <p class="why-item__desc">Eu vou até você ou combinamos retirada. Atende em casa, em escritório ou na loja.</p>
+            </div>
+          </div>
+
+          <div class="why-item" data-reveal data-reveal-delay="2">
+            <div class="why-item__check">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="why-item__body">
+              <h3 class="why-item__title">Peças com procedência</h3>
+              <p class="why-item__desc">Originais ou compatíveis premium — sempre informado antes do orçamento fechar.</p>
+            </div>
+          </div>
+
+          <div class="why-item" data-reveal data-reveal-delay="3">
+            <div class="why-item__check">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="why-item__body">
+              <h3 class="why-item__title">Pix, dinheiro ou cartão</h3>
+              <p class="why-item__desc">Sem taxa em Pix. Cartão em até 6× sem juros para serviços acima de R$ 300.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================
+         ÁREAS ATENDIDAS
+         ============================================= -->
+    <section id="areas" class="areas-section" aria-labelledby="areas-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Cobertura</span>
+          <h2 id="areas-title">Onde eu atendo</h2>
+          <p>Atendimento presencial nas três cidades. Suporte remoto para o Brasil inteiro via AnyDesk ou TeamViewer.</p>
+        </div>
+
+        <div class="areas-layout">
+          <div class="areas-list">
+            <div class="area-card" data-reveal data-reveal-delay="1">
+              <div class="area-card__pin">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div class="area-card__body">
+                <div class="area-card__city">Bragança Paulista</div>
+                <div class="area-card__detail">Todos os bairros · atendimento presencial</div>
+              </div>
+              <span class="area-card__chevron">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+
+            <div class="area-card" data-reveal data-reveal-delay="2">
+              <div class="area-card__pin">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div class="area-card__body">
+                <div class="area-card__city">Atibaia</div>
+                <div class="area-card__detail">Centro e bairros principais</div>
+              </div>
+              <span class="area-card__chevron">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+
+            <div class="area-card" data-reveal data-reveal-delay="3">
+              <div class="area-card__pin">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div class="area-card__body">
+                <div class="area-card__city">Itatiba</div>
+                <div class="area-card__detail">Centro e bairros principais</div>
+              </div>
+              <span class="area-card__chevron">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+
+            <div class="area-card" data-reveal data-reveal-delay="4">
+              <div class="area-card__pin">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </div>
+              <div class="area-card__body">
+                <div class="area-card__city">Remoto · Brasil inteiro</div>
+                <div class="area-card__detail">AnyDesk, TeamViewer e suporte por chamada</div>
+              </div>
+              <span class="area-card__chevron">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Stylized map (geometric, not real-geography) -->
+          <div class="map-visual" data-reveal data-reveal-delay="2" aria-hidden="true">
+            <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+              <defs>
+                <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+                  <path d="M 24 0 L 0 0 0 24" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
+                </pattern>
+                <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <rect width="400" height="320" fill="url(#grid)" style="color: var(--color-border-default);"/>
+
+              <!-- Connection lines -->
+              <line x1="120" y1="120" x2="240" y2="80" stroke="var(--color-brand)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
+              <line x1="240" y1="80" x2="300" y2="200" stroke="var(--color-brand)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
+              <line x1="300" y1="200" x2="120" y2="120" stroke="var(--color-brand)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
+
+              <!-- Bragança glow + pin -->
+              <circle cx="120" cy="120" r="60" fill="url(#glow)"/>
+              <circle cx="120" cy="120" r="10" fill="var(--color-brand)"/>
+              <circle cx="120" cy="120" r="20" fill="none" stroke="var(--color-brand)" stroke-width="1" opacity="0.4"/>
+              <text x="120" y="160" text-anchor="middle" fill="var(--color-text-primary)" font-size="13" font-weight="600" font-family="var(--font-sans)">Bragança</text>
+
+              <!-- Atibaia -->
+              <circle cx="240" cy="80" r="40" fill="url(#glow)" opacity="0.7"/>
+              <circle cx="240" cy="80" r="8" fill="var(--color-brand)"/>
+              <text x="240" y="50" text-anchor="middle" fill="var(--color-text-primary)" font-size="13" font-weight="600" font-family="var(--font-sans)">Atibaia</text>
+
+              <!-- Itatiba -->
+              <circle cx="300" cy="200" r="40" fill="url(#glow)" opacity="0.7"/>
+              <circle cx="300" cy="200" r="8" fill="var(--color-brand)"/>
+              <text x="300" y="230" text-anchor="middle" fill="var(--color-text-primary)" font-size="13" font-weight="600" font-family="var(--font-sans)">Itatiba</text>
+
+              <!-- Caption -->
+              <text x="200" y="295" text-anchor="middle" fill="var(--color-text-tertiary)" font-size="11" font-family="var(--font-mono)" letter-spacing="2">REGIÃO BRAGANTINA · SP</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================
+         FAQ
+         ============================================= -->
+    <section id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">FAQ</span>
+          <h2 id="faq-title">Perguntas que ouço toda semana</h2>
+          <p>Não achou a sua? Manda no WhatsApp — respondo direto.</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" data-reveal>
+            <summary>
+              Quanto custa para trocar a tela do meu celular?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Depende do modelo. iPhone vai de R$ 250 a R$ 1.200; Android genérico de R$ 80 a R$ 600. Manda o modelo no WhatsApp que eu fecho o preço antes.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              Você faz orçamento pelo WhatsApp?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Sim, sempre. Mando faixa de preço pela mensagem mesmo, e fecho só depois que você aprova.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              As peças são originais?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Trabalho com originais e com compatíveis premium. Antes de aprovar o orçamento eu te falo qual vou usar e o porquê.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              Você faz manutenção em placa? (reballing, microsoldagem)
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Faço. Trabalho com BGA, reparo de trilha, troca de CI e diagnóstico de placa. Quando dá pra reparar em vez de trocar a placa inteira, eu prefiro — quase sempre fica mais barato pra você.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              Quanto tempo demora?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Conserto simples de celular: mesmo dia. Notebook/PC: 1 a 3 dias. Reparo em placa: 2 a 5 dias dependendo do diagnóstico. Custom PC: até 2 dias úteis após aprovar orçamento.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              Tem garantia mesmo se eu mexer depois?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>A garantia cobre a peça e o serviço. Se o problema voltar <strong>sem indício de novo dano</strong>, eu refaço sem cobrar. Quebra nova, queda ou líquido não entram.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              Você emite nota fiscal?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Sim, NFe eletrônica sempre que solicitada.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              Atende urgência?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Atendo. Manda no WhatsApp marcando "urgente" que eu encaixo no mesmo dia se possível.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal>
+            <summary>
+              Atende empresas?
+              <span class="faq-item__icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Sim. Tenho clientes com contrato mensal de suporte. Posso fazer proposta sob medida.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================
+         CONTATO FINAL
+         ============================================= -->
+    <section id="contato" class="final-cta" aria-labelledby="contato-title">
+      <div class="final-cta__bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Pronto pra resolver?</span>
+          <h2 id="contato-title">Vamos resolver?</h2>
+          <p>Três jeitos de me chamar. Escolhe o que for mais confortável — respondo em todos.</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card" data-reveal data-reveal-delay="1">
+            <div class="contact-card__icon contact-card__icon--wa">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </div>
+            <div>
+              <div class="contact-card__label">WhatsApp</div>
+              <div class="contact-card__value">(11) 91969-1542</div>
+            </div>
+            <a class="btn btn--success contact-card__cta" href="https://wa.me/5511919691542" target="_blank" rel="noopener">
+              Falar no WhatsApp
+            </a>
+          </div>
+
+          <div class="contact-card" data-reveal data-reveal-delay="2">
+            <div class="contact-card__icon contact-card__icon--form">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="contact-card__label">Formulário</div>
+              <div class="contact-card__value">Orçamento online</div>
+            </div>
+            <button class="btn btn--primary contact-card__cta" data-modal-open data-cta-location="final">
+              Pedir orçamento
+            </button>
+          </div>
+
+          <div class="contact-card" data-reveal data-reveal-delay="3">
+            <div class="contact-card__icon contact-card__icon--mail">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="contact-card__label">Email</div>
+              <div class="contact-card__value">iflcosta@outlook.com</div>
+            </div>
+            <a class="btn btn--secondary-inverse contact-card__cta" href="mailto:iflcosta@outlook.com">
+              Mandar email
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-hours" data-reveal data-reveal-delay="4">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span><strong>Seg a Sáb, 9h às 19h.</strong> WhatsApp pode mandar fora do horário — respondo na próxima janela.</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =============================================
+       FOOTER
+       ============================================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="wordmark" style="margin-bottom: var(--space-3);">
+            <span class="wordmark__mono" aria-hidden="true">IL</span>
+            <span class="wordmark__text">
+              <span class="wordmark__name">Iago Lopes</span>
+              <span class="wordmark__role">Hardware &amp; Tech</span>
+            </span>
+          </div>
+          <p>Conserto de celular, manutenção de notebook e PC, microsoldagem, montagem de Custom PC e suporte TI direto, sem balcão, com garantia.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navegação</h4>
+          <div class="footer-links">
+            <a href="#servicos">Serviços</a>
+            <a href="#como-funciona">Como funciona</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contato">Contato</a>
+            <a href="https://iflcosta.tech">Portal iflcosta.tech</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <div class="footer-links">
+            <a href="./privacidade.html">Política de Privacidade</a>
+            <a href="./termos.html">Termos de Serviço</a>
+            <a href="mailto:iflcosta@outlook.com">iflcosta@outlook.com</a>
+            <a href="https://wa.me/5511919691542" target="_blank" rel="noopener">(11) 91969-1542</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Iago Lopes · Bragança Paulista – SP</span>
+        <span>Site feito com cuidado, sem balcão.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =============================================
+       FLOATING WHATSAPP
+       ============================================= -->
+  <a class="wa-float" data-wa-float href="https://wa.me/5511919691542" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+    <span class="pulse" aria-hidden="true"></span>
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: relative;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  </a>
+
+  <!-- =============================================
+       MODAL — Orçamento
+       ============================================= -->
+  <div class="modal-backdrop" data-modal role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal">
+      <div class="modal__header">
+        <div>
+          <h2 class="modal__title" id="modal-title">Pedir orçamento</h2>
+          <p class="modal__subtitle">Resposta em até 1 hora útil. Sem compromisso.</p>
+        </div>
+        <button class="modal__close" data-modal-close aria-label="Fechar">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <form class="modal__body" data-orcamento-form data-mode="modal" novalidate>
+        <input type="hidden" data-modal-service name="servico" value="">
+
+        <div class="field">
+          <label>Qual serviço?</label>
+          <div class="chip-group">
+            <button type="button" class="chip" data-service="celular">📱 Celular / tablet</button>
+            <button type="button" class="chip" data-service="notebook-pc">💻 Notebook / PC</button>
+            <button type="button" class="chip" data-service="custom-pc">🎮 Custom PC</button>
+            <button type="button" class="chip" data-service="suporte-ti">🌐 Suporte TI</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="nome">Seu nome</label>
+          <input class="input" type="text" id="nome" name="nome" placeholder="Como prefere ser chamado(a)" required>
+        </div>
+
+        <div class="field">
+          <label for="whats">WhatsApp</label>
+          <input class="input" type="tel" id="whats" name="whats" placeholder="(11) 9 0000-0000" required>
+          <span class="hint">Vou responder por aqui mesmo, sem ligar sem aviso.</span>
+        </div>
+
+        <div class="field">
+          <label for="problema">O que está acontecendo?</label>
+          <textarea class="textarea" id="problema" name="problema" placeholder="Modelo do aparelho, sintoma, quando começou. Se puder, mande foto pelo WhatsApp depois."></textarea>
+        </div>
+
+        <!-- Honeypot anti-spam (não tocar) -->
+        <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+          <label>Website</label>
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="field field--consent">
+          <label class="checkbox-label">
+            <input type="checkbox" name="consent" required>
+            <span>Concordo com a <a href="./privacidade.html">Política de Privacidade</a> e autorizo o contato pelos dados fornecidos.</span>
+          </label>
+        </div>
+
+        <div data-form-success hidden class="form-success" role="status" aria-live="polite">
+          ✓ Recebido! Vou responder no WhatsApp em até 1 hora útil.
+        </div>
+
+        <div data-form-error hidden class="form-error" role="alert" aria-live="assertive"></div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" data-modal-close>Cancelar</button>
+          <button type="submit" class="btn btn--primary">Enviar orçamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =============================================
+       LGPD BANNER
+       ============================================= -->
+  <aside class="consent-banner" data-consent-banner hidden role="region" aria-label="Consentimento de cookies">
+    <p>Uso cookies para entender como o site é utilizado e melhorar sua experiência. <a href="./privacidade.html">Saiba mais</a>.</p>
+    <div class="consent-actions">
+      <button class="btn btn--primary btn--sm" data-consent="accept">Aceitar todos</button>
+      <button class="btn btn--secondary btn--sm" data-consent="essential">Apenas necessários</button>
+    </div>
+  </aside>
+
+
+  <script type="module" src="./assets/js/main.js"></script>
+</body>
+</html>
