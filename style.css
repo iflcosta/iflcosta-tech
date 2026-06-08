@@ -408,6 +408,34 @@ h1, h2, h3, h4 {
 .nav-cta { display: none; }
 @media (min-width: 860px) { .nav-cta { display: inline-flex; } }
 
+.nav-ctas-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mobile-nav-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn-whatsapp {
+  background: rgba(37, 211, 102, 0.08);
+  color: #25d366;
+  border: 1px solid rgba(37, 211, 102, 0.25);
+}
+
+.btn-full { width: 100%; }
+
+.floating-cta-inner {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 /* Hamburger */
 .hamburger {
   display: none;
@@ -2042,6 +2070,23 @@ h1, h2, h3, h4 {
 .footer-tagline {
   font-size: 0.8125rem;
   color: var(--c-text-dim);
+}
+
+.footer-whatsapp {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--c-text-muted);
+}
+
+.footer-whatsapp-link {
+  color: var(--c-primary-light);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.footer-whatsapp-link:hover {
+  color: var(--c-primary);
 }
 
 .footer-links { display: flex; align-items: center; gap: 2rem; }
