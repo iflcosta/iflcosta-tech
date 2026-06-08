@@ -464,7 +464,9 @@ h1, h2, h3, h4 {
 .mobile-nav {
   display: none;
   position: fixed;
-  top: var(--nav-h); left: 0; right: 0; bottom: 0;
+  top: var(--nav-h); left: 0; right: 0;
+  height: calc(100vh - var(--nav-h));
+  height: calc(100dvh - var(--nav-h));
   background: var(--c-bg);
   padding: 2.5rem var(--s-lg);
   flex-direction: column;
