@@ -465,14 +465,14 @@ h1, h2, h3, h4 {
   display: none;
   position: fixed;
   top: var(--nav-h); left: 0; right: 0; bottom: 0;
-  background: rgba(8,12,20,0.97);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: var(--c-bg);
   padding: 2.5rem var(--s-lg);
   flex-direction: column;
   gap: 1.25rem;
   border-top: 1px solid var(--c-border);
   z-index: 999;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-nav.open { display: flex; }

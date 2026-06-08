@@ -6,9 +6,13 @@ export const config = {
     '/',
     '/index.html',
     '/orcamento',
+    '/orcamento/',
     '/obrigado',
+    '/obrigado/',
     '/privacidade',
+    '/privacidade/',
     '/termos',
+    '/termos/',
     '/assets/:path*'
   ],
 };
@@ -19,19 +23,20 @@ export default async function middleware(req) {
   const host = req.headers.get('host') || '';
 
   if (host === 'hardware.iflcosta.tech') {
-    let targetPath = path;
-    if (path === '/' || path === '/index.html') {
+    const cleanPath = path.replace(/\/+$/, '') || '/';
+    let targetPath = cleanPath;
+    if (cleanPath === '/' || cleanPath === '/index.html') {
       targetPath = '/portfolio/hardware-tech/index.html';
-    } else if (path === '/orcamento') {
+    } else if (cleanPath === '/orcamento') {
       targetPath = '/portfolio/hardware-tech/orcamento.html';
-    } else if (path === '/obrigado') {
+    } else if (cleanPath === '/obrigado') {
       targetPath = '/portfolio/hardware-tech/obrigado.html';
-    } else if (path === '/privacidade') {
+    } else if (cleanPath === '/privacidade') {
       targetPath = '/portfolio/hardware-tech/privacidade.html';
-    } else if (path === '/termos') {
+    } else if (cleanPath === '/termos') {
       targetPath = '/portfolio/hardware-tech/termos.html';
-    } else if (path.startsWith('/assets/')) {
-      targetPath = `/portfolio/hardware-tech${path}`;
+    } else if (cleanPath.startsWith('/assets/')) {
+      targetPath = `/portfolio/hardware-tech${cleanPath}`;
     }
     
     return fetch(new URL(targetPath, req.url).toString());

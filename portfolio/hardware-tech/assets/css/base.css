@@ -29,12 +29,21 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--color-text-primary);
-  background: var(--color-bg-base);
+  background:
+    var(--color-bg-base)
+    url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%23cbd5e1' stroke-opacity='0.25' stroke-width='0.5'/%3E%3C/svg%3E")
+    repeat 0 0 / 60px 60px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   transition: background-color var(--duration-base) var(--ease-out),
               color var(--duration-base) var(--ease-out);
+}
+[data-theme="dark"] body {
+  background:
+    var(--slate-950)
+    url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%2394a3b8' stroke-opacity='0.06' stroke-width='0.5'/%3E%3C/svg%3E")
+    repeat 0 0 / 60px 60px;
 }
 
 img, picture, svg, video {
