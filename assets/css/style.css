@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fundo Carbono: mais confortável para a vista e zero lag de GPU */
+body {
+    background-color: #0a0a0c;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Foco tátil de teclado bruto */
+*:focus-visible {
+    outline: 2px solid #ccff00 !important;
+    outline-offset: 2px !important;
+}
+
+/* Barra de rolagem discreta */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #0a0a0c;
+}
+::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border: 1px solid #0a0a0c;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #ccff00;
+}
