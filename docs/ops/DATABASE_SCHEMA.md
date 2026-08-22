@@ -1,10 +1,10 @@
 # Modelagem de Dados & Schema do ERP / CRM Unificado
 **Projeto:** IFLCosta Tech  
-**Objetivo:** Estrutura relacional normalizada (PostgreSQL) para gestão integrada de Clientes (B2C/B2B), Ordens de Serviço (Hardware/Bancada), Projetos de Software (Milestones 50/50), Contratos MSP com Cobrança Híbrida por Estação/Criticidade, Telemetria RMM/Backup e Financeiro.
+**Objetivo:** Estrutura relacional normalizada (PostgreSQL 15+) para gestão integrada de Clientes (B2C/B2B), Ordens de Serviço (Hardware/Bancada), Estoque/Almoxarifado e Compras, Fechamento de Comissões Quinzenais, Projetos de Software (Milestones 50/50), Contratos MSP com Cobrança Híbrida por Estação/Criticidade, Service Desk/Tickets com SLA 2h/4h, Visitas Preventivas Geolocalizadas, Telemetria RMM/Backup ("Dead Man's Snitch"), Autenticação Passwordless (Magic Link), Termos Legais/LGPD e Motor Financeiro com DRE.
 
 ---
 
-## 1. DDL (Data Definition Language) - PostgreSQL 15+
+## 1. DDL Unificado (Data Definition Language) - PostgreSQL 15+
 
 ```sql
 -- ============================================================================
@@ -29,18 +29,28 @@ CREATE TYPE os_status_enum AS ENUM (
     'Entregue', 
     'Cancelado'
 );
-
 CREATE TYPE os_service_type_enum AS ENUM ('Hardware_Reparo', 'Hardware_Upgrade', 'Montagem_PC', 'Software_Bancada', 'MSP_Avulso');
+
+-- Enums de Estoque e Compras
+CREATE TYPE stock_movement_type_enum AS ENUM ('Entrada_Nota_Fiscal', 'Saida_Ordem_Servico', 'Ajuste_Perda', 'Devolucao_Fornecedor');
+CREATE TYPE purchase_order_status_enum AS ENUM ('Cotacao', 'Aguardando_Sinal_Cliente', 'Comprado', 'Em_Transito', 'Recebido_Bancada', 'Cancelado');
+
+-- Enums de Comissões Técnicas
+CREATE TYPE commission_status_enum AS ENUM ('Aberta', 'Aprovada_Gestor', 'Paga');
 
 -- Enums de Projetos de Software
 CREATE TYPE project_status_enum AS ENUM ('Briefing', 'Em_Desenvolvimento', 'Em_QA', 'Homologacao_Cliente', 'Concluido', 'Pausado', 'Cancelado');
 CREATE TYPE milestone_billing_type_enum AS ENUM ('Entrada_50', 'Entrega_50', 'Hora_Avulsa', 'Mensalidade_Suporte');
 
--- Enums de TI Gerenciada (MSP)
+-- Enums de TI Gerenciada (MSP) & Service Desk
 CREATE TYPE msp_tier_enum AS ENUM ('Essencial', 'Profissional', 'Corporativo_Enterprise', 'Custom');
 CREATE TYPE device_type_enum AS ENUM ('Workstation', 'Notebook', 'Server_Local', 'Network_Firewall', 'Network_Switch', 'NAS_Storage');
 CREATE TYPE device_criticality_enum AS ENUM ('Standard', 'High_VIP_Financeiro', 'Mission_Critical_Server', 'Network_Core');
 CREATE TYPE backup_status_enum AS ENUM ('Sucesso', 'Alerta_Incompleto', 'Falha_Critica', 'Nunca_Executado');
+
+CREATE TYPE ticket_priority_enum AS ENUM ('Baixa', 'Media', 'Alta', 'Critica_P1');
+CREATE TYPE ticket_status_enum AS ENUM ('Aberto', 'Em_Atendimento', 'Aguardando_Cliente', 'Resolvido', 'Fechado');
+CREATE TYPE ticket_origin_enum AS ENUM ('WhatsApp', 'Portal_Cliente', 'Alerta_RMM_Automatico', 'Visita_Preventiva', 'Telefone');
 
 -- Enums Financeiros
 CREATE TYPE ledger_entry_type_enum AS ENUM ('Entrada', 'Saida');
@@ -108,13 +118,60 @@ CREATE TABLE technicians (
 );
 
 -- ============================================================================
--- 3. PILAR 1: HARDWARE, BANCADA & ORDENS DE SERVIÇO
+-- 3. FECHAMENTO DE COMISSÕES QUINZENAIS (DIAS 05 E 20)
+-- ============================================================================
+CREATE TABLE commission_settlements (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    settlement_code VARCHAR(50) UNIQUE NOT NULL, -- Ex: COM-2026-08-Q2
+    technician_id UUID NOT NULL REFERENCES technicians(id) ON DELETE RESTRICT,
+    period_start_date DATE NOT NULL,
+    period_end_date DATE NOT NULL,
+    
+    total_labor_amount DECIMAL(10, 2) NOT NULL,
+    total_commission_amount DECIMAL(10, 2) NOT NULL,
+    deductions_amount DECIMAL(10, 2) DEFAULT 0.00,
+    net_payout_amount DECIMAL(10, 2) NOT NULL,
+    
+    status commission_status_enum NOT NULL DEFAULT 'Aberta',
+    pix_receipt_url TEXT,
+    paid_at TIMESTAMP WITH TIME ZONE,
+    
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 4. ESTOQUE & ALMOXARIFADO DE PEÇAS DE GIRO RÁPIDO E COMPRAS
+-- ============================================================================
+CREATE TABLE inventory_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    sku VARCHAR(50) UNIQUE NOT NULL, -- Ex: SSD-NVME-1TB-KNG
+    description VARCHAR(255) NOT NULL,
+    category VARCHAR(50) NOT NULL, -- 'SSD', 'RAM', 'Pasta_Termica', 'Bateria', 'Cabo'
+    unit_of_measure VARCHAR(10) DEFAULT 'UN',
+    
+    current_stock INT NOT NULL DEFAULT 0,
+    min_stock_level INT NOT NULL DEFAULT 2, -- Ponto de reposição automática
+    
+    average_cost_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    default_margin_pct DECIMAL(5, 2) NOT NULL DEFAULT 35.00, -- 35% a 40% markup padrão
+    default_selling_price DECIMAL(10, 2) NOT NULL,
+    
+    location_shelf VARCHAR(50), -- Prateleira / Gaveta na Bancada
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 5. PILAR 1: HARDWARE, BANCADA & ORDENS DE SERVIÇO
 -- ============================================================================
 CREATE TABLE work_orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     os_number SERIAL UNIQUE, -- Número sequencial legível (ex: OS #1042)
     client_id UUID NOT NULL REFERENCES clients(id) ON DELETE RESTRICT,
     technician_id UUID REFERENCES technicians(id) ON DELETE SET NULL,
+    parent_work_order_id UUID REFERENCES work_orders(id) ON DELETE SET NULL, -- Vínculo para Retorno de Garantia (RMA)
+    is_warranty_return BOOLEAN NOT NULL DEFAULT false,
     
     service_type os_service_type_enum NOT NULL DEFAULT 'Hardware_Reparo',
     status os_status_enum NOT NULL DEFAULT 'Triagem',
@@ -123,7 +180,7 @@ CREATE TABLE work_orders (
     device_brand VARCHAR(100) NOT NULL,
     device_model VARCHAR(150) NOT NULL,
     serial_number VARCHAR(100),
-    device_password VARCHAR(100), -- PIN ou senha fornecida pelo cliente
+    device_password VARCHAR(255), -- PIN/Senha cifrado
     
     -- Checklist de Entrada
     is_powering_on BOOLEAN NOT NULL DEFAULT true,
@@ -150,10 +207,10 @@ CREATE TABLE work_orders (
     delivery_fee DECIMAL(10, 2) DEFAULT 0.00,
     delivery_address TEXT,
     
-    -- Garantia
+    -- Garantia Legal CDC 90D
     warranty_terms_signed BOOLEAN DEFAULT false,
     warranty_valid_until DATE,
-    warranty_hash VARCHAR(64), -- Código de autenticidade do laudo
+    warranty_hash VARCHAR(64), -- Código SHA-256 de autenticidade do laudo
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -166,6 +223,9 @@ CREATE INDEX idx_work_orders_status ON work_orders(status);
 CREATE TABLE work_order_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     work_order_id UUID NOT NULL REFERENCES work_orders(id) ON DELETE CASCADE,
+    inventory_item_id UUID REFERENCES inventory_items(id) ON DELETE SET NULL, -- Se baixado de estoque local
+    commission_settlement_id UUID REFERENCES commission_settlements(id) ON DELETE SET NULL, -- Vínculo de fechamento quinzenal
+    
     service_catalog_code VARCHAR(20), -- Ex: HW-01, HW-02, HW-03
     description VARCHAR(255) NOT NULL,
     is_part BOOLEAN NOT NULL DEFAULT false, -- false = Mão de Obra, true = Peça/Hardware
@@ -188,8 +248,43 @@ CREATE TABLE work_order_items (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Movimentações de Estoque
+CREATE TABLE inventory_transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    inventory_item_id UUID NOT NULL REFERENCES inventory_items(id) ON DELETE RESTRICT,
+    work_order_id UUID REFERENCES work_orders(id) ON DELETE SET NULL,
+    type stock_movement_type_enum NOT NULL,
+    quantity INT NOT NULL,
+    unit_cost DECIMAL(10, 2) NOT NULL,
+    total_cost DECIMAL(10, 2) NOT NULL,
+    notes TEXT,
+    created_by_user_id UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Pedidos de Compra Sob Encomenda (Back-to-Back)
+CREATE TABLE purchase_orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    po_number SERIAL UNIQUE,
+    work_order_id UUID REFERENCES work_orders(id) ON DELETE SET NULL,
+    supplier_name VARCHAR(150) NOT NULL,
+    item_description VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    cost_price DECIMAL(10, 2) NOT NULL,
+    selling_price_target DECIMAL(10, 2) NOT NULL,
+    
+    status purchase_order_status_enum NOT NULL DEFAULT 'Cotacao',
+    tracking_code VARCHAR(100),
+    supplier_invoice_number VARCHAR(100),
+    estimated_arrival_date DATE,
+    actual_arrival_date DATE,
+    
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- ============================================================================
--- 4. PILAR 2: PROJETOS DE SOFTWARE & ENGENHARIA WEB
+-- 6. PILAR 2: PROJETOS DE SOFTWARE & ENGENHARIA WEB
 -- ============================================================================
 CREATE TABLE software_projects (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -253,10 +348,8 @@ CREATE TABLE project_timesheet_entries (
 );
 
 -- ============================================================================
--- 5. PILAR 3: TI GERENCIADA (MSP) & INVENTÁRIO HÍBRIDO DE DISPOSITIVOS
+-- 7. PILAR 3: TI GERENCIADA (MSP) & INVENTÁRIO HÍBRIDO DE DISPOSITIVOS
 -- ============================================================================
-
--- Contratos MSP Recorrentes
 CREATE TABLE msp_contracts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     contract_number VARCHAR(50) UNIQUE NOT NULL, -- Ex: MSP-2026-004
@@ -303,13 +396,13 @@ CREATE TABLE msp_managed_devices (
     is_billable BOOLEAN NOT NULL DEFAULT true,
     
     -- Identificadores Técnicos & Agente RMM
-    os_version VARCHAR(100), -- Windows 11 Pro, Ubuntu 24.04, Windows Server 2022
+    os_version VARCHAR(100),
     cpu_model VARCHAR(100),
     ram_gb INT,
     storage_info VARCHAR(255),
     mac_address VARCHAR(20),
     ipv4_local VARCHAR(20),
-    rmm_agent_id VARCHAR(100) UNIQUE, -- ID único do agente Tactical RMM / MeshCentral
+    rmm_agent_id VARCHAR(100) UNIQUE,
     rmm_is_online BOOLEAN DEFAULT true,
     rmm_last_seen TIMESTAMP WITH TIME ZONE,
     
@@ -349,10 +442,81 @@ CREATE TABLE msp_telemetry_alerts (
 );
 
 -- ============================================================================
--- 6. MÓDULO FINANCEIRO, FATURAMENTO E LIVRO CAIXA UNIFICADO
+-- 8. SERVICE DESK & TICKETS MSP (SLA 2H / 4H)
 -- ============================================================================
+CREATE TABLE msp_tickets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticket_number SERIAL UNIQUE, -- Ex: Ticket #301
+    contract_id UUID NOT NULL REFERENCES msp_contracts(id) ON DELETE CASCADE,
+    client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+    device_id UUID REFERENCES msp_managed_devices(id) ON DELETE SET NULL,
+    technician_id UUID REFERENCES technicians(id) ON DELETE SET NULL,
+    
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    origin ticket_origin_enum NOT NULL DEFAULT 'Portal_Cliente',
+    priority ticket_priority_enum NOT NULL DEFAULT 'Media',
+    status ticket_status_enum NOT NULL DEFAULT 'Aberto',
+    
+    -- Gestão de SLA
+    sla_response_deadline TIMESTAMP WITH TIME ZONE NOT NULL,
+    sla_resolution_deadline TIMESTAMP WITH TIME ZONE NOT NULL,
+    first_response_at TIMESTAMP WITH TIME ZONE,
+    resolved_at TIMESTAMP WITH TIME ZONE,
+    sla_breached BOOLEAN DEFAULT false,
+    
+    resolution_summary TEXT,
+    time_spent_minutes INT DEFAULT 0,
+    client_satisfaction_rating INT CHECK (client_satisfaction_rating BETWEEN 1 AND 5),
+    
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
--- Faturas / Títulos a Receber e a Pagar
+CREATE TABLE msp_ticket_messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticket_id UUID NOT NULL REFERENCES msp_tickets(id) ON DELETE CASCADE,
+    sender_type VARCHAR(20) NOT NULL CHECK (sender_type IN ('Client', 'Technician', 'System_Bot')),
+    sender_name VARCHAR(100) NOT NULL,
+    message_body TEXT NOT NULL,
+    attachment_urls JSONB DEFAULT '[]'::jsonb,
+    is_internal_note BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 9. VISITAS PREVENTIVAS MSP & CHECK-IN GEOLOCALIZADO
+-- ============================================================================
+CREATE TABLE msp_onsite_visits (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    contract_id UUID NOT NULL REFERENCES msp_contracts(id) ON DELETE CASCADE,
+    technician_id UUID NOT NULL REFERENCES technicians(id) ON DELETE RESTRICT,
+    
+    scheduled_date DATE NOT NULL,
+    check_in_time TIMESTAMP WITH TIME ZONE,
+    check_out_time TIMESTAMP WITH TIME ZONE,
+    check_in_latitude DECIMAL(10, 8),
+    check_in_longitude DECIMAL(11, 8),
+    
+    preventive_checklist JSONB NOT NULL DEFAULT '{
+        "antivirus_updated": false,
+        "backups_verified": false,
+        "physical_cleaning_done": false,
+        "ups_battery_checked": false,
+        "server_thermal_ok": false,
+        "disk_smart_reviewed": false
+    }'::jsonb,
+    
+    visit_notes TEXT,
+    client_rep_name VARCHAR(100),
+    client_rep_signature_url TEXT,
+    
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 10. MÓDULO FINANCEIRO, FATURAMENTO, LIVRO CAIXA (DRE) E IDEMPOTÊNCIA
+-- ============================================================================
 CREATE TABLE invoices (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     invoice_number VARCHAR(50) UNIQUE NOT NULL, -- Ex: FAT-2026-0891
@@ -377,10 +541,22 @@ CREATE TABLE invoices (
     due_date DATE NOT NULL,
     paid_at TIMESTAMP WITH TIME ZONE,
     
-    -- Dados de Liquidação Pix / Gateway
+    -- Integração Gateway Asaas (Online)
+    asaas_customer_id VARCHAR(100),
+    asaas_payment_id VARCHAR(100),
+    asaas_invoice_url TEXT, -- Link de pagamento Asaas (Pix / Cartão 12x)
+    asaas_subscription_id VARCHAR(100), -- ID da assinatura recorrente MSP
+    
+    -- Dados de Liquidação Pix / QR Code
     pix_copy_paste TEXT,
     pix_qr_code_url TEXT,
     gateway_transaction_id VARCHAR(100),
+    
+    -- Conciliação de Pagamento Presencial (Maquininha de Cartão POS)
+    is_pos_terminal BOOLEAN NOT NULL DEFAULT FALSE,
+    pos_terminal_fee DECIMAL(10, 2) DEFAULT 0.00, -- Taxa da maquininha descontada
+    pos_card_brand VARCHAR(50), -- 'Mastercard', 'Visa', 'Elo', 'Hipercard'
+    pos_installments INT DEFAULT 1, -- Parcelas da maquininha
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -407,7 +583,8 @@ CREATE TABLE financial_ledger (
     work_order_id UUID REFERENCES work_orders(id),
     software_project_id UUID REFERENCES software_projects(id),
     msp_contract_id UUID REFERENCES msp_contracts(id),
-    technician_id UUID REFERENCES technicians(id), -- No caso de saída por repasse de comissão
+    technician_id UUID REFERENCES technicians(id),
+    commission_settlement_id UUID REFERENCES commission_settlements(id),
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -415,8 +592,55 @@ CREATE TABLE financial_ledger (
 CREATE INDEX idx_financial_ledger_date ON financial_ledger(competence_date);
 CREATE INDEX idx_financial_ledger_category ON financial_ledger(category);
 
+-- Tabela de Idempotência para Webhooks de Gateway de Pagamento
+CREATE TABLE payment_webhook_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    gateway VARCHAR(50) NOT NULL DEFAULT 'Gerencianet_Efí_Pix',
+    event_id VARCHAR(100) UNIQUE NOT NULL,
+    invoice_id UUID REFERENCES invoices(id) ON DELETE SET NULL,
+    payload JSONB NOT NULL,
+    is_processed BOOLEAN DEFAULT false,
+    processed_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- ============================================================================
--- 7. REGISTRO DE DISPAROS DE MENSAGENS E TEMPLATES (AUDIT LOG)
+-- 11. PORTAL DO CLIENTE (AUTENTICAÇÃO PASSWORDLESS / TOKENS)
+-- ============================================================================
+CREATE TABLE client_portal_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+    token_hash VARCHAR(64) UNIQUE NOT NULL, -- SHA-256
+    resource_type VARCHAR(30) NOT NULL, -- 'work_order', 'software_project', 'msp_contract', 'all_access'
+    resource_id UUID,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    is_revoked BOOLEAN DEFAULT false,
+    last_accessed_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_client_portal_tokens_hash ON client_portal_tokens(token_hash);
+
+-- ============================================================================
+-- 12. TERMOS LEGAIS, LGPD E ASSINATURAS DIGITAIS
+-- ============================================================================
+CREATE TABLE legal_signatures (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+    document_type VARCHAR(50) NOT NULL, -- 'LevaETraz_Checkin', 'LevaETraz_Checkout', 'Garantia_90D', 'Homologacao_Software', 'Consentimento_LGPD'
+    resource_id UUID NOT NULL,
+    
+    signer_name VARCHAR(255) NOT NULL,
+    signer_document VARCHAR(20) NOT NULL,
+    signer_ip_address VARCHAR(45),
+    signature_channel VARCHAR(20) NOT NULL DEFAULT 'WhatsApp_OTP',
+    
+    integrity_hash VARCHAR(64) NOT NULL,
+    signed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 13. REGISTRO DE DISPAROS DE MENSAGENS E TEMPLATES (AUDIT LOG)
 -- ============================================================================
 CREATE TABLE communication_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -434,5 +658,6 @@ CREATE TABLE communication_logs (
 
 ## 2. Documentação Complementar de Arquitetura
 
-Para detalhes aprofundados sobre regras de negócio, jornadas do usuário, diagramas funcionais e especificações de telas do Gestor e Portal do Cliente, consulte o documento completo:  
-👉 [ERP_ARCHITECTURE_SPECIFICATION.md](file:///c:/tech-solutions-ifl/docs/ops/ERP_ARCHITECTURE_SPECIFICATION.md)
+Para detalhes aprofundados sobre regras de negócio, jornadas do usuário, diagramas funcionais e especificações de telas do Gestor e Portal do Cliente, consulte os documentos:  
+👉 [ERP_ARCHITECTURE_SPECIFICATION.md](file:///c:/tech-solutions-ifl/docs/ops/ERP_ARCHITECTURE_SPECIFICATION.md)  
+👉 [ERP_ARCHITECTURE_AUDIT_REVIEW.md](file:///c:/tech-solutions-ifl/docs/ops/ERP_ARCHITECTURE_AUDIT_REVIEW.md)
