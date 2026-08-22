@@ -30,7 +30,7 @@
 | **HW-03A** | **Limpeza Preventiva Express (Simples)** | Ar comprimido antiestático, desobstrução de ventoinhas e filtros de poeira, limpeza externa e troca de pasta térmica padrão (sem desmontagem integral de PCB). | 45min a 1h | **R$ 119,00** | R$ 35,00 |
 | **HW-03B** | **Limpeza Técnica Profunda & Troca Térmica Premium** | Desmontagem 100% peça por peça, banho químico/isopropílico, aplicação de pasta térmica de alta condutividade (Artic MX-4 / Thermal Grizzly), revisão de thermal pads e laudo de estresse térmico. | 2h a 3h | **R$ 220,00** (Notebook: R$ 250) | R$ 70,00 |
 | **HW-04** | **Instalação de Upgrade (SSD/RAM)** | Clonagem bit a bit de disco sem perda de arquivos ou instalação limpa + migração de perfil. | 1h a 2h | **R$ 140,00** + Custo da Peça (+ Margem) | R$ 40,00 |
-| **HW-05** | **Montagem de PC Gamer / Workstation** | Montagem do zero, gerenciamento de cabos (cable management militar), atualização de BIOS, teste de estresse de 1h e entrega com laudo. | 3h a 4h | **R$ 380,00 a R$ 550,00** | R$ 120,00 |
+| **HW-05** | **Montagem de PC Gamer / Workstation** | Montagem do zero, gerenciamento de cabos (cable management militar), atualização de BIOS, teste de estresse de 1h e entrega com laudo. | 3h a 4h | **R$ 285,00 a R$ 415,00** *(25% OFF)* | R$ 90,00 |
 | **HW-06** | **Taxa de Leva-e-Traz (Bragança)** | Retirada e entrega do equipamento no endereço do cliente com termo de responsabilidade assinado. | - | **R$ 35,00** *(Grátis em serviços > R$ 350)* | R$ 20,00 (Uber/Gasolina) |
 
 ### 📦 Política de Margem sobre Peças e Hardware
