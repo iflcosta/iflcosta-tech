@@ -3,6 +3,11 @@ node_modules/
 tailwindcss3.exe
 *.exe
 
+# Environment Variables
+.env
+.env.*
+.env.local
+
 # OS & Temp
 .DS_Store
 Thumbs.db

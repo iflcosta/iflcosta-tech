@@ -158,36 +158,66 @@
             </div>
         </section>
 
-        <!-- Barra de Confiança e Garantias -->
-        <section id="garantias" class="bg-black border-b-2 border-zinc-800 py-8">
+        <!-- Barra de Confiança e Garantias (Cards Robustos com SVG Inline) -->
+        <section id="garantias" class="bg-black border-b-2 border-zinc-800 py-12 sm:py-16 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 font-mono text-xs sm:text-sm">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="shield-check" class="w-6 h-6 text-brand shrink-0"></i>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Card 1: 90 Dias Garantia -->
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800/90 p-5 flex items-center gap-4 hover:border-brand transition-colors group">
+                        <div class="w-12 h-12 bg-brand/10 border border-brand/30 flex items-center justify-center shrink-0 text-brand group-hover:bg-brand group-hover:text-black transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="m9 12 2 2 4-4"/>
+                            </svg>
+                        </div>
                         <div>
-                            <p class="font-bold text-white uppercase">90 Dias de Garantia</p>
-                            <p class="text-zinc-500 text-xs">Em todos os serviços de bancada</p>
+                            <p class="font-extrabold text-white text-sm sm:text-base uppercase tracking-wide font-mono">90 Dias Garantia</p>
+                            <p class="text-zinc-400 text-xs sm:text-sm mt-0.5">Em serviços de bancada</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="truck" class="w-6 h-6 text-brand shrink-0"></i>
+
+                    <!-- Card 2: Leva-e-Traz -->
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800/90 p-5 flex items-center gap-4 hover:border-brand transition-colors group">
+                        <div class="w-12 h-12 bg-brand/10 border border-brand/30 flex items-center justify-center shrink-0 text-brand group-hover:bg-brand group-hover:text-black transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+                                <path d="M15 18H9"/>
+                                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14v10Z"/>
+                                <circle cx="17" cy="18.5" r="2.5"/>
+                                <circle cx="7" cy="18.5" r="2.5"/>
+                            </svg>
+                        </div>
                         <div>
-                            <p class="font-bold text-white uppercase">Leva-e-Traz</p>
-                            <p class="text-zinc-500 text-xs">Comodidade em Bragança Paulista</p>
+                            <p class="font-extrabold text-white text-sm sm:text-base uppercase tracking-wide font-mono">Leva-e-Traz</p>
+                            <p class="text-zinc-400 text-xs sm:text-sm mt-0.5">Bragança e região</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="lock" class="w-6 h-6 text-brand shrink-0"></i>
+
+                    <!-- Card 3: Sigilo & LGPD -->
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800/90 p-5 flex items-center gap-4 hover:border-brand transition-colors group">
+                        <div class="w-12 h-12 bg-brand/10 border border-brand/30 flex items-center justify-center shrink-0 text-brand group-hover:bg-brand group-hover:text-black transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        </div>
                         <div>
-                            <p class="font-bold text-white uppercase">Sigilo & LGPD</p>
-                            <p class="text-zinc-500 text-xs">Seus dados e arquivos protegidos</p>
+                            <p class="font-extrabold text-white text-sm sm:text-base uppercase tracking-wide font-mono">Sigilo & LGPD</p>
+                            <p class="text-zinc-400 text-xs sm:text-sm mt-0.5">Arquivos 100% blindados</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="briefcase" class="w-6 h-6 text-brand shrink-0"></i>
+
+                    <!-- Card 4: Zero Custo CLT -->
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800/90 p-5 flex items-center gap-4 hover:border-brand transition-colors group">
+                        <div class="w-12 h-12 bg-brand/10 border border-brand/30 flex items-center justify-center shrink-0 text-brand group-hover:bg-brand group-hover:text-black transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                                <rect width="20" height="14" x="2" y="6" rx="2"/>
+                            </svg>
+                        </div>
                         <div>
-                            <p class="font-bold text-white uppercase">Zero Custo CLT</p>
-                            <p class="text-zinc-500 text-xs">TI corporativa sob demanda</p>
+                            <p class="font-extrabold text-white text-sm sm:text-base uppercase tracking-wide font-mono">Zero Custo CLT</p>
+                            <p class="text-zinc-400 text-xs sm:text-sm mt-0.5">TI empresarial sob demanda</p>
                         </div>
                     </div>
                 </div>
