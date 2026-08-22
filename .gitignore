@@ -1,0 +1,9 @@
+# Dependencies & Executables
+node_modules/
+tailwindcss3.exe
+*.exe
+
+# OS & Temp
+.DS_Store
+Thumbs.db
+scratch/

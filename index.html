@@ -3,20 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFL Costa Tech | Consultoria de Software e Hardware</title>
+    <title>IFL Costa Tech | Consultoria Tech de Alta Performance & TI em Bragança Paulista</title>
     
     <!-- Favicon SVG -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a0a0c'/><path d='M30 30h15v40H30zM55 30h15v40H55z' fill='%23ccff00'/></svg>">
     
     <!-- SEO & Open Graph -->
-    <meta name="description" content="Engenharia de Software de Alta Performance e Upgrades Profissionais de Hardware. Resolvemos a raiz do problema.">
-    <meta property="og:title" content="IFL Costa Tech | Consultoria Tech de Alta Performance">
-    <meta property="og:description" content="Acabamos com a lentidão do seu PC e criamos sistemas web que escalam. Sem termos difíceis. Resultado real.">
-    <meta property="og:image" content="https://seusite.com.br/assets/img/og-image.jpg">
+    <meta name="description" content="Consultoria de Software, Upgrades Profissionais de Hardware e Gestão de TI (MSP) em Bragança Paulista e Região. Atendimento direto com especialista.">
+    <meta property="og:title" content="IFL Costa Tech | Engenharia de Software & TI em Bragança Paulista">
+    <meta property="og:description" content="Acabamos com a lentidão do seu PC e cuidamos da TI e sistemas da sua empresa. Atendimento local com Leva-e-Traz.">
     <meta property="og:type" content="website">
-    <!-- Fonts -->
+    
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
+    <!-- Schema.org JSON-LD LocalBusiness -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "IFL Costa Tech",
+      "image": "https://iflcosta.tech/assets/img/og-image.jpg",
+      "telephone": "+5511919691542",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bragança Paulista",
+        "addressRegion": "SP",
+        "addressCountry": "BR"
+      },
+      "priceRange": "$$",
+      "description": "Consultoria em Engenharia de Software, Upgrades de Hardware de alta performance e Gestão de TI Gerenciada (MSP) para PMEs em Bragança Paulista."
+    }
+    </script>
+
     <!-- Tailwind CSS Compilado -->
     <link rel="stylesheet" href="assets/css/style.min.css">
     
@@ -26,21 +47,22 @@
 <body class="bg-dark text-gray-300 font-sans antialiased selection:bg-brand selection:text-black">
 
     <!-- Navbar Brutalista -->
-    <header class="fixed w-full top-0 z-50 bg-dark/80 backdrop-blur-md border-b-2 border-zinc-800">
+    <header class="fixed w-full top-0 z-50 bg-dark/90 backdrop-blur-md border-b-2 border-zinc-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-2">
-                    <div class="w-4 h-8 bg-brand"></div>
-                    <span class="text-2xl font-extrabold text-white tracking-tight">IFL Costa Tech</span>
-                </div>
+                <a href="#" class="flex items-center gap-2 group">
+                    <div class="w-4 h-8 bg-brand group-hover:scale-110 transition-transform"></div>
+                    <span class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">IFL Costa Tech</span>
+                </a>
                 <nav class="hidden md:flex gap-8">
                     <a href="#solucoes" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Soluções</a>
+                    <a href="#garantias" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Garantias</a>
                     <a href="#provas" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Resultados</a>
                     <a href="#processo" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Processo</a>
                 </nav>
-                <div class="hidden md:block">
-                    <a href="https://wa.me/SEUNUMERO" target="_blank" class="px-6 py-3 bg-white text-black font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent">
-                        FALAR COM O ESPECIALISTA
+                <div class="flex items-center gap-3">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="px-4 py-2 sm:px-6 sm:py-3 bg-white text-black text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent">
+                        FALAR COM ESPECIALISTA
                     </a>
                 </div>
             </div>
@@ -50,32 +72,122 @@
     <main class="pt-20">
         <!-- Hero Brutalista -->
         <section class="min-h-[85vh] flex items-center border-b-2 border-zinc-800 relative">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 sm:py-20 relative z-10">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div>
-                        <div class="inline-block bg-brand text-black font-mono text-xs font-bold px-3 py-1 uppercase mb-6">
-                            [ System Status: Online ]
+                        <div class="inline-flex items-center gap-2 bg-brand/10 border border-brand/30 text-brand font-mono text-xs font-bold px-3 py-1.5 uppercase mb-6">
+                            <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                            Bragança Paulista & Região • Presencial & Remoto
                         </div>
-                        <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white tracking-tight leading-[0.9] tracking-tighter mb-8">
+                        <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white tracking-tight leading-[0.95] mb-8">
                             Hardware que <span style="-webkit-text-stroke: 1px #ccff00; background: none; color: transparent;">não trava</span>.<br>
                             Software que <span class="text-brand">funciona</span>.
                         </h1>
-                        <p class="text-xl md:text-2xl text-gray-400 font-medium mb-10 max-w-xl leading-relaxed">
-                            Acabamos com a lentidão da sua máquina e desenvolvemos sistemas web que escalam de verdade. Sem buzzwords. Sem enrolação.
+                        <p class="text-lg sm:text-xl md:text-2xl text-gray-400 font-medium mb-10 max-w-xl leading-relaxed">
+                            Acabamos com a lentidão da sua máquina e cuidamos da infraestrutura e sistemas da sua empresa. Sem termos difíceis. Atendimento direto com especialista.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="https://wa.me/SEUNUMERO" target="_blank" class="inline-flex justify-center items-center px-8 py-4 bg-brand text-black text-lg font-black uppercase tracking-wider hover:bg-white transition-colors border-2 border-transparent">
-                                Resolver Meu Problema
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20um%20diagn%C3%B3stico%20t%C3%A9cnico%20para%20minha%20m%C3%A1quina%20ou%20empresa." target="_blank" rel="noopener noreferrer" class="inline-flex justify-center items-center px-8 py-4 bg-brand text-black text-lg font-black uppercase tracking-wider hover:bg-white transition-colors border-2 border-transparent">
+                                Solicitar Diagnóstico Rápido
                             </a>
                         </div>
                     </div>
                     <div class="relative hidden lg:block group">
-                        <!-- Bloco Offset -->
+                        <!-- Bloco Offset Brutalista -->
                         <div class="absolute -bottom-4 -left-4 w-full h-full bg-brand border-2 border-zinc-800 transition-transform duration-500 group-hover:translate-x-2 group-hover:-translate-y-2"></div>
-                        <!-- Imagem -->
-                        <div class="aspect-square bg-zinc-900 border-2 border-zinc-800 relative grayscale group-hover:grayscale-0 transition-all duration-500 z-10 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=800&q=80" alt="Hardware Setup" class="absolute inset-0 w-full h-full object-cover">
-                            <div class="absolute inset-0 border-4 border-zinc-800/50 m-4 pointer-events-none z-20"></div>
+                        <!-- Terminal Mockup Card -->
+                        <div class="bg-black border-2 border-zinc-800 relative z-10 p-6 font-mono text-xs sm:text-sm text-gray-300 shadow-2xl">
+                            <!-- Terminal Header -->
+                            <div class="flex items-center justify-between border-b-2 border-zinc-800 pb-4 mb-5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 bg-red-500"></div>
+                                    <div class="w-3 h-3 bg-yellow-500"></div>
+                                    <div class="w-3 h-3 bg-brand"></div>
+                                    <span class="text-zinc-500 text-xs ml-2 font-bold">ifl-diagnostics // telemetria-core</span>
+                                </div>
+                                <span class="text-brand text-xs font-bold uppercase tracking-widest px-2 py-0.5 bg-brand/10 border border-brand/30">ONLINE</span>
+                            </div>
+
+                            <!-- Metrics Matrix -->
+                            <div class="space-y-4">
+                                <!-- Module 1: Hardware -->
+                                <div class="bg-zinc-900/90 border border-zinc-800 p-3.5">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-zinc-400 font-bold flex items-center gap-1.5"><i data-lucide="cpu" class="w-4 h-4 text-brand"></i> HARDWARE DEEP-TUNING</span>
+                                        <span class="text-brand font-bold">ESTÁVEL</span>
+                                    </div>
+                                    <p class="text-zinc-300 text-xs">CPU: 4.8GHz Max Clock &bull; Temp: 52°C</p>
+                                    <div class="w-full bg-zinc-800 h-1.5 mt-2 overflow-hidden">
+                                        <div class="bg-brand h-full w-[94%]"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Module 2: Software & Web -->
+                                <div class="bg-zinc-900/90 border border-zinc-800 p-3.5">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-zinc-400 font-bold flex items-center gap-1.5"><i data-lucide="code" class="w-4 h-4 text-brand"></i> SISTEMAS & WEB ENGINES</span>
+                                        <span class="text-brand font-bold">100 / 100</span>
+                                    </div>
+                                    <p class="text-zinc-300 text-xs">Response Time: 18ms &bull; Zero Lag</p>
+                                    <div class="w-full bg-zinc-800 h-1.5 mt-2 overflow-hidden">
+                                        <div class="bg-brand h-full w-[99%]"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Module 3: TI B2B & Infra -->
+                                <div class="bg-zinc-900/90 border border-zinc-800 p-3.5">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-zinc-400 font-bold flex items-center gap-1.5"><i data-lucide="shield" class="w-4 h-4 text-brand"></i> INFRAESTRUTURA & MSP</span>
+                                        <span class="text-brand font-bold">BLINDADO</span>
+                                    </div>
+                                    <p class="text-zinc-300 text-xs">Backups Automáticos &bull; SLA Ativo</p>
+                                    <div class="w-full bg-zinc-800 h-1.5 mt-2 overflow-hidden">
+                                        <div class="bg-brand h-full w-[100%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terminal Footer Command -->
+                            <div class="mt-4 pt-3 border-t border-zinc-800/80 text-zinc-500 text-xs flex justify-between items-center">
+                                <span>$ ifl-ctl --health-check --all</span>
+                                <span class="text-brand font-bold">ALL PASS [OK]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Barra de Confiança e Garantias -->
+        <section id="garantias" class="bg-black border-b-2 border-zinc-800 py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 font-mono text-xs sm:text-sm">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-brand shrink-0"></i>
+                        <div>
+                            <p class="font-bold text-white uppercase">90 Dias de Garantia</p>
+                            <p class="text-zinc-500 text-xs">Em todos os serviços de bancada</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="truck" class="w-6 h-6 text-brand shrink-0"></i>
+                        <div>
+                            <p class="font-bold text-white uppercase">Leva-e-Traz</p>
+                            <p class="text-zinc-500 text-xs">Comodidade em Bragança Paulista</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="lock" class="w-6 h-6 text-brand shrink-0"></i>
+                        <div>
+                            <p class="font-bold text-white uppercase">Sigilo & LGPD</p>
+                            <p class="text-zinc-500 text-xs">Seus dados e arquivos protegidos</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="briefcase" class="w-6 h-6 text-brand shrink-0"></i>
+                        <div>
+                            <p class="font-bold text-white uppercase">Zero Custo CLT</p>
+                            <p class="text-zinc-500 text-xs">TI corporativa sob demanda</p>
                         </div>
                     </div>
                 </div>
@@ -83,72 +195,84 @@
         </section>
 
         <!-- Soluções Quebrando o Grid -->
-        <section id="solucoes" class="py-32 border-b-2 border-zinc-800">
+        <section id="solucoes" class="py-24 sm:py-32 border-b-2 border-zinc-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-20 text-white">
                     O que a gente <span class="text-brand">resolve</span>
                 </h2>
 
                 <div class="space-y-24">
-                    <!-- Bloco 1 -->
+                    <!-- Bloco 1: Hardware -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                         <div class="lg:col-span-5">
-                            <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Hardware &<br>Manutenção</h3>
+                            <span class="text-brand font-mono text-sm font-bold uppercase mb-2 block">[ 01 • B2C & Profissionais ]</span>
+                            <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Hardware &<br>Manutenção de Precisão</h3>
                         </div>
                         <div class="lg:col-span-7 border-l-4 border-brand pl-6 md:pl-10">
-                            <p class="text-2xl text-gray-300 font-medium mb-8 leading-snug">
-                                Abrimos a máquina, testamos as peças e dizemos exatamente onde está o gargalo. Sem empurrar peça desnecessária, focando em extrair o máximo de FPS e fluidez.
+                            <p class="text-xl sm:text-2xl text-gray-300 font-medium mb-8 leading-snug">
+                                Abrimos a máquina, testamos componente por componente e dizemos onde está o gargalo. Sem empurrar peça desnecessária, focando em extrair o máximo de velocidade, FPS e estabilidade térmica.
                             </p>
-                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-gray-400 text-lg">
-                                <li><span class="text-brand font-bold mr-2">></span>Upgrades de SSD e RAM</li>
-                                <li><span class="text-brand font-bold mr-2">></span>Limpeza e Otimização Térmica</li>
-                                <li><span class="text-brand font-bold mr-2">></span>Montagem de Setups Pró</li>
-                                <li><span class="text-brand font-bold mr-2">></span>Atendimento Leva-e-Traz</li>
+                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-gray-400 text-base sm:text-lg mb-8">
+                                <li><span class="text-brand font-bold mr-2">></span>Upgrades de SSD NVMe e RAM</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Limpeza e Troca Térmica Premium</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Montagem de Setups e Workstations</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Serviço Leva-e-Traz Local</li>
                             </ul>
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento%20para%20upgrade%20ou%20manuten%C3%A7%C3%A3o%20de%20computador%20em%20Bragan%C3%A7a." target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-brand font-bold uppercase text-sm tracking-wider hover:underline">
+                                Solicitar Orçamento de Hardware <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
                         </div>
                     </div>
 
-                    <!-- Bloco 2 -->
+                    <!-- Bloco 2: Software -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-20 border-t-2 border-zinc-800/50">
                         <div class="lg:col-span-5">
-                            <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Software &<br>Engenharia Web</h3>
+                            <span class="text-brand font-mono text-sm font-bold uppercase mb-2 block">[ 02 • Engenharia Digital ]</span>
+                            <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Software &<br>Sistemas Sob Medida</h3>
                         </div>
-                        <div class="lg:col-span-7 border-l-4 border-white pl-6 md:pl-10">
-                            <p class="text-2xl text-gray-300 font-medium mb-8 leading-snug">
-                                Escrevemos código sob medida e arquitetamos nuvem. De landing pages ultra rápidas a dashboards que automatizam sua operação interna.
+                        <div class="lg:col-span-7 border-l-4 border-brand pl-6 md:pl-10">
+                            <p class="text-xl sm:text-2xl text-gray-300 font-medium mb-8 leading-snug">
+                                Escrevemos código limpo e arquitetura moderna. De landing pages ultra rápidas que convertem visitantes em clientes até automações comerciais integradas ao WhatsApp.
                             </p>
-                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-gray-400 text-lg">
-                                <li><span class="text-white font-bold mr-2">></span>Sistemas Web Customizados</li>
-                                <li><span class="text-white font-bold mr-2">></span>Automação de Processos</li>
-                                <li><span class="text-white font-bold mr-2">></span>Landing Pages de Conversão</li>
-                                <li><span class="text-white font-bold mr-2">></span>Cloud e Integração de APIs</li>
+                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-gray-400 text-base sm:text-lg mb-8">
+                                <li><span class="text-brand font-bold mr-2">></span>Sistemas e Painéis Web Customizados</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Automação Comercial no WhatsApp</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Landing Pages de Alta Conversão</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Integração de APIs e Cloud</li>
                             </ul>
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento%20para%20desenvolvimento%20de%20software%2Fautoma%C3%A7%C3%A3o." target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-brand font-bold uppercase text-sm tracking-wider hover:underline">
+                                Conversar sobre Projeto Web <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
                         </div>
                     </div>
 
-                    <!-- Bloco 3 -->
+                    <!-- Bloco 3: TI Gerenciada MSP -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-20 border-t-2 border-zinc-800/50">
                         <div class="lg:col-span-5">
-                            <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">TI Gerenciada<br>& Suporte B2B</h3>
+                            <span class="text-brand font-mono text-sm font-bold uppercase mb-2 block">[ 03 • B2B Corporativo ]</span>
+                            <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">TI Gerenciada<br>& Suporte Contínuo (MSP)</h3>
                         </div>
-                        <div class="lg:col-span-7 border-l-4 border-zinc-500 pl-6 md:pl-10">
-                            <p class="text-2xl text-gray-300 font-medium mb-8 leading-snug">
-                                Terceirize a dor de cabeça da infraestrutura. Cuidamos das redes, servidores e rotinas de backup da sua empresa para você focar no negócio. Sem custo de CLT.
+                        <div class="lg:col-span-7 border-l-4 border-brand pl-6 md:pl-10">
+                            <p class="text-xl sm:text-2xl text-gray-300 font-medium mb-8 leading-snug">
+                                Terceirize a dor de cabeça da TI da sua empresa. Cuidamos das redes, estabilidade das máquinas e rotinas blindadas de backup em nuvem. Suporte com SLA ágil e sem encargos trabalhistas.
                             </p>
-                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-gray-400 text-lg">
-                                <li><span class="text-zinc-500 font-bold mr-2">></span>Gestão de Redes B2B</li>
-                                <li><span class="text-zinc-500 font-bold mr-2">></span>Monitoramento & Manutenção</li>
-                                <li><span class="text-zinc-500 font-bold mr-2">></span>Rotinas de Backup Blindadas</li>
-                                <li><span class="text-zinc-500 font-bold mr-2">></span>Suporte Corporativo (SLA)</li>
+                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-gray-400 text-base sm:text-lg mb-8">
+                                <li><span class="text-brand font-bold mr-2">></span>Planejamento de Redes & Wi-Fi Corporativo</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Rotinas de Backup Blindadas em Nuvem</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Manutenção Preventiva Periódica</li>
+                                <li><span class="text-brand font-bold mr-2">></span>Suporte Técnico Prioritário (SLA)</li>
                             </ul>
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Tenho%20uma%20empresa%20em%20Bragan%C3%A7a%20e%20gostaria%20de%20uma%20avalia%C3%A7%C3%A3o%20gratuita%20da%20nossa%20TI." target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-brand font-bold uppercase text-sm tracking-wider hover:underline">
+                                Agendar Auditoria de TI Gratuita para Minha Empresa <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Resultados Reais em vez de Terminal Falso -->
-        <section id="provas" class="py-32 bg-zinc-900 border-b-2 border-zinc-800">
+        <!-- Resultados Reais -->
+        <section id="provas" class="py-24 sm:py-32 bg-zinc-900 border-b-2 border-zinc-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
@@ -156,11 +280,11 @@
                             A Prova <span class="text-brand">Real</span>
                         </h2>
                         <p class="text-xl text-gray-400 mb-10 leading-relaxed">
-                            Nós não usamos scripts falsos de "filme de hacker" para provar que somos bons. Nós mostramos os resultados reais das máquinas que operamos e dos sistemas que subimos.
+                            Nós não usamos scripts genéricos de "filme de hacker" para impressionar. Nós mostramos métricas reais das máquinas que operamos e dos sistemas que gerenciamos.
                         </p>
-                        <div class="bg-black border-2 border-zinc-700 p-8 font-mono text-sm sm:text-base text-gray-400">
-                            <p class="text-white font-bold mb-6">// RESULTADOS VERÍDICOS RECENTES</p>
-                            <div class="space-y-6">
+                        <div class="bg-black border-2 border-zinc-700 p-6 sm:p-8 font-mono text-sm sm:text-base text-gray-400">
+                            <p class="text-white font-bold mb-6">// RESULTADOS COMPROVADOS EM CAMPO</p>
+                            <div class="space-y-5">
                                 <div class="flex justify-between border-b border-zinc-800 pb-3">
                                     <span>Boot Time (Notebook Lenovo)</span>
                                     <span class="text-brand font-bold">De 1m20s para 12s</span>
@@ -170,21 +294,117 @@
                                     <span class="text-brand font-bold">-18°C após Delid</span>
                                 </div>
                                 <div class="flex justify-between border-b border-zinc-800 pb-3">
-                                    <span>Lighthouse SEO (Cliente Web)</span>
+                                    <span>Lighthouse Performance Web</span>
                                     <span class="text-brand font-bold">100 / 100</span>
+                                </div>
+                                <div class="flex justify-between border-b border-zinc-800 pb-3">
+                                    <span>Uptime & Segurança MSP (PMEs)</span>
+                                    <span class="text-brand font-bold">Zero perda de dados</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-zinc-800 border-2 border-zinc-700 flex flex-col items-center justify-center text-zinc-500 font-mono text-center p-8 aspect-video relative group overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Resultados e Código" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-80 transition-opacity duration-500 grayscale">
+                    <div class="relative group">
+                        <!-- Bloco Offset Brutalista -->
+                        <div class="absolute -bottom-3 -right-3 w-full h-full bg-zinc-800 border-2 border-zinc-700 transition-transform duration-500 group-hover:translate-x-1 group-hover:translate-y-1"></div>
+                        <!-- Laudo Card -->
+                        <div class="bg-black border-2 border-zinc-700 p-6 sm:p-8 font-mono text-xs sm:text-sm text-gray-300 relative z-10 shadow-2xl">
+                            <div class="flex justify-between items-center border-b-2 border-zinc-800 pb-4 mb-6">
+                                <div>
+                                    <span class="text-zinc-500 uppercase text-xs block font-bold">Relatório Oficial de Bancada</span>
+                                    <span class="text-white font-extrabold text-sm sm:text-base">LAUDO COMPARATIVO DE PERFORMANCE</span>
+                                </div>
+                                <span class="bg-brand text-black font-black text-xs px-2.5 py-1 uppercase">Aprovado</span>
+                            </div>
+
+                            <!-- Comparativos Visuais Antes vs Depois -->
+                            <div class="space-y-4">
+                                <!-- Item 1: Boot Time -->
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2">
+                                    <div class="flex justify-between items-center text-xs">
+                                        <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="zap" class="w-3.5 h-3.5 text-brand"></i> Boot Time (Inicialização do Sistema)</span>
+                                        <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5">-85% TEMPO</span>
+                                    </div>
+                                    <div class="space-y-1.5 text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-24 text-zinc-400 text-[11px] shrink-0 font-bold">HD Antigo:</span>
+                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-red-500/80 w-[85%]"></div>
+                                                <span class="relative z-10 text-white font-bold text-[11px]">80s (Gargalo Mecânico)</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-24 text-brand text-[11px] shrink-0 font-bold">NVMe Tuning:</span>
+                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-brand w-[45%]"></div>
+                                                <span class="relative z-10 text-black font-bold text-[11px]">12s (Boot Instantâneo)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 2: Temperatura CPU -->
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2">
+                                    <div class="flex justify-between items-center text-xs">
+                                        <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="flame" class="w-3.5 h-3.5 text-brand"></i> Temperatura em Estresse (AIDA64)</span>
+                                        <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5">-18°C ESTÁVEL</span>
+                                    </div>
+                                    <div class="space-y-1.5 text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-24 text-zinc-400 text-[11px] shrink-0 font-bold">Original:</span>
+                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-red-500/80 w-[94%]"></div>
+                                                <span class="relative z-10 text-white font-bold text-[11px]">94°C (Thermal Throttling)</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-24 text-brand text-[11px] shrink-0 font-bold">Com Delid:</span>
+                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-brand w-[76%]"></div>
+                                                <span class="relative z-10 text-black font-bold text-[11px]">76°C (Pasta Térmica Premium)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 3: Velocidade Web -->
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2">
+                                    <div class="flex justify-between items-center text-xs">
+                                        <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="gauge" class="w-3.5 h-3.5 text-brand"></i> Performance Web (Lighthouse)</span>
+                                        <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5">SCORE MÁXIMO</span>
+                                    </div>
+                                    <div class="space-y-1.5 text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-24 text-zinc-400 text-[11px] shrink-0 font-bold">Site Lento:</span>
+                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-red-500/80 w-[42%]"></div>
+                                                <span class="relative z-10 text-white font-bold text-[11px]">42/100 (Perdendo Vendas)</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-24 text-brand text-[11px] shrink-0 font-bold">IFL Engine:</span>
+                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-brand w-[100%]"></div>
+                                                <span class="relative z-10 text-black font-bold text-[11px]">100/100 (Instantâneo)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer do Laudo -->
+                            <div class="mt-6 pt-4 border-t border-zinc-800 flex justify-between items-center text-zinc-500 text-[11px]">
+                                <span>Verificado: IFL Costa Tech</span>
+                                <span class="text-zinc-400 font-bold">SHA-256: VALIDADO</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Processo Realista -->
-        <section id="processo" class="py-32">
+        <section id="processo" class="py-24 sm:py-32">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-20 text-white text-center">
                     Como a gente <span class="text-brand">trabalha</span>
@@ -193,36 +413,35 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                     <div class="border-t-4 border-brand pt-8">
                         <span class="text-6xl font-black text-zinc-800 mb-6 block">01</span>
-                        <h4 class="text-2xl font-extrabold text-white mb-4 tracking-tight">O Papo Reto</h4>
-                        <p class="text-gray-400 text-lg leading-relaxed">Você manda um WhatsApp explicando a dor. Nós avaliamos a viabilidade técnica e financeira logo de cara, sem burocracia.</p>
+                        <h4 class="text-2xl font-extrabold text-white mb-4 tracking-tight">O Diagnóstico Direto</h4>
+                        <p class="text-gray-400 text-lg leading-relaxed">Você manda um WhatsApp explicando a dor. Avaliamos a viabilidade técnica e financeira de imediato, sem burocracia nem enrolação.</p>
                     </div>
                     <div class="border-t-4 border-white pt-8">
                         <span class="text-6xl font-black text-zinc-800 mb-6 block">02</span>
-                        <h4 class="text-2xl font-extrabold text-white mb-4 tracking-tight">A Cirurgia</h4>
-                        <p class="text-gray-400 text-lg leading-relaxed">Se for hardware, retiramos a máquina e vamos pra bancada. Se for software, marcamos a call para estruturar a arquitetura do sistema.</p>
+                        <h4 class="text-2xl font-extrabold text-white mb-4 tracking-tight">A Intervenção</h4>
+                        <p class="text-gray-400 text-lg leading-relaxed">Para hardware, retiramos a máquina no Leva-e-Traz ou atendemos presencialmente. Para empresas e software, alinhamos a arquitetura do projeto.</p>
                     </div>
                     <div class="border-t-4 border-zinc-700 pt-8">
                         <span class="text-6xl font-black text-zinc-800 mb-6 block">03</span>
-                        <h4 class="text-2xl font-extrabold text-white mb-4 tracking-tight">Mão na Massa</h4>
-                        <p class="text-gray-400 text-lg leading-relaxed">Execução transparente. Você acompanha fotos da bancada ou links de homologação. Entregamos o projeto testado no limite.</p>
+                        <h4 class="text-2xl font-extrabold text-white mb-4 tracking-tight">Entrega com Laudo</h4>
+                        <p class="text-gray-400 text-lg leading-relaxed">Execução 100% transparente. Você recebe fotos da bancada, métricas de testes de estresse e garantia de 90 dias com suporte pós-entrega.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- CTA Final Brutalista -->
-        <section class="py-24 bg-brand text-black text-center">
+        <!-- CTA Final Brutalista Híbrido -->
+        <section class="py-20 sm:py-24 bg-brand text-black text-center">
             <div class="max-w-4xl mx-auto px-4">
-                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">
-                    Sua máquina de volta à vida.
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+                    Performance para seu hardware.<br class="hidden sm:inline"> Estabilidade para a TI da sua empresa.
                 </h2>
-                <p class="text-xl font-medium mb-10 border-b-2 border-black/10 inline-block pb-2">
-                    Chega de tentar resolver com tutoriais amadores. Deixa com quem entende.
+                <p class="text-lg sm:text-xl font-medium mb-8 text-black/80 max-w-2xl mx-auto">
+                    De um upgrade de alto rendimento à gestão completa da infraestrutura do seu negócio em Bragança Paulista.
                 </p>
-                <br>
-                <a href="https://wa.me/SEUNUMERO" target="_blank" class="inline-flex items-center gap-3 px-8 py-4 bg-black text-white text-xl font-black uppercase tracking-wider hover:bg-zinc-800 transition-colors">
-                    <i data-lucide="zap" class="w-6 h-6"></i>
-                    Falar com Especialista
+                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Quero%20agendar%20um%20atendimento%20t%C3%A9cnico%20com%20a%20IFL%20Costa%20Tech." target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-8 py-4 bg-black text-white text-lg sm:text-xl font-black uppercase tracking-wider hover:bg-zinc-800 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]">
+                    <i data-lucide="zap" class="w-6 h-6 text-brand"></i>
+                    Falar com o Especialista Agora
                 </a>
             </div>
         </section>
@@ -236,16 +455,16 @@
                 IFL Costa Tech
             </div>
             <div class="font-mono text-zinc-500 text-sm text-center">
-                &copy; 2024 IFL Costa Tech &bull; Códificado à mão.
+                &copy; 2025 IFL Costa Tech &bull; Bragança Paulista - SP &bull; Todos os direitos reservados.
             </div>
-            <a href="https://wa.me/SEUNUMERO" target="_blank" class="text-white hover:text-brand font-bold uppercase text-sm tracking-widest transition-colors">
-                [ Contato via WhatsApp ]
+            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="text-white hover:text-brand font-bold uppercase text-sm tracking-widest transition-colors font-mono">
+                [ (11) 91969-1542 ]
             </a>
         </div>
     </footer>
 
     <!-- FAB WhatsApp com Neobrutalismo -->
-    <a href="https://wa.me/SEUNUMERO" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 z-50 bg-brand text-black p-4 rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(255,255,255,1)] transition-all duration-200" aria-label="Fale conosco no WhatsApp">
+    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20falar%20com%20o%20especialista%20da%20IFL%20Costa%20Tech." target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 z-50 bg-brand text-black p-4 rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(255,255,255,1)] transition-all duration-200" aria-label="Fale conosco no WhatsApp">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8" fill="currentColor">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
         </svg>

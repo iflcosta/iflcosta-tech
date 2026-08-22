@@ -1,0 +1,92 @@
+# Catálogo de Serviços & Matriz de Precificação Interna
+**Empresa:** IFL Costa Tech  
+**Praça Base:** Bragança Paulista - SP & Região  
+**Versão:** 1.0 (Lançamento Oficial)  
+**Objetivo:** Balizar a precificação de mão de obra, margens de peças, custos de repasse técnico e estruturar a receita recorrente (MRR).
+
+---
+
+## 🏛️ Estrutura de Pilares & Modelo de Faturamento
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           IFL COSTA TECH                                │
+├─────────────────────────┬─────────────────────────┬─────────────────────┤
+│ 1. HARDWARE & BANCADA   │ 2. SOFTWARE & ENGENHARIA│ 3. TI GERENCIADA    │
+│ (Caixa Rápido / Avulso) │ (Alto Ticket / Projetos)│ (Recorrência / MRR) │
+└─────────────────────────┴─────────────────────────┴─────────────────────┘
+```
+
+---
+
+## 🛠️ PILAR 1: Hardware & Manutenção de Precisão (B2C & Profissionais)
+
+*Modelo de Venda: Transacional (À vista via Pix ou Cartão em até 12x com juros).*
+
+| Código | Serviço | Descrição & Entregáveis | Tempo Médio | Valor Mão de Obra (Sugerido) | Repasse Técnico Jr. (Opcional) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **HW-01** | **Check-up & Diagnóstico Cirúrgico** | Teste de estresse completo (AIDA64/FurMark), verificação de saúde de SSD/HD e inspeção visual da placa. | 1h a 2h | **R$ 90,00** *(Isento se aprovar o serviço)* | R$ 30,00 |
+| **HW-02** | **Otimização de Software & Sistema** | Formatação limpa (Windows 11/10 Pro), instalação de drivers oficiais, remoção de bloatwares e backup básico (até 50GB). | 1.5h | **R$ 160,00** | R$ 50,00 |
+| **HW-03** | **Limpeza Física & Troca Térmica** | Desmontagem completa, banho químico/ar comprimido, aplicação de pasta térmica de alta condutividade (Artic MX-4 / Thermal Grizzly). | 2h | **R$ 220,00** (Notebook: R$ 250) | R$ 70,00 |
+| **HW-04** | **Instalação de Upgrade (SSD/RAM)** | Clonagem bit a bit de disco sem perda de arquivos ou instalação limpa + migração de perfil. | 1h a 2h | **R$ 140,00** + Custo da Peça (+ Margem) | R$ 40,00 |
+| **HW-05** | **Montagem de PC Gamer / Workstation** | Montagem do zero, gerenciamento de cabos (cable management militar), atualização de BIOS, teste de estresse de 1h e entrega com laudo. | 3h a 4h | **R$ 380,00 a R$ 550,00** | R$ 120,00 |
+| **HW-06** | **Taxa de Leva-e-Traz (Bragança)** | Retirada e entrega do equipamento no endereço do cliente com termo de responsabilidade assinado. | - | **R$ 35,00** *(Grátis em serviços > R$ 350)* | R$ 20,00 (Uber/Gasolina) |
+
+### 📦 Política de Margem sobre Peças e Hardware
+- **Peças de giro rápido (SSDs NVMe, memórias RAM):** Adicionar **30% a 40%** sobre o valor de custo de fornecedor/distribuidor.
+- **Peças de alto valor (Placas de vídeo, Processadores, Placas-mãe):** Adicionar **15% a 25%** ou cobrar taxa de consultoria de compra (R$ 150) caso o cliente compre diretamente.
+
+---
+
+## 💻 PILAR 2: Software & Engenharia Web (Projetos Fechados)
+
+*Modelo de Venda: 50% de entrada no fechamento + 50% na entrega e homologação.*
+
+| Código | Serviço | O que está incluso | Prazo Médio | Faixa de Preço (Bragança & Remoto) |
+| :--- | :--- | :--- | :--- | :--- |
+| **SW-01** | **Landing Page de Alta Conversão** | Design Neobrutalista/Moderno, HTML5/Tailwind ou React, 100/100 no Lighthouse SEO, integração com WhatsApp e hospedagem rápida. | 3 a 7 dias | **R$ 1.400,00 a R$ 2.400,00** |
+| **SW-02** | **Automação Comercial de WhatsApp** | Integração via API (Typebot/Evolution API/N8N), fluxo de qualificação de leads, agendamento e notificação de equipe. | 5 a 10 dias | **R$ 900,00 a R$ 1.800,00** *(+ R$ 150/mês suporte)* |
+| **SW-03** | **Painel Web / Sistema Sob Medida** | Aplicação web para controle interno, painel administrativo, banco de dados seguro, autenticação e relatórios. | 15 a 30 dias | **R$ 3.800,00 a R$ 8.500,00+** |
+| **SW-04** | **Hora Técnica de Desenvolvimento** | Refatoração de sistemas existentes, correção de bugs críticos, integração de APIs e suporte especializado. | Por hora | **R$ 130,00 / hora** |
+
+---
+
+## 🛡️ PILAR 3: TI Gerenciada para Empresas / MSP (Precificação Modular por Estação)
+
+*Modelo de Venda: Contrato mensal recorrente (MRR) calculado por máquina com criticidade híbrida.*
+
+| Nível de Criticidade | Dispositivos Típicos | O que está incluso no monitoramento | Valor por Máquina / Mês |
+| :--- | :--- | :--- | :--- |
+| **Tier 1: Essential** *(Estação Padrão)* | Recepção, Estoque, Balcão de Vendas, Máquinas de Navegação. | • Monitoramento de saúde de disco, temperatura e CPU.<br>• Antivírus corporativo gerenciado em nuvem.<br>• Suporte remoto ilimitado sob demanda.<br>• Manutenção preventiva periódica de software. | **R$ 69,90** / máquina / mês |
+| **Tier 2: Professional** *(Estação Crítica / Operação)* | Financeiro, Contabilidade, Engenharia, RH e Faturamento. | • Tudo do Plano Essential.<br>• **Rotinas de Backup Automático em Nuvem Diário** (arquivos, planilhas e certificados digitais A1/A3).<br>• Suporte técnico prioritário (SLA de até 2h).<br>• 1 Limpeza física e troca térmica anual inclusa. | **R$ 109,90** / máquina / mês |
+| **Tier 3: Enterprise** *(Servidores & Missão Crítica)* | Servidor Local de Arquivos/Banco de Dados, ERP Host, Máquinas de Diretoria. | • Tudo do Plano Professional.<br>• **Backup com Snapshot Contínuo & Recuperação de Desastre (Disaster Recovery)**.<br>• Monitoramento 24/7 de Uptime e carga de rede.<br>• Visitas presenciais de emergência com SLA de até 2h em Bragança. | **R$ 189,90** / servidor ou PC crítico / mês |
+
+### 🏢 Exemplo de Proposta Comercial Modular (PME com 5 máquinas):
+- **1 Servidor Local / Banco de Dados (Enterprise):** `1x R$ 189,90 = R$ 189,90`
+- **2 Máquinas do Financeiro / Faturamento (Professional):** `2x R$ 109,90 = R$ 219,80`
+- **2 Máquinas da Recepção / Atendimento (Essential):** `2x R$ 69,90 = R$ 139,80`
+- **Total Mensal para a Empresa:** **R$ 549,50 / mês**
+
+### 📌 Regra de Contrato Mínimo:
+- **Valor Mínimo por Empresa:** **R$ 280,00 / mês** (ou mínimo de 3 a 4 máquinas) para viabilizar atendimento presencial em Bragança Paulista.
+
+---
+
+## 📊 Simulação de Metas Financeiras (Próximos 60 Dias)
+
+### Cenário de Validação (Mês 1 e 2):
+- **4 Clientes MSP (Média de 5 máquinas cada / ~R$ 550 por empresa):** **R$ 2.200,00 / mês** (MRR Recorrente)
+- **8 Serviços Avulsos de Hardware (Upgrades/Bancada):** ~R$ 1.800,00 (Caixa Pontual)
+- **1 Landing Page / Automação Web:** R$ 1.600,00 (Caixa Pontual)
+- **Faturamento Estimado:** **R$ 5.600,00** (sendo R$ 2.200,00 de receita recorrente já contratada para os meses seguintes).
+
+---
+
+## 📋 Regras de Repasse para a Rede Técnica
+
+1. **Técnico Júnior:**
+   - Atividades permitidas: Limpeza física, formatação padrão, troca de pasta térmica e montagem básica.
+   - Remuneração: 30% a 35% do valor da mão de obra da OS (paga quinzenalmente após validação de entrega).
+2. **Técnico Sênior:**
+   - Atividades: Reparo eletrônico de placas em bancada (curto, reballing, solda BGA) ou infraestruturas complexas de rede (MikroTik/Firewall avançado).
+   - Remuneração: Orçamento fechado por demanda (ex: 50% do valor orçado para o cliente).
