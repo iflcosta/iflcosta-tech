@@ -565,16 +565,54 @@
             mspContainer.classList.add("hidden");
         }
 
-        // Renderiza dados reais da OS no DOM com Sanitização XSS
+        // Renderiza dados reais da OS no DOM com Sanitização XSS e Tratamento de Etapas
         function renderWorkOrderData(wo) {
             document.getElementById("hw-os-number").textContent = "#" + (wo.os_number || "1051");
-            document.getElementById("hw-device-title").textContent = escapeHtml(wo.device_brand) + " // " + escapeHtml(wo.device_model);
-            document.getElementById("hw-status-text").textContent = (wo.status || "EM ANDAMENTO").replace(/_/g, ' ').toUpperCase();
+            document.getElementById("hw-device-title").textContent = escapeHtml(wo.device_brand || "Equipamento") + " // " + escapeHtml(wo.device_model || "Hardware");
+            
+            const rawStatus = (wo.status || "Triagem").toUpperCase().replace(/_/g, ' ');
+            document.getElementById("hw-status-text").textContent = rawStatus;
 
             const dateStr = wo.entry_at || wo.created_at;
             if (dateStr) {
                 const date = new Date(dateStr);
                 document.getElementById("hw-date").textContent = "Entrada: " + date.toLocaleDateString('pt-BR');
+            }
+
+            // Atualiza Timeline Visual (5 Etapas)
+            const statusKey = (wo.status || "Triagem").toLowerCase();
+            const step1 = document.getElementById("step-1");
+            const step2 = document.getElementById("step-2");
+            const step3 = document.getElementById("step-3");
+            const step4 = document.getElementById("step-4");
+            const step5 = document.getElementById("step-5");
+
+            // Reset classes
+            [step1, step2, step3, step4, step5].forEach(s => {
+                if (s) {
+                    s.className = "border-2 border-zinc-800 bg-zinc-900/50 p-3 text-zinc-500";
+                }
+            });
+
+            if (statusKey.includes("triagem")) {
+                if (step1) step1.className = "border-2 border-brand bg-brand text-black p-3 animate-pulse font-bold";
+            } else if (statusKey.includes("orcamento") || statusKey.includes("sinal")) {
+                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
+                if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold";
+            } else if (statusKey.includes("bancada")) {
+                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
+                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
+                if (step3) step3.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold";
+            } else if (statusKey.includes("qa") || statusKey.includes("teste")) {
+                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
+                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
+                if (step3) step3.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
+                if (step4) step4.className = "border-2 border-brand bg-brand text-black p-3 animate-pulse font-bold";
+            } else if (statusKey.includes("pronto") || statusKey.includes("entregue")) {
+                [step1, step2, step3, step4, step5].forEach(s => {
+                    if (s) s.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                });
+                if (step5) step5.className = "border-2 border-brand bg-brand text-black p-3 font-bold";
             }
 
             // Atualiza métricas se existirem
@@ -588,57 +626,89 @@
                 document.getElementById("hw-boot-time").textContent = escapeHtml(wo.stress_test_boot_time_seconds) + " seg";
             }
 
-            // Renderiza Itens se existirem
+            // Se for Triagem (Ainda sem orçamento formal de peças)
             const itemsList = wo.items || wo.work_order_items || [];
-            if (itemsList.length > 0) {
+            const budgetCard = document.getElementById("hw-budget-card");
+
+            if (itemsList.length === 0 || (wo.status && wo.status.toLowerCase().includes('triagem') && itemsList.length === 0)) {
+                // Modo: Comprovante de Custódia & Diagnóstico em Andamento
+                if (budgetCard) {
+                    budgetCard.innerHTML = `
+                        <div class="border-2 border-brand/40 bg-brand/5 p-6 sm:p-8 font-mono">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="w-3 h-3 bg-brand animate-pulse"></span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Equipamento em Diagnóstico na Bancada</h3>
+                            </div>
+                            <p class="text-xs sm:text-sm text-zinc-300 mb-4 leading-relaxed">
+                                Seu equipamento deu entrada com sucesso em nossa bancada especializada em Bragança Paulista.
+                                Nossos técnicos estão executando a análise de hardware e testes eletrônicos.
+                            </p>
+                            <div class="bg-black border border-zinc-800 p-4 text-xs space-y-2 mb-4">
+                                <div><strong class="text-zinc-500">DEFEITO RELATADO:</strong> <span class="text-yellow-400">${escapeHtml(wo.reported_defect || 'Defeito informado pelo cliente na recepção.')}</span></div>
+                                <div><strong class="text-zinc-500">PRAZO ESTIMADO DO LAUDO:</strong> <span class="text-brand">Até 24h úteis</span></div>
+                                <div><strong class="text-zinc-500">STATUS DA CUSTÓDIA:</strong> <span class="text-white font-bold">Seguro & Acolhido na Bancada</span></div>
+                            </div>
+                            <p class="text-[11px] text-zinc-400">
+                                💡 <em>Assim que o diagnóstico for concluído, a proposta técnica detalhada com peças e mão de obra aparecerá automaticamente neste link para sua aprovação.</em>
+                            </p>
+                        </div>
+                    `;
+                }
+            } else {
+                // Modo: Orçamento Detalhado Disponível
                 const tbody = document.getElementById("hw-budget-items");
-                tbody.innerHTML = "";
-                let partsSum = 0;
-                let laborSum = 0;
+                if (tbody) {
+                    tbody.innerHTML = "";
+                    let partsSum = 0;
+                    let laborSum = 0;
 
-                itemsList.forEach(item => {
-                    const price = parseFloat(item.unit_price) || 0;
-                    if (item.item_type === 'Labor') {
-                        laborSum += price;
-                    } else {
-                        partsSum += price;
-                    }
+                    itemsList.forEach(item => {
+                        const price = parseFloat(item.unit_price) || 0;
+                        if (item.item_type === 'Labor') {
+                            laborSum += price;
+                        } else {
+                            partsSum += price;
+                        }
 
-                    const tr = document.createElement("tr");
-                    if (item.item_type === 'Labor') {
-                        tr.className = "bg-zinc-900/40";
-                        tr.innerHTML = `
-                            <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
-                            <td class="py-3 px-3 text-zinc-300">${escapeHtml(item.description)}</td>
-                            <td class="py-3 px-3 text-right font-bold text-brand">R$ ${price.toFixed(2).replace('.', ',')}</td>
-                        `;
-                    } else {
-                        tr.innerHTML = `
-                            <td class="py-3 px-3 font-bold text-white">${escapeHtml(item.item_type || 'Componente')}</td>
-                            <td class="py-3 px-3">${escapeHtml(item.description)}</td>
-                            <td class="py-3 px-3 text-right font-bold text-white">R$ ${price.toFixed(2).replace('.', ',')}</td>
-                        `;
-                    }
-                    tbody.appendChild(tr);
-                });
+                        const tr = document.createElement("tr");
+                        if (item.item_type === 'Labor') {
+                            tr.className = "bg-zinc-900/40";
+                            tr.innerHTML = `
+                                <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
+                                <td class="py-3 px-3 text-zinc-300">${escapeHtml(item.description)}</td>
+                                <td class="py-3 px-3 text-right font-bold text-brand">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                            `;
+                        } else {
+                            tr.innerHTML = `
+                                <td class="py-3 px-3 font-bold text-white">${escapeHtml(item.item_type || 'Componente')}</td>
+                                <td class="py-3 px-3">${escapeHtml(item.description)}</td>
+                                <td class="py-3 px-3 text-right font-bold text-white">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                            `;
+                        }
+                        tbody.appendChild(tr);
+                    });
 
-                // Adiciona a linha de cortesia especial
-                const trCortesia = document.createElement("tr");
-                trCortesia.className = "bg-brand/5";
-                trCortesia.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-brand">Engenharia Software</td>
-                    <td class="py-3 px-3 text-zinc-300">Otimização Windows 11, Ajuste de BIOS & Perfil Térmico</td>
-                    <td class="py-3 px-3 text-right font-bold text-brand">R$ 0,00 (🎁 CORTESIA)</td>
-                `;
-                tbody.appendChild(trCortesia);
+                    // Linha de Cortesia
+                    const trCortesia = document.createElement("tr");
+                    trCortesia.className = "bg-brand/5";
+                    trCortesia.innerHTML = `
+                        <td class="py-3 px-3 font-bold text-brand">Engenharia Software</td>
+                        <td class="py-3 px-3 text-zinc-300">Otimização Windows 11, Ajuste de BIOS & Perfil Térmico</td>
+                        <td class="py-3 px-3 text-right font-bold text-brand">R$ 0,00 (🎁 CORTESIA)</td>
+                    `;
+                    tbody.appendChild(trCortesia);
 
-                const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum);
-                const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
-                const laborDisplay = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
+                    const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum);
+                    const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
+                    const laborDisplay = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
 
-                document.getElementById("hw-parts-total").textContent = "R$ " + partsDisplay.toFixed(2).replace('.', ',');
-                document.getElementById("hw-labor-total").textContent = "R$ " + laborDisplay.toFixed(2).replace('.', ',');
-                document.getElementById("hw-grand-total").textContent = "R$ " + grandTotal.toFixed(2).replace('.', ',');
+                    const pEl = document.getElementById("hw-parts-total");
+                    const lEl = document.getElementById("hw-labor-total");
+                    const gEl = document.getElementById("hw-grand-total");
+                    if (pEl) pEl.textContent = "R$ " + partsDisplay.toFixed(2).replace('.', ',');
+                    if (lEl) lEl.textContent = "R$ " + laborDisplay.toFixed(2).replace('.', ',');
+                    if (gEl) gEl.textContent = "R$ " + grandTotal.toFixed(2).replace('.', ',');
+                }
             }
         }
 

@@ -37,18 +37,21 @@
                     <span class="font-mono text-[10px] sm:text-xs font-black text-black bg-brand px-2 py-0.5 uppercase tracking-widest">COCKPIT ADMIN // 360°</span>
                 </div>
                 
-                <div class="flex items-center gap-2 sm:gap-4 font-mono text-xs">
-                    <div class="hidden md:flex items-center gap-2 text-zinc-400">
+                <div class="flex items-center gap-2 sm:gap-3 font-mono text-xs">
+                    <div class="hidden lg:flex items-center gap-2 text-zinc-400">
                         <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-                        <span>SUPABASE: CONECTADO</span>
+                        <span>SUPABASE CONECTADO</span>
                     </div>
-                    <button onclick="openNewOSModal()" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">Nova</span> OS / Montagem
+                    <button onclick="openIntakeModal()" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Check-in</span> Entrada (30s)
                     </button>
-                    <a href="portal.html" target="_blank" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-brand hover:border-brand transition-colors flex items-center gap-1">
-                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                        <span class="hidden sm:inline">Ver</span> Portal
+                    <button onclick="openNewOSModal()" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-zinc-900 border-2 border-zinc-700 text-white font-bold uppercase tracking-wider hover:border-brand hover:text-brand transition-colors flex items-center gap-1.5">
+                        <i data-lucide="cpu" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Orçar</span> Montagem
+                    </button>
+                    <a href="portal.html" target="_blank" class="hidden sm:flex px-3 py-2 sm:px-4 sm:py-2.5 bg-black border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal
                     </a>
                 </div>
             </div>
@@ -497,6 +500,80 @@
         </div>
     </main>
 
+    <!-- MODAL DE CHECK-IN RÁPIDO DE ENTRADA (TRIAGEM 30 SEGUNDOS) -->
+    <div id="intake-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-zinc-950 border-2 border-brand p-6 sm:p-8 max-w-2xl w-full shadow-2xl font-mono relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-brand animate-pulse"></span>
+                    <div>
+                        <span class="text-brand text-[10px] font-bold uppercase block">[ Custódia & Entrada de Bancada ]</span>
+                        <h3 class="text-lg sm:text-xl font-extrabold text-white">Check-in Rápido de Equipamento (R$ 0,00)</h3>
+                    </div>
+                </div>
+                <button onclick="closeIntakeModal()" class="text-zinc-500 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <form id="intake-form" onsubmit="handleSaveIntake(event)" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Nome do Cliente *</label>
+                        <input type="text" id="intake-client-name" placeholder="Ex: Carlos Eduardo" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">WhatsApp do Cliente *</label>
+                        <input type="text" id="intake-client-phone" placeholder="Ex: (11) 98888-7777" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Tipo de Equipamento *</label>
+                        <select id="intake-device-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                            <option value="Notebook">💻 Notebook</option>
+                            <option value="Desktop Gamer">🎮 PC Gamer / Desktop</option>
+                            <option value="Computador Escritório">🏢 Computador Escritório</option>
+                            <option value="All-in-One / Mac">🖥️ All-in-One / iMac</option>
+                            <option value="Servidor / Outro">🗄️ Servidor / Outro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Marca & Modelo do Aparelho *</label>
+                        <input type="text" id="intake-device-model" placeholder="Ex: Dell Inspiron 15 3520" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-yellow-400 font-bold uppercase mb-1">Defeito Relatado pelo Cliente *</label>
+                    <textarea id="intake-defect" rows="2" placeholder="Ex: Máquina não liga, bipa 3 vezes ao pressionar o power. Cliente precisa urgente para trabalho." required class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-sm focus:outline-none focus:border-brand"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Acessórios Deixados na Bancada</label>
+                        <input type="text" id="intake-accessories" placeholder="Ex: Fonte/Carregador original + Cabo de força" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Avarias Físicas / Checklist Visual</label>
+                        <input type="text" id="intake-visual-condition" placeholder="Ex: Risco na tampa superior, sem parafusos traseiros" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+
+                <div class="bg-black border border-zinc-800 p-3 text-[11px] text-zinc-400 flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-brand flex-shrink-0"></i>
+                    <span>A OS será criada em <strong>01. Triagem (R$ 0,00)</strong>. O orçamento com peças e laudo técnico será adicionado após o diagnóstico na bancada.</span>
+                </div>
+
+                <div class="pt-3 flex justify-end gap-3">
+                    <button type="button" onclick="closeIntakeModal()" class="px-4 py-2.5 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white border border-zinc-700">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i> Confirmar Entrada & Gerar Comprovante
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL DE SUCESSO: MENSAGEM WHATSAPP GERADA -->
     <div id="whatsapp-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-zinc-950 border-2 border-brand p-6 sm:p-8 max-w-xl w-full shadow-2xl font-mono relative">
@@ -566,6 +643,79 @@ Qualquer dúvida, estou à disposição!
             }
 
             if (window.lucide) lucide.createIcons();
+        }
+
+        function openIntakeModal() {
+            document.getElementById('intake-modal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeIntakeModal() {
+            document.getElementById('intake-modal').classList.add('hidden');
+        }
+
+        async function handleSaveIntake(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Registrando Entrada...</span>`;
+            if (window.lucide) lucide.createIcons();
+
+            const clientName = document.getElementById('intake-client-name').value.trim();
+            const rawPhone = document.getElementById('intake-client-phone').value.replace(/\D/g, '');
+            const clientPhone = rawPhone.startsWith('55') ? rawPhone.substring(2) : rawPhone;
+            const deviceType = document.getElementById('intake-device-type').value;
+            const deviceModel = document.getElementById('intake-device-model').value.trim();
+            const defect = document.getElementById('intake-defect').value.trim();
+            const accessories = document.getElementById('intake-accessories').value.trim();
+            const visualNotes = document.getElementById('intake-visual-condition').value.trim();
+
+            let finalOsNum = "1051";
+            let trackingToken = null;
+
+            if (supabaseClient) {
+                try {
+                    const fullDefect = `${defect} [Acessórios: ${accessories || 'Nenhum'}] [Avarias: ${visualNotes || 'Nenhuma'}]`;
+                    const { data, error } = await supabaseClient.rpc('rpc_create_work_order_atomic', {
+                        p_client_name: clientName,
+                        p_client_whatsapp: clientPhone || '11999999999',
+                        p_service_type: 'Hardware_Reparo',
+                        p_device_brand: deviceType,
+                        p_device_model: deviceModel,
+                        p_reported_defect: fullDefect,
+                        p_pickup_fee: 0.00,
+                        p_items: [] // Entrada em Triagem sem peças iniciais
+                    });
+
+                    if (error) {
+                        console.error("Erro na RPC:", error);
+                        alert("Erro ao registrar entrada: " + error.message);
+                    } else if (data && data.success) {
+                        finalOsNum = data.os_number;
+                        trackingToken = data.public_tracking_token || data.tracking_token;
+                    }
+                } catch (err) {
+                    console.error("Exceção ao registrar intake:", err);
+                }
+            }
+
+            closeIntakeModal();
+            form.reset();
+
+            // Mensagem de Comprovante de Custódia para WhatsApp
+            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
+            const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada para diagnóstico técnico cirúrgico (OS #${finalOsNum}).\n\n📋 *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
+
+            document.getElementById('whatsapp-msg-preview').textContent = msg;
+            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Confirmar Entrada & Gerar Comprovante`;
+            if (window.lucide) lucide.createIcons();
+
+            document.getElementById('whatsapp-modal').classList.remove('hidden');
+            loadSupabaseData();
         }
 
         function openNewOSModal() {
