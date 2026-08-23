@@ -207,11 +207,14 @@
                             </div>
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-2">Tipo de Serviço *</label>
-                                <select id="service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
-                                    <option value="Montagem_PC">🛠️ Montagem de PC Novo Sob Medida</option>
-                                    <option value="Hardware_Upgrade">⚡ Upgrade de Hardware (SSD/RAM/GPU)</option>
-                                    <option value="Hardware_Reparo">🧼 Limpeza / Manutenção / Reparo</option>
-                                    <option value="Software_Bancada">💻 Otimização / Sistema Operacional</option>
+                                <select id="service-type" onchange="handleServiceTypeChange(this.value)" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                    <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica (Thermal Grizzly)</option>
+                                    <option value="Hardware_Reparo">🔧 Diagnóstico & Reparo de Hardware (Break-Fix)</option>
+                                    <option value="Hardware_Upgrade">⚡ Upgrade de Componentes (SSD / RAM / Placa de Vídeo / Fonte)</option>
+                                    <option value="Montagem_PC">🛠️ Montagem de Computador Custom / Gamer / Workstation</option>
+                                    <option value="Software_Formatacao">💻 Formatação Limpa & Otimização Windows 11 PRO</option>
+                                    <option value="Projetos_Web_Software">🌐 Projeto de Software / Engenharia Web (50/50)</option>
+                                    <option value="Contrato_TI_MSP">🛡️ Contrato de TI Gerenciada / MSP Mensal</option>
                                 </select>
                             </div>
                         </div>
@@ -238,44 +241,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="parts-table-body" class="divide-y divide-zinc-900">
-                                        <!-- Linha 1 -->
-                                        <tr class="part-row">
-                                            <td class="py-2 px-2">
-                                                <input type="text" value="Processador" class="part-type bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-24">
-                                            </td>
-                                            <td class="py-2 px-2">
-                                                <input type="text" value="AMD Ryzen 5 7600 (AM5 / 5.1GHz Turbo)" class="part-name bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-full">
-                                            </td>
-                                            <td class="py-2 px-2">
-                                                <input type="number" step="0.01" value="1250.00" oninput="recalcTotals()" class="part-cost bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-yellow-400 w-28">
-                                            </td>
-                                            <td class="py-2 px-2">
-                                                <input type="number" step="0.01" value="1390.00" oninput="recalcTotals()" class="part-sale bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-brand font-bold w-28">
-                                            </td>
-                                            <td class="py-2 px-2 text-right text-brand font-bold part-profit">R$ 140,00</td>
-                                            <td class="py-2 px-2 text-center">
-                                                <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                            </td>
-                                        </tr>
-                                        <!-- Linha 2 -->
-                                        <tr class="part-row">
-                                            <td class="py-2 px-2">
-                                                <input type="text" value="Placa de Vídeo" class="part-type bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-24">
-                                            </td>
-                                            <td class="py-2 px-2">
-                                                <input type="text" value="Gigabyte RTX 4060 Gaming OC 8GB GDDR6" class="part-name bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-full">
-                                            </td>
-                                            <td class="py-2 px-2">
-                                                <input type="number" step="0.01" value="1980.00" oninput="recalcTotals()" class="part-cost bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-yellow-400 w-28">
-                                            </td>
-                                            <td class="py-2 px-2">
-                                                <input type="number" step="0.01" value="2190.00" oninput="recalcTotals()" class="part-sale bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-brand font-bold w-28">
-                                            </td>
-                                            <td class="py-2 px-2 text-right text-brand font-bold part-profit">R$ 210,00</td>
-                                            <td class="py-2 px-2 text-center">
-                                                <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                            </td>
-                                        </tr>
+                                        <!-- Linhas adicionadas manualmente pelo técnico via botão [ + Adicionar Componente ] -->
                                     </tbody>
                                 </table>
                             </div>
@@ -285,8 +251,8 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-xs">
                             <div class="bg-zinc-950 border border-zinc-800 p-4">
                                 <label class="block text-brand font-bold uppercase mb-2">Mão de Obra do Serviço / Montagem (R$)</label>
-                                <input type="number" step="0.01" id="labor-price" value="285.00" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-base font-bold focus:outline-none focus:border-brand">
-                                <span class="text-[11px] text-zinc-500 block mt-1">Repasse Técnico Jr: R$ 90,00 • Sua Margem: R$ 195,00</span>
+                                <input type="number" step="0.01" id="labor-price" value="0.00" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-base font-bold focus:outline-none focus:border-brand">
+                                <span class="text-[11px] text-zinc-500 block mt-1">Defina a mão de obra conforme o serviço executado</span>
                             </div>
                             <div class="bg-zinc-950 border border-zinc-800 p-4">
                                 <label class="block text-brand font-bold uppercase mb-2">Engenharia de Software & Otimização</label>
@@ -300,19 +266,19 @@
                             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center sm:text-left">
                                 <div>
                                     <span class="text-zinc-500 text-xs block mb-1">TOTAL DAS PEÇAS (SINAL 100%)</span>
-                                    <span class="text-xl sm:text-2xl font-black text-white" id="calc-parts-total">R$ 3.580,00</span>
+                                    <span class="text-xl sm:text-2xl font-black text-white" id="calc-parts-total">R$ 0,00</span>
                                 </div>
                                 <div>
                                     <span class="text-zinc-500 text-xs block mb-1">SALDO M.O. (NA ENTREGA)</span>
-                                    <span class="text-xl sm:text-2xl font-black text-brand" id="calc-labor-total">R$ 285,00</span>
+                                    <span class="text-xl sm:text-2xl font-black text-brand" id="calc-labor-total">R$ 0,00</span>
                                 </div>
                                 <div>
                                     <span class="text-zinc-500 text-xs block mb-1">VALOR TOTAL DO CLIENTE</span>
-                                    <span class="text-xl sm:text-2xl font-black text-white" id="calc-grand-total">R$ 3.865,00</span>
+                                    <span class="text-xl sm:text-2xl font-black text-white" id="calc-grand-total">R$ 0,00</span>
                                 </div>
                                 <div class="bg-brand/10 border border-brand/40 p-3">
                                     <span class="text-brand text-xs font-bold block mb-1">SEU LUCRO LÍQUIDO REAL</span>
-                                    <span class="text-xl sm:text-2xl font-black text-brand" id="calc-net-profit">R$ 635,00</span>
+                                    <span class="text-xl sm:text-2xl font-black text-brand" id="calc-net-profit">R$ 0,00</span>
                                     <span class="text-[10px] text-zinc-400 block">Peças: R$ 350 + M.O: R$ 285</span>
                                 </div>
                             </div>
@@ -529,7 +495,17 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Finalidade da Entrada *</label>
+                        <select id="intake-service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                            <option value="Hardware_Reparo">🔧 Diagnóstico / Reparo (Não liga, sem vídeo)</option>
+                            <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica</option>
+                            <option value="Hardware_Upgrade">⚡ Upgrade de Peças (SSD / RAM / GPU)</option>
+                            <option value="Software_Formatacao">💻 Formatação & Otimização Windows 11</option>
+                            <option value="Montagem_PC">🛠️ Montagem de Setup Custom</option>
+                        </select>
+                    </div>
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">Tipo de Equipamento *</label>
                         <select id="intake-device-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
@@ -541,7 +517,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-zinc-400 font-bold uppercase mb-1">Marca & Modelo do Aparelho *</label>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Marca & Modelo *</label>
                         <input type="text" id="intake-device-model" placeholder="Ex: Dell Inspiron 15 3520" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
                     </div>
                 </div>
@@ -871,6 +847,15 @@ Qualquer dúvida, estou à disposição!
             // Preenche os dados no formulário de orçamento
             document.getElementById('client-name').value = selectedWorkOrder.client_name || (selectedWorkOrder.clients ? selectedWorkOrder.clients.name : '');
             document.getElementById('client-phone').value = selectedWorkOrder.client_whatsapp || '';
+            if (selectedWorkOrder.service_type) {
+                const sTypeEl = document.getElementById('service-type');
+                if (sTypeEl) sTypeEl.value = selectedWorkOrder.service_type;
+            }
+            // Limpa a tabela para adicionar peças manuais
+            const tbody = document.getElementById('parts-table-body');
+            if (tbody) tbody.innerHTML = '';
+            document.getElementById('labor-price').value = '0.00';
+            recalcTotals();
         }
 
         function openIntakeModal() {
@@ -909,7 +894,7 @@ Qualquer dúvida, estou à disposição!
                     const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
                         p_client_name: clientName,
                         p_client_whatsapp: clientPhone || '11999999999',
-                        p_service_type: 'Hardware_Reparo',
+                        p_service_type: document.getElementById('intake-service-type') ? document.getElementById('intake-service-type').value : 'Hardware_Reparo',
                         p_device_brand: deviceType,
                         p_device_model: deviceModel,
                         p_reported_defect: fullDefect,
@@ -968,6 +953,18 @@ Qualquer dúvida, estou à disposição!
             renderKanbanBoard(currentWorkOrders);
             document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
+        }
+
+                function handleServiceTypeChange(type) {
+            const laborInput = document.getElementById('labor-price');
+            if (type === 'Limpeza_Preventiva') {
+                if (parseFloat(laborInput.value) === 0) laborInput.value = "119.00";
+            } else if (type === 'Software_Formatacao') {
+                if (parseFloat(laborInput.value) === 0) laborInput.value = "140.00";
+            } else if (type === 'Montagem_PC') {
+                if (parseFloat(laborInput.value) === 0) laborInput.value = "285.00";
+            }
+            recalcTotals();
         }
 
         function openNewOSModal() {
