@@ -530,12 +530,11 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZ3Jud3hhenV3ZXVpaGxhbGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNDYxMTMsImV4cCI6MjA5NDgyMjExM30.EH7EslfRQRoCbdbKxK0A07DZQ0Ich05KoRD1hddJA34";
         
         let supabaseClient = null;
-        try {
-            if (window.supabase) {
+        function getSupabase() {
+            if (!supabaseClient && window.supabase && window.supabase.createClient) {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
-        } catch (e) {
-            console.warn("Supabase SDK carregado em modo offline fallback.");
+            return supabaseClient;
         }
 
         // Sanitizador XSS Rigoroso
@@ -1020,8 +1019,9 @@
             // 3. Se for busca direta por Token UUID (Zero fricção via Magic Link do WhatsApp)
             if (cleanQuery.length === 36 && cleanQuery.includes("-")) {
                 try {
-                    if (supabaseClient) {
-                        const { data, error } = await supabaseClient.rpc('rpc_track_work_order', {
+                    const client = getSupabase();
+                if (client) {
+                        const { data, error } = await client.rpc('rpc_track_work_order', {
                             p_token: cleanQuery
                         });
                         if (!error && data && data.found) {
@@ -1042,10 +1042,11 @@
             const num = parseInt(cleanQuery.replace(/\D/g, ''));
             if (!isNaN(num)) {
                 try {
-                    if (supabaseClient) {
+                    const client = getSupabase();
+                if (client) {
                         // Tenta validar com OS + WhatsApp
                         const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
-                        const { data, error } = await supabaseClient.rpc('rpc_track_work_order_by_number', {
+                        const { data, error } = await client.rpc('rpc_track_work_order_by_number', {
                             p_os_number: num,
                             p_phone: cleanPhone || '0000'
                         });

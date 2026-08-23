@@ -888,10 +888,11 @@ Qualquer dúvida, estou à disposição!
             let finalOsNum = "1001";
             let trackingToken = null;
 
-            if (supabaseClient) {
+            const client = getSupabase();
+                if (client) {
                 try {
                     const fullDefect = `${defect} [Acessórios: ${accessories || 'Nenhum'}] [Avarias: ${visualNotes || 'Nenhuma'}]`;
-                    const { data, error } = await supabaseClient.rpc('rpc_create_work_order_atomic', {
+                    const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
                         p_client_name: clientName,
                         p_client_whatsapp: clientPhone || '11999999999',
                         p_service_type: 'Hardware_Reparo',
@@ -1020,7 +1021,7 @@ Qualquer dúvida, estou à disposição!
             if (!supabaseClient) return;
             try {
                 // 1. Carrega Métricas do Dashboard
-                const { data: metrics } = await supabaseClient.rpc('rpc_get_admin_dashboard_metrics');
+                const { data: metrics } = await client.rpc('rpc_get_admin_dashboard_metrics');
                 if (metrics) {
                     if (metrics.active_os !== undefined) document.getElementById('stat-active-os').textContent = metrics.active_os;
                     if (metrics.parts_to_buy !== undefined) document.getElementById('stat-parts-to-buy').textContent = metrics.parts_to_buy;
@@ -1029,7 +1030,7 @@ Qualquer dúvida, estou à disposição!
                 }
 
                 // 2. Carrega Ordens Reais para o Kanban
-                const { data: realOrders, error: orderErr } = await supabaseClient.rpc('rpc_get_kanban_work_orders');
+                const { data: realOrders, error: orderErr } = await client.rpc('rpc_get_kanban_work_orders');
                 if (!orderErr && realOrders && realOrders.length > 0) {
                     currentWorkOrders = realOrders;
                     renderKanbanBoard(realOrders);
@@ -1082,9 +1083,10 @@ Qualquer dúvida, estou à disposição!
             let finalOsNum = "1001";
             let trackingToken = null;
 
-            if (supabaseClient) {
+            const client = getSupabase();
+                if (client) {
                 try {
-                    const { data, error } = await supabaseClient.rpc('rpc_create_work_order_atomic', {
+                    const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
                         p_client_name: clientName,
                         p_client_whatsapp: clientPhone || '11999999999',
                         p_service_type: serviceType,
