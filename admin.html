@@ -1029,11 +1029,11 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('calc-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
         }
 
-        // Carrega OSs salvas localmente como cache imediato
+        // Limpeza de cache local ao inicializar
         try {
-            const cached = localStorage.getItem('ifl_work_orders');
-            if (cached) currentWorkOrders = JSON.parse(cached);
+            localStorage.removeItem('ifl_work_orders');
         } catch (e) {}
+        currentWorkOrders = [];
 
         async function loadSupabaseData() {
             renderKanbanBoard(currentWorkOrders);
