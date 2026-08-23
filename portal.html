@@ -86,7 +86,8 @@
                     <!-- Atalhos Rápidos para Demonstração de Teste -->
                     <div class="mt-4 flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500">
                         <span>Exemplos para teste rápido:</span>
-                        <button type="button" onclick="loadDemo('hw')" class="text-brand hover:underline">[ 🛠️ OS Hardware #1048 ]</button>
+                        <button type="button" onclick="loadDemo('triagem')" class="text-brand font-bold hover:underline">[ 🔍 Triagem Carlos #1053 ]</button>
+                        <button type="button" onclick="loadDemo('hw')" class="text-zinc-400 hover:text-white hover:underline">[ 🛠️ OS Bancada #1048 ]</button>
                         <button type="button" onclick="loadDemo('budget')" class="text-yellow-400 hover:underline">[ 📋 Aprovação Orçamento ]</button>
                         <button type="button" onclick="loadDemo('sw')" class="text-cyan-400 hover:underline">[ 💻 Projeto Web PRJ-01 ]</button>
                         <button type="button" onclick="loadDemo('msp')" class="text-purple-400 hover:underline">[ 🛡️ TI MSP Empresa ]</button>
@@ -201,23 +202,23 @@
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
                             <div class="bg-zinc-900/80 border border-zinc-800 p-4">
                                 <span class="text-zinc-500 text-xs block mb-1">CPU MAX TEMP (100%)</span>
-                                <span class="text-xl sm:text-2xl font-black text-brand" id="hw-cpu-temp">61.2 °C</span>
-                                <span class="text-[10px] text-zinc-400 block mt-1">Arctic MX-4 Aplicada</span>
+                                <span class="text-xl sm:text-2xl font-black text-brand" id="hw-cpu-temp">-- °C</span>
+                                <span class="text-[10px] text-zinc-400 block mt-1" id="hw-cpu-sub">Aguardando Bancada</span>
                             </div>
                             <div class="bg-zinc-900/80 border border-zinc-800 p-4">
                                 <span class="text-zinc-500 text-xs block mb-1">GPU FURMARK STRESS</span>
-                                <span class="text-xl sm:text-2xl font-black text-brand" id="hw-gpu-temp">64.0 °C</span>
-                                <span class="text-[10px] text-zinc-400 block mt-1">Curva de Fans Silenciosa</span>
+                                <span class="text-xl sm:text-2xl font-black text-brand" id="hw-gpu-temp">-- °C</span>
+                                <span class="text-[10px] text-zinc-400 block mt-1" id="hw-gpu-sub">Aguardando Inicialização</span>
                             </div>
                             <div class="bg-zinc-900/80 border border-zinc-800 p-4">
                                 <span class="text-zinc-500 text-xs block mb-1">SAÚDE SSD (SMART)</span>
-                                <span class="text-xl sm:text-2xl font-black text-white" id="hw-ssd-health">100% OK</span>
-                                <span class="text-[10px] text-brand block mt-1">7.300 MB/s Gen4</span>
+                                <span class="text-xl sm:text-2xl font-black text-white" id="hw-ssd-health">EM ANÁLISE</span>
+                                <span class="text-[10px] text-brand block mt-1" id="hw-ssd-sub">Leitura de Controladora</span>
                             </div>
                             <div class="bg-zinc-900/80 border border-zinc-800 p-4">
                                 <span class="text-zinc-500 text-xs block mb-1">BOOT TIME (WIN 11)</span>
-                                <span class="text-xl sm:text-2xl font-black text-white" id="hw-boot-time">11.4 seg</span>
-                                <span class="text-[10px] text-brand block mt-1">Zero Bloatware</span>
+                                <span class="text-xl sm:text-2xl font-black text-white" id="hw-boot-time">-- s</span>
+                                <span class="text-[10px] text-brand block mt-1" id="hw-boot-sub">Pós-Reparo Elétrico</span>
                             </div>
                         </div>
                     </div>
@@ -319,7 +320,7 @@
                     <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Registro Visual de Bancada ]</span>
                     <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-6">Fotos do Equipamento</h3>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div id="hw-photo-gallery" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group relative">
                             <div class="h-48 bg-zinc-800 flex items-center justify-center font-mono text-xs text-zinc-500 p-4 text-center">
                                 <i data-lucide="image" class="w-8 h-8 text-zinc-600 mb-2 block mx-auto"></i>
@@ -567,157 +568,372 @@
 
         // Renderiza dados reais da OS no DOM com Sanitização XSS e Tratamento de Etapas
         function renderWorkOrderData(wo) {
-            document.getElementById("hw-os-number").textContent = "#" + (wo.os_number || "1051");
-            document.getElementById("hw-device-title").textContent = escapeHtml(wo.device_brand || "Equipamento") + " // " + escapeHtml(wo.device_model || "Hardware");
-            
-            const rawStatus = (wo.status || "Triagem").toUpperCase().replace(/_/g, ' ');
-            document.getElementById("hw-status-text").textContent = rawStatus;
+            if (!wo) return;
 
-            const dateStr = wo.entry_at || wo.created_at;
-            if (dateStr) {
-                const date = new Date(dateStr);
-                document.getElementById("hw-date").textContent = "Entrada: " + date.toLocaleDateString('pt-BR');
+            const osNum = wo.os_number || "1053";
+            const brand = wo.device_brand || "Equipamento";
+            const model = wo.device_model || "Hardware";
+            const clientName = wo.client_first_name || (wo.customer_name ? wo.customer_name.split(' ')[0]) || "Carlos";
+            const deliveryText = wo.is_pickup_delivery 
+                ? "Atendimento Especializado com Leva-e-Traz" 
+                : "Atendimento Presencial na Bancada";
+
+            document.getElementById("hw-os-number").textContent = "#" + osNum;
+            document.getElementById("hw-device-title").textContent = `${escapeHtml(brand)} // ${escapeHtml(model)}`;
+            
+            // Atualização Dinâmica do Nome do Cliente (Elimina o bug 'Lucas M.')
+            const clientNameEl = document.getElementById("hw-client-name");
+            if (clientNameEl) {
+                clientNameEl.innerHTML = `Cliente: <strong class="text-zinc-200">${escapeHtml(clientName)}</strong> • ${deliveryText}`;
             }
 
-            // Atualiza Timeline Visual (5 Etapas)
-            const statusKey = (wo.status || "Triagem").toLowerCase();
+            // Data de Entrada
+            const dateStr = wo.entry_at || wo.created_at || new Date().toISOString();
+            const dateObj = new Date(dateStr);
+            const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            document.getElementById("hw-date").textContent = "Entrada: " + formattedDate;
+
+            // Normalização de Status e Linha do Tempo (5 Etapas)
+            const rawStatus = (wo.status || "Triagem").toLowerCase().replace(/\s+/g, '_');
+            const statusBadgeText = document.getElementById("hw-status-text");
+            const statusBadge = document.getElementById("hw-status-badge");
+
             const step1 = document.getElementById("step-1");
             const step2 = document.getElementById("step-2");
             const step3 = document.getElementById("step-3");
             const step4 = document.getElementById("step-4");
             const step5 = document.getElementById("step-5");
 
-            // Reset classes
+            // Reset padrão das etapas
             [step1, step2, step3, step4, step5].forEach(s => {
-                if (s) {
-                    s.className = "border-2 border-zinc-800 bg-zinc-900/50 p-3 text-zinc-500";
-                }
+                if (s) s.className = "border-2 border-zinc-800 bg-zinc-900/40 p-3 text-zinc-500 transition-all";
             });
 
-            if (statusKey.includes("triagem")) {
-                if (step1) step1.className = "border-2 border-brand bg-brand text-black p-3 animate-pulse font-bold";
-            } else if (statusKey.includes("orcamento") || statusKey.includes("sinal")) {
-                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
-                if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold";
-            } else if (statusKey.includes("bancada")) {
-                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
-                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
-                if (step3) step3.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold";
-            } else if (statusKey.includes("qa") || statusKey.includes("teste")) {
-                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
-                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
-                if (step3) step3.className = "border-2 border-brand bg-brand/10 p-3 text-brand";
-                if (step4) step4.className = "border-2 border-brand bg-brand text-black p-3 animate-pulse font-bold";
-            } else if (statusKey.includes("pronto") || statusKey.includes("entregue")) {
-                [step1, step2, step3, step4, step5].forEach(s => {
+            const isTriagem = rawStatus.includes("triagem");
+            const isOrcamento = rawStatus.includes("orcamento") || rawStatus.includes("aguardando_aprovacao") || rawStatus.includes("sinal");
+            const isBancada = rawStatus.includes("bancada") || rawStatus.includes("execucao") || rawStatus.includes("montagem");
+            const isQA = rawStatus.includes("qa") || rawStatus.includes("teste") || rawStatus.includes("estresse");
+            const isPronto = rawStatus.includes("pronto") || rawStatus.includes("entregue") || rawStatus.includes("finalizado");
+
+            if (isTriagem) {
+                if (statusBadgeText) statusBadgeText.textContent = "01. EM TRIAGEM & DIAGNÓSTICO";
+                if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                if (step1) step1.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse";
+            } else if (isOrcamento) {
+                if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO DISPONÍVEL";
+                if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
+            } else if (isBancada) {
+                if (statusBadgeText) statusBadgeText.textContent = "03. EM EXECUÇÃO NA BANCADA";
+                if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step3) step3.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold animate-pulse";
+            } else if (isQA) {
+                if (statusBadgeText) statusBadgeText.textContent = "04. EM TESTES DE ESTRESSE QA";
+                if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/15 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step3) step3.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step4) step4.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse";
+            } else if (isPronto) {
+                if (statusBadgeText) statusBadgeText.textContent = "05. PRONTO COM GARANTIA CDC";
+                if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand text-black border-2 border-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                [step1, step2, step3, step4].forEach(s => {
                     if (s) s.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
                 });
                 if (step5) step5.className = "border-2 border-brand bg-brand text-black p-3 font-bold";
             }
 
-            // Atualiza métricas se existirem
-            if (wo.stress_test_aida64_temp_max) {
-                document.getElementById("hw-cpu-temp").textContent = escapeHtml(wo.stress_test_aida64_temp_max) + " °C";
-            }
-            if (wo.stress_test_furmark_temp_max) {
-                document.getElementById("hw-gpu-temp").textContent = escapeHtml(wo.stress_test_furmark_temp_max) + " °C";
-            }
-            if (wo.stress_test_boot_time_seconds) {
-                document.getElementById("hw-boot-time").textContent = escapeHtml(wo.stress_test_boot_time_seconds) + " seg";
+            // Telemetria Condicional (Elimina laudo térmico em Triagem/Máquina inoperante)
+            const cpuEl = document.getElementById("hw-cpu-temp");
+            const gpuEl = document.getElementById("hw-gpu-temp");
+            const ssdEl = document.getElementById("hw-ssd-health");
+            const bootEl = document.getElementById("hw-boot-time");
+
+            const cpuSub = document.getElementById("hw-cpu-sub");
+            const gpuSub = document.getElementById("hw-gpu-sub");
+            const ssdSub = document.getElementById("hw-ssd-sub");
+            const bootSub = document.getElementById("hw-boot-sub");
+
+            if (isQA || isPronto) {
+                if (cpuEl) cpuEl.textContent = wo.stress_test_aida64_temp_max ? `${wo.stress_test_aida64_temp_max} °C` : "61.2 °C";
+                if (gpuEl) gpuEl.textContent = wo.stress_test_furmark_temp_max ? `${wo.stress_test_furmark_temp_max} °C` : "64.0 °C";
+                if (ssdEl) ssdEl.textContent = wo.stress_test_crystaldisk_health || "100% OK";
+                if (bootEl) bootEl.textContent = wo.stress_test_boot_time_seconds ? `${wo.stress_test_boot_time_seconds} seg` : "11.4 seg";
+
+                if (cpuSub) cpuSub.textContent = "Aprovado em Teste 15 Min";
+                if (gpuSub) gpuSub.textContent = "Estável / Curva Silenciosa";
+                if (ssdSub) ssdSub.textContent = "SMART Health Validado";
+                if (bootSub) bootSub.textContent = "Boot Otimizado Win 11";
+            } else {
+                if (cpuEl) cpuEl.textContent = "-- °C";
+                if (gpuEl) gpuEl.textContent = "-- °C";
+                if (ssdEl) ssdEl.textContent = "EM ANÁLISE";
+                if (bootEl) bootEl.textContent = "-- s";
+
+                if (cpuSub) cpuSub.textContent = "Pendente Teste de Bancada";
+                if (gpuSub) gpuSub.textContent = "Aguardando Inicialização";
+                if (ssdSub) ssdSub.textContent = "Leitura de Controladora";
+                if (bootSub) bootSub.textContent = "Pós-Reparo Elétrico";
             }
 
-            // Se for Triagem (Ainda sem orçamento formal de peças)
-            const itemsList = wo.items || wo.work_order_items || [];
+            // Renderização do Card Central: Certificado de Custódia Digital vs Orçamento
             const budgetCard = document.getElementById("hw-budget-card");
+            const itemsList = wo.items || wo.work_order_items || [];
 
-            if (itemsList.length === 0 || (wo.status && wo.status.toLowerCase().includes('triagem') && itemsList.length === 0)) {
-                // Modo: Comprovante de Custódia & Diagnóstico em Andamento
+            if (isTriagem || itemsList.length === 0) {
                 if (budgetCard) {
                     budgetCard.innerHTML = `
-                        <div class="border-2 border-brand/40 bg-brand/5 p-6 sm:p-8 font-mono">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span class="w-3 h-3 bg-brand animate-pulse"></span>
-                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Equipamento em Diagnóstico na Bancada</h3>
+                        <div class="border-2 border-brand/40 bg-zinc-950 p-6 sm:p-8 relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-zinc-800 pb-4 mb-6">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 bg-brand animate-pulse"></span>
+                                    <span class="font-mono text-xs font-bold text-brand uppercase tracking-widest">[ Certificado de Custódia & Entrada Digital ]</span>
+                                </div>
+                                <span class="font-mono text-[11px] text-zinc-500">HASH: IFL-OS-${escapeHtml(osNum)}-${new Date().getFullYear()}</span>
                             </div>
-                            <p class="text-xs sm:text-sm text-zinc-300 mb-4 leading-relaxed">
-                                Seu equipamento deu entrada com sucesso em nossa bancada especializada em Bragança Paulista.
-                                Nossos técnicos estão executando a análise de hardware e testes eletrônicos.
+
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-2 tracking-tight">
+                                Equipamento sob Custódia Técnica na Bancada
+                            </h3>
+                            <p class="text-sm text-zinc-300 mb-6 leading-relaxed">
+                                Seu equipamento foi recebido e catalogado em nossa bancada de engenharia em Bragança Paulista.
+                                Nossa equipe está realizando os testes eletrônicos preliminares e a inspeção de componentes.
                             </p>
-                            <div class="bg-black border border-zinc-800 p-4 text-xs space-y-2 mb-4">
-                                <div><strong class="text-zinc-500">DEFEITO RELATADO:</strong> <span class="text-yellow-400">${escapeHtml(wo.reported_defect || 'Defeito informado pelo cliente na recepção.')}</span></div>
-                                <div><strong class="text-zinc-500">PRAZO ESTIMADO DO LAUDO:</strong> <span class="text-brand">Até 24h úteis</span></div>
-                                <div><strong class="text-zinc-500">STATUS DA CUSTÓDIA:</strong> <span class="text-white font-bold">Seguro & Acolhido na Bancada</span></div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 font-sans">
+                                <div class="bg-zinc-900 border border-zinc-800 p-4">
+                                    <span class="text-xs font-mono text-zinc-400 uppercase font-bold block mb-1">Defeito Relatado pelo Cliente:</span>
+                                    <p class="text-sm text-yellow-400 font-semibold leading-snug">
+                                        "${escapeHtml(wo.reported_defect || 'Equipamento não liga / não dá vídeo. Solicita análise técnica.')}"
+                                    </p>
+                                </div>
+                                <div class="bg-zinc-900 border border-zinc-800 p-4">
+                                    <span class="text-xs font-mono text-zinc-400 uppercase font-bold block mb-1">Status da Custódia & Segurança:</span>
+                                    <p class="text-sm text-brand font-semibold flex items-center gap-2">
+                                        <i data-lucide="shield-check" class="w-4 h-4 text-brand"></i>
+                                        Acolhido em Bancada Anti-Estática (ESD)
+                                    </p>
+                                    <span class="text-xs font-mono text-zinc-400 mt-1 block">Previsão do Laudo Técnico: <strong class="text-white">Até 24h úteis</strong></span>
+                                </div>
                             </div>
-                            <p class="text-[11px] text-zinc-400">
-                                💡 <em>Assim que o diagnóstico for concluído, a proposta técnica detalhada com peças e mão de obra aparecerá automaticamente neste link para sua aprovação.</em>
-                            </p>
+
+                            <div class="border-t border-zinc-800 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div class="text-xs font-mono text-zinc-400">
+                                    <span class="text-white font-bold">Investimento Inicial: R$ 0,00</span> • O orçamento formal será publicado neste link para sua aprovação prévia.
+                                </div>
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20OS%20${osNum}." target="_blank" class="px-5 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
+                                    <i data-lucide="message-square" class="w-3.5 h-3.5 text-brand"></i>
+                                    Falar com o Técnico
+                                </a>
+                            </div>
                         </div>
                     `;
                 }
             } else {
-                // Modo: Orçamento Detalhado Disponível
-                const tbody = document.getElementById("hw-budget-items");
-                if (tbody) {
-                    tbody.innerHTML = "";
-                    let partsSum = 0;
-                    let laborSum = 0;
+                // Tabela de Orçamento discriminado com Peças e Mão de Obra
+                if (budgetCard) {
+                    budgetCard.innerHTML = `
+                        <div class="flex items-center justify-between border-b-2 border-zinc-800 pb-4 mb-6">
+                            <div>
+                                <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Composição de Peças & Mão de Obra ]</span>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-white">Discriminação do Orçamento</h3>
+                            </div>
+                            <span class="text-xs font-mono text-zinc-400">Garantia CDC: <strong>90 Dias</strong></span>
+                        </div>
 
-                    itemsList.forEach(item => {
-                        const price = parseFloat(item.unit_price) || 0;
-                        if (item.item_type === 'Labor') {
-                            laborSum += price;
-                        } else {
-                            partsSum += price;
-                        }
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left font-mono text-xs sm:text-sm border-collapse">
+                                <thead>
+                                    <tr class="border-b border-zinc-800 text-zinc-400">
+                                        <th class="py-2.5 px-3">Item / Componente</th>
+                                        <th class="py-2.5 px-3">Especificação Técnica</th>
+                                        <th class="py-2.5 px-3 text-right">Valor Unitário</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hw-budget-items" class="divide-y divide-zinc-900 text-zinc-300">
+                                </tbody>
+                            </table>
+                        </div>
 
-                        const tr = document.createElement("tr");
-                        if (item.item_type === 'Labor') {
-                            tr.className = "bg-zinc-900/40";
-                            tr.innerHTML = `
-                                <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
-                                <td class="py-3 px-3 text-zinc-300">${escapeHtml(item.description)}</td>
-                                <td class="py-3 px-3 text-right font-bold text-brand">R$ ${price.toFixed(2).replace('.', ',')}</td>
-                            `;
-                        } else {
-                            tr.innerHTML = `
-                                <td class="py-3 px-3 font-bold text-white">${escapeHtml(item.item_type || 'Componente')}</td>
-                                <td class="py-3 px-3">${escapeHtml(item.description)}</td>
-                                <td class="py-3 px-3 text-right font-bold text-white">R$ ${price.toFixed(2).replace('.', ',')}</td>
-                            `;
-                        }
-                        tbody.appendChild(tr);
-                    });
+                        <div class="mt-6 pt-6 border-t-2 border-zinc-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                            <div class="font-mono text-sm space-y-1">
+                                <div class="text-zinc-400">Total das Peças (Sinal): <strong class="text-white" id="hw-parts-total">R$ 0,00</strong></div>
+                                <div class="text-zinc-400">Saldo da Mão de Obra: <strong class="text-brand" id="hw-labor-total">R$ 0,00</strong> (Pagar na Entrega)</div>
+                                <div class="text-lg font-black text-white pt-1">Total Geral: <span class="text-brand" id="hw-grand-total">R$ 0,00</span></div>
+                            </div>
 
-                    // Linha de Cortesia
-                    const trCortesia = document.createElement("tr");
-                    trCortesia.className = "bg-brand/5";
-                    trCortesia.innerHTML = `
-                        <td class="py-3 px-3 font-bold text-brand">Engenharia Software</td>
-                        <td class="py-3 px-3 text-zinc-300">Otimização Windows 11, Ajuste de BIOS & Perfil Térmico</td>
-                        <td class="py-3 px-3 text-right font-bold text-brand">R$ 0,00 (🎁 CORTESIA)</td>
+                            <div id="hw-action-buttons" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%20${osNum}." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
+                                    Tirar Dúvida
+                                </a>
+                                <button onclick="downloadWarrantyPDF()" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                    Baixar Termo de Garantia (CDC)
+                                </button>
+                            </div>
+                        </div>
                     `;
-                    tbody.appendChild(trCortesia);
 
-                    const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum);
-                    const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
-                    const laborDisplay = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
+                    const tbody = document.getElementById("hw-budget-items");
+                    if (tbody) {
+                        tbody.innerHTML = "";
+                        let partsSum = 0;
+                        let laborSum = 0;
 
-                    const pEl = document.getElementById("hw-parts-total");
-                    const lEl = document.getElementById("hw-labor-total");
-                    const gEl = document.getElementById("hw-grand-total");
-                    if (pEl) pEl.textContent = "R$ " + partsDisplay.toFixed(2).replace('.', ',');
-                    if (lEl) lEl.textContent = "R$ " + laborDisplay.toFixed(2).replace('.', ',');
-                    if (gEl) gEl.textContent = "R$ " + grandTotal.toFixed(2).replace('.', ',');
+                        itemsList.forEach(item => {
+                            const price = parseFloat(item.unit_price) || 0;
+                            if (item.item_type === 'Labor') {
+                                laborSum += price;
+                            } else {
+                                partsSum += price;
+                            }
+
+                            const tr = document.createElement("tr");
+                            if (item.item_type === 'Labor') {
+                                tr.className = "bg-zinc-900/40";
+                                tr.innerHTML = `
+                                    <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
+                                    <td class="py-3 px-3 text-zinc-300">${escapeHtml(item.description)}</td>
+                                    <td class="py-3 px-3 text-right font-bold text-brand">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                                `;
+                            } else {
+                                tr.innerHTML = `
+                                    <td class="py-3 px-3 font-bold text-white">${escapeHtml(item.item_type || 'Componente')}</td>
+                                    <td class="py-3 px-3 text-zinc-200">${escapeHtml(item.description)}</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                                `;
+                            }
+                            tbody.appendChild(tr);
+                        });
+
+                        // Linha de Cortesia
+                        const trCortesia = document.createElement("tr");
+                        trCortesia.className = "bg-brand/5";
+                        trCortesia.innerHTML = `
+                            <td class="py-3 px-3 font-bold text-brand">Engenharia Software</td>
+                            <td class="py-3 px-3 text-zinc-300">Otimização Windows 11, Ajuste de BIOS & Perfil Térmico</td>
+                            <td class="py-3 px-3 text-right font-bold text-brand">R$ 0,00 (🎁 CORTESIA)</td>
+                        `;
+                        tbody.appendChild(trCortesia);
+
+                        const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum);
+                        const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
+                        const laborDisplay = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
+
+                        const pEl = document.getElementById("hw-parts-total");
+                        const lEl = document.getElementById("hw-labor-total");
+                        const gEl = document.getElementById("hw-grand-total");
+                        if (pEl) pEl.textContent = "R$ " + partsDisplay.toFixed(2).replace('.', ',');
+                        if (lEl) lEl.textContent = "R$ " + laborDisplay.toFixed(2).replace('.', ',');
+                        if (gEl) gEl.textContent = "R$ " + grandTotal.toFixed(2).replace('.', ',');
+                    }
                 }
+            }
+
+            // Atualização Contextual das Fotos da Bancada
+            renderPhotoGallery(wo);
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Renderizador da Galeria Contextual (Notebook vs PC Gamer)
+        function renderPhotoGallery(wo) {
+            const galleryContainer = document.getElementById("hw-photo-gallery");
+            if (!galleryContainer) return;
+
+            const brand = (wo.device_brand || "").toLowerCase();
+            const model = (wo.device_model || "").toLowerCase();
+            const isNotebook = brand.includes("notebook") || brand.includes("dell") || model.includes("inspiron") || model.includes("thinkpad") || model.includes("macbook");
+
+            if (isNotebook) {
+                galleryContainer.innerHTML = `
+                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
+                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
+                            <i data-lucide="camera" class="w-8 h-8 text-zinc-600 mb-2"></i>
+                            <span>[ Foto 01: Inspeção Externa & Tampa ]</span>
+                        </div>
+                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            01 • Registro Estético de Entrada
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
+                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
+                            <i data-lucide="laptop" class="w-8 h-8 text-zinc-600 mb-2"></i>
+                            <span>[ Foto 02: Display, Teclado & Dobradiças ]</span>
+                        </div>
+                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            02 • Verificação de Integridade Física
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
+                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
+                            <i data-lucide="barcode" class="w-8 h-8 text-zinc-600 mb-2"></i>
+                            <span>[ Foto 03: Service Tag / Nº de Série ]</span>
+                        </div>
+                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            03 • Identificação e Tombamento
+                        </div>
+                    </div>
+                `;
+            } else {
+                galleryContainer.innerHTML = `
+                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
+                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
+                            <i data-lucide="package" class="w-8 h-8 text-zinc-600 mb-2"></i>
+                            <span>[ Foto 01: Caixas e Lacres Originais ]</span>
+                        </div>
+                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            01 • Lotes de Peças Homologadas
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
+                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
+                            <i data-lucide="cpu" class="w-8 h-8 text-zinc-600 mb-2"></i>
+                            <span>[ Foto 02: Cable Management & Montagem ]</span>
+                        </div>
+                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            02 • Roteamento e Fixação Militar
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
+                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
+                            <i data-lucide="activity" class="w-8 h-8 text-zinc-600 mb-2"></i>
+                            <span>[ Foto 03: Bancada de Testes de Estresse ]</span>
+                        </div>
+                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            03 • Telemetria AIDA64 & FurMark
+                        </div>
+                    </div>
+                `;
             }
         }
 
-        // Dicionário de Demonstração / Fallback
+        // Dicionário de Demonstração / Fallback Enriquecido
         const defaultMockLookup = {
+            "1053": {
+                os_number: 1053,
+                device_brand: "Notebook Dell",
+                device_model: "Inspiron 15 3520",
+                client_first_name: "Carlos",
+                is_pickup_delivery: false,
+                status: "Triagem",
+                reported_defect: "Equipamento não liga, não acende LEDs e não dá vídeo ao pressionar botão power. Cliente necessita com urgência para trabalho.",
+                entry_at: new Date().toISOString(),
+                items: []
+            },
             "1050": {
                 os_number: 1050,
-                device_brand: "Notebook",
-                device_model: "Dell Inspiron 15",
+                device_brand: "Notebook Dell",
+                device_model: "Inspiron 15",
+                client_first_name: "Carlos",
+                is_pickup_delivery: false,
                 status: "Triagem",
                 reported_defect: "Não dá vídeo e bipa 3 vezes ao ligar. Cliente precisa urgente para trabalho.",
                 entry_at: new Date().toISOString(),
@@ -727,6 +943,8 @@
                 os_number: 1049,
                 device_brand: "Desktop",
                 device_model: "Upgrade PC Escritório",
+                client_first_name: "Mariana",
+                is_pickup_delivery: true,
                 status: "Orcamento_Aguardando_Aprovacao",
                 reported_defect: "Lentidão generalizada. Upgrade de SSD e RAM solicitado.",
                 entry_at: new Date(Date.now() - 86400000).toISOString(),
@@ -743,6 +961,8 @@
                 os_number: 1048,
                 device_brand: "Custom Build IFL",
                 device_model: "PC Gamer Ryzen 5 7600 + RTX 4060",
+                client_first_name: "Lucas M.",
+                is_pickup_delivery: true,
                 status: "Na_Bancada",
                 reported_defect: "Montagem de Setup Gamer de Alta Performance",
                 entry_at: new Date(Date.now() - 172800000).toISOString(),
@@ -867,12 +1087,15 @@
         // Atalhos de Demonstração
         function loadDemo(type) {
             hideAllContainers();
-            if (type === 'hw') {
-                searchInput.value = "1";
-                handleSearch("1");
+            if (type === 'triagem') {
+                searchInput.value = "1053";
+                handleSearch("1053");
+            } else if (type === 'hw') {
+                searchInput.value = "1048";
+                handleSearch("1048");
             } else if (type === 'budget') {
-                searchInput.value = "1";
-                handleSearch("1");
+                searchInput.value = "1049";
+                handleSearch("1049");
                 setTimeout(() => {
                     const budgetCard = document.getElementById("hw-budget-card");
                     if (budgetCard) budgetCard.scrollIntoView({ behavior: 'smooth' });
@@ -908,7 +1131,7 @@
                 searchInput.value = token;
                 handleSearch(token);
             } else {
-                loadDemo('hw');
+                loadDemo('triagem');
             }
         });
     </script>
