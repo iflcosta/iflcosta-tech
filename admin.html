@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cockpit do Gestor // IFL Costa Tech ERP</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicon Brutalista SVG -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0c'/%3E%3Crect x='6' y='6' width='8' height='20' fill='%23ccff00'/%3E%3Cpath d='M18 6h8v4h-8zm0 8h6v4h-6zm0 8h8v4h-8z' fill='%23ffffff'/%3E%3C/svg%3E">
+
+    <!-- Google Fonts Preconnect & Inter/JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Minificado de Produção (Tailwind Standalone) -->
+    <link rel="stylesheet" href="./assets/css/style.min.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col justify-between">
+
+    <!-- Header do Cockpit Administrativo -->
+    <header class="w-full top-0 z-50 bg-black border-b-2 border-zinc-800 sticky">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="flex items-center gap-2 group">
+                        <div class="w-3.5 h-7 bg-brand group-hover:scale-110 transition-transform"></div>
+                        <span class="text-lg sm:text-xl font-extrabold text-white tracking-tight">IFL Costa Tech</span>
+                    </a>
+                    <span class="font-mono text-[10px] sm:text-xs font-black text-black bg-brand px-2 py-0.5 uppercase tracking-widest">COCKPIT ADMIN // 360°</span>
+                </div>
+                
+                <div class="flex items-center gap-2 sm:gap-4 font-mono text-xs">
+                    <div class="hidden md:flex items-center gap-2 text-zinc-400">
+                        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                        <span>SUPABASE: CONECTADO</span>
+                    </div>
+                    <button onclick="openNewOSModal()" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Nova</span> OS / Montagem
+                    </button>
+                    <a href="portal.html" target="_blank" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-brand hover:border-brand transition-colors flex items-center gap-1">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Ver</span> Portal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de Navegação de Abas do Cockpit -->
+    <nav class="bg-zinc-950 border-b-2 border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-1 sm:space-x-4 overflow-x-auto py-2 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider">
+                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-4 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-2">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                    Bancada & OS (Kanban)
+                </button>
+                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    Assistente de Orçamento
+                </button>
+                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+                    <i data-lucide="code" class="w-4 h-4"></i>
+                    Projetos Software (50/50)
+                </button>
+                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+                    <i data-lucide="shield" class="w-4 h-4"></i>
+                    Contratos MSP & MRR
+                </button>
+                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+                    DRE & Faturamento
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal Dinâmico -->
+    <main class="flex-grow py-6 sm:py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- ============================================================= -->
+            <!-- 1. ABA: KANBAN DE BANCADA & ORDENS DE SERVIÇO                 -->
+            <!-- ============================================================= -->
+            <div id="tab-content-kanban" class="tab-content space-y-6">
+                <!-- Métricas Rápidas de Topo -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">OSs EM ANDAMENTO</span>
+                        <span class="text-2xl sm:text-3xl font-black text-white" id="stat-active-os">3</span>
+                        <span class="text-[11px] text-brand block mt-1">● 1 pronta p/ entrega</span>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">PEÇAS A COMPRAR (SINAL OK)</span>
+                        <span class="text-2xl sm:text-3xl font-black text-yellow-400" id="stat-parts-to-buy">1</span>
+                        <span class="text-[11px] text-zinc-400 block mt-1">R$ 6.300 no caixa</span>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">MRR CONTRATOS MSP</span>
+                        <span class="text-2xl sm:text-3xl font-black text-purple-400" id="stat-mrr">R$ 1.890</span>
+                        <span class="text-[11px] text-zinc-400 block mt-1">3 empresas ativas</span>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">LUCRO ESTIMADO NO MÊS</span>
+                        <span class="text-2xl sm:text-3xl font-black text-brand" id="stat-month-profit">R$ 3.840</span>
+                        <span class="text-[11px] text-brand block mt-1">Margem Líquida ~84%</span>
+                    </div>
+                </div>
+
+                <!-- O KANBAN DE 5 COLUNAS DA BANCADA -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    
+                    <!-- Coluna 1: Triagem & Entrada -->
+                    <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
+                        <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
+                            <span class="font-bold text-zinc-400">01. TRIAGEM</span>
+                            <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                        </div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="bg-zinc-900/90 border border-zinc-700 p-3 text-xs font-mono group hover:border-brand transition-colors cursor-pointer">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="text-brand font-bold">#1050</span>
+                                    <span class="text-[10px] text-zinc-500">Hoje 14:20</span>
+                                </div>
+                                <h4 class="font-bold text-white mb-1 font-sans">Notebook Dell Inspiron 15</h4>
+                                <p class="text-zinc-400 text-[11px] line-clamp-2">"Não dá vídeo e bipa 3 vezes. Cliente precisa p/ trabalho."</p>
+                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px] text-zinc-500">
+                                    <span>Cliente: Roberto F.</span>
+                                    <span class="text-yellow-400">Diagnóstico</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 2: Orçamento / Aguardando Sinal -->
+                    <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
+                        <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
+                            <span class="font-bold text-yellow-400">02. ORÇAMENTO</span>
+                            <span class="bg-yellow-950/80 text-yellow-400 px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                        </div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="bg-zinc-900/90 border border-yellow-800/80 p-3 text-xs font-mono group hover:border-yellow-400 transition-colors cursor-pointer">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="text-yellow-400 font-bold">#1049</span>
+                                    <span class="text-[10px] text-zinc-500">Ontem 18:00</span>
+                                </div>
+                                <h4 class="font-bold text-white mb-1 font-sans">Upgrade PC Escritório</h4>
+                                <p class="text-zinc-400 text-[11px]">SSD NVMe 1TB + 16GB RAM + Limpeza Simples</p>
+                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
+                                    <span class="text-zinc-400">Total: R$ 560,00</span>
+                                    <span class="text-yellow-400 font-bold">Aguardando Aprovação</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 3: Na Bancada / Montagem -->
+                    <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
+                        <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
+                            <span class="font-bold text-cyan-400">03. BANCADA</span>
+                            <span class="bg-cyan-950/80 text-cyan-400 px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                        </div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="bg-zinc-900/90 border border-cyan-800/80 p-3 text-xs font-mono group hover:border-cyan-400 transition-colors cursor-pointer">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="text-cyan-400 font-bold">#1048</span>
+                                    <span class="text-[10px] text-brand">Sinal Pago (Pix)</span>
+                                </div>
+                                <h4 class="font-bold text-white mb-1 font-sans">PC Gamer Ryzen 5 7600</h4>
+                                <p class="text-zinc-400 text-[11px]">Peças recebidas. Montagem e cable management em andamento.</p>
+                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
+                                    <span class="text-zinc-400">Técnico: Lucas / Iago</span>
+                                    <span class="text-cyan-400">Na Bancada</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 4: Testes de Estresse QA -->
+                    <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
+                        <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
+                            <span class="font-bold text-brand">04. TESTES QA</span>
+                            <span class="bg-brand/10 text-brand px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                        </div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="bg-zinc-900/90 border border-brand p-3 text-xs font-mono group hover:bg-zinc-800 transition-colors cursor-pointer">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="text-brand font-bold">#1047</span>
+                                    <span class="text-[10px] text-brand animate-pulse">Rodando AIDA64</span>
+                                </div>
+                                <h4 class="font-bold text-white mb-1 font-sans">Limpeza Profunda PC Gamer</h4>
+                                <p class="text-zinc-400 text-[11px]">Temp. CPU: 58°C (Caiu 24°C após Arctic MX-4).</p>
+                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
+                                    <span class="text-brand font-bold">12 min / 15 min</span>
+                                    <span class="text-white">Estável</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 5: Pronto / Entrega -->
+                    <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
+                        <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
+                            <span class="font-bold text-white">05. PRONTO</span>
+                            <span class="bg-zinc-800 text-white px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                        </div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="bg-zinc-900/90 border border-zinc-600 p-3 text-xs font-mono group hover:border-brand transition-colors cursor-pointer">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="text-white font-bold">#1046</span>
+                                    <span class="text-[10px] text-brand">Pronto p/ Leva-e-Traz</span>
+                                </div>
+                                <h4 class="font-bold text-white mb-1 font-sans">Workstation i7 13700K</h4>
+                                <p class="text-zinc-400 text-[11px]">Laudo gerado. Saldo M.O. pendente: R$ 285,00.</p>
+                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
+                                    <span class="text-zinc-400">Cliente: Dra. Fernanda</span>
+                                    <span class="text-brand font-bold">Garantia 90D</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 2. ABA: ASSISTENTE DE ORÇAMENTO & NOVA OS (CALCULADORA MARKUP)-->
+            <!-- ============================================================= -->
+            <div id="tab-content-new-os" class="tab-content hidden space-y-8">
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
+                    <div class="flex justify-between items-center pb-6 border-b-2 border-zinc-800 mb-6">
+                        <div>
+                            <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Wizard de Precificação Inteligente ]</span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Novo Orçamento & Ordem de Serviço</h2>
+                        </div>
+                        <div class="text-right font-mono text-xs text-zinc-400">
+                            <span>OS Gerada:</span> <strong class="text-brand text-sm" id="wizard-os-num">#1051</strong>
+                        </div>
+                    </div>
+
+                    <form id="os-wizard-form" onsubmit="handleSaveOS(event)" class="space-y-8">
+                        <!-- Bloco 1: Dados do Cliente e Tipo -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs">
+                            <div>
+                                <label class="block text-zinc-400 uppercase font-bold mb-2">Nome do Cliente *</label>
+                                <input type="text" id="client-name" placeholder="Ex: Lucas Mendes" required class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                            </div>
+                            <div>
+                                <label class="block text-zinc-400 uppercase font-bold mb-2">WhatsApp do Cliente *</label>
+                                <input type="text" id="client-phone" placeholder="Ex: (11) 99999-8888" required class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-sm focus:outline-none focus:border-brand">
+                            </div>
+                            <div>
+                                <label class="block text-zinc-400 uppercase font-bold mb-2">Tipo de Serviço *</label>
+                                <select id="service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                    <option value="Montagem_PC">🛠️ Montagem de PC Novo Sob Medida</option>
+                                    <option value="Upgrade_Hardware">⚡ Upgrade de Hardware (SSD/RAM/GPU)</option>
+                                    <option value="Manutencao_Limpeza">🧼 Limpeza Preventiva / Profunda</option>
+                                    <option value="Diagnostico_Reparo">🔬 Diagnóstico Cirúrgico / Reparo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Bloco 2: Tabela Dinâmica de Peças (Custo vs Venda com Markup Automático) -->
+                        <div class="border-2 border-zinc-800 bg-zinc-950 p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-brand font-mono text-xs font-bold uppercase">[ 1. Peças & Hardware (Você preenche Custo e Venda) ]</span>
+                                <button type="button" onclick="addPartRow()" class="px-3 py-1.5 bg-zinc-800 hover:bg-brand hover:text-black text-white font-mono text-xs font-bold uppercase transition-colors flex items-center gap-1 border border-zinc-700">
+                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Componente
+                                </button>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full font-mono text-xs border-collapse text-left">
+                                    <thead>
+                                        <tr class="border-b border-zinc-800 text-zinc-400">
+                                            <th class="py-2 px-2">Tipo</th>
+                                            <th class="py-2 px-2">Marca, Modelo & Especificação Completa</th>
+                                            <th class="py-2 px-2 w-28">Custo Real (R$)</th>
+                                            <th class="py-2 px-2 w-28">Valor Venda (R$)</th>
+                                            <th class="py-2 px-2 w-24 text-right">Lucro Real</th>
+                                            <th class="py-2 px-2 w-10"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parts-table-body" class="divide-y divide-zinc-900">
+                                        <!-- Linha 1 -->
+                                        <tr class="part-row">
+                                            <td class="py-2 px-2">
+                                                <input type="text" value="Processador" class="part-type bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-24">
+                                            </td>
+                                            <td class="py-2 px-2">
+                                                <input type="text" value="AMD Ryzen 5 7600 (AM5 / 5.1GHz Turbo)" class="part-name bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-full">
+                                            </td>
+                                            <td class="py-2 px-2">
+                                                <input type="number" step="0.01" value="1250.00" oninput="recalcTotals()" class="part-cost bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-yellow-400 w-28">
+                                            </td>
+                                            <td class="py-2 px-2">
+                                                <input type="number" step="0.01" value="1390.00" oninput="recalcTotals()" class="part-sale bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-brand font-bold w-28">
+                                            </td>
+                                            <td class="py-2 px-2 text-right text-brand font-bold part-profit">R$ 140,00</td>
+                                            <td class="py-2 px-2 text-center">
+                                                <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                            </td>
+                                        </tr>
+                                        <!-- Linha 2 -->
+                                        <tr class="part-row">
+                                            <td class="py-2 px-2">
+                                                <input type="text" value="Placa de Vídeo" class="part-type bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-24">
+                                            </td>
+                                            <td class="py-2 px-2">
+                                                <input type="text" value="Gigabyte RTX 4060 Gaming OC 8GB GDDR6" class="part-name bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-full">
+                                            </td>
+                                            <td class="py-2 px-2">
+                                                <input type="number" step="0.01" value="1980.00" oninput="recalcTotals()" class="part-cost bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-yellow-400 w-28">
+                                            </td>
+                                            <td class="py-2 px-2">
+                                                <input type="number" step="0.01" value="2190.00" oninput="recalcTotals()" class="part-sale bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-brand font-bold w-28">
+                                            </td>
+                                            <td class="py-2 px-2 text-right text-brand font-bold part-profit">R$ 210,00</td>
+                                            <td class="py-2 px-2 text-center">
+                                                <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Bloco 3: Mão de Obra e Cortesia -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-xs">
+                            <div class="bg-zinc-950 border border-zinc-800 p-4">
+                                <label class="block text-brand font-bold uppercase mb-2">Mão de Obra do Serviço / Montagem (R$)</label>
+                                <input type="number" step="0.01" id="labor-price" value="285.00" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-base font-bold focus:outline-none focus:border-brand">
+                                <span class="text-[11px] text-zinc-500 block mt-1">Repasse Técnico Jr: R$ 90,00 • Sua Margem: R$ 195,00</span>
+                            </div>
+                            <div class="bg-zinc-950 border border-zinc-800 p-4">
+                                <label class="block text-brand font-bold uppercase mb-2">Engenharia de Software & Otimização</label>
+                                <input type="text" disabled value="R$ 0,00 (🎁 CORTESIA / BRINDE EXCLUSIVO IFL)" class="w-full bg-zinc-900/60 border border-zinc-800 px-3.5 py-2.5 text-brand font-mono text-sm">
+                                <span class="text-[11px] text-zinc-500 block mt-1">Ajuste de BIOS, curva térmica e Windows 11 limpo</span>
+                            </div>
+                        </div>
+
+                        <!-- Bloco 4: Resumo Consolidado & Seu Lucro Real -->
+                        <div class="bg-black border-2 border-brand p-6 font-mono">
+                            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center sm:text-left">
+                                <div>
+                                    <span class="text-zinc-500 text-xs block mb-1">TOTAL DAS PEÇAS (SINAL 100%)</span>
+                                    <span class="text-xl sm:text-2xl font-black text-white" id="calc-parts-total">R$ 3.580,00</span>
+                                </div>
+                                <div>
+                                    <span class="text-zinc-500 text-xs block mb-1">SALDO M.O. (NA ENTREGA)</span>
+                                    <span class="text-xl sm:text-2xl font-black text-brand" id="calc-labor-total">R$ 285,00</span>
+                                </div>
+                                <div>
+                                    <span class="text-zinc-500 text-xs block mb-1">VALOR TOTAL DO CLIENTE</span>
+                                    <span class="text-xl sm:text-2xl font-black text-white" id="calc-grand-total">R$ 3.865,00</span>
+                                </div>
+                                <div class="bg-brand/10 border border-brand/40 p-3">
+                                    <span class="text-brand text-xs font-bold block mb-1">SEU LUCRO LÍQUIDO REAL</span>
+                                    <span class="text-xl sm:text-2xl font-black text-brand" id="calc-net-profit">R$ 635,00</span>
+                                    <span class="text-[10px] text-zinc-400 block">Peças: R$ 350 + M.O: R$ 285</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botão de Ação Principal -->
+                        <div class="flex justify-end gap-4">
+                            <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-brand text-black font-mono font-black text-sm sm:text-base uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                                Salvar OS & Gerar Mensagem WhatsApp
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 3. ABA: PROJETOS DE SOFTWARE & WEB ENGINES                     -->
+            <!-- ============================================================= -->
+            <div id="tab-content-software" class="tab-content hidden space-y-6">
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 font-mono">
+                    <div class="flex justify-between items-center pb-4 border-b border-zinc-800 mb-6">
+                        <div>
+                            <span class="text-cyan-400 text-xs font-bold uppercase block mb-1">[ Pilar 2 • Software & Engenharia Web ]</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-white">Pipeline de Projetos Ativos</h3>
+                        </div>
+                        <button class="px-3 py-1.5 bg-cyan-950/60 border border-cyan-500 text-cyan-400 text-xs font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors">
+                            + Novo Projeto Web
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-zinc-800 text-zinc-400">
+                                    <th class="py-2.5 px-3">Código</th>
+                                    <th class="py-2.5 px-3">Cliente / Empresa</th>
+                                    <th class="py-2.5 px-3">Escopo do Projeto</th>
+                                    <th class="py-2.5 px-3">Milestone 1 (50%)</th>
+                                    <th class="py-2.5 px-3">Milestone 2 (50%)</th>
+                                    <th class="py-2.5 px-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-900 text-zinc-300">
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-cyan-400">PRJ-2026-01</td>
+                                    <td class="py-3 px-3 text-white font-bold">Imobiliária Vista Bragança</td>
+                                    <td class="py-3 px-3">Landing Page de Alta Conversão + WhatsApp Engine</td>
+                                    <td class="py-3 px-3 text-brand font-bold">R$ 900 (PAGO)</td>
+                                    <td class="py-3 px-3 text-yellow-400">R$ 900 (Homologação)</td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px]">Staging Live</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 4. ABA: CONTRATOS DE TI GERENCIADA (MSP & MRR)                 -->
+            <!-- ============================================================= -->
+            <div id="tab-content-msp" class="tab-content hidden space-y-6">
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 font-mono">
+                    <div class="flex justify-between items-center pb-4 border-b border-zinc-800 mb-6">
+                        <div>
+                            <span class="text-purple-400 text-xs font-bold uppercase block mb-1">[ Pilar 3 • TI Gerenciada & Contratos B2B ]</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-white">Carteira de Empresas & MRR</h3>
+                        </div>
+                        <button class="px-3 py-1.5 bg-purple-950/60 border border-purple-500 text-purple-400 text-xs font-bold uppercase hover:bg-purple-400 hover:text-black transition-colors">
+                            + Novo Contrato MSP
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-zinc-800 text-zinc-400">
+                                    <th class="py-2.5 px-3">Contrato</th>
+                                    <th class="py-2.5 px-3">Empresa Cliente</th>
+                                    <th class="py-2.5 px-3">Plano</th>
+                                    <th class="py-2.5 px-3">Estações</th>
+                                    <th class="py-2.5 px-3">Backup 3-2-1</th>
+                                    <th class="py-2.5 px-3 text-right">MRR Mensal</th>
+                                    <th class="py-2.5 px-3 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-900 text-zinc-300">
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-purple-400">MSP-2026-004</td>
+                                    <td class="py-3 px-3 text-white font-bold">Clínica Médica São Francisco</td>
+                                    <td class="py-3 px-3"><span class="text-purple-400 font-bold">Professional</span></td>
+                                    <td class="py-3 px-3">10 PCs + 1 Server</td>
+                                    <td class="py-3 px-3 text-brand">● Wasabi OK (04:00 AM)</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 1.099,00/mês</td>
+                                    <td class="py-3 px-3 text-center">
+                                        <a href="https://wa.me/5511919691542" target="_blank" class="text-brand hover:underline">RustDesk</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 5. ABA: DRE & FINANCEIRO CONSOLIDADO                           -->
+            <!-- ============================================================= -->
+            <div id="tab-content-financial" class="tab-content hidden space-y-6">
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 font-mono">
+                    <span class="text-brand text-xs font-bold uppercase block mb-1">[ DRE Gerencial em Tempo Real ]</span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-6">Demonstrativo Financeiro do Mês</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-zinc-900 p-4 border border-zinc-800">
+                            <span class="text-zinc-400 text-xs block mb-1">RECEITA BRUTA TOTAL</span>
+                            <span class="text-2xl font-black text-white">R$ 9.715,00</span>
+                        </div>
+                        <div class="bg-zinc-900 p-4 border border-zinc-800">
+                            <span class="text-zinc-400 text-xs block mb-1">CUSTO DE PEÇAS & STACK</span>
+                            <span class="text-2xl font-black text-red-400">- R$ 5.875,00</span>
+                        </div>
+                        <div class="bg-brand/10 p-4 border border-brand">
+                            <span class="text-brand text-xs font-bold block mb-1">LUCRO LÍQUIDO DA OPERAÇÃO</span>
+                            <span class="text-2xl font-black text-brand">R$ 3.840,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL DE SUCESSO: MENSAGEM WHATSAPP GERADA -->
+    <div id="whatsapp-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-zinc-950 border-2 border-brand p-6 sm:p-8 max-w-xl w-full shadow-2xl font-mono relative">
+            <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-brand"></span>
+                    <h3 class="text-lg font-extrabold text-white">OS Cadastrada com Sucesso!</h3>
+                </div>
+                <button onclick="closeModal()" class="text-zinc-500 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <p class="text-xs text-zinc-400 mb-3">
+                Copie a mensagem formatada abaixo e envie no WhatsApp do cliente com o link mágico da proposta:
+            </p>
+
+            <div class="bg-black border border-zinc-800 p-4 text-xs text-zinc-300 font-mono whitespace-pre-wrap mb-6" id="whatsapp-msg-preview">
+Olá Lucas! 👋
+Aqui é da *IFL Costa Tech*.
+
+Sua proposta técnica para a *OS #1051* está pronta com peças de alta durabilidade e laudo de estresse incluso!
+
+📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*
+👉 https://iflcosta.tech/portal.html?os=1051
+
+Qualquer dúvida, estou à disposição!
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 justify-end">
+                <button onclick="copyWppText()" class="px-5 py-3 bg-zinc-800 text-white text-xs font-bold uppercase hover:bg-zinc-700 transition-colors border border-zinc-700 flex items-center justify-center gap-2">
+                    <i data-lucide="copy" class="w-4 h-4"></i> Copiar Mensagem
+                </button>
+                <a id="modal-wpp-link" href="#" target="_blank" class="px-5 py-3 bg-brand text-black text-xs font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4"></i> Abrir no WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript do Cockpit Admin -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('text-brand', 'border-brand', 'bg-brand/5');
+                el.classList.add('text-zinc-400', 'border-transparent');
+            });
+
+            const targetContent = document.getElementById('tab-content-' + tabId);
+            const targetBtn = document.getElementById('tab-btn-' + tabId);
+
+            if (targetContent) targetContent.classList.remove('hidden');
+            if (targetBtn) {
+                targetBtn.classList.remove('text-zinc-400', 'border-transparent');
+                targetBtn.classList.add('text-brand', 'border-brand', 'bg-brand/5');
+            }
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function openNewOSModal() {
+            switchTab('new-os');
+        }
+
+        function addPartRow() {
+            const tbody = document.getElementById('parts-table-body');
+            const row = document.createElement('tr');
+            row.className = 'part-row';
+            row.innerHTML = `
+                <td class="py-2 px-2">
+                    <input type="text" placeholder="Ex: Memória RAM" class="part-type bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-24">
+                </td>
+                <td class="py-2 px-2">
+                    <input type="text" placeholder="Marca, Modelo & Specs" class="part-name bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-full">
+                </td>
+                <td class="py-2 px-2">
+                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-cost bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-yellow-400 w-28">
+                </td>
+                <td class="py-2 px-2">
+                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-sale bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-brand font-bold w-28">
+                </td>
+                <td class="py-2 px-2 text-right text-brand font-bold part-profit">R$ 0,00</td>
+                <td class="py-2 px-2 text-center">
+                    <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </td>
+            `;
+            tbody.appendChild(row);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function removePartRow(btn) {
+            const row = btn.closest('tr');
+            if (row) {
+                row.remove();
+                recalcTotals();
+            }
+        }
+
+        function recalcTotals() {
+            let totalCost = 0;
+            let totalSale = 0;
+
+            document.querySelectorAll('.part-row').forEach(row => {
+                const cost = parseFloat(row.querySelector('.part-cost').value) || 0;
+                const sale = parseFloat(row.querySelector('.part-sale').value) || 0;
+                const profit = sale - cost;
+
+                row.querySelector('.part-profit').textContent = 'R$ ' + profit.toFixed(2).replace('.', ',');
+                totalCost += cost;
+                totalSale += sale;
+            });
+
+            const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
+            const grandTotal = totalSale + laborPrice;
+            const netProfit = (totalSale - totalCost) + laborPrice;
+
+            document.getElementById('calc-parts-total').textContent = 'R$ ' + totalSale.toFixed(2).replace('.', ',');
+            document.getElementById('calc-labor-total').textContent = 'R$ ' + laborPrice.toFixed(2).replace('.', ',');
+            document.getElementById('calc-grand-total').textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+            document.getElementById('calc-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+        }
+
+        function handleSaveOS(e) {
+            e.preventDefault();
+            const clientName = document.getElementById('client-name').value;
+            const clientPhone = document.getElementById('client-phone').value.replace(/\D/g, '');
+            const osNum = document.getElementById('wizard-os-num').textContent.replace('#', '');
+
+            const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${osNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?os=${osNum}\n\nQualquer dúvida, estou à disposição!`;
+
+            document.getElementById('whatsapp-msg-preview').textContent = msg;
+            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
+            
+            document.getElementById('whatsapp-modal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('whatsapp-modal').classList.add('hidden');
+        }
+
+        function copyWppText() {
+            const text = document.getElementById('whatsapp-msg-preview').textContent;
+            navigator.clipboard.writeText(text);
+            alert("Mensagem copiada para a área de transferência!");
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+            recalcTotals();
+        });
+    </script>
+</body>
+</html>
