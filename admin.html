@@ -621,12 +621,15 @@ Qualquer dúvida, estou à disposição!
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZ3Jud3hhenV3ZXVpaGxhbGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNDYxMTMsImV4cCI6MjA5NDgyMjExM30.EH7EslfRQRoCbdbKxK0A07DZQ0Ich05KoRD1hddJA34";
         
         let supabaseClient = null;
-        try {
-            if (window.supabase) {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        function getSupabase() {
+            if (!supabaseClient && window.supabase && window.supabase.createClient) {
+                try {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                } catch (e) {
+                    console.warn("Erro ao instanciar Supabase client:", e);
+                }
             }
-        } catch (e) {
-            console.warn("Supabase SDK rodando em fallback.");
+            return supabaseClient;
         }
 
         function switchTab(tabId) {
