@@ -307,3 +307,43 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION rpc_track_work_order_by_number(INT, TEXT) TO anon, authenticated, service_role;
+
+
+-- ------------------------------------------------------------------------------
+-- 6. RPC: APROVAÇÃO DE ORÇAMENTO PELO CLIENTE (PORTAL DO CLIENTE VIA TOKEN)
+-- ------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION rpc_advance_work_order_status_by_token(
+    p_token UUID,
+    p_new_status TEXT
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+    v_wo RECORD;
+    v_status_enum os_status_enum;
+BEGIN
+    SELECT * INTO v_wo FROM work_orders WHERE public_tracking_token = p_token;
+    IF NOT FOUND THEN
+        RETURN JSONB_BUILD_OBJECT('success', false, 'error', 'Token de OS inválido.');
+    END IF;
+
+    BEGIN
+        v_status_enum := p_new_status::os_status_enum;
+    EXCEPTION WHEN OTHERS THEN
+        v_status_enum := 'Aguardando_Sinal_Peca';
+    END;
+
+    UPDATE work_orders
+    SET 
+        status = v_status_enum,
+        updated_at = NOW()
+    WHERE id = v_wo.id;
+
+    RETURN JSONB_BUILD_OBJECT('success', true, 'os_number', v_wo.os_number, 'status', v_status_enum::TEXT);
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION rpc_advance_work_order_status_by_token(UUID, TEXT) TO anon, authenticated, service_role;

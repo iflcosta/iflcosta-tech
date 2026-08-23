@@ -771,7 +771,8 @@ Qualquer dúvida, estou à disposição!
                     cO++;
                     card.className += " border-yellow-800/80 hover:border-yellow-400";
                     const isEncomendada = s.includes('encomendada');
-                    const badgeLabel = isEncomendada ? 'Peça Encomendada' : (s.includes('sinal') ? 'Aguardando Sinal' : 'Orçamento');
+                    const isApprovedClient = s.includes('aprovad');
+                    const badgeLabel = isApprovedClient ? '✅ Aprovado Cliente' : (isEncomendada ? 'Peça Encomendada' : (s.includes('sinal') ? 'Aguardando Sinal' : 'Orçamento'));
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
                             <span class="text-yellow-400 font-bold">#${wo.os_number || '1049'}</span>
@@ -1288,7 +1289,7 @@ Qualquer dúvida, estou à disposição!
 
             let finalOsNum = editingWorkOrder ? editingWorkOrder.os_number : "1001";
             let trackingToken = editingWorkOrder ? editingWorkOrder.public_tracking_token : null;
-            let targetStatus = editingWorkOrder ? (partsSaleTotal > 0 ? 'Aguardando_Sinal_Peca' : 'Diagnostico_Concluido') : 'Triagem';
+            let targetStatus = partsSaleTotal > 0 ? 'Aguardando_Sinal_Peca' : (items.length > 0 ? 'Diagnostico_Concluido' : 'Triagem');
 
             const client = getSupabase();
             if (client) {

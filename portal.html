@@ -608,8 +608,9 @@
                 if (s) s.className = "border-2 border-zinc-800 bg-zinc-900/40 p-3 text-zinc-500 transition-all";
             });
 
-            const isTriagem = rawStatus.includes("triagem");
-            const isOrcamento = rawStatus.includes("orcamento") || rawStatus.includes("aguardando_aprovacao") || rawStatus.includes("sinal") || rawStatus.includes("diagnostico") || rawStatus.includes("encomendada");
+            const itemsList = wo.items || wo.work_order_items || [];
+            const isTriagem = rawStatus.includes("triagem") && itemsList.length === 0;
+            const isOrcamento = (rawStatus.includes("orcamento") || rawStatus.includes("aguardando_aprovacao") || rawStatus.includes("sinal") || rawStatus.includes("diagnostico") || rawStatus.includes("encomendada") || rawStatus.includes("aprovad") || itemsList.length > 0) && !rawStatus.includes("bancada") && !rawStatus.includes("qa") && !rawStatus.includes("pronto") && !rawStatus.includes("entregue");
             const isBancada = rawStatus.includes("bancada") || rawStatus.includes("execucao") || rawStatus.includes("montagem");
             const isQA = rawStatus.includes("qa") || rawStatus.includes("teste") || rawStatus.includes("estresse");
             const isPronto = rawStatus.includes("pronto") || rawStatus.includes("entregue") || rawStatus.includes("finalizado") || rawStatus.includes("concluido");
@@ -680,9 +681,9 @@
 
             // Renderização do Card Central: Certificado de Custódia Digital vs Orçamento
             const budgetCard = document.getElementById("hw-budget-card");
-            const itemsList = wo.items || wo.work_order_items || [];
+            const isApproved = rawStatus.includes("aprovad") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue");
 
-            if (isTriagem || itemsList.length === 0) {
+            if (isTriagem) {
                 if (budgetCard) {
                     budgetCard.innerHTML = `
                         <div class="border-2 border-brand/40 bg-zinc-950 p-6 sm:p-8 relative overflow-hidden">
@@ -765,13 +766,19 @@
                             </div>
 
                             <div id="hw-action-buttons" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                                ${!isApproved ? `
+                                    <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token)}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
+                                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                        Aprovar Orçamento & Iniciar
+                                    </button>
+                                ` : `
+                                    <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center gap-2">
+                                        <i data-lucide="check-check" class="w-4 h-4"></i> Orçamento Aprovado
+                                    </div>
+                                `}
                                 <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%20${osNum}." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
                                     Tirar Dúvida
                                 </a>
-                                <button onclick="downloadWarrantyPDF()" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
-                                    <i data-lucide="download" class="w-4 h-4"></i>
-                                    Baixar Termo de Garantia (CDC)
-                                </button>
                             </div>
                         </div>
                     `;
@@ -1109,6 +1116,34 @@
                 mspContainer.classList.remove("hidden");
             }
             if (window.lucide) lucide.createIcons();
+        }
+
+                async function handleApproveBudget(token) {
+            if (!token) return;
+            const btn = document.getElementById('btn-approve-budget');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Confirmando Aprovação...</span>`;
+                if (window.lucide) lucide.createIcons();
+            }
+
+            const client = getSupabase();
+            if (client) {
+                try {
+                    const { data, error } = await client.rpc('rpc_advance_work_order_status_by_token', {
+                        p_token: token,
+                        p_new_status: 'Aprovado_Pelo_Cliente'
+                    });
+                    if (error) {
+                        console.warn("RPC erro ao aprovar:", error);
+                    }
+                } catch (e) {
+                    console.warn("Exceção ao aprovar:", e);
+                }
+            }
+
+            alert("✅ Orçamento aprovado com sucesso! Sua máquina entrou na fila de execução da Bancada Técnica.");
+            window.location.reload();
         }
 
         function downloadWarrantyPDF() {
