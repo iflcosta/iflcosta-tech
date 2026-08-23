@@ -33,13 +33,18 @@
 | **HW-05** | **Montagem de PC Gamer / Workstation** | Montagem do zero, gerenciamento de cabos (cable management militar), atualização de BIOS, teste de estresse de 1h e entrega com laudo. | 3h a 4h | **R$ 285,00 a R$ 415,00** *(25% OFF)* | R$ 90,00 |
 | **HW-06** | **Taxa de Leva-e-Traz (Bragança)** | Retirada e entrega do equipamento no endereço do cliente com termo de responsabilidade assinado. | - | **R$ 35,00** *(Grátis em serviços > R$ 350)* | R$ 20,00 (Uber/Gasolina) |
 
-### 📦 Política de Peças & Regra de Margem (7% Embutido)
+### 📦 Política de Peças & Regra de Markup Dinâmico (Custo vs Venda)
 - **Estrutura Obrigatória do Item no ERP:** Marca + Modelo + Especificação Técnica Completa (ex: *Kingston Fury Renegade - 1TB NVMe M.2 PCIe 4.0 7300MB/s*).
-- **Cálculo da Margem (Interno do Gestor):** O ERP aplica **7% fixo** sobre o custo final de compra para compor o preço unitário.
+- **Campos de Entrada no Cockpit Admin (Você preenche):**
+  1. `Custo Real de Aquisição (R$)`: O valor exato pago na compra (produto + frete).
+  2. `Valor de Venda (R$)`: O valor final repassado ao cliente.
+- **Cálculo Automático de Inteligência no ERP (Para você):**
+  $$\text{Lucro Bruto da Peça} = \text{Valor de Venda} - \text{Custo Real}$$
+  $$\text{Markup (\%)} = \left( \frac{\text{Valor de Venda} - \text{Custo Real}}{\text{Custo Real}} \right) \times 100$$
 - **Visão do Cliente (Discriminação Transparente & Comercial):**
-  - O cliente **NÃO visualiza** porcentagem de margem nem o custo de atacado. Ele vê o preço cheio de cada peça discriminado normalmente.
-  - **Mão de Obra de Montagem:** Valor explícito do serviço (ex: R$ 285,00 ou R$ 415,00).
-  - **Otimização do Sistema, BIOS & Curva Térmica:** Listado explicitamente no orçamento como **R$ 0,00 (🎁 CORTESIA / BRINDE EXCLUSIVO IFL COSTA TECH)** para gerar alto valor percebido.
+  - O cliente **visualiza apenas o Valor de Venda** de cada item (sem saber o custo de compra nem o markup obtido).
+  - **Mão de Obra do Serviço/Montagem:** Valor explícito do trabalho técnico (ex: R$ 285,00 ou R$ 415,00).
+  - **Otimização do Sistema, BIOS & Curva Térmica:** Listado explicitamente no orçamento como **R$ 0,00 (🎁 CORTESIA / BRINDE EXCLUSIVO IFL COSTA TECH)**.
 
 ---
 
