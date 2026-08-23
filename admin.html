@@ -950,7 +950,9 @@ Qualquer dúvida, estou à disposição!
             };
 
             currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
+            try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
             renderKanbanBoard(currentWorkOrders);
+            document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
         }
 
@@ -1016,9 +1018,17 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('calc-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
         }
 
+        // Carrega OSs salvas localmente como cache imediato
+        try {
+            const cached = localStorage.getItem('ifl_work_orders');
+            if (cached) currentWorkOrders = JSON.parse(cached);
+        } catch (e) {}
+
         async function loadSupabaseData() {
-            renderKanbanBoard([]);
-            if (!supabaseClient) return;
+            renderKanbanBoard(currentWorkOrders);
+            const client = getSupabase();
+            if (!client) return;
+
             try {
                 // 1. Carrega Métricas do Dashboard
                 const { data: metrics } = await client.rpc('rpc_get_admin_dashboard_metrics');
@@ -1029,10 +1039,11 @@ Qualquer dúvida, estou à disposição!
                     if (metrics.month_profit !== undefined) document.getElementById('stat-month-profit').textContent = 'R$ ' + parseFloat(metrics.month_profit).toFixed(0);
                 }
 
-                // 2. Carrega Ordens Reais para o Kanban
+                // 2. Carrega Ordens Reais para o Kanban via RPC
                 const { data: realOrders, error: orderErr } = await client.rpc('rpc_get_kanban_work_orders');
-                if (!orderErr && realOrders && realOrders.length > 0) {
+                if (!orderErr && realOrders && Array.isArray(realOrders) && realOrders.length > 0) {
                     currentWorkOrders = realOrders;
+                    try { localStorage.setItem('ifl_work_orders', JSON.stringify(realOrders)); } catch (e) {}
                     renderKanbanBoard(realOrders);
                 }
             } catch (err) {
@@ -1141,7 +1152,9 @@ Qualquer dúvida, estou à disposição!
             };
 
             currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
+            try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
             renderKanbanBoard(currentWorkOrders);
+            document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
         }
 
