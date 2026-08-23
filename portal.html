@@ -765,12 +765,26 @@
                             </div>
                         `}
 
+                        <!-- Card de Laudo Técnico de Engenharia & Diagnóstico da Causa Raiz -->
+                        <div class="bg-zinc-950 border-2 border-brand/40 p-5 sm:p-6 mb-6 relative overflow-hidden font-mono">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-zinc-800 pb-3 mb-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
+                                    <span class="text-brand text-xs font-bold uppercase tracking-wider">[ 🔬 Laudo Técnico de Engenharia & Diagnóstico ]</span>
+                                </div>
+                                <span class="text-[11px] text-zinc-400">Garantia Legal CDC: <strong class="text-white">90 Dias (Art. 26)</strong></span>
+                            </div>
+                            <p class="text-sm sm:text-base text-zinc-200 font-sans leading-relaxed">
+                                "${escapeHtml(wo.technical_diagnosis || 'Diagnóstico e inspeção eletrônica de bancada concluídos com êxito. Equipamento apto para execução conforme discriminação abaixo.')}"
+                            </p>
+                        </div>
+
                         <div class="flex items-center justify-between border-b-2 border-zinc-800 pb-4 mb-6">
                             <div>
                                 <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Composição de Peças & Mão de Obra ]</span>
                                 <h3 class="text-xl sm:text-2xl font-extrabold text-white">Discriminação do Orçamento</h3>
                             </div>
-                            <span class="text-xs font-mono text-zinc-400">Garantia CDC: <strong>90 Dias</strong></span>
+                            <span class="text-xs font-mono text-zinc-400">Status Peças: <strong class="text-brand">${wo.parts_deposit_paid ? 'Sinal Quitado ✓' : 'Sinal Pendente'}</strong></span>
                         </div>
 
                         <div class="overflow-x-auto">

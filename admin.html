@@ -195,17 +195,59 @@
                     </div>
 
                     <form id="os-wizard-form" onsubmit="handleSaveOS(event)" class="space-y-8">
-                        <!-- Bloco 1: Dados do Cliente (Fluxo Direto de Montagem & Orçamento) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-xs">
+                        <!-- Bloco 1: Identificação & Categoria do Serviço -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
                             <div>
-                                <label class="block text-zinc-400 uppercase font-bold mb-2">Nome do Cliente *</label>
-                                <input type="text" id="client-name" placeholder="Ex: Carlos Alberto" required class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                <label class="block text-zinc-400 uppercase font-bold mb-1.5">Nome do Cliente *</label>
+                                <input type="text" id="client-name" placeholder="Ex: Carlos Alberto" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
                             </div>
                             <div>
-                                <label class="block text-zinc-400 uppercase font-bold mb-2">WhatsApp do Cliente *</label>
-                                <input type="text" id="client-phone" placeholder="Ex: (11) 99999-8888" required class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-sm focus:outline-none focus:border-brand">
+                                <label class="block text-zinc-400 uppercase font-bold mb-1.5">WhatsApp do Cliente *</label>
+                                <input type="text" id="client-phone" placeholder="Ex: (11) 99999-8888" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
                             </div>
-                            <input type="hidden" id="service-type" value="Montagem_PC">
+                            <div>
+                                <label class="block text-zinc-400 uppercase font-bold mb-1.5">Categoria do Serviço *</label>
+                                <select id="service-type" onchange="handleCategorySelect(this.value)" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                    <option value="Hardware_Reparo">🔧 Reparo de Placa-Mãe (Break-Fix)</option>
+                                    <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica (Thermal Grizzly)</option>
+                                    <option value="Hardware_Upgrade">⚡ Upgrade de Componentes (SSD / RAM / GPU)</option>
+                                    <option value="Troca_Tela_Teclado">🖥️ Troca de Display LCD / Teclado / Carcaça</option>
+                                    <option value="Formatacao_Software">💻 Formatação Limpa & Otimização Windows 11 PRO</option>
+                                    <option value="Montagem_PC">🛠️ Montagem de Computador Custom / Gamer</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Bloco 1.5: Laudo Técnico, Diagnóstico da Causa Raiz & Escopo Coberto pela Garantia CDC -->
+                        <div class="bg-zinc-950 border-2 border-zinc-800 p-5 font-mono text-xs space-y-3">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <label class="text-brand font-bold uppercase flex items-center gap-1.5">
+                                    <i data-lucide="microscope" class="w-4 h-4"></i> Laudo Técnico, Diagnóstico da Causa Raiz & Escopo do Serviço
+                                </label>
+                                <span class="text-[10px] text-zinc-400">Garante a limitação jurídica da garantia (Art. 26 CDC 90 Dias)</span>
+                            </div>
+
+                            <!-- Presets Rápidos de 1 Clique para a Bancada -->
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                <span class="text-[10px] text-zinc-500 py-1 uppercase font-bold">Presets Rápidos:</span>
+                                <button type="button" onclick="injectDiagnosisPreset('curto_19v')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                    ⚡ Curto Linha 19V / VIN
+                                </button>
+                                <button type="button" onclick="injectDiagnosisPreset('limpeza_mx4')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                    ❄️ Limpeza + Thermal Grizzly
+                                </button>
+                                <button type="button" onclick="injectDiagnosisPreset('upgrade_nvme')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                    💾 Upgrade SSD NVMe + Clonagem
+                                </button>
+                                <button type="button" onclick="injectDiagnosisPreset('tela_lcd')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                    🖥️ Substituição de Display LCD
+                                </button>
+                                <button type="button" onclick="injectDiagnosisPreset('desoxidacao')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                    💧 Desoxidação Química Ultrassônica
+                                </button>
+                            </div>
+
+                            <textarea id="technical-diagnosis" rows="3" placeholder="Descreva a causa raiz identificada e a solução técnica aplicada. Ex: Identificado curto-circuito na linha primária de alimentação de 19V. Realizada desoxidação química, substituição do MOSFET comutador de entrada e repaste térmico com Arctic MX-4." class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand leading-relaxed"></textarea>
                         </div>
 
                         <!-- Bloco 2: Tabela Dinâmica de Peças (Custo vs Venda com Markup Automático) -->
@@ -1149,6 +1191,47 @@ Qualquer dúvida, estou à disposição!
             recalcTotals();
         }
 
+                function injectDiagnosisPreset(type) {
+            const diagEl = document.getElementById('technical-diagnosis');
+            const laborEl = document.getElementById('labor-price');
+            const serviceTypeEl = document.getElementById('service-type');
+
+            if (type === 'curto_19v') {
+                diagEl.value = "Identificado curto-circuito no circuito de alimentação primária (Linha de 19V / VIN). Realizada desoxidação química preventiva, substituição do MOSFET comutador de entrada de alta frequência e aplicação de pasta térmica de alta condutividade Arctic MX-4 na CPU/GPU.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "280.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
+            } else if (type === 'limpeza_mx4') {
+                diagEl.value = "Superaquecimento e estrangulamento térmico (thermal throttling). Realizada desmontagem completa, descarbonização ultrassônica da colmeia de dissipação, substituição de thermal pads e aplicação de pasta térmica Thermal Grizzly Hydronaut/Arctic MX-4.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "220.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Limpeza_Preventiva";
+            } else if (type === 'upgrade_nvme') {
+                diagEl.value = "Substituição/Instalação de unidade de armazenamento de alta velocidade SSD NVMe M.2 Gen4 com clonagem bit-a-bit de integridade do sistema operacional e alinhamento de partições para máxima performance.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "140.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Upgrade";
+            } else if (type === 'tela_lcd') {
+                diagEl.value = "Display LCD com avaria mecânica/linhas de sinal. Realizada a substituição por novo painel original IPS com calibração de torque e alívio de pressão das dobradiças metálicas para evitar rachaduras de carcaça.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "160.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Troca_Tela_Teclado";
+            } else if (type === 'desoxidacao') {
+                diagEl.value = "Oxidação por umidade detectada na placa-mãe. Realizado banho químico em cuba ultrassônica com álcool isopropílico 99.8%, secagem em estufa térmica controlada e ressolda SMD dos pontos afetados com fluxo no-clean.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "260.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
+            }
+            recalcTotals();
+        }
+
+        function handleCategorySelect(val) {
+            const laborEl = document.getElementById('labor-price');
+            if (val === 'Montagem_PC' && laborEl) {
+                laborEl.value = '285.00';
+            } else if (val === 'Limpeza_Preventiva' && laborEl) {
+                laborEl.value = '220.00';
+            } else if (val === 'Formatacao_Software' && laborEl) {
+                laborEl.value = '140.00';
+            }
+            recalcTotals();
+        }
+
         function addPartRow() {
             const tbody = document.getElementById('parts-table-body');
             const row = document.createElement('tr');
@@ -1257,6 +1340,7 @@ Qualquer dúvida, estou à disposição!
             const rawPhone = document.getElementById('client-phone').value.replace(/\D/g, '');
             const clientPhone = (rawPhone.length >= 12 && rawPhone.startsWith('55')) ? rawPhone.substring(2) : rawPhone;
             const serviceType = document.getElementById('service-type').value;
+            const technicalDiagnosis = document.getElementById('technical-diagnosis') ? document.getElementById('technical-diagnosis').value.trim() : `Laudo técnico para ${serviceType.replace(/_/g, ' ')}`;
             const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
 
             // Coleta Peças e calcula total de venda das peças
@@ -1300,7 +1384,7 @@ Qualquer dúvida, estou à disposição!
                         const { data, error } = await client.rpc('rpc_update_work_order_budget', {
                             p_os_number: parseInt(editingWorkOrder.os_number),
                             p_service_type: serviceType,
-                            p_diagnosis: `Laudo emitido para ${serviceType.replace(/_/g, ' ')}`,
+                            p_diagnosis: technicalDiagnosis,
                             p_items: items
                         });
 
@@ -1319,7 +1403,7 @@ Qualquer dúvida, estou à disposição!
                             p_service_type: serviceType,
                             p_device_brand: 'Custom Build IFL',
                             p_device_model: serviceType.replace(/_/g, ' '),
-                            p_reported_defect: `Serviço solicitado: ${serviceType.replace(/_/g, ' ')} para ${clientName}`,
+                            p_reported_defect: technicalDiagnosis || `Serviço solicitado: ${serviceType.replace(/_/g, ' ')} para ${clientName}`,
                             p_pickup_fee: 0.00,
                             p_items: items
                         });
