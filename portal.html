@@ -572,7 +572,7 @@
             const osNum = wo.os_number || "1053";
             const brand = wo.device_brand || "Equipamento";
             const model = wo.device_model || "Hardware";
-            const clientName = wo.client_first_name || (wo.customer_name ? wo.customer_name.split(' ')[0]) || "Carlos";
+            const clientName = wo.client_first_name || (wo.customer_name ? wo.customer_name.split(' ')[0] : '') || "Carlos";
             const deliveryText = wo.is_pickup_delivery 
                 ? "Atendimento Especializado com Leva-e-Traz" 
                 : "Atendimento Presencial na Bancada";
