@@ -46,8 +46,8 @@
 </head>
 <body class="bg-dark text-gray-300 font-sans antialiased selection:bg-brand selection:text-black">
 
-    <!-- Navbar Brutalista -->
-    <header class="fixed w-full top-0 z-50 bg-dark/90 backdrop-blur-md border-b-2 border-zinc-800">
+    <!-- Navbar Brutalista com Menu Mobile -->
+    <header class="fixed w-full top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <a href="#" class="flex items-center gap-2 group">
@@ -64,10 +64,30 @@
                     <a href="portal.html" class="hidden sm:inline-flex px-4 py-2 sm:px-5 sm:py-3 bg-zinc-900 text-white text-xs sm:text-sm font-bold uppercase tracking-wider hover:text-brand hover:border-brand transition-colors border-2 border-zinc-700 font-mono">
                         ACOMPANHAR SERVIÇO
                     </a>
-                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="px-4 py-2 sm:px-6 sm:py-3 bg-white text-black text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex px-4 py-2 sm:px-6 sm:py-3 bg-white text-black text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent">
                         FALAR COM ESPECIALISTA
                     </a>
+                    <!-- Botão Hambúrguer Mobile -->
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2 text-white bg-zinc-900 border border-zinc-700 hover:border-brand transition-colors" aria-label="Abrir Menu">
+                        <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+                    </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Menu Dropdown Mobile -->
+        <div id="mobile-menu-dropdown" class="hidden md:hidden bg-zinc-950 border-b-2 border-zinc-800 px-4 py-6 space-y-4 font-mono text-sm">
+            <a href="#solucoes" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Soluções</a>
+            <a href="#garantias" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Garantias</a>
+            <a href="#provas" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Resultados</a>
+            <a href="#processo" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Processo</a>
+            <div class="pt-2 flex flex-col gap-2">
+                <a href="portal.html" class="w-full text-center px-4 py-3 bg-zinc-900 text-white font-bold uppercase border border-zinc-700 hover:border-brand">
+                    ACOMPANHAR SERVIÇO
+                </a>
+                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="w-full text-center px-4 py-3 bg-brand text-black font-black uppercase">
+                    FALAR NO WHATSAPP
+                </a>
             </div>
         </div>
     </header>

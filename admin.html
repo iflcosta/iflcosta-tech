@@ -261,9 +261,9 @@
                                 <label class="block text-zinc-400 uppercase font-bold mb-2">Tipo de Serviço *</label>
                                 <select id="service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
                                     <option value="Montagem_PC">🛠️ Montagem de PC Novo Sob Medida</option>
-                                    <option value="Upgrade_Hardware">⚡ Upgrade de Hardware (SSD/RAM/GPU)</option>
-                                    <option value="Manutencao_Limpeza">🧼 Limpeza Preventiva / Profunda</option>
-                                    <option value="Diagnostico_Reparo">🔬 Diagnóstico Cirúrgico / Reparo</option>
+                                    <option value="Hardware_Upgrade">⚡ Upgrade de Hardware (SSD/RAM/GPU)</option>
+                                    <option value="Hardware_Reparo">🧼 Limpeza / Manutenção / Reparo</option>
+                                    <option value="Software_Bancada">💻 Otimização / Sistema Operacional</option>
                                 </select>
                             </div>
                         </div>
@@ -535,7 +535,7 @@ Qualquer dúvida, estou à disposição!
         </div>
     </div>
 
-    <!-- JavaScript do Cockpit Admin com Conexão Real Supabase -->
+    <!-- JavaScript do Cockpit Admin com Inserção Real Assíncrona no Supabase -->
     <script>
         const SUPABASE_URL = "https://togrnwxazuweuihlaljo.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZ3Jud3hhenV3ZXVpaGxhbGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNDYxMTMsImV4cCI6MjA5NDgyMjExM30.EH7EslfRQRoCbdbKxK0A07DZQ0Ich05KoRD1hddJA34";
@@ -630,7 +630,6 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('calc-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
         }
 
-        // Carrega dados reais de OS do Supabase para atualizar métricas e Kanban
         async function loadSupabaseData() {
             if (!supabaseClient) return;
             try {
@@ -641,8 +640,6 @@ Qualquer dúvida, estou à disposição!
 
                 if (!error && data) {
                     document.getElementById('stat-active-os').textContent = data.length;
-                    
-                    // Próximo número de OS
                     const nextNum = (data.length > 0 && data[0].os_number) ? (data[0].os_number + 1) : 1051;
                     document.getElementById('wizard-os-num').textContent = '#' + nextNum;
                 }
@@ -653,8 +650,13 @@ Qualquer dúvida, estou à disposição!
 
         async function handleSaveOS(e) {
             e.preventDefault();
+            const saveBtn = e.target.querySelector('button[type="submit"]');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = `<span class="animate-pulse">Gravando no Supabase...</span>`;
+
             const clientName = document.getElementById('client-name').value;
-            const clientPhone = document.getElementById('client-phone').value.replace(/\D/g, '');
+            const rawPhone = document.getElementById('client-phone').value.replace(/\D/g, '');
+            const clientPhone = rawPhone.startsWith('55') ? rawPhone.substring(2) : rawPhone;
             const serviceType = document.getElementById('service-type').value;
             const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
             let osNum = document.getElementById('wizard-os-num').textContent.replace('#', '');
@@ -677,8 +679,11 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
             
-            document.getElementById('whatsapp-modal').classList.remove('hidden');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Salvar OS & Gerar Mensagem WhatsApp`;
             if (window.lucide) lucide.createIcons();
+
+            document.getElementById('whatsapp-modal').classList.remove('hidden');
         }
 
         function closeModal() {
@@ -688,7 +693,10 @@ Qualquer dúvida, estou à disposição!
         function copyWppText() {
             const text = document.getElementById('whatsapp-msg-preview').textContent;
             navigator.clipboard.writeText(text);
-            alert("Mensagem copiada para a área de transferência!");
+            const copyBtn = event.target.closest('button');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = `✓ Copiado!`;
+            setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
         }
 
         window.addEventListener('DOMContentLoaded', () => {

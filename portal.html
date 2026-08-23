@@ -537,6 +537,17 @@
             console.warn("Supabase SDK carregado em modo offline fallback.");
         }
 
+        // Sanitizador XSS Rigoroso
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // Elementos DOM
         const searchForm = document.getElementById("search-form");
         const searchInput = document.getElementById("search-input");
@@ -554,10 +565,10 @@
             mspContainer.classList.add("hidden");
         }
 
-        // Renderiza dados reais da OS no DOM
+        // Renderiza dados reais da OS no DOM com Sanitização XSS
         function renderWorkOrderData(wo) {
             document.getElementById("hw-os-number").textContent = "#" + (wo.os_number || "1048");
-            document.getElementById("hw-device-title").textContent = wo.device_brand + " // " + wo.device_model;
+            document.getElementById("hw-device-title").textContent = escapeHtml(wo.device_brand) + " // " + escapeHtml(wo.device_model);
             document.getElementById("hw-status-text").textContent = (wo.status || "EM ANDAMENTO").replace(/_/g, ' ').toUpperCase();
 
             if (wo.created_at) {
@@ -567,13 +578,13 @@
 
             // Atualiza métricas se existirem
             if (wo.stress_test_aida64_temp_max) {
-                document.getElementById("hw-cpu-temp").textContent = wo.stress_test_aida64_temp_max + " °C";
+                document.getElementById("hw-cpu-temp").textContent = escapeHtml(wo.stress_test_aida64_temp_max) + " °C";
             }
             if (wo.stress_test_furmark_temp_max) {
-                document.getElementById("hw-gpu-temp").textContent = wo.stress_test_furmark_temp_max + " °C";
+                document.getElementById("hw-gpu-temp").textContent = escapeHtml(wo.stress_test_furmark_temp_max) + " °C";
             }
             if (wo.stress_test_boot_time_seconds) {
-                document.getElementById("hw-boot-time").textContent = wo.stress_test_boot_time_seconds + " seg";
+                document.getElementById("hw-boot-time").textContent = escapeHtml(wo.stress_test_boot_time_seconds) + " seg";
             }
 
             // Renderiza Itens se existirem
@@ -596,13 +607,13 @@
                         tr.className = "bg-zinc-900/40";
                         tr.innerHTML = `
                             <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
-                            <td class="py-3 px-3 text-zinc-300">${item.description}</td>
+                            <td class="py-3 px-3 text-zinc-300">${escapeHtml(item.description)}</td>
                             <td class="py-3 px-3 text-right font-bold text-brand">R$ ${price.toFixed(2).replace('.', ',')}</td>
                         `;
                     } else {
                         tr.innerHTML = `
-                            <td class="py-3 px-3 font-bold text-white">${item.item_type || 'Componente'}</td>
-                            <td class="py-3 px-3">${item.description}</td>
+                            <td class="py-3 px-3 font-bold text-white">${escapeHtml(item.item_type || 'Componente')}</td>
+                            <td class="py-3 px-3">${escapeHtml(item.description)}</td>
                             <td class="py-3 px-3 text-right font-bold text-white">R$ ${price.toFixed(2).replace('.', ',')}</td>
                         `;
                     }
@@ -642,7 +653,7 @@
                     swContainer.classList.remove("hidden");
                     window.scrollTo({ top: swContainer.offsetTop - 100, behavior: 'smooth' });
                     if (window.lucide) lucide.createIcons();
-                }, 200);
+                }, 150);
                 return;
             }
 
@@ -653,7 +664,7 @@
                     mspContainer.classList.remove("hidden");
                     window.scrollTo({ top: mspContainer.offsetTop - 100, behavior: 'smooth' });
                     if (window.lucide) lucide.createIcons();
-                }, 200);
+                }, 150);
                 return;
             }
 
@@ -682,20 +693,16 @@
                     }
                 }
             } catch (err) {
-                console.warn("Falha na consulta remota, usando fallback local:", err);
+                console.warn("Falha na consulta remota:", err);
             }
 
-            // Fallback de Demonstração / Não Encontrado
+            // 4. Estado de Não Encontrado
             setTimeout(() => {
                 loadingState.classList.add("hidden");
-                if (cleanQuery === "404" || cleanQuery === "ERRO") {
-                    notFoundState.classList.remove("hidden");
-                } else {
-                    hwContainer.classList.remove("hidden");
-                    window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                }
+                notFoundState.classList.remove("hidden");
+                window.scrollTo({ top: notFoundState.offsetTop - 100, behavior: 'smooth' });
                 if (window.lucide) lucide.createIcons();
-            }, 250);
+            }, 200);
         }
 
         // Atalhos de Demonstração
@@ -731,7 +738,7 @@
             handleSearch(searchInput.value);
         });
 
-        // Verificação de Parâmetros na URL (ex: portal.html?token=1 ou portal.html?os=1)
+        // Verificação de Parâmetros na URL
         window.addEventListener("DOMContentLoaded", () => {
             if (window.lucide) lucide.createIcons();
 
