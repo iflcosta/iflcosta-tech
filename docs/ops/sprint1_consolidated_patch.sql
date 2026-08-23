@@ -148,6 +148,12 @@ GRANT EXECUTE ON FUNCTION rpc_advance_work_order_status(INT, TEXT, INT, INT, INT
 -- ------------------------------------------------------------------------------
 -- 4. RPC: ATUALIZAR ORÇAMENTO DE OS EXISTENTE (MOMENTO 2 DA BANCADA)
 -- ------------------------------------------------------------------------------
+-- ==============================================================================
+-- IFL COSTA TECH — CORREÇÃO CRÍTICA: RPC UPDATE WORK ORDER BUDGET
+-- Corrige o erro 42804 (COALESCE types text and os_service_type_enum cannot be matched)
+-- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
+-- ==============================================================================
+
 CREATE OR REPLACE FUNCTION rpc_update_work_order_budget(
     p_os_number INT,
     p_service_type TEXT,
@@ -164,20 +170,12 @@ DECLARE
     v_item JSONB;
     v_parts_total DECIMAL(10,2) := 0.00;
     v_labor_total DECIMAL(10,2) := 0.00;
-    v_service_enum os_service_type_enum;
     v_target_status os_status_enum;
 BEGIN
     SELECT * INTO v_wo FROM work_orders WHERE os_number = p_os_number;
     IF NOT FOUND THEN
         RETURN JSONB_BUILD_OBJECT('success', false, 'error', 'OS não encontrada.');
     END IF;
-
-    -- Converte service type se válido
-    BEGIN
-        v_service_enum := p_service_type::os_service_type_enum;
-    EXCEPTION WHEN OTHERS THEN
-        v_service_enum := v_wo.service_type;
-    END;
 
     -- Limpa itens antigos da OS se houver
     DELETE FROM work_order_items WHERE work_order_id = v_wo.id;
@@ -217,10 +215,9 @@ BEGIN
         v_target_status := 'Diagnostico_Concluido';
     END IF;
 
-    -- Atualiza a Work Order (sem tentar escrever em total_order que é gerado)
+    -- Atualiza a Work Order com segurança
     UPDATE work_orders
     SET 
-        service_type = COALESCE(v_service_enum, service_type),
         technical_diagnosis = COALESCE(p_diagnosis, technical_diagnosis),
         status = v_target_status,
         total_parts = v_parts_total,
