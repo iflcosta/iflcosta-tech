@@ -633,15 +633,13 @@ Qualquer dúvida, estou à disposição!
         async function loadSupabaseData() {
             if (!supabaseClient) return;
             try {
-                const { data, error } = await supabaseClient
-                    .from('work_orders')
-                    .select('*, work_order_items(*)')
-                    .order('created_at', { ascending: false });
+                const { data, error } = await supabaseClient.rpc('rpc_get_admin_dashboard_metrics');
 
                 if (!error && data) {
-                    document.getElementById('stat-active-os').textContent = data.length;
-                    const nextNum = (data.length > 0 && data[0].os_number) ? (data[0].os_number + 1) : 1051;
-                    document.getElementById('wizard-os-num').textContent = '#' + nextNum;
+                    if (data.active_os !== undefined) document.getElementById('stat-active-os').textContent = data.active_os;
+                    if (data.parts_to_buy !== undefined) document.getElementById('stat-parts-to-buy').textContent = data.parts_to_buy;
+                    if (data.msp_mrr !== undefined) document.getElementById('stat-mrr').textContent = 'R$ ' + parseFloat(data.msp_mrr).toFixed(0);
+                    if (data.month_profit !== undefined) document.getElementById('stat-month-profit').textContent = 'R$ ' + parseFloat(data.month_profit).toFixed(0);
                 }
             } catch (err) {
                 console.warn("Aviso ao carregar dados do Supabase:", err);
@@ -706,10 +704,10 @@ Qualquer dúvida, estou à disposição!
 
                     if (error) {
                         console.error("Erro na RPC do Supabase:", error);
-                        alert("Erro ao gravar OS no Supabase: " + error.message + "\n\nCertifique-se de executar o script supabase_defense_v2.sql no SQL Editor do Supabase.");
+                        alert("Erro ao gravar OS no Supabase: " + error.message);
                     } else if (data && data.success) {
                         finalOsNum = data.os_number;
-                        trackingToken = data.tracking_token;
+                        trackingToken = data.public_tracking_token || data.tracking_token;
                     }
                 } catch (err) {
                     console.error("Exceção ao chamar RPC:", err);

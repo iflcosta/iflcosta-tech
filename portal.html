@@ -567,12 +567,13 @@
 
         // Renderiza dados reais da OS no DOM com Sanitização XSS
         function renderWorkOrderData(wo) {
-            document.getElementById("hw-os-number").textContent = "#" + (wo.os_number || "1048");
+            document.getElementById("hw-os-number").textContent = "#" + (wo.os_number || "1051");
             document.getElementById("hw-device-title").textContent = escapeHtml(wo.device_brand) + " // " + escapeHtml(wo.device_model);
             document.getElementById("hw-status-text").textContent = (wo.status || "EM ANDAMENTO").replace(/_/g, ' ').toUpperCase();
 
-            if (wo.created_at) {
-                const date = new Date(wo.created_at);
+            const dateStr = wo.entry_at || wo.created_at;
+            if (dateStr) {
+                const date = new Date(dateStr);
                 document.getElementById("hw-date").textContent = "Entrada: " + date.toLocaleDateString('pt-BR');
             }
 
@@ -588,13 +589,14 @@
             }
 
             // Renderiza Itens se existirem
-            if (wo.work_order_items && wo.work_order_items.length > 0) {
+            const itemsList = wo.items || wo.work_order_items || [];
+            if (itemsList.length > 0) {
                 const tbody = document.getElementById("hw-budget-items");
                 tbody.innerHTML = "";
                 let partsSum = 0;
                 let laborSum = 0;
 
-                wo.work_order_items.forEach(item => {
+                itemsList.forEach(item => {
                     const price = parseFloat(item.unit_price) || 0;
                     if (item.item_type === 'Labor') {
                         laborSum += price;
@@ -630,9 +632,12 @@
                 `;
                 tbody.appendChild(trCortesia);
 
-                const grandTotal = partsSum + laborSum;
-                document.getElementById("hw-parts-total").textContent = "R$ " + partsSum.toFixed(2).replace('.', ',');
-                document.getElementById("hw-labor-total").textContent = "R$ " + laborSum.toFixed(2).replace('.', ',');
+                const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum);
+                const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
+                const laborDisplay = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
+
+                document.getElementById("hw-parts-total").textContent = "R$ " + partsDisplay.toFixed(2).replace('.', ',');
+                document.getElementById("hw-labor-total").textContent = "R$ " + laborDisplay.toFixed(2).replace('.', ',');
                 document.getElementById("hw-grand-total").textContent = "R$ " + grandTotal.toFixed(2).replace('.', ',');
             }
         }
