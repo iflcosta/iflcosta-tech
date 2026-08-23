@@ -917,9 +917,12 @@ Qualquer dúvida, estou à disposição!
             closeIntakeModal();
             form.reset();
 
-            // Mensagem de Comprovante de Custódia para WhatsApp
+            // Mensagem de Comprovante de Custódia para WhatsApp (Emojis 100% Blindados)
+            const eWave = String.fromCodePoint(0x1F44B);
+            const eDoc = String.fromCodePoint(0x1F4CB);
+            const eHand = String.fromCodePoint(0x1F449);
             const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada para diagnóstico técnico cirúrgico (OS #${finalOsNum}).\n\n📋 *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const msg = `Olá ${clientName}! ${eWave}\nAqui é da *IFL Costa Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada para diagnóstico técnico cirúrgico (OS #${finalOsNum}).\n\n${eDoc} *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\n${eHand} https://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
@@ -1087,9 +1090,12 @@ Qualquer dúvida, estou à disposição!
                 }
             }
 
-            // Gera link mágico seguro com token UUID
+            // Gera link mágico seguro com token UUID (Emojis 100% Blindados)
+            const eWave = String.fromCodePoint(0x1F44B);
+            const eDoc = String.fromCodePoint(0x1F4CB);
+            const eHand = String.fromCodePoint(0x1F449);
             const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
+            const msg = `Olá ${clientName}! ${eWave}\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n${eDoc} *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n${eHand} https://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
