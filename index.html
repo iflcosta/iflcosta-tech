@@ -60,17 +60,20 @@
                     <a href="#provas" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Resultados</a>
                     <a href="#processo" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Processo</a>
                 </nav>
-                <div class="flex items-center gap-3">
-                    <a href="portal.html" class="hidden sm:inline-flex px-4 py-2 sm:px-5 sm:py-3 bg-zinc-900 text-white text-xs sm:text-sm font-bold uppercase tracking-wider hover:text-brand hover:border-brand transition-colors border-2 border-zinc-700 font-mono">
-                        ACOMPANHAR SERVIÇO
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Botão Acompanhar Serviço Destacado em 2 Linhas (Sempre Visível) -->
+                    <a href="portal.html" class="inline-flex flex-col items-center justify-center text-center px-2.5 py-1.5 sm:px-4 sm:py-2 bg-zinc-900 text-white text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider leading-tight border-2 border-zinc-700 hover:text-brand hover:border-brand hover:bg-zinc-800 transition-colors shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] group">
+                        <span class="text-zinc-200 group-hover:text-white">ACOMPANHAR</span>
+                        <span class="text-brand font-black text-[9px] sm:text-[10px] tracking-widest">SERVIÇO</span>
                     </a>
+                    
                     <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex px-4 py-2 sm:px-6 sm:py-3 bg-white text-black text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent">
                         FALAR COM ESPECIALISTA
                     </a>
                     <!-- Botão Hambúrguer Mobile (Target de toque 48x48px com A11y) -->
-                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden w-12 h-12 flex items-center justify-center text-white bg-zinc-900 border-2 border-zinc-700 hover:border-brand focus:border-brand focus:outline-none transition-colors cursor-pointer" aria-label="Abrir Menu" aria-expanded="false" aria-controls="mobile-menu-dropdown">
-                        <i data-lucide="menu" id="menu-icon-bars" class="w-6 h-6 block"></i>
-                        <i data-lucide="x" id="menu-icon-close" class="w-6 h-6 hidden"></i>
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white bg-zinc-900 border-2 border-zinc-700 hover:border-brand focus:border-brand focus:outline-none transition-colors cursor-pointer" aria-label="Abrir Menu" aria-expanded="false" aria-controls="mobile-menu-dropdown">
+                        <i data-lucide="menu" id="menu-icon-bars" class="w-5 h-5 sm:w-6 sm:h-6 block"></i>
+                        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 sm:w-6 sm:h-6 hidden"></i>
                     </button>
                 </div>
             </div>
