@@ -712,7 +712,55 @@
             }
         }
 
-        // Função de Busca Principal com RPC Blindada
+        // Dicionário de Demonstração / Fallback
+        const defaultMockLookup = {
+            "1050": {
+                os_number: 1050,
+                device_brand: "Notebook",
+                device_model: "Dell Inspiron 15",
+                status: "Triagem",
+                reported_defect: "Não dá vídeo e bipa 3 vezes ao ligar. Cliente precisa urgente para trabalho.",
+                entry_at: new Date().toISOString(),
+                items: []
+            },
+            "1049": {
+                os_number: 1049,
+                device_brand: "Desktop",
+                device_model: "Upgrade PC Escritório",
+                status: "Orcamento_Aguardando_Aprovacao",
+                reported_defect: "Lentidão generalizada. Upgrade de SSD e RAM solicitado.",
+                entry_at: new Date(Date.now() - 86400000).toISOString(),
+                total_parts: 420.00,
+                total_labor: 140.00,
+                total_order: 560.00,
+                items: [
+                    { item_type: "Part", description: "SSD NVMe Kingston 1TB", unit_price: 320.00, quantity: 1 },
+                    { item_type: "Part", description: "Memória RAM Kingston Fury 16GB DDR4", unit_price: 100.00, quantity: 1 },
+                    { item_type: "Labor", description: "Mão de Obra de Instalação e Otimização", unit_price: 140.00, quantity: 1 }
+                ]
+            },
+            "1048": {
+                os_number: 1048,
+                device_brand: "Custom Build IFL",
+                device_model: "PC Gamer Ryzen 5 7600 + RTX 4060",
+                status: "Na_Bancada",
+                reported_defect: "Montagem de Setup Gamer de Alta Performance",
+                entry_at: new Date(Date.now() - 172800000).toISOString(),
+                total_parts: 3580.00,
+                total_labor: 285.00,
+                total_order: 3865.00,
+                stress_test_aida64_temp_max: 62.5,
+                stress_test_furmark_temp_max: 67.0,
+                stress_test_boot_time_seconds: 9.4,
+                items: [
+                    { item_type: "Part", description: "Processador AMD Ryzen 5 7600 (AM5)", unit_price: 1390.00, quantity: 1 },
+                    { item_type: "Part", description: "Placa de Vídeo Gigabyte RTX 4060 8GB", unit_price: 2190.00, quantity: 1 },
+                    { item_type: "Labor", description: "Mão de Obra de Montagem de Alta Precisão", unit_price: 285.00, quantity: 1 }
+                ]
+            }
+        };
+
+        // Função de Busca Universal Blindada
         async function handleSearch(query) {
             if (!query) return;
             hideAllContainers();
@@ -743,42 +791,16 @@
                 return;
             }
 
-            // 3. Consulta Blindada via RPC no Supabase
+            // 3. Consulta Universal via RPC no Supabase
             try {
                 if (supabaseClient) {
-                    let resultData = null;
+                    const { data, error } = await supabaseClient.rpc('rpc_track_public_work_order', {
+                        p_query: cleanQuery
+                    });
 
-                    // Se for UUID (Token)
-                    if (cleanQuery.length === 36 && cleanQuery.includes("-")) {
-                        const { data, error } = await supabaseClient.rpc('rpc_track_work_order', {
-                            p_token: cleanQuery
-                        });
-                        if (!error && data && data.found) {
-                            resultData = data;
-                        }
-                    } else {
-                        // Se for busca por número de OS, tenta buscar
-                        const num = parseInt(cleanQuery.replace('#', ''));
-                        if (!isNaN(num)) {
-                            // Tenta primeiro com fallback direto ou via token
-                            const { data, error } = await supabaseClient
-                                .from('work_orders')
-                                .select('*, work_order_items(*)')
-                                .eq('os_number', num);
-                            if (!error && data && data.length > 0) {
-                                renderWorkOrderData(data[0]);
-                                loadingState.classList.add("hidden");
-                                hwContainer.classList.remove("hidden");
-                                window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                                if (window.lucide) lucide.createIcons();
-                                return;
-                            }
-                        }
-                    }
-
-                    if (resultData) {
+                    if (!error && data && data.found) {
                         loadingState.classList.add("hidden");
-                        renderWorkOrderData(resultData);
+                        renderWorkOrderData(data);
                         hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
@@ -789,7 +811,18 @@
                 console.warn("Falha na consulta remota:", err);
             }
 
-            // 4. Estado de Não Encontrado
+            // 4. Fallback Mock para exemplos de teste
+            const numClean = cleanQuery.replace(/\D/g, '');
+            if (numClean && defaultMockLookup[numClean]) {
+                loadingState.classList.add("hidden");
+                renderWorkOrderData(defaultMockLookup[numClean]);
+                hwContainer.classList.remove("hidden");
+                window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                if (window.lucide) lucide.createIcons();
+                return;
+            }
+
+            // 5. Estado de Não Encontrado
             setTimeout(() => {
                 loadingState.classList.add("hidden");
                 notFoundState.classList.remove("hidden");

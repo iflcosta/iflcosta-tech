@@ -119,27 +119,17 @@
                 </div>
 
                 <!-- O KANBAN DE 5 COLUNAS DA BANCADA -->
+                <!-- O KANBAN DE 5 COLUNAS DA BANCADA -->
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     
                     <!-- Coluna 1: Triagem & Entrada -->
                     <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
                         <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
                             <span class="font-bold text-zinc-400">01. TRIAGEM</span>
-                            <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                            <span id="count-triagem" class="bg-zinc-800 text-brand px-1.5 py-0.5 text-[10px] font-bold">0</span>
                         </div>
-                        <div class="space-y-3 flex-grow">
-                            <div class="bg-zinc-900/90 border border-zinc-700 p-3 text-xs font-mono group hover:border-brand transition-colors cursor-pointer">
-                                <div class="flex justify-between items-start mb-1.5">
-                                    <span class="text-brand font-bold">#1050</span>
-                                    <span class="text-[10px] text-zinc-500">Hoje 14:20</span>
-                                </div>
-                                <h4 class="font-bold text-white mb-1 font-sans">Notebook Dell Inspiron 15</h4>
-                                <p class="text-zinc-400 text-[11px] line-clamp-2">"Não dá vídeo e bipa 3 vezes. Cliente precisa p/ trabalho."</p>
-                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px] text-zinc-500">
-                                    <span>Cliente: Roberto F.</span>
-                                    <span class="text-yellow-400">Diagnóstico</span>
-                                </div>
-                            </div>
+                        <div id="col-triagem" class="space-y-3 flex-grow min-h-[140px]">
+                            <!-- Inserido dinamicamente pelo JS -->
                         </div>
                     </div>
 
@@ -147,21 +137,10 @@
                     <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
                         <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
                             <span class="font-bold text-yellow-400">02. ORÇAMENTO</span>
-                            <span class="bg-yellow-950/80 text-yellow-400 px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                            <span id="count-orcamento" class="bg-yellow-950/80 text-yellow-400 px-1.5 py-0.5 text-[10px] font-bold">0</span>
                         </div>
-                        <div class="space-y-3 flex-grow">
-                            <div class="bg-zinc-900/90 border border-yellow-800/80 p-3 text-xs font-mono group hover:border-yellow-400 transition-colors cursor-pointer">
-                                <div class="flex justify-between items-start mb-1.5">
-                                    <span class="text-yellow-400 font-bold">#1049</span>
-                                    <span class="text-[10px] text-zinc-500">Ontem 18:00</span>
-                                </div>
-                                <h4 class="font-bold text-white mb-1 font-sans">Upgrade PC Escritório</h4>
-                                <p class="text-zinc-400 text-[11px]">SSD NVMe 1TB + 16GB RAM + Limpeza Simples</p>
-                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
-                                    <span class="text-zinc-400">Total: R$ 560,00</span>
-                                    <span class="text-yellow-400 font-bold">Aguardando Aprovação</span>
-                                </div>
-                            </div>
+                        <div id="col-orcamento" class="space-y-3 flex-grow min-h-[140px]">
+                            <!-- Inserido dinamicamente pelo JS -->
                         </div>
                     </div>
 
@@ -169,21 +148,10 @@
                     <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
                         <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
                             <span class="font-bold text-cyan-400">03. BANCADA</span>
-                            <span class="bg-cyan-950/80 text-cyan-400 px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                            <span id="count-bancada" class="bg-cyan-950/80 text-cyan-400 px-1.5 py-0.5 text-[10px] font-bold">0</span>
                         </div>
-                        <div class="space-y-3 flex-grow">
-                            <div class="bg-zinc-900/90 border border-cyan-800/80 p-3 text-xs font-mono group hover:border-cyan-400 transition-colors cursor-pointer">
-                                <div class="flex justify-between items-start mb-1.5">
-                                    <span class="text-cyan-400 font-bold">#1048</span>
-                                    <span class="text-[10px] text-brand">Sinal Pago (Pix)</span>
-                                </div>
-                                <h4 class="font-bold text-white mb-1 font-sans">PC Gamer Ryzen 5 7600</h4>
-                                <p class="text-zinc-400 text-[11px]">Peças recebidas. Montagem e cable management em andamento.</p>
-                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
-                                    <span class="text-zinc-400">Técnico: Lucas / Iago</span>
-                                    <span class="text-cyan-400">Na Bancada</span>
-                                </div>
-                            </div>
+                        <div id="col-bancada" class="space-y-3 flex-grow min-h-[140px]">
+                            <!-- Inserido dinamicamente pelo JS -->
                         </div>
                     </div>
 
@@ -191,21 +159,10 @@
                     <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
                         <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
                             <span class="font-bold text-brand">04. TESTES QA</span>
-                            <span class="bg-brand/10 text-brand px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                            <span id="count-qa" class="bg-brand/10 text-brand px-1.5 py-0.5 text-[10px] font-bold">0</span>
                         </div>
-                        <div class="space-y-3 flex-grow">
-                            <div class="bg-zinc-900/90 border border-brand p-3 text-xs font-mono group hover:bg-zinc-800 transition-colors cursor-pointer">
-                                <div class="flex justify-between items-start mb-1.5">
-                                    <span class="text-brand font-bold">#1047</span>
-                                    <span class="text-[10px] text-brand animate-pulse">Rodando AIDA64</span>
-                                </div>
-                                <h4 class="font-bold text-white mb-1 font-sans">Limpeza Profunda PC Gamer</h4>
-                                <p class="text-zinc-400 text-[11px]">Temp. CPU: 58°C (Caiu 24°C após Arctic MX-4).</p>
-                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
-                                    <span class="text-brand font-bold">12 min / 15 min</span>
-                                    <span class="text-white">Estável</span>
-                                </div>
-                            </div>
+                        <div id="col-qa" class="space-y-3 flex-grow min-h-[140px]">
+                            <!-- Inserido dinamicamente pelo JS -->
                         </div>
                     </div>
 
@@ -213,21 +170,10 @@
                     <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
                         <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
                             <span class="font-bold text-white">05. PRONTO</span>
-                            <span class="bg-zinc-800 text-white px-1.5 py-0.5 text-[10px] font-bold">1</span>
+                            <span id="count-pronto" class="bg-zinc-800 text-white px-1.5 py-0.5 text-[10px] font-bold">0</span>
                         </div>
-                        <div class="space-y-3 flex-grow">
-                            <div class="bg-zinc-900/90 border border-zinc-600 p-3 text-xs font-mono group hover:border-brand transition-colors cursor-pointer">
-                                <div class="flex justify-between items-start mb-1.5">
-                                    <span class="text-white font-bold">#1046</span>
-                                    <span class="text-[10px] text-brand">Pronto p/ Leva-e-Traz</span>
-                                </div>
-                                <h4 class="font-bold text-white mb-1 font-sans">Workstation i7 13700K</h4>
-                                <p class="text-zinc-400 text-[11px]">Laudo gerado. Saldo M.O. pendente: R$ 285,00.</p>
-                                <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
-                                    <span class="text-zinc-400">Cliente: Dra. Fernanda</span>
-                                    <span class="text-brand font-bold">Garantia 90D</span>
-                                </div>
-                            </div>
+                        <div id="col-pronto" class="space-y-3 flex-grow min-h-[140px]">
+                            <!-- Inserido dinamicamente pelo JS -->
                         </div>
                     </div>
 
@@ -984,6 +930,7 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
 
             document.getElementById('whatsapp-modal').classList.remove('hidden');
+            renderKanbanBoard(defaultMockOrders);
             loadSupabaseData();
         }
 
@@ -1053,13 +1000,20 @@ Qualquer dúvida, estou à disposição!
             renderKanbanBoard(defaultMockOrders);
             if (!supabaseClient) return;
             try {
-                const { data, error } = await supabaseClient.rpc('rpc_get_admin_dashboard_metrics');
+                // 1. Carrega Métricas do Dashboard
+                const { data: metrics } = await supabaseClient.rpc('rpc_get_admin_dashboard_metrics');
+                if (metrics) {
+                    if (metrics.active_os !== undefined) document.getElementById('stat-active-os').textContent = metrics.active_os;
+                    if (metrics.parts_to_buy !== undefined) document.getElementById('stat-parts-to-buy').textContent = metrics.parts_to_buy;
+                    if (metrics.msp_mrr !== undefined) document.getElementById('stat-mrr').textContent = 'R$ ' + parseFloat(metrics.msp_mrr).toFixed(0);
+                    if (metrics.month_profit !== undefined) document.getElementById('stat-month-profit').textContent = 'R$ ' + parseFloat(metrics.month_profit).toFixed(0);
+                }
 
-                if (!error && data) {
-                    if (data.active_os !== undefined) document.getElementById('stat-active-os').textContent = data.active_os;
-                    if (data.parts_to_buy !== undefined) document.getElementById('stat-parts-to-buy').textContent = data.parts_to_buy;
-                    if (data.msp_mrr !== undefined) document.getElementById('stat-mrr').textContent = 'R$ ' + parseFloat(data.msp_mrr).toFixed(0);
-                    if (data.month_profit !== undefined) document.getElementById('stat-month-profit').textContent = 'R$ ' + parseFloat(data.month_profit).toFixed(0);
+                // 2. Carrega Ordens Reais para o Kanban
+                const { data: realOrders, error: orderErr } = await supabaseClient.rpc('rpc_get_kanban_work_orders');
+                if (!orderErr && realOrders && realOrders.length > 0) {
+                    currentWorkOrders = realOrders;
+                    renderKanbanBoard(realOrders);
                 }
             } catch (err) {
                 console.warn("Aviso ao carregar dados do Supabase:", err);
