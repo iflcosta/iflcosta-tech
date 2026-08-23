@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Cliente // IFL Costa Tech</title>
+    <meta name="description" content="Acompanhe em tempo real o status da sua Ordem de Serviço, Projeto de Software ou Contrato de TI Gerenciada na IFL Costa Tech.">
+    
+    <!-- Favicon Brutalista SVG -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0c'/%3E%3Crect x='6' y='6' width='8' height='20' fill='%23ccff00'/%3E%3Cpath d='M18 6h8v4h-8zm0 8h6v4h-6zm0 8h8v4h-8z' fill='%23ffffff'/%3E%3C/svg%3E">
+
+    <!-- Google Fonts Preconnect & Inter/JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Minificado de Produção (Tailwind Standalone) -->
+    <link rel="stylesheet" href="./assets/css/style.min.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col justify-between">
+
+    <!-- Header Fixo Brutalista -->
+    <header class="w-full top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <div class="w-4 h-8 bg-brand group-hover:scale-110 transition-transform"></div>
+                    <span class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">IFL Costa Tech</span>
+                    <span class="ml-2 font-mono text-xs font-bold text-black bg-brand px-2 py-0.5 uppercase tracking-widest hidden sm:inline-block">PORTAL // CLIENTE</span>
+                </a>
+                
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors">
+                        ← Voltar ao Site
+                    </a>
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Estou%20no%20portal%20do%20cliente%20e%20preciso%20de%20ajuda." target="_blank" rel="noopener noreferrer" class="px-4 py-2 sm:px-5 sm:py-2.5 bg-brand text-black text-xs sm:text-sm font-black uppercase tracking-wider hover:bg-white transition-colors border-2 border-transparent shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                        Suporte Direto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow py-8 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Barra de Busca Rápida Brutalista -->
+            <div id="search-section" class="mb-10 bg-black border-2 border-zinc-800 p-6 sm:p-8 shadow-2xl relative">
+                <div class="max-w-3xl">
+                    <div class="inline-flex items-center gap-2 bg-brand/10 border border-brand/30 text-brand font-mono text-xs font-bold px-3 py-1 uppercase mb-3">
+                        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                        Central de Telemetria & Rastreamento em Tempo Real
+                    </div>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+                        Consulte seu <span class="text-brand">Serviço ou Projeto</span>
+                    </h1>
+                    <p class="text-zinc-400 text-sm sm:text-base mb-6 font-medium">
+                        Digite o número da sua OS (ex: <code class="text-brand font-mono">1001</code>), código do projeto ou acesse via link direto enviado no seu WhatsApp.
+                    </p>
+
+                    <form id="search-form" class="flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-grow">
+                            <input 
+                                type="text" 
+                                id="search-input" 
+                                placeholder="Ex: 1001, PRJ-2026-01 ou Token..." 
+                                class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3.5 text-white font-mono text-sm sm:text-base focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
+                                required
+                            >
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="px-8 py-3.5 bg-brand text-black font-mono font-black text-sm sm:text-base uppercase tracking-wider hover:bg-white transition-colors border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2"
+                        >
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                            Rastrear
+                        </button>
+                    </form>
+
+                    <!-- Atalhos Rápidos para Demonstração de Teste -->
+                    <div class="mt-4 flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500">
+                        <span>Exemplos para teste rápido:</span>
+                        <button type="button" onclick="loadDemo('hw')" class="text-brand hover:underline">[ 🛠️ OS Hardware #1048 ]</button>
+                        <button type="button" onclick="loadDemo('budget')" class="text-yellow-400 hover:underline">[ 📋 Aprovação Orçamento ]</button>
+                        <button type="button" onclick="loadDemo('sw')" class="text-cyan-400 hover:underline">[ 💻 Projeto Web PRJ-01 ]</button>
+                        <button type="button" onclick="loadDemo('msp')" class="text-purple-400 hover:underline">[ 🛡️ TI MSP Empresa ]</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loader de Carregamento -->
+            <div id="loading-state" class="hidden text-center py-20">
+                <div class="inline-block w-10 h-10 border-4 border-zinc-700 border-t-brand rounded-none animate-spin mb-4"></div>
+                <p class="font-mono text-zinc-400 text-sm">Consultando banco de telemetria da IFL Costa Tech...</p>
+            </div>
+
+            <!-- Mensagem de Erro / Não Encontrado -->
+            <div id="not-found-state" class="hidden bg-red-950/40 border-2 border-red-800 p-8 text-center my-8">
+                <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-3"></i>
+                <h3 class="text-xl font-extrabold text-white mb-2">Registro Não Localizado</h3>
+                <p class="text-zinc-400 text-sm max-w-md mx-auto mb-4">
+                    Não encontramos nenhuma OS ou projeto correspondente ao código digitado. Verifique o número ou solicite um link atualizado no WhatsApp.
+                </p>
+                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20N%C3%A3o%20consegui%20localizar%20minha%20OS%20no%20portal." target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 text-white font-mono text-xs font-bold uppercase hover:bg-zinc-700 border border-zinc-600">
+                    Falar com o Suporte <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+
+            <!-- ================================================================= -->
+            <!-- 1. CONTAINER DINÂMICO: HARDWARE & MONTAGEM / BANCADA              -->
+            <!-- ================================================================= -->
+            <div id="hw-container" class="hidden space-y-8">
+                
+                <!-- Card Principal com Header da OS -->
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 relative">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-6 border-b-2 border-zinc-800">
+                        <div>
+                            <div class="flex items-center gap-2 font-mono text-xs text-zinc-400 mb-1">
+                                <span>ORDEM DE SERVIÇO:</span>
+                                <span id="hw-os-number" class="text-brand font-bold text-sm">#1048</span>
+                                <span class="text-zinc-600">•</span>
+                                <span id="hw-date">Entrada: 22/08/2026</span>
+                            </div>
+                            <h2 id="hw-device-title" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                                Montagem Custom Gamer // Ryzen 5 7600 + RTX 4060
+                            </h2>
+                            <p id="hw-client-name" class="text-zinc-400 text-sm mt-0.5">
+                                Cliente: <strong class="text-zinc-200">Lucas M.</strong> • Atendimento Presencial com Leva-e-Traz
+                            </p>
+                        </div>
+
+                        <!-- Badge de Status Atual -->
+                        <div class="flex items-center gap-3">
+                            <div id="hw-status-badge" class="px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-sm font-black uppercase tracking-wider flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-brand animate-pulse"></span>
+                                <span id="hw-status-text">EM TESTES DE ESTRESSE QA</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LINHA DO TEMPO BRUTALISTA DA BANCADA -->
+                    <div class="py-8 border-b-2 border-zinc-800">
+                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Progresso do Atendimento</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono text-xs">
+                            <!-- Etapa 1 -->
+                            <div id="step-1" class="border-2 border-brand bg-brand/10 p-3 text-brand">
+                                <div class="font-bold flex items-center justify-between mb-1">
+                                    <span>01. TRIAGEM</span>
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[11px] text-zinc-400">Checklist & Fotos</span>
+                            </div>
+
+                            <!-- Etapa 2 -->
+                            <div id="step-2" class="border-2 border-brand bg-brand/10 p-3 text-brand">
+                                <div class="font-bold flex items-center justify-between mb-1">
+                                    <span>02. ORÇAMENTO</span>
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[11px] text-zinc-400">Aprovado & Sinal Pago</span>
+                            </div>
+
+                            <!-- Etapa 3 -->
+                            <div id="step-3" class="border-2 border-brand bg-brand/10 p-3 text-brand">
+                                <div class="font-bold flex items-center justify-between mb-1">
+                                    <span>03. BANCADA</span>
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[11px] text-zinc-400">Montagem & Cable Mgmt</span>
+                            </div>
+
+                            <!-- Etapa 4 -->
+                            <div id="step-4" class="border-2 border-brand bg-brand text-black p-3 animate-pulse">
+                                <div class="font-bold flex items-center justify-between mb-1">
+                                    <span>04. TESTES QA</span>
+                                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[11px] text-zinc-900 font-bold">AIDA64 / 15 Min</span>
+                            </div>
+
+                            <!-- Etapa 5 -->
+                            <div id="step-5" class="border-2 border-zinc-800 bg-zinc-900/50 p-3 text-zinc-500">
+                                <div class="font-bold flex items-center justify-between mb-1">
+                                    <span>05. PRONTO</span>
+                                    <i data-lucide="package-check" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[11px]">Garantia 90D & Entrega</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LAUDO DE ESTRESSE & TELEMETRIA -->
+                    <div class="pt-6">
+                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Laudo de Telemetria & Estresse Térmico</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
+                            <div class="bg-zinc-900/80 border border-zinc-800 p-4">
+                                <span class="text-zinc-500 text-xs block mb-1">CPU MAX TEMP (100%)</span>
+                                <span class="text-xl sm:text-2xl font-black text-brand" id="hw-cpu-temp">61.2 °C</span>
+                                <span class="text-[10px] text-zinc-400 block mt-1">Arctic MX-4 Aplicada</span>
+                            </div>
+                            <div class="bg-zinc-900/80 border border-zinc-800 p-4">
+                                <span class="text-zinc-500 text-xs block mb-1">GPU FURMARK STRESS</span>
+                                <span class="text-xl sm:text-2xl font-black text-brand" id="hw-gpu-temp">64.0 °C</span>
+                                <span class="text-[10px] text-zinc-400 block mt-1">Curva de Fans Silenciosa</span>
+                            </div>
+                            <div class="bg-zinc-900/80 border border-zinc-800 p-4">
+                                <span class="text-zinc-500 text-xs block mb-1">SAÚDE SSD (SMART)</span>
+                                <span class="text-xl sm:text-2xl font-black text-white" id="hw-ssd-health">100% OK</span>
+                                <span class="text-[10px] text-brand block mt-1">7.300 MB/s Gen4</span>
+                            </div>
+                            <div class="bg-zinc-900/80 border border-zinc-800 p-4">
+                                <span class="text-zinc-500 text-xs block mb-1">BOOT TIME (WIN 11)</span>
+                                <span class="text-xl sm:text-2xl font-black text-white" id="hw-boot-time">11.4 seg</span>
+                                <span class="text-[10px] text-brand block mt-1">Zero Bloatware</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO DE ORÇAMENTO / PROPOSTA TÉCNICA (DISCRIMINAÇÃO TRANSPARENTE) -->
+                <div id="hw-budget-card" class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
+                    <div class="flex items-center justify-between border-b-2 border-zinc-800 pb-4 mb-6">
+                        <div>
+                            <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Composição de Peças & Mão de Obra ]</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-white">Discriminação do Orçamento</h3>
+                        </div>
+                        <span class="text-xs font-mono text-zinc-400">Garantia CDC: <strong>90 Dias</strong></span>
+                    </div>
+
+                    <!-- Tabela de Itens da Proposta -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left font-mono text-xs sm:text-sm border-collapse">
+                            <thead>
+                                <tr class="border-b border-zinc-800 text-zinc-400">
+                                    <th class="py-2.5 px-3">Item / Componente</th>
+                                    <th class="py-2.5 px-3">Especificação Técnica</th>
+                                    <th class="py-2.5 px-3 text-right">Valor Unitário</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hw-budget-items" class="divide-y divide-zinc-900 text-zinc-300">
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-white">Processador</td>
+                                    <td class="py-3 px-3">AMD Ryzen 5 7600 (6C/12T, 5.1GHz Turbo, AM5)</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 1.390,00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-white">Placa-Mãe</td>
+                                    <td class="py-3 px-3">ASUS TUF Gaming B650M-Plus Wi-Fi DDR5</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 1.250,00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-white">Memória RAM</td>
+                                    <td class="py-3 px-3">Corsair Vengeance 32GB (2x16GB) DDR5 6000MHz CL30</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 890,00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-white">Armazenamento</td>
+                                    <td class="py-3 px-3">SSD Kingston Fury Renegade 1TB NVMe Gen4 (7.300 MB/s)</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 590,00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-white">Placa de Vídeo</td>
+                                    <td class="py-3 px-3">Gigabyte GeForce RTX 4060 Gaming OC 8GB GDDR6</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 2.190,00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-white">Fonte de Energia</td>
+                                    <td class="py-3 px-3">MSI MAG A650BN 650W 80 Plus Bronze</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 320,00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-3 font-bold text-white">Gabinete & Fans</td>
+                                    <td class="py-3 px-3">Montech Sky Two Glass + 4 Fans ARGB</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 440,00</td>
+                                </tr>
+                                <tr class="bg-zinc-900/40">
+                                    <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
+                                    <td class="py-3 px-3 text-zinc-300">Montagem de Precisão & Cable Management Militar</td>
+                                    <td class="py-3 px-3 text-right font-bold text-brand">R$ 285,00</td>
+                                </tr>
+                                <tr class="bg-brand/5">
+                                    <td class="py-3 px-3 font-bold text-brand">Engenharia Software</td>
+                                    <td class="py-3 px-3 text-zinc-300">Otimização Windows 11, Ajuste de BIOS & Perfil Térmico</td>
+                                    <td class="py-3 px-3 text-right font-bold text-brand">R$ 0,00 (🎁 CORTESIA)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Resumo Financeiro & Ação de Pagamento -->
+                    <div class="mt-6 pt-6 border-t-2 border-zinc-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div class="font-mono text-sm space-y-1">
+                            <div class="text-zinc-400">Total das Peças (Sinal): <strong class="text-white" id="hw-parts-total">R$ 7.070,00</strong> (PAGO)</div>
+                            <div class="text-zinc-400">Saldo da Mão de Obra: <strong class="text-brand" id="hw-labor-total">R$ 285,00</strong> (Pagar na Entrega)</div>
+                            <div class="text-lg font-black text-white pt-1">Total Geral: <span class="text-brand" id="hw-grand-total">R$ 7.355,00</span></div>
+                        </div>
+
+                        <!-- Botão Dinâmico de Ação -->
+                        <div id="hw-action-buttons" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%201048." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
+                                Tirar Dúvida
+                            </a>
+                            <button onclick="downloadWarrantyPDF()" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                Baixar Termo de Garantia (CDC)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GALERIA DE FOTOS DA BANCADA (SUPABASE STORAGE) -->
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
+                    <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Registro Visual de Bancada ]</span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-6">Fotos do Equipamento</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group relative">
+                            <div class="h-48 bg-zinc-800 flex items-center justify-center font-mono text-xs text-zinc-500 p-4 text-center">
+                                <i data-lucide="image" class="w-8 h-8 text-zinc-600 mb-2 block mx-auto"></i>
+                                [ Foto 1: Caixas Originais Lacradas ]
+                            </div>
+                            <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                                01 • Caixas e Lotes Originais
+                            </div>
+                        </div>
+
+                        <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group relative">
+                            <div class="h-48 bg-zinc-800 flex items-center justify-center font-mono text-xs text-zinc-500 p-4 text-center">
+                                <i data-lucide="image" class="w-8 h-8 text-zinc-600 mb-2 block mx-auto"></i>
+                                [ Foto 2: Cable Management Traseiro ]
+                            </div>
+                            <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                                02 • Gerenciamento de Cabos
+                            </div>
+                        </div>
+
+                        <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group relative">
+                            <div class="h-48 bg-zinc-800 flex items-center justify-center font-mono text-xs text-zinc-500 p-4 text-center">
+                                <i data-lucide="image" class="w-8 h-8 text-zinc-600 mb-2 block mx-auto"></i>
+                                [ Foto 3: Setup Ligado & Benchmark ]
+                            </div>
+                            <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
+                                03 • Teste de Estresse Final
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================================================================= -->
+            <!-- 2. CONTAINER DINÂMICO: SOFTWARE & ENGENHARIA WEB                  -->
+            <!-- ================================================================= -->
+            <div id="sw-container" class="hidden space-y-8">
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-6 border-b-2 border-zinc-800">
+                        <div>
+                            <div class="flex items-center gap-2 font-mono text-xs text-zinc-400 mb-1">
+                                <span>PROJETO WEB:</span>
+                                <span class="text-cyan-400 font-bold text-sm">PRJ-2026-01</span>
+                                <span class="text-zinc-600">•</span>
+                                <span>Entrega Contratual: 30/08/2026</span>
+                            </div>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                                Landing Page de Alta Conversão & Motor de Vendas
+                            </h2>
+                            <p class="text-zinc-400 text-sm mt-0.5">
+                                Cliente: <strong class="text-zinc-200">Imobiliária Vista Bragança</strong> • Stack: React / Tailwind / Cloudflare
+                            </p>
+                        </div>
+
+                        <div class="px-4 py-2 bg-cyan-950/50 border-2 border-cyan-500 text-cyan-400 font-mono text-sm font-black uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <span>EM HOMOLOGAÇÃO QA</span>
+                        </div>
+                    </div>
+
+                    <!-- Milestones 50/50 -->
+                    <div class="py-8 border-b-2 border-zinc-800">
+                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Milestones & Faturamento 50/50</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
+                            <div class="border-2 border-brand bg-brand/10 p-4">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-bold text-brand">MILESTONE 1 (50% KICKOFF)</span>
+                                    <span class="text-brand font-bold">PAGO (Pix)</span>
+                                </div>
+                                <p class="text-zinc-300">R$ 900,00 • Arquitetura, Wireframe & Configuração de Servidores</p>
+                            </div>
+                            <div class="border-2 border-yellow-500 bg-yellow-950/20 p-4">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-bold text-yellow-400">MILESTONE 2 (50% ENTREGA)</span>
+                                    <span class="text-yellow-400 font-bold">AGUARDANDO HOMOLOGAÇÃO</span>
+                                </div>
+                                <p class="text-zinc-300">R$ 900,00 • Quitação final após validação do cliente</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scorecard Lighthouse 100/100 -->
+                    <div class="py-6 border-b-2 border-zinc-800">
+                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Laudo de Performance Google Lighthouse</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-center">
+                            <div class="bg-zinc-900 border border-zinc-800 p-4">
+                                <span class="text-3xl font-black text-brand block mb-1">100</span>
+                                <span class="text-xs text-zinc-400 uppercase">Performance</span>
+                            </div>
+                            <div class="bg-zinc-900 border border-zinc-800 p-4">
+                                <span class="text-3xl font-black text-brand block mb-1">100</span>
+                                <span class="text-xs text-zinc-400 uppercase">Acessibilidade</span>
+                            </div>
+                            <div class="bg-zinc-900 border border-zinc-800 p-4">
+                                <span class="text-3xl font-black text-brand block mb-1">100</span>
+                                <span class="text-xs text-zinc-400 uppercase">Boas Práticas</span>
+                            </div>
+                            <div class="bg-zinc-900 border border-zinc-800 p-4">
+                                <span class="text-3xl font-black text-brand block mb-1">100</span>
+                                <span class="text-xs text-zinc-400 uppercase">SEO Local</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ação: Abrir Staging -->
+                    <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="text-sm font-mono text-zinc-400">
+                            Versão de testes pronta para navegação mobile e desktop.
+                        </div>
+                        <a href="https://iflcosta.tech" target="_blank" class="w-full sm:w-auto px-8 py-3.5 bg-cyan-400 text-black font-mono font-black text-sm uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 border-2 border-transparent">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                            Abrir Ambiente de Staging
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================================================================= -->
+            <!-- 3. CONTAINER DINÂMICO: TI GERENCIADA (MSP B2B)                     -->
+            <!-- ================================================================= -->
+            <div id="msp-container" class="hidden space-y-8">
+                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-6 border-b-2 border-zinc-800">
+                        <div>
+                            <div class="flex items-center gap-2 font-mono text-xs text-zinc-400 mb-1">
+                                <span>CONTRATO MSP:</span>
+                                <span class="text-purple-400 font-bold text-sm">MSP-2026-004</span>
+                                <span class="text-zinc-600">•</span>
+                                <span>Plano Professional (10 Estações + 1 Servidor)</span>
+                            </div>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                                Clínica Médica São Francisco &bull; Painel Corporativo
+                            </h2>
+                            <p class="text-zinc-400 text-sm mt-0.5">
+                                SLA Contratual: <strong class="text-brand">2h Remoto / 4h Presencial em Bragança</strong>
+                            </p>
+                        </div>
+
+                        <div class="px-4 py-2 bg-purple-950/50 border-2 border-purple-500 text-purple-400 font-mono text-sm font-black uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-400 animate-pulse"></span>
+                            <span>SISTEMA 100% OPERACIONAL</span>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Telemetria das Estações e Backup -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-8 border-b-2 border-zinc-800 font-mono">
+                        <div class="bg-zinc-900 border border-zinc-800 p-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs text-zinc-400">ESTAÇÕES MONITORADAS</span>
+                                <i data-lucide="monitor" class="w-4 h-4 text-brand"></i>
+                            </div>
+                            <span class="text-3xl font-black text-white">11 / 11</span>
+                            <p class="text-xs text-brand mt-1">● 100% dos agentes online</p>
+                        </div>
+
+                        <div class="bg-zinc-900 border border-zinc-800 p-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs text-zinc-400">BACKUP 3-2-1 NUVEM</span>
+                                <i data-lucide="shield-check" class="w-4 h-4 text-brand"></i>
+                            </div>
+                            <span class="text-3xl font-black text-brand">OK</span>
+                            <p class="text-xs text-zinc-400 mt-1">Último backup: Hoje às 04:00 AM</p>
+                        </div>
+
+                        <div class="bg-zinc-900 border border-zinc-800 p-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs text-zinc-400">CHAMADOS EM ABERTO</span>
+                                <i data-lucide="life-buoy" class="w-4 h-4 text-purple-400"></i>
+                            </div>
+                            <span class="text-3xl font-black text-white">0</span>
+                            <p class="text-xs text-zinc-400 mt-1">Nenhum chamado pendente</p>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Abertura de Chamado Prioritário -->
+                    <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="text-sm font-mono text-zinc-400">
+                            Suporte técnico corporativo dedicado com tempo de resposta garantido.
+                        </div>
+                        <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Sou%20da%20Cl%C3%ADnica%20S%C3%A3o%20Francisco%20e%20preciso%20abrir%20um%20chamado%20priorit%C3%A1rio%20MSP." target="_blank" class="w-full sm:w-auto px-8 py-3.5 bg-brand text-black font-mono font-black text-sm uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 border-2 border-transparent">
+                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                            Abrir Chamado Prioritário (SLA 2h)
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Brutalista Simples -->
+    <footer class="bg-dark border-t-2 border-zinc-800 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 font-mono text-xs text-zinc-500">
+            <div>
+                &copy; 2025 IFL Costa Tech &bull; Sistema de Telemetria e Portal do Cliente
+            </div>
+            <div>
+                Bragança Paulista - SP &bull; WhatsApp: (11) 91969-1542
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lógica JavaScript de Interação com Supabase & Roteamento Dinâmico -->
+    <script>
+        // Configuração do Supabase Client
+        const SUPABASE_URL = "https://togrnwxazuweuihlaljo.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZ3Jud3hhenV3ZXVpaGxhbGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNDYxMTMsImV4cCI6MjA5NDgyMjExM30.EH7EslfRQRoCbdbKxK0A07DZQ0Ich05KoRD1hddJA34";
+        
+        let supabaseClient = null;
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch (e) {
+            console.warn("Supabase SDK carregado em modo offline fallback.");
+        }
+
+        // Elementos DOM
+        const searchForm = document.getElementById("search-form");
+        const searchInput = document.getElementById("search-input");
+        const loadingState = document.getElementById("loading-state");
+        const notFoundState = document.getElementById("not-found-state");
+        const hwContainer = document.getElementById("hw-container");
+        const swContainer = document.getElementById("sw-container");
+        const mspContainer = document.getElementById("msp-container");
+
+        function hideAllContainers() {
+            loadingState.classList.add("hidden");
+            notFoundState.classList.add("hidden");
+            hwContainer.classList.add("hidden");
+            swContainer.classList.add("hidden");
+            mspContainer.classList.add("hidden");
+        }
+
+        // Função de Busca Principal
+        async function handleSearch(query) {
+            if (!query) return;
+            hideAllContainers();
+            loadingState.classList.remove("hidden");
+
+            const cleanQuery = query.trim().toUpperCase();
+
+            // Roteamento inteligente baseado no formato da busca
+            setTimeout(async () => {
+                loadingState.classList.add("hidden");
+
+                if (cleanQuery.includes("SW") || cleanQuery.includes("PRJ") || cleanQuery.includes("WEB")) {
+                    swContainer.classList.remove("hidden");
+                    window.scrollTo({ top: swContainer.offsetTop - 100, behavior: 'smooth' });
+                } else if (cleanQuery.includes("MSP") || cleanQuery.includes("EMPRESA") || cleanQuery.includes("CLINICA")) {
+                    mspContainer.classList.remove("hidden");
+                    window.scrollTo({ top: mspContainer.offsetTop - 100, behavior: 'smooth' });
+                } else if (cleanQuery === "404" || cleanQuery === "ERRO") {
+                    notFoundState.classList.remove("hidden");
+                } else {
+                    // Padrão: Hardware / OS
+                    hwContainer.classList.remove("hidden");
+                    window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                }
+
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }, 350);
+        }
+
+        // Atalhos de Demonstração
+        function loadDemo(type) {
+            hideAllContainers();
+            if (type === 'hw') {
+                searchInput.value = "1048";
+                hwContainer.classList.remove("hidden");
+            } else if (type === 'budget') {
+                searchInput.value = "1048-ORCAMENTO";
+                hwContainer.classList.remove("hidden");
+                const budgetCard = document.getElementById("hw-budget-card");
+                if (budgetCard) {
+                    budgetCard.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (type === 'sw') {
+                searchInput.value = "PRJ-2026-01";
+                swContainer.classList.remove("hidden");
+            } else if (type === 'msp') {
+                searchInput.value = "MSP-2026-004";
+                mspContainer.classList.remove("hidden");
+            }
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        function downloadWarrantyPDF() {
+            alert("Gerando Certificado Digital de Garantia (CDC 90 Dias) com Hash SHA-256...");
+        }
+
+        // Submissão do Formulário
+        searchForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            handleSearch(searchInput.value);
+        });
+
+        // Verificação de Parâmetros na URL (ex: portal.html?token=1048 ou portal.html?os=1048)
+        window.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get("token") || urlParams.get("os") || urlParams.get("id");
+            
+            if (token) {
+                searchInput.value = token;
+                handleSearch(token);
+            } else {
+                // Carrega por padrão o exemplo de hardware para a página não abrir vazia
+                loadDemo('hw');
+            }
+        });
+    </script>
+</body>
+</html>
