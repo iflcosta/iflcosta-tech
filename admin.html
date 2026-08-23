@@ -932,7 +932,24 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
 
             document.getElementById('whatsapp-modal').classList.remove('hidden');
-            renderKanbanBoard([]);
+
+            // Atualização Reativa Imediata no Kanban
+            const newCardObj = {
+                id: (trackingToken || Math.random().toString()),
+                os_number: parseInt(finalOsNum),
+                public_tracking_token: trackingToken,
+                status: 'Triagem',
+                device_brand: deviceType,
+                device_model: deviceModel,
+                reported_defect: defect,
+                client_name: clientName,
+                client_whatsapp: clientPhone,
+                total_amount: 0.00,
+                created_at: new Date().toISOString()
+            };
+
+            currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
+            renderKanbanBoard(currentWorkOrders);
             loadSupabaseData();
         }
 
@@ -1105,6 +1122,24 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
 
             document.getElementById('whatsapp-modal').classList.remove('hidden');
+
+            // Atualização Reativa Imediata no Kanban
+            const newCardObj = {
+                id: (trackingToken || Math.random().toString()),
+                os_number: parseInt(finalOsNum),
+                public_tracking_token: trackingToken,
+                status: 'Triagem',
+                device_brand: 'Custom Build IFL',
+                device_model: serviceType.replace(/_/g, ' '),
+                reported_defect: `Serviço solicitado: ${serviceType.replace(/_/g, ' ')}`,
+                client_name: clientName,
+                client_whatsapp: clientPhone,
+                total_amount: (partsTotal + laborPrice),
+                created_at: new Date().toISOString()
+            };
+
+            currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
+            renderKanbanBoard(currentWorkOrders);
             loadSupabaseData();
         }
 
