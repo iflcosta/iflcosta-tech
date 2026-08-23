@@ -760,8 +760,14 @@
             }
         };
 
-        // Função de Busca Universal Blindada
-        async function handleSearch(query) {
+        function submitTrackingForm() {
+            const osVal = document.getElementById('search-input').value.trim();
+            const phoneVal = document.getElementById('search-phone') ? document.getElementById('search-phone').value.trim() : '';
+            handleSearch(osVal, phoneVal);
+        }
+
+        // Função de Busca com Dupla Confirmação (OS + WhatsApp ou Token)
+        async function handleSearch(query, phone = '') {
             if (!query) return;
             hideAllContainers();
             loadingState.classList.remove("hidden");
@@ -791,38 +797,65 @@
                 return;
             }
 
-            // 3. Consulta Universal via RPC no Supabase
-            try {
-                if (supabaseClient) {
-                    const { data, error } = await supabaseClient.rpc('rpc_track_public_work_order', {
-                        p_query: cleanQuery
-                    });
-
-                    if (!error && data && data.found) {
-                        loadingState.classList.add("hidden");
-                        renderWorkOrderData(data);
-                        hwContainer.classList.remove("hidden");
-                        window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                        if (window.lucide) lucide.createIcons();
-                        return;
+            // 3. Se for busca direta por Token UUID (Zero fricção via Magic Link do WhatsApp)
+            if (cleanQuery.length === 36 && cleanQuery.includes("-")) {
+                try {
+                    if (supabaseClient) {
+                        const { data, error } = await supabaseClient.rpc('rpc_track_work_order', {
+                            p_token: cleanQuery
+                        });
+                        if (!error && data && data.found) {
+                            loadingState.classList.add("hidden");
+                            renderWorkOrderData(data);
+                            hwContainer.classList.remove("hidden");
+                            window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                            if (window.lucide) lucide.createIcons();
+                            return;
+                        }
                     }
+                } catch (err) {
+                    console.warn("Erro ao buscar por token:", err);
                 }
-            } catch (err) {
-                console.warn("Falha na consulta remota:", err);
             }
 
-            // 4. Fallback Mock para exemplos de teste
-            const numClean = cleanQuery.replace(/\D/g, '');
-            if (numClean && defaultMockLookup[numClean]) {
-                loadingState.classList.add("hidden");
-                renderWorkOrderData(defaultMockLookup[numClean]);
-                hwContainer.classList.remove("hidden");
-                window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                if (window.lucide) lucide.createIcons();
-                return;
+            // 4. Busca por Número da OS + Confirmação de Telefone (2FA Leve)
+            const num = parseInt(cleanQuery.replace(/\D/g, ''));
+            if (!isNaN(num)) {
+                try {
+                    if (supabaseClient) {
+                        // Tenta validar com OS + WhatsApp
+                        const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
+                        const { data, error } = await supabaseClient.rpc('rpc_track_work_order_by_number', {
+                            p_os_number: num,
+                            p_phone: cleanPhone || '0000'
+                        });
+
+                        if (!error && data && data.found) {
+                            loadingState.classList.add("hidden");
+                            renderWorkOrderData(data);
+                            hwContainer.classList.remove("hidden");
+                            window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                            if (window.lucide) lucide.createIcons();
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.warn("Erro na validação de 2 fatores:", err);
+                }
+
+                // Fallback Mock para exemplos de teste
+                const numKey = num.toString();
+                if (defaultMockLookup[numKey]) {
+                    loadingState.classList.add("hidden");
+                    renderWorkOrderData(defaultMockLookup[numKey]);
+                    hwContainer.classList.remove("hidden");
+                    window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                    if (window.lucide) lucide.createIcons();
+                    return;
+                }
             }
 
-            // 5. Estado de Não Encontrado
+            // 5. Estado de Não Encontrado / Dados Divergentes
             setTimeout(() => {
                 loadingState.classList.add("hidden");
                 notFoundState.classList.remove("hidden");

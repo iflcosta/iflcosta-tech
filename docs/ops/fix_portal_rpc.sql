@@ -1,81 +1,55 @@
 -- ==============================================================================
--- IFL COSTA TECH — RPC DE BUSCA UNIVERSAL & KANBAN INTERATIVO
+-- IFL COSTA TECH — RPC DE BUSCA COM DUPLA CONFIRMAÇÃO (OS + WHATSAPP)
 -- Executar no Supabase SQL Editor:
 -- https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================
 
--- 1. RPC de Busca Pública Universal (Aceita Token UUID ou Número #1051)
-CREATE OR REPLACE FUNCTION rpc_track_public_work_order(p_query TEXT)
+-- 1. Rastreamento com Validação de Segurança (Número da OS + WhatsApp)
+CREATE OR REPLACE FUNCTION rpc_track_work_order_by_number(
+    p_os_number INT, 
+    p_phone TEXT
+)
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
-    v_clean TEXT;
     v_token UUID;
-    v_num INT;
+    v_clean_phone TEXT;
 BEGIN
-    IF p_query IS NULL OR length(trim(p_query)) = 0 THEN
-        RETURN JSONB_BUILD_OBJECT('found', false, 'error', 'Código de busca não informado.');
+    IF p_os_number IS NULL OR p_phone IS NULL OR length(trim(p_phone)) = 0 THEN
+        RETURN JSONB_BUILD_OBJECT('found', false, 'error', 'Número da OS e WhatsApp cadastrado são obrigatórios.');
     END IF;
 
-    v_clean := trim(p_query);
+    v_clean_phone := REGEXP_REPLACE(p_phone, '\D', '', 'g');
 
-    -- Caso 1: Se for UUID (Token)
-    IF v_clean ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$' THEN
-        RETURN rpc_track_work_order(v_clean::UUID);
+    -- Busca o token da OS apenas se o WhatsApp coincidir (completo ou últimos 4 dígitos)
+    SELECT wo.public_tracking_token
+    INTO v_token
+    FROM work_orders wo
+    JOIN clients c ON c.id = wo.client_id
+    WHERE wo.os_number = p_os_number
+      AND (
+        RIGHT(REGEXP_REPLACE(c.whatsapp, '\D', '', 'g'), 4) = RIGHT(v_clean_phone, 4)
+        OR REGEXP_REPLACE(c.whatsapp, '\D', '', 'g') = v_clean_phone
+      )
+    ORDER BY wo.created_at DESC
+    LIMIT 1;
+
+    IF v_token IS NULL THEN
+        RETURN JSONB_BUILD_OBJECT(
+            'found', false, 
+            'error', 'Dados não conferem. Confirme o número da OS e o WhatsApp cadastrado.'
+        );
     END IF;
 
-    -- Caso 2: Se for Número da OS (ex: #1051 ou 1051)
-    v_clean := regexp_replace(v_clean, '\D', '', 'g');
-    IF length(v_clean) > 0 THEN
-        v_num := v_clean::INT;
-        SELECT public_tracking_token INTO v_token
-        FROM work_orders
-        WHERE os_number = v_num
-        ORDER BY created_at DESC
-        LIMIT 1;
-
-        IF v_token IS NOT NULL THEN
-            RETURN rpc_track_work_order(v_token);
-        END IF;
-    END IF;
-
-    RETURN JSONB_BUILD_OBJECT('found', false, 'error', 'Ordem de Serviço não localizada.');
+    -- Retorna os dados sanitizados da OS
+    RETURN rpc_track_work_order(v_token);
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION rpc_track_public_work_order(TEXT) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION rpc_track_work_order_by_number(INT, TEXT) TO anon, authenticated, service_role;
 
--- 2. RPC para o Cockpit Admin Listar Todas as OSs no Kanban
-CREATE OR REPLACE FUNCTION rpc_get_kanban_work_orders()
-RETURNS JSONB
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public, pg_temp
-AS $$
-BEGIN
-    RETURN COALESCE((
-        SELECT JSONB_AGG(
-            JSONB_BUILD_OBJECT(
-                'id', wo.id,
-                'os_number', wo.os_number,
-                'public_tracking_token', wo.public_tracking_token,
-                'status', wo.status,
-                'device_brand', wo.device_brand,
-                'device_model', wo.device_model,
-                'reported_defect', wo.reported_defect,
-                'client_name', c.name,
-                'client_whatsapp', c.whatsapp,
-                'total_amount', wo.total_order,
-                'created_at', wo.created_at
-            ) ORDER BY wo.created_at DESC
-        )
-        FROM work_orders wo
-        JOIN clients c ON c.id = wo.client_id
-    ), '[]'::jsonb);
-END;
-$$;
-
-GRANT EXECUTE ON FUNCTION rpc_get_kanban_work_orders() TO anon, authenticated, service_role;
+-- 2. Conceder permissão de execução em rpc_track_work_order por Token Direto
+GRANT EXECUTE ON FUNCTION rpc_track_work_order(UUID) TO anon, authenticated, service_role;
