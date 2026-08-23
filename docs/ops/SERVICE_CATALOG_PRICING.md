@@ -33,11 +33,30 @@
 | **HW-05** | **Montagem de PC Gamer / Workstation** | Montagem do zero, gerenciamento de cabos (cable management militar), atualização de BIOS, teste de estresse de 1h e entrega com laudo. | 3h a 4h | **R$ 285,00 a R$ 415,00** *(25% OFF)* | R$ 90,00 |
 | **HW-06** | **Taxa de Leva-e-Traz (Bragança)** | Retirada e entrega do equipamento no endereço do cliente com termo de responsabilidade assinado. | - | **R$ 35,00** *(Grátis em serviços > R$ 350)* | R$ 20,00 (Uber/Gasolina) |
 
-### 📦 Política de Peças & Regra de Margem (7% Fixo)
+### 📦 Política de Peças & Regra de Margem (7% Embutido)
 - **Estrutura Obrigatória do Item no ERP:** Marca + Modelo + Especificação Técnica Completa (ex: *Kingston Fury Renegade - 1TB NVMe M.2 PCIe 4.0 7300MB/s*).
-- **Cálculo Automático da Margem:** Adicionar **7% fixo** sobre o custo final de aquisição da peça (Custo do Produto + Frete).
-  $$\text{Preço da Peça para o Cliente} = \text{Custo Final} \times 1.07$$
-- **Preço Final do Orçamento:** $\sum (\text{Peças} + 7\%) + \text{Mão de Obra de Montagem/Upgrade}$.
+- **Cálculo da Margem (Interno do Gestor):** O ERP aplica **7% fixo** sobre o custo final de compra para compor o preço unitário.
+- **Visão do Cliente (Discriminação Transparente & Comercial):**
+  - O cliente **NÃO visualiza** porcentagem de margem nem o custo de atacado. Ele vê o preço cheio de cada peça discriminado normalmente.
+  - **Mão de Obra de Montagem:** Valor explícito do serviço (ex: R$ 285,00 ou R$ 415,00).
+  - **Otimização do Sistema, BIOS & Curva Térmica:** Listado explicitamente no orçamento como **R$ 0,00 (🎁 CORTESIA / BRINDE EXCLUSIVO IFL COSTA TECH)** para gerar alto valor percebido.
+
+---
+
+### 📋 Exemplo da Proposta Visual no Portal do Cliente
+
+| Item / Componente | Especificação Completa | Valor para o Cliente |
+| :--- | :--- | :--- |
+| **Processador** | AMD Ryzen 5 7600 (6C/12T, 5.1GHz Turbo, AM5) | R$ 1.390,00 |
+| **Placa-Mãe** | ASUS TUF Gaming B650M-Plus Wi-Fi DDR5 | R$ 1.250,00 |
+| **Memória RAM** | Corsair Vengeance 32GB (2x16GB) DDR5 6000MHz CL30 | R$ 890,00 |
+| **Armazenamento** | SSD Kingston Fury Renegade 1TB NVMe Gen4 (7.300 MB/s) | R$ 590,00 |
+| **Placa de Vídeo** | Gigabyte GeForce RTX 4060 Gaming OC 8GB GDDR6 | R$ 2.190,00 |
+| **Fonte de Energia** | MSI MAG A650BN 650W 80 Plus Bronze | R$ 320,00 |
+| **Gabinete & Refrigeração** | Montech Sky Two Glass + 4 Fans ARGB | R$ 440,00 |
+| **Mão de Obra de Montagem** | Montagem de Alta Precisão & Cable Management Militar | **R$ 285,00** |
+| **Engenharia de Software** | **Otimização do Windows 11, Ajuste de BIOS & Perfil Térmico** | **R$ 0,00 (🎁 CORTESIA)** |
+| **TOTAL DO ORÇAMENTO** | **Sinal das Peças: R$ 7.070,00 • Saldo na Entrega: R$ 285,00** | **R$ 7.355,00** |
 
 ---
 
