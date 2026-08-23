@@ -572,7 +572,7 @@
             const osNum = wo.os_number || "1053";
             const brand = wo.device_brand || "Equipamento";
             const model = wo.device_model || "Hardware";
-            const clientName = wo.client_first_name || (wo.customer_name ? wo.customer_name.split(' ')[0] : '') || "Carlos";
+            const clientName = wo.client_first_name || (wo.customer_name ? wo.customer_name.split(' ')[0] : '') || (wo.client_name ? wo.client_name.split(' ')[0] : '') || "Cliente";
             const deliveryText = wo.is_pickup_delivery 
                 ? "Atendimento Especializado com Leva-e-Traz" 
                 : "Atendimento Presencial na Bancada";
@@ -580,7 +580,7 @@
             document.getElementById("hw-os-number").textContent = "#" + osNum;
             document.getElementById("hw-device-title").textContent = `${escapeHtml(brand)} // ${escapeHtml(model)}`;
             
-            // Atualização Dinâmica do Nome do Cliente (Elimina o bug 'Lucas M.')
+            // Atualização Dinâmica do Nome do Cliente
             const clientNameEl = document.getElementById("hw-client-name");
             if (clientNameEl) {
                 clientNameEl.innerHTML = `Cliente: <strong class="text-zinc-200">${escapeHtml(clientName)}</strong> • ${deliveryText}`;
@@ -609,10 +609,10 @@
             });
 
             const isTriagem = rawStatus.includes("triagem");
-            const isOrcamento = rawStatus.includes("orcamento") || rawStatus.includes("aguardando_aprovacao") || rawStatus.includes("sinal");
+            const isOrcamento = rawStatus.includes("orcamento") || rawStatus.includes("aguardando_aprovacao") || rawStatus.includes("sinal") || rawStatus.includes("diagnostico") || rawStatus.includes("encomendada");
             const isBancada = rawStatus.includes("bancada") || rawStatus.includes("execucao") || rawStatus.includes("montagem");
             const isQA = rawStatus.includes("qa") || rawStatus.includes("teste") || rawStatus.includes("estresse");
-            const isPronto = rawStatus.includes("pronto") || rawStatus.includes("entregue") || rawStatus.includes("finalizado");
+            const isPronto = rawStatus.includes("pronto") || rawStatus.includes("entregue") || rawStatus.includes("finalizado") || rawStatus.includes("concluido");
 
             if (isTriagem) {
                 if (statusBadgeText) statusBadgeText.textContent = "01. EM TRIAGEM & DIAGNÓSTICO";
@@ -1048,7 +1048,7 @@
                         const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
                         const { data, error } = await client.rpc('rpc_track_work_order_by_number', {
                             p_os_number: num,
-                            p_phone: cleanPhone || '0000'
+                            p_phone: cleanPhone || null
                         });
 
                         if (!error && data && data.found) {

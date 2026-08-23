@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- RPC: ATUALIZAR ORÇAMENTO DE OS EXISTENTE (MOMENTO 2 DA BANCADA)
--- Evita duplicação de OS e move o card de Triagem para Orçamento
+-- Evita duplicação de OS e move o card de Triagem para Orçamento / Sinal
 -- ==============================================================================
 
 CREATE OR REPLACE FUNCTION rpc_update_work_order_budget(
@@ -17,14 +17,22 @@ AS $$
 DECLARE
     v_wo RECORD;
     v_item JSONB;
-    v_parts_total NUMERIC := 0.00;
-    v_labor_total NUMERIC := 0.00;
-    v_grand_total NUMERIC := 0.00;
+    v_parts_total DECIMAL(10,2) := 0.00;
+    v_labor_total DECIMAL(10,2) := 0.00;
+    v_service_enum os_service_type_enum;
+    v_target_status os_status_enum;
 BEGIN
     SELECT * INTO v_wo FROM work_orders WHERE os_number = p_os_number;
     IF NOT FOUND THEN
         RETURN JSONB_BUILD_OBJECT('success', false, 'error', 'OS não encontrada.');
     END IF;
+
+    -- Converte service type se válido
+    BEGIN
+        v_service_enum := p_service_type::os_service_type_enum;
+    EXCEPTION WHEN OTHERS THEN
+        v_service_enum := v_wo.service_type;
+    END;
 
     -- Limpa itens antigos da OS se houver
     DELETE FROM work_order_items WHERE work_order_id = v_wo.id;
@@ -42,43 +50,48 @@ BEGIN
                 quantity
             ) VALUES (
                 v_wo.id,
-                v_item->>'item_type',
-                v_item->>'description',
-                COALESCE((v_item->>'cost_price')::NUMERIC, 0.00),
-                COALESCE((v_item->>'unit_price')::NUMERIC, 0.00),
+                COALESCE(v_item->>'item_type', 'Part'),
+                COALESCE(v_item->>'description', 'Componente'),
+                COALESCE((v_item->>'cost_price')::DECIMAL, 0.00),
+                COALESCE((v_item->>'unit_price')::DECIMAL, 0.00),
                 COALESCE((v_item->>'quantity')::INT, 1)
             );
 
-            IF v_item->>'item_type' = 'Labor' THEN
-                v_labor_total := v_labor_total + (COALESCE((v_item->>'unit_price')::NUMERIC, 0.00) * COALESCE((v_item->>'quantity')::INT, 1));
+            IF (v_item->>'item_type') = 'Labor' THEN
+                v_labor_total := v_labor_total + (COALESCE((v_item->>'unit_price')::DECIMAL, 0.00) * COALESCE((v_item->>'quantity')::INT, 1));
             ELSE
-                v_parts_total := v_parts_total + (COALESCE((v_item->>'unit_price')::NUMERIC, 0.00) * COALESCE((v_item->>'quantity')::INT, 1));
+                v_parts_total := v_parts_total + (COALESCE((v_item->>'unit_price')::DECIMAL, 0.00) * COALESCE((v_item->>'quantity')::INT, 1));
             END IF;
         END LOOP;
     END IF;
 
-    v_grand_total := v_parts_total + v_labor_total + COALESCE(v_wo.pickup_fee, 0.00);
+    -- Define o próximo status apropriado
+    IF v_parts_total > 0 THEN
+        v_target_status := 'Aguardando_Sinal_Peca';
+    ELSE
+        v_target_status := 'Diagnostico_Concluido';
+    END IF;
 
-    -- Atualiza a Work Order com status Orcamento_Aguardando_Aprovacao
+    -- Atualiza a Work Order
     UPDATE work_orders
     SET 
-        service_type = COALESCE(p_service_type, service_type),
+        service_type = COALESCE(v_service_enum, service_type),
         technical_diagnosis = COALESCE(p_diagnosis, technical_diagnosis),
-        status = 'Orcamento_Aguardando_Aprovacao',
+        status = v_target_status,
         total_parts = v_parts_total,
         total_labor = v_labor_total,
-        total_order = v_grand_total,
-        updated_at = NOW()
+        parts_deposit_required = v_parts_total,
+        updated_at = CURRENT_TIMESTAMP
     WHERE id = v_wo.id;
 
     RETURN JSONB_BUILD_OBJECT(
         'success', true,
         'os_number', v_wo.os_number,
         'public_tracking_token', v_wo.public_tracking_token,
-        'status', 'Orcamento_Aguardando_Aprovacao',
+        'status', v_target_status::TEXT,
         'total_parts', v_parts_total,
         'total_labor', v_labor_total,
-        'total_order', v_grand_total
+        'grand_total', v_parts_total + v_labor_total + COALESCE(v_wo.pickup_fee, 0.00)
     );
 END;
 $$;
