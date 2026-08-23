@@ -1,36 +1,83 @@
 // main.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mobile Menu Toggle
+    // 1. Mobile Menu Toggle & Helpers
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const mobileMenuIcon = mobileMenuBtn.querySelector('i');
+    const mobileDropdown = document.getElementById('mobile-menu-dropdown');
+    const iconBars = document.getElementById('menu-icon-bars');
+    const iconClose = document.getElementById('menu-icon-close');
 
-    mobileMenuBtn.addEventListener('click', () => {
-        const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
-        mobileMenu.classList.toggle('hidden');
-        
-        // A11y: Atualiza o estado
-        mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+    window.toggleMobileMenu = function(forceState) {
+        if (!mobileMenuBtn || !mobileDropdown) return;
+        const isCurrentlyOpen = !mobileDropdown.classList.contains('hidden');
+        const shouldOpen = typeof forceState === 'boolean' ? forceState : !isCurrentlyOpen;
 
-        // Toggle menu icon
-        if (mobileMenu.classList.contains('hidden')) {
-            mobileMenuIcon.setAttribute('data-lucide', 'menu');
+        if (shouldOpen) {
+            mobileDropdown.classList.remove('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', 'true');
+            mobileMenuBtn.setAttribute('aria-label', 'Fechar Menu');
+            if (iconBars) {
+                iconBars.classList.add('hidden');
+                iconBars.classList.remove('block');
+            }
+            if (iconClose) {
+                iconClose.classList.remove('hidden');
+                iconClose.classList.add('block');
+            }
         } else {
-            mobileMenuIcon.setAttribute('data-lucide', 'x');
+            mobileDropdown.classList.add('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            mobileMenuBtn.setAttribute('aria-label', 'Abrir Menu');
+            if (iconBars) {
+                iconBars.classList.remove('hidden');
+                iconBars.classList.add('block');
+            }
+            if (iconClose) {
+                iconClose.classList.add('hidden');
+                iconClose.classList.remove('block');
+            }
         }
-        lucide.createIcons();
+    };
+
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.toggleMobileMenu();
+        });
+    }
+
+    // Fechar ao clicar nos links do menu mobile
+    if (mobileDropdown) {
+        const mobileLinks = mobileDropdown.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                window.toggleMobileMenu(false);
+            });
+        });
+    }
+
+    // Fechar ao clicar fora
+    document.addEventListener('click', (event) => {
+        if (!mobileDropdown || mobileDropdown.classList.contains('hidden')) return;
+        const isClickInsideMenu = mobileDropdown.contains(event.target);
+        const isClickOnButton = mobileMenuBtn && (mobileMenuBtn.contains(event.target) || mobileMenuBtn === event.target);
+        if (!isClickInsideMenu && !isClickOnButton) {
+            window.toggleMobileMenu(false);
+        }
     });
 
-    // Close menu when clicking on a link
-    const mobileLinks = mobileMenu.querySelectorAll('a');
-    mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            mobileMenuIcon.setAttribute('data-lucide', 'menu');
-            lucide.createIcons();
-        });
+    // Fechar no ESC
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' || event.key === 'Esc') {
+            window.toggleMobileMenu(false);
+        }
+    });
+
+    // Fechar no resize para desktop
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+            window.toggleMobileMenu(false);
+        }
     });
 
     // 2. Header Scroll Effect

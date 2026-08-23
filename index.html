@@ -47,7 +47,7 @@
 <body class="bg-dark text-gray-300 font-sans antialiased selection:bg-brand selection:text-black">
 
     <!-- Navbar Brutalista com Menu Mobile -->
-    <header class="fixed w-full top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
+    <header id="main-header" class="fixed w-full top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <a href="#" class="flex items-center gap-2 group">
@@ -67,26 +67,43 @@
                     <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex px-4 py-2 sm:px-6 sm:py-3 bg-white text-black text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent">
                         FALAR COM ESPECIALISTA
                     </a>
-                    <!-- Botão Hambúrguer Mobile -->
-                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2 text-white bg-zinc-900 border border-zinc-700 hover:border-brand transition-colors" aria-label="Abrir Menu">
-                        <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+                    <!-- Botão Hambúrguer Mobile (Target de toque 48x48px com A11y) -->
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden w-12 h-12 flex items-center justify-center text-white bg-zinc-900 border-2 border-zinc-700 hover:border-brand focus:border-brand focus:outline-none transition-colors cursor-pointer" aria-label="Abrir Menu" aria-expanded="false" aria-controls="mobile-menu-dropdown">
+                        <i data-lucide="menu" id="menu-icon-bars" class="w-6 h-6 block"></i>
+                        <i data-lucide="x" id="menu-icon-close" class="w-6 h-6 hidden"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Menu Dropdown Mobile -->
-        <div id="mobile-menu-dropdown" class="hidden md:hidden bg-zinc-950 border-b-2 border-zinc-800 px-4 py-6 space-y-4 font-mono text-sm">
-            <a href="#solucoes" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Soluções</a>
-            <a href="#garantias" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Garantias</a>
-            <a href="#provas" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Resultados</a>
-            <a href="#processo" onclick="toggleMobileMenu()" class="block font-bold uppercase text-zinc-300 hover:text-brand py-2 border-b border-zinc-800">Processo</a>
-            <div class="pt-2 flex flex-col gap-2">
-                <a href="portal.html" class="w-full text-center px-4 py-3 bg-zinc-900 text-white font-bold uppercase border border-zinc-700 hover:border-brand">
-                    ACOMPANHAR SERVIÇO
+        <!-- Menu Dropdown Mobile Neobrutalista -->
+        <div id="mobile-menu-dropdown" class="hidden md:hidden bg-zinc-950 border-t-2 border-zinc-800 px-5 py-6 font-mono text-sm shadow-2xl transition-all duration-200">
+            <div class="flex flex-col space-y-1">
+                <a href="#solucoes" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
+                    <span>Soluções</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
                 </a>
-                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="w-full text-center px-4 py-3 bg-brand text-black font-black uppercase">
-                    FALAR NO WHATSAPP
+                <a href="#garantias" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
+                    <span>Garantias</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
+                </a>
+                <a href="#provas" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
+                    <span>Resultados</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
+                </a>
+                <a href="#processo" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
+                    <span>Processo</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
+                </a>
+            </div>
+            <div class="pt-5 flex flex-col gap-3">
+                <a href="portal.html" class="mobile-nav-link w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-zinc-900 text-white font-bold uppercase text-xs tracking-wider border-2 border-zinc-700 hover:border-brand hover:text-brand transition-colors">
+                    <i data-lucide="terminal" class="w-4 h-4 text-brand"></i>
+                    <span>ACOMPANHAR SERVIÇO</span>
+                </a>
+                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="mobile-nav-link w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-brand text-black font-black uppercase text-xs tracking-wider hover:bg-white transition-colors shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                    <i data-lucide="message-square" class="w-4 h-4 text-black"></i>
+                    <span>FALAR NO WHATSAPP</span>
                 </a>
             </div>
         </div>
@@ -561,8 +578,98 @@
         </svg>
     </a>
 
+    <!-- Script de Interatividade & Mobile Menu -->
     <script>
-        lucide.createIcons();
+        // Função Global de Controle do Menu Mobile (Zero Lag & Resiliente)
+        function toggleMobileMenu(forceState) {
+            const btn = document.getElementById('mobile-menu-btn');
+            const dropdown = document.getElementById('mobile-menu-dropdown');
+            const iconBars = document.getElementById('menu-icon-bars');
+            const iconClose = document.getElementById('menu-icon-close');
+
+            if (!btn || !dropdown) return;
+
+            const isCurrentlyOpen = !dropdown.classList.contains('hidden');
+            const shouldOpen = typeof forceState === 'boolean' ? forceState : !isCurrentlyOpen;
+
+            if (shouldOpen) {
+                dropdown.classList.remove('hidden');
+                btn.setAttribute('aria-expanded', 'true');
+                btn.setAttribute('aria-label', 'Fechar Menu');
+                if (iconBars) {
+                    iconBars.classList.add('hidden');
+                    iconBars.classList.remove('block');
+                }
+                if (iconClose) {
+                    iconClose.classList.remove('hidden');
+                    iconClose.classList.add('block');
+                }
+            } else {
+                dropdown.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+                btn.setAttribute('aria-label', 'Abrir Menu');
+                if (iconBars) {
+                    iconBars.classList.remove('hidden');
+                    iconBars.classList.add('block');
+                }
+                if (iconClose) {
+                    iconClose.classList.add('hidden');
+                    iconClose.classList.remove('block');
+                }
+            }
+        }
+
+        // Inicialização de Eventos e Ícones
+        document.addEventListener('DOMContentLoaded', () => {
+            // Renderiza ícones Lucide
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileDropdown = document.getElementById('mobile-menu-dropdown');
+
+            // Fechar menu ao clicar em qualquer link interno
+            const mobileLinks = document.querySelectorAll('#mobile-menu-dropdown a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            });
+
+            // Fechar ao clicar fora (backdrop / click outside)
+            document.addEventListener('click', (event) => {
+                if (!mobileDropdown || mobileDropdown.classList.contains('hidden')) return;
+                
+                const isClickInsideMenu = mobileDropdown.contains(event.target);
+                const isClickOnButton = mobileBtn && (mobileBtn.contains(event.target) || mobileBtn === event.target);
+
+                if (!isClickInsideMenu && !isClickOnButton) {
+                    toggleMobileMenu(false);
+                }
+            });
+
+            // Fechar na tecla Escape (Acessibilidade WCAG)
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' || event.key === 'Esc') {
+                    toggleMobileMenu(false);
+                }
+            });
+
+            // Fechar ao redimensionar viewport para desktop (>= 768px)
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    toggleMobileMenu(false);
+                }
+            });
+        });
+
+        // Fallback para renderização do Lucide se script defer terminar pós-DOM
+        window.addEventListener('load', () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
     </script>
 </body>
 </html>
