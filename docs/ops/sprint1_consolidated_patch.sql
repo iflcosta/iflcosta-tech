@@ -123,6 +123,7 @@ BEGIN
     UPDATE work_orders
     SET 
         status = v_status_enum,
+        parts_deposit_paid = CASE WHEN v_status_enum IN ('Peca_Encomendada', 'Na_Bancada', 'Teste_Estresse_QA', 'Pronto', 'Entregue') THEN true ELSE parts_deposit_paid END,
         stress_test_aida64_temp_max = COALESCE(p_stress_cpu, stress_test_aida64_temp_max),
         stress_test_furmark_temp_max = COALESCE(p_stress_gpu, stress_test_furmark_temp_max),
         stress_test_crystaldisk_health = COALESCE(p_stress_ssd, stress_test_crystaldisk_health),
