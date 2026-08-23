@@ -352,6 +352,61 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- AVALIAÇÃO DE EXPERIÊNCIA & NPS (GOOGLE REVIEW BOOSTER) -->
+                <div id="nps-review-section" class="bg-black border-2 border-brand p-6 sm:p-8 font-mono relative overflow-hidden">
+                    <div class="flex items-center gap-2 border-b border-zinc-800 pb-3 mb-4">
+                        <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
+                        <span class="text-brand text-xs font-bold uppercase tracking-wider">[ ⭐ AVALIAÇÃO DE PERFORMANCE & ATENDIMENTO ]</span>
+                    </div>
+                    
+                    <div id="nps-form-view">
+                        <h3 class="text-lg sm:text-xl font-extrabold text-white mb-1">Como ficou a performance do seu equipamento?</h3>
+                        <p class="text-xs text-zinc-400 mb-5 font-sans">Sua avaliação ajuda a manter o padrão de engenharia da IFL Costa Tech em Bragança Paulista.</p>
+
+                        <!-- Estrelas Interativas -->
+                        <div class="flex items-center gap-2 mb-4" id="nps-stars">
+                            <button type="button" onclick="setNpsStars(1)" class="star-btn text-2xl sm:text-3xl text-zinc-600 hover:text-yellow-400 transition-colors p-1" data-star="1">★</button>
+                            <button type="button" onclick="setNpsStars(2)" class="star-btn text-2xl sm:text-3xl text-zinc-600 hover:text-yellow-400 transition-colors p-1" data-star="2">★</button>
+                            <button type="button" onclick="setNpsStars(3)" class="star-btn text-2xl sm:text-3xl text-zinc-600 hover:text-yellow-400 transition-colors p-1" data-star="3">★</button>
+                            <button type="button" onclick="setNpsStars(4)" class="star-btn text-2xl sm:text-3xl text-zinc-600 hover:text-yellow-400 transition-colors p-1" data-star="4">★</button>
+                            <button type="button" onclick="setNpsStars(5)" class="star-btn text-2xl sm:text-3xl text-brand transition-colors p-1" data-star="5">★</button>
+                            <span id="nps-stars-label" class="text-xs text-brand font-bold uppercase ml-2 bg-brand/10 px-2 py-0.5 border border-brand">Excelente (5/5)</span>
+                        </div>
+
+                        <textarea id="nps-feedback-text" rows="2" placeholder="Deixe um comentário sobre a velocidade, silêncio e atendimento (ex: Notebook ficou super rápido e silencioso!)..." class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand mb-4"></textarea>
+
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <button type="button" onclick="handleSendNpsReview()" id="btn-nps-submit" class="px-6 py-3 bg-brand text-black font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-4 h-4"></i> Enviar Avaliação
+                            </button>
+                            <span class="text-[11px] text-zinc-500 font-mono" id="nps-os-tag">Avaliação vinculada à sua OS</span>
+                        </div>
+                    </div>
+
+                    <!-- Mensagem de Sucesso & Botão do Google -->
+                    <div id="nps-success-view" class="hidden space-y-4">
+                        <div class="p-4 bg-brand/10 border border-brand">
+                            <h4 class="text-base font-bold text-brand flex items-center gap-2 mb-1">
+                                <i data-lucide="check-circle-2" class="w-5 h-5"></i> Muito obrigado pela sua avaliação!
+                            </h4>
+                            <p class="text-xs text-zinc-300 font-sans leading-relaxed" id="nps-success-text">
+                                Ficamos felizes em devolver seu equipamento com performance máxima!
+                            </p>
+                        </div>
+
+                        <div id="nps-google-booster" class="p-4 bg-zinc-900 border border-zinc-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-white uppercase block">Ajude a IFL Costa Tech no Google:</span>
+                                <span class="text-[11px] text-zinc-400 font-sans">Cole seu elogio no nosso Google Meu Negócio em 10 segundos!</span>
+                            </div>
+                            <button type="button" onclick="copyNpsToClipboard()" id="btn-google-copy" class="px-5 py-2.5 bg-yellow-400 text-black font-bold text-xs uppercase flex items-center gap-2 hover:bg-white transition-colors whitespace-nowrap">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copiar Comentário
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- ================================================================= -->
@@ -1161,7 +1216,85 @@
             if (window.lucide) lucide.createIcons();
         }
 
-                async function handleApproveBudget(token) {
+        let currentNpsRating = 5;
+        let currentTrackingToken = null;
+
+        function setNpsStars(rating) {
+            currentNpsRating = rating;
+            const stars = document.querySelectorAll('#nps-stars .star-btn');
+            const label = document.getElementById('nps-stars-label');
+            
+            const labels = {
+                1: 'Muito Insatisfeito (1/5)',
+                2: 'Precisa Melhorar (2/5)',
+                3: 'Razoável (3/5)',
+                4: 'Muito Bom (4/5)',
+                5: 'Excelente (5/5)'
+            };
+
+            stars.forEach((s, idx) => {
+                if (idx < rating) {
+                    s.className = 'star-btn text-2xl sm:text-3xl text-brand transition-colors p-1';
+                } else {
+                    s.className = 'star-btn text-2xl sm:text-3xl text-zinc-600 hover:text-yellow-400 transition-colors p-1';
+                }
+            });
+
+            if (label) {
+                label.textContent = labels[rating] || `${rating}/5`;
+                label.className = rating >= 4 ? 'text-xs text-brand font-bold uppercase ml-2 bg-brand/10 px-2 py-0.5 border border-brand' : 'text-xs text-yellow-400 font-bold uppercase ml-2 bg-yellow-400/10 px-2 py-0.5 border border-yellow-400';
+            }
+        }
+
+        async function handleSendNpsReview() {
+            const comment = document.getElementById('nps-feedback-text').value.trim();
+            const btn = document.getElementById('btn-nps-submit');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse flex items-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando Avaliação...</span>`;
+                if (window.lucide) lucide.createIcons();
+            }
+
+            const client = getSupabase();
+            if (client && currentTrackingToken) {
+                try {
+                    await client.rpc('rpc_submit_customer_review', {
+                        p_token: currentTrackingToken,
+                        p_rating: currentNpsRating,
+                        p_feedback: comment
+                    });
+                } catch (e) {
+                    console.warn("Aviso ao salvar review:", e);
+                }
+            }
+
+            // Exibe mensagem de sucesso
+            document.getElementById('nps-form-view').classList.add('hidden');
+            const successView = document.getElementById('nps-success-view');
+            successView.classList.remove('hidden');
+
+            const googleBooster = document.getElementById('nps-google-booster');
+            if (currentNpsRating >= 4) {
+                if (googleBooster) googleBooster.classList.remove('hidden');
+            } else {
+                if (googleBooster) googleBooster.classList.add('hidden');
+                document.getElementById('nps-success-text').textContent = 'Agradecemos o seu feedback! Nossa equipe técnica entrará em contato para garantir sua total satisfação.';
+            }
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function copyNpsToClipboard() {
+            const comment = document.getElementById('nps-feedback-text').value.trim() || "Excelente atendimento e performance impecável na IFL Costa Tech!";
+            navigator.clipboard.writeText(comment);
+            const btn = document.getElementById('btn-google-copy');
+            if (btn) {
+                btn.innerHTML = `✓ Copiado!`;
+                setTimeout(() => { btn.innerHTML = `<i data-lucide="copy" class="w-4 h-4"></i> Copiar Comentário`; if (window.lucide) lucide.createIcons(); }, 2500);
+            }
+        }
+
+        async function handleApproveBudget(token) {
             if (!token) return;
             const btn = document.getElementById('btn-approve-budget');
             if (btn) {
