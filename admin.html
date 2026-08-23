@@ -195,28 +195,17 @@
                     </div>
 
                     <form id="os-wizard-form" onsubmit="handleSaveOS(event)" class="space-y-8">
-                        <!-- Bloco 1: Dados do Cliente e Tipo -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-xs">
+                        <!-- Bloco 1: Dados do Cliente (Fluxo Direto de Montagem & Orçamento) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-xs">
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-2">Nome do Cliente *</label>
-                                <input type="text" id="client-name" placeholder="Ex: Lucas Mendes" required class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                <input type="text" id="client-name" placeholder="Ex: Carlos Alberto" required class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
                             </div>
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-2">WhatsApp do Cliente *</label>
                                 <input type="text" id="client-phone" placeholder="Ex: (11) 99999-8888" required class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-sm focus:outline-none focus:border-brand">
                             </div>
-                            <div>
-                                <label class="block text-zinc-400 uppercase font-bold mb-2">Tipo de Serviço *</label>
-                                <select id="service-type" onchange="handleServiceTypeChange(this.value)" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
-                                    <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica (Thermal Grizzly)</option>
-                                    <option value="Hardware_Reparo">🔧 Diagnóstico & Reparo de Hardware (Break-Fix)</option>
-                                    <option value="Hardware_Upgrade">⚡ Upgrade de Componentes (SSD / RAM / Placa de Vídeo / Fonte)</option>
-                                    <option value="Montagem_PC">🛠️ Montagem de Computador Custom / Gamer / Workstation</option>
-                                    <option value="Software_Formatacao">💻 Formatação Limpa & Otimização Windows 11 PRO</option>
-                                    <option value="Projetos_Web_Software">🌐 Projeto de Software / Engenharia Web (50/50)</option>
-                                    <option value="Contrato_TI_MSP">🛡️ Contrato de TI Gerenciada / MSP Mensal</option>
-                                </select>
-                            </div>
+                            <input type="hidden" id="service-type" value="Montagem_PC">
                         </div>
 
                         <!-- Bloco 2: Tabela Dinâmica de Peças (Custo vs Venda com Markup Automático) -->
