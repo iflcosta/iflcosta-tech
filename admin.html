@@ -98,27 +98,26 @@
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
                     <div class="bg-black border-2 border-zinc-800 p-4">
                         <span class="text-zinc-500 text-xs block mb-1">OSs EM ANDAMENTO</span>
-                        <span class="text-2xl sm:text-3xl font-black text-white" id="stat-active-os">3</span>
-                        <span class="text-[11px] text-brand block mt-1">● 1 pronta p/ entrega</span>
+                        <span class="text-2xl sm:text-3xl font-black text-white" id="stat-active-os">0</span>
+                        <span class="text-[11px] text-zinc-500 block mt-1" id="stat-active-subtitle">Nenhuma OS ativa</span>
                     </div>
                     <div class="bg-black border-2 border-zinc-800 p-4">
                         <span class="text-zinc-500 text-xs block mb-1">PEÇAS A COMPRAR (SINAL OK)</span>
-                        <span class="text-2xl sm:text-3xl font-black text-yellow-400" id="stat-parts-to-buy">1</span>
-                        <span class="text-[11px] text-zinc-400 block mt-1">R$ 6.300 no caixa</span>
+                        <span class="text-2xl sm:text-3xl font-black text-yellow-400" id="stat-parts-to-buy">0</span>
+                        <span class="text-[11px] text-zinc-500 block mt-1" id="stat-parts-subtitle">R$ 0,00 no caixa</span>
                     </div>
                     <div class="bg-black border-2 border-zinc-800 p-4">
                         <span class="text-zinc-500 text-xs block mb-1">MRR CONTRATOS MSP</span>
-                        <span class="text-2xl sm:text-3xl font-black text-purple-400" id="stat-mrr">R$ 1.890</span>
-                        <span class="text-[11px] text-zinc-400 block mt-1">3 empresas ativas</span>
+                        <span class="text-2xl sm:text-3xl font-black text-purple-400" id="stat-mrr">R$ 0</span>
+                        <span class="text-[11px] text-zinc-500 block mt-1" id="stat-mrr-subtitle">0 contratos ativos</span>
                     </div>
                     <div class="bg-black border-2 border-zinc-800 p-4">
                         <span class="text-zinc-500 text-xs block mb-1">LUCRO ESTIMADO NO MÊS</span>
-                        <span class="text-2xl sm:text-3xl font-black text-brand" id="stat-month-profit">R$ 3.840</span>
-                        <span class="text-[11px] text-brand block mt-1">Margem Líquida ~84%</span>
+                        <span class="text-2xl sm:text-3xl font-black text-brand" id="stat-month-profit">R$ 0</span>
+                        <span class="text-[11px] text-zinc-500 block mt-1" id="stat-profit-subtitle">Sem fechamento</span>
                     </div>
                 </div>
 
-                <!-- O KANBAN DE 5 COLUNAS DA BANCADA -->
                 <!-- O KANBAN DE 5 COLUNAS DA BANCADA -->
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     
@@ -191,7 +190,7 @@
                             <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Novo Orçamento & Ordem de Serviço</h2>
                         </div>
                         <div class="text-right font-mono text-xs text-zinc-400">
-                            <span>OS Gerada:</span> <strong class="text-brand text-sm" id="wizard-os-num">#1051</strong>
+                            <span>OS Gerada:</span> <strong class="text-brand text-sm" id="wizard-os-num">#1001</strong>
                         </div>
                     </div>
 
@@ -886,7 +885,7 @@ Qualquer dúvida, estou à disposição!
             const accessories = document.getElementById('intake-accessories').value.trim();
             const visualNotes = document.getElementById('intake-visual-condition').value.trim();
 
-            let finalOsNum = "1051";
+            let finalOsNum = "1001";
             let trackingToken = null;
 
             if (supabaseClient) {
@@ -930,7 +929,7 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
 
             document.getElementById('whatsapp-modal').classList.remove('hidden');
-            renderKanbanBoard(defaultMockOrders);
+            renderKanbanBoard([]);
             loadSupabaseData();
         }
 
@@ -997,7 +996,7 @@ Qualquer dúvida, estou à disposição!
         }
 
         async function loadSupabaseData() {
-            renderKanbanBoard(defaultMockOrders);
+            renderKanbanBoard([]);
             if (!supabaseClient) return;
             try {
                 // 1. Carrega Métricas do Dashboard
@@ -1060,7 +1059,7 @@ Qualquer dúvida, estou à disposição!
                 });
             }
 
-            let finalOsNum = "1051";
+            let finalOsNum = "1001";
             let trackingToken = null;
 
             if (supabaseClient) {
