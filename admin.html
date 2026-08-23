@@ -187,7 +187,7 @@
                     <div class="flex justify-between items-center pb-6 border-b-2 border-zinc-800 mb-6">
                         <div>
                             <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Wizard de Precificação Inteligente ]</span>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Novo Orçamento & Ordem de Serviço</h2>
+                            <h2 id="wizard-header-title" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Novo Orçamento & Ordem de Serviço</h2>
                         </div>
                         <div class="text-right font-mono text-xs text-zinc-400">
                             <span>OS Gerada:</span> <strong class="text-brand text-sm" id="wizard-os-num">#1001</strong>
@@ -840,18 +840,43 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('os-detail-modal').classList.add('hidden');
         }
 
+        let editingWorkOrder = null;
+
         function actionBudgetFromOS() {
             if (!selectedWorkOrder) return;
+            editingWorkOrder = selectedWorkOrder;
             closeOSDetailModal();
-            openNewOSModal();
-            // Preenche os dados no formulário de orçamento
+            switchTab('new-os');
+
+            // Atualiza Header do Wizard para modo de Edição da OS existente
+            const wizardTitle = document.getElementById('wizard-header-title');
+            if (wizardTitle) wizardTitle.textContent = `Orçamento da OS #${selectedWorkOrder.os_number} — ${selectedWorkOrder.device_model || 'Equipamento'}`;
+            document.getElementById('wizard-os-num').textContent = '#' + selectedWorkOrder.os_number;
+
+            // Preenche dados do cliente
             document.getElementById('client-name').value = selectedWorkOrder.client_name || (selectedWorkOrder.clients ? selectedWorkOrder.clients.name : '');
             document.getElementById('client-phone').value = selectedWorkOrder.client_whatsapp || '';
+            
             if (selectedWorkOrder.service_type) {
                 const sTypeEl = document.getElementById('service-type');
                 if (sTypeEl) sTypeEl.value = selectedWorkOrder.service_type;
             }
-            // Limpa a tabela para adicionar peças manuais
+
+            // Inicia tabela de peças vazia pronta para novos componentes
+            const tbody = document.getElementById('parts-table-body');
+            if (tbody) tbody.innerHTML = '';
+            document.getElementById('labor-price').value = '0.00';
+            recalcTotals();
+        }
+
+        function openNewOSModal() {
+            editingWorkOrder = null;
+            switchTab('new-os');
+            const wizardTitle = document.getElementById('wizard-header-title');
+            if (wizardTitle) wizardTitle.textContent = 'Novo Orçamento & Ordem de Serviço';
+            document.getElementById('wizard-os-num').textContent = '#Nova OS';
+            document.getElementById('client-name').value = '';
+            document.getElementById('client-phone').value = '';
             const tbody = document.getElementById('parts-table-body');
             if (tbody) tbody.innerHTML = '';
             document.getElementById('labor-price').value = '0.00';
@@ -1102,29 +1127,47 @@ Qualquer dúvida, estou à disposição!
                 });
             }
 
-            let finalOsNum = "1001";
-            let trackingToken = null;
+            let finalOsNum = editingWorkOrder ? editingWorkOrder.os_number : "1001";
+            let trackingToken = editingWorkOrder ? editingWorkOrder.public_tracking_token : null;
 
             const client = getSupabase();
-                if (client) {
+            if (client) {
                 try {
-                    const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
-                        p_client_name: clientName,
-                        p_client_whatsapp: clientPhone || '11999999999',
-                        p_service_type: serviceType,
-                        p_device_brand: 'Custom Build IFL',
-                        p_device_model: serviceType.replace(/_/g, ' '),
-                        p_reported_defect: `Serviço solicitado: ${serviceType.replace(/_/g, ' ')} para ${clientName}`,
-                        p_pickup_fee: 0.00,
-                        p_items: items
-                    });
+                    if (editingWorkOrder) {
+                        // ATUALIZAÇÃO DA OS EXISTENTE (MOMENTO 2)
+                        const { data, error } = await client.rpc('rpc_update_work_order_budget', {
+                            p_os_number: parseInt(editingWorkOrder.os_number),
+                            p_service_type: serviceType,
+                            p_diagnosis: `Laudo emitido para ${serviceType.replace(/_/g, ' ')}`,
+                            p_items: items
+                        });
 
-                    if (error) {
-                        console.error("Erro na RPC do Supabase:", error);
-                        alert("Erro ao gravar OS no Supabase: " + error.message);
-                    } else if (data && data.success) {
-                        finalOsNum = data.os_number;
-                        trackingToken = data.public_tracking_token || data.tracking_token;
+                        if (error) {
+                            console.warn("RPC update fallback:", error);
+                        } else if (data && data.success) {
+                            finalOsNum = data.os_number;
+                            trackingToken = data.public_tracking_token;
+                        }
+                    } else {
+                        // CRIAÇÃO DE NOVA OS DIRETA
+                        const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
+                            p_client_name: clientName,
+                            p_client_whatsapp: clientPhone || '11999999999',
+                            p_service_type: serviceType,
+                            p_device_brand: 'Custom Build IFL',
+                            p_device_model: serviceType.replace(/_/g, ' '),
+                            p_reported_defect: `Serviço solicitado: ${serviceType.replace(/_/g, ' ')} para ${clientName}`,
+                            p_pickup_fee: 0.00,
+                            p_items: items
+                        });
+
+                        if (error) {
+                            console.error("Erro na RPC do Supabase:", error);
+                            alert("Erro ao gravar OS no Supabase: " + error.message);
+                        } else if (data && data.success) {
+                            finalOsNum = data.os_number;
+                            trackingToken = data.public_tracking_token || data.tracking_token;
+                        }
                     }
                 } catch (err) {
                     console.error("Exceção ao chamar RPC:", err);
