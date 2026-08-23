@@ -535,8 +535,20 @@ Qualquer dúvida, estou à disposição!
         </div>
     </div>
 
-    <!-- JavaScript do Cockpit Admin -->
+    <!-- JavaScript do Cockpit Admin com Conexão Real Supabase -->
     <script>
+        const SUPABASE_URL = "https://togrnwxazuweuihlaljo.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZ3Jud3hhenV3ZXVpaGxhbGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNDYxMTMsImV4cCI6MjA5NDgyMjExM30.EH7EslfRQRoCbdbKxK0A07DZQ0Ich05KoRD1hddJA34";
+        
+        let supabaseClient = null;
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch (e) {
+            console.warn("Supabase SDK rodando em fallback.");
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -618,12 +630,48 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('calc-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
         }
 
-        function handleSaveOS(e) {
+        // Carrega dados reais de OS do Supabase para atualizar métricas e Kanban
+        async function loadSupabaseData() {
+            if (!supabaseClient) return;
+            try {
+                const { data, error } = await supabaseClient
+                    .from('work_orders')
+                    .select('*, work_order_items(*)')
+                    .order('created_at', { ascending: false });
+
+                if (!error && data) {
+                    document.getElementById('stat-active-os').textContent = data.length;
+                    
+                    // Próximo número de OS
+                    const nextNum = (data.length > 0 && data[0].os_number) ? (data[0].os_number + 1) : 1051;
+                    document.getElementById('wizard-os-num').textContent = '#' + nextNum;
+                }
+            } catch (err) {
+                console.warn("Aviso ao carregar dados do Supabase:", err);
+            }
+        }
+
+        async function handleSaveOS(e) {
             e.preventDefault();
             const clientName = document.getElementById('client-name').value;
             const clientPhone = document.getElementById('client-phone').value.replace(/\D/g, '');
-            const osNum = document.getElementById('wizard-os-num').textContent.replace('#', '');
+            const serviceType = document.getElementById('service-type').value;
+            const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
+            let osNum = document.getElementById('wizard-os-num').textContent.replace('#', '');
 
+            // Coleta Peças
+            const items = [];
+            let partsTotal = 0;
+            document.querySelectorAll('.part-row').forEach(row => {
+                const type = row.querySelector('.part-type').value || 'Componente';
+                const name = row.querySelector('.part-name').value || 'Peça';
+                const cost = parseFloat(row.querySelector('.part-cost').value) || 0;
+                const sale = parseFloat(row.querySelector('.part-sale').value) || 0;
+                partsTotal += sale;
+                items.push({ type, name, cost, sale });
+            });
+
+            // Dispara modal de WhatsApp com link mágico
             const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${osNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?os=${osNum}\n\nQualquer dúvida, estou à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
@@ -646,6 +694,7 @@ Qualquer dúvida, estou à disposição!
         window.addEventListener('DOMContentLoaded', () => {
             if (window.lucide) lucide.createIcons();
             recalcTotals();
+            loadSupabaseData();
         });
     </script>
 </body>

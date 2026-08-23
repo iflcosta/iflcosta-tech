@@ -554,51 +554,163 @@
             mspContainer.classList.add("hidden");
         }
 
-        // Função de Busca Principal
+        // Renderiza dados reais da OS no DOM
+        function renderWorkOrderData(wo) {
+            document.getElementById("hw-os-number").textContent = "#" + (wo.os_number || "1048");
+            document.getElementById("hw-device-title").textContent = wo.device_brand + " // " + wo.device_model;
+            document.getElementById("hw-status-text").textContent = (wo.status || "EM ANDAMENTO").replace(/_/g, ' ').toUpperCase();
+
+            if (wo.created_at) {
+                const date = new Date(wo.created_at);
+                document.getElementById("hw-date").textContent = "Entrada: " + date.toLocaleDateString('pt-BR');
+            }
+
+            // Atualiza métricas se existirem
+            if (wo.stress_test_aida64_temp_max) {
+                document.getElementById("hw-cpu-temp").textContent = wo.stress_test_aida64_temp_max + " °C";
+            }
+            if (wo.stress_test_furmark_temp_max) {
+                document.getElementById("hw-gpu-temp").textContent = wo.stress_test_furmark_temp_max + " °C";
+            }
+            if (wo.stress_test_boot_time_seconds) {
+                document.getElementById("hw-boot-time").textContent = wo.stress_test_boot_time_seconds + " seg";
+            }
+
+            // Renderiza Itens se existirem
+            if (wo.work_order_items && wo.work_order_items.length > 0) {
+                const tbody = document.getElementById("hw-budget-items");
+                tbody.innerHTML = "";
+                let partsSum = 0;
+                let laborSum = 0;
+
+                wo.work_order_items.forEach(item => {
+                    const price = parseFloat(item.unit_price) || 0;
+                    if (item.item_type === 'Labor') {
+                        laborSum += price;
+                    } else {
+                        partsSum += price;
+                    }
+
+                    const tr = document.createElement("tr");
+                    if (item.item_type === 'Labor') {
+                        tr.className = "bg-zinc-900/40";
+                        tr.innerHTML = `
+                            <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
+                            <td class="py-3 px-3 text-zinc-300">${item.description}</td>
+                            <td class="py-3 px-3 text-right font-bold text-brand">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                        `;
+                    } else {
+                        tr.innerHTML = `
+                            <td class="py-3 px-3 font-bold text-white">${item.item_type || 'Componente'}</td>
+                            <td class="py-3 px-3">${item.description}</td>
+                            <td class="py-3 px-3 text-right font-bold text-white">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                        `;
+                    }
+                    tbody.appendChild(tr);
+                });
+
+                // Adiciona a linha de cortesia especial
+                const trCortesia = document.createElement("tr");
+                trCortesia.className = "bg-brand/5";
+                trCortesia.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-brand">Engenharia Software</td>
+                    <td class="py-3 px-3 text-zinc-300">Otimização Windows 11, Ajuste de BIOS & Perfil Térmico</td>
+                    <td class="py-3 px-3 text-right font-bold text-brand">R$ 0,00 (🎁 CORTESIA)</td>
+                `;
+                tbody.appendChild(trCortesia);
+
+                const grandTotal = partsSum + laborSum;
+                document.getElementById("hw-parts-total").textContent = "R$ " + partsSum.toFixed(2).replace('.', ',');
+                document.getElementById("hw-labor-total").textContent = "R$ " + laborSum.toFixed(2).replace('.', ',');
+                document.getElementById("hw-grand-total").textContent = "R$ " + grandTotal.toFixed(2).replace('.', ',');
+            }
+        }
+
+        // Função de Busca Principal com Conexão Real Supabase
         async function handleSearch(query) {
             if (!query) return;
             hideAllContainers();
             loadingState.classList.remove("hidden");
 
-            const cleanQuery = query.trim().toUpperCase();
+            const cleanQuery = query.trim();
+            const upperQuery = cleanQuery.toUpperCase();
 
-            // Roteamento inteligente baseado no formato da busca
-            setTimeout(async () => {
-                loadingState.classList.add("hidden");
-
-                if (cleanQuery.includes("SW") || cleanQuery.includes("PRJ") || cleanQuery.includes("WEB")) {
+            // 1. Roteamento Software
+            if (upperQuery.includes("SW") || upperQuery.includes("PRJ") || upperQuery.includes("WEB")) {
+                setTimeout(() => {
+                    loadingState.classList.add("hidden");
                     swContainer.classList.remove("hidden");
                     window.scrollTo({ top: swContainer.offsetTop - 100, behavior: 'smooth' });
-                } else if (cleanQuery.includes("MSP") || cleanQuery.includes("EMPRESA") || cleanQuery.includes("CLINICA")) {
+                    if (window.lucide) lucide.createIcons();
+                }, 200);
+                return;
+            }
+
+            // 2. Roteamento MSP
+            if (upperQuery.includes("MSP") || upperQuery.includes("EMPRESA") || upperQuery.includes("CLINICA")) {
+                setTimeout(() => {
+                    loadingState.classList.add("hidden");
                     mspContainer.classList.remove("hidden");
                     window.scrollTo({ top: mspContainer.offsetTop - 100, behavior: 'smooth' });
-                } else if (cleanQuery === "404" || cleanQuery === "ERRO") {
+                    if (window.lucide) lucide.createIcons();
+                }, 200);
+                return;
+            }
+
+            // 3. Busca Real de Hardware no Supabase
+            try {
+                if (supabaseClient) {
+                    let req = supabaseClient.from('work_orders').select('*, work_order_items(*)');
+                    
+                    // Checa se é número ou token
+                    const num = parseInt(cleanQuery.replace('#', ''));
+                    if (!isNaN(num)) {
+                        req = req.eq('os_number', num);
+                    } else {
+                        req = req.eq('public_tracking_token', cleanQuery);
+                    }
+
+                    const { data, error } = await req;
+
+                    if (!error && data && data.length > 0) {
+                        loadingState.classList.add("hidden");
+                        renderWorkOrderData(data[0]);
+                        hwContainer.classList.remove("hidden");
+                        window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                        if (window.lucide) lucide.createIcons();
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn("Falha na consulta remota, usando fallback local:", err);
+            }
+
+            // Fallback de Demonstração / Não Encontrado
+            setTimeout(() => {
+                loadingState.classList.add("hidden");
+                if (cleanQuery === "404" || cleanQuery === "ERRO") {
                     notFoundState.classList.remove("hidden");
                 } else {
-                    // Padrão: Hardware / OS
                     hwContainer.classList.remove("hidden");
                     window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                 }
-
-                if (window.lucide) {
-                    lucide.createIcons();
-                }
-            }, 350);
+                if (window.lucide) lucide.createIcons();
+            }, 250);
         }
 
         // Atalhos de Demonstração
         function loadDemo(type) {
             hideAllContainers();
             if (type === 'hw') {
-                searchInput.value = "1048";
-                hwContainer.classList.remove("hidden");
+                searchInput.value = "1";
+                handleSearch("1");
             } else if (type === 'budget') {
-                searchInput.value = "1048-ORCAMENTO";
-                hwContainer.classList.remove("hidden");
-                const budgetCard = document.getElementById("hw-budget-card");
-                if (budgetCard) {
-                    budgetCard.scrollIntoView({ behavior: 'smooth' });
-                }
+                searchInput.value = "1";
+                handleSearch("1");
+                setTimeout(() => {
+                    const budgetCard = document.getElementById("hw-budget-card");
+                    if (budgetCard) budgetCard.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
             } else if (type === 'sw') {
                 searchInput.value = "PRJ-2026-01";
                 swContainer.classList.remove("hidden");
@@ -606,9 +718,7 @@
                 searchInput.value = "MSP-2026-004";
                 mspContainer.classList.remove("hidden");
             }
-            if (window.lucide) {
-                lucide.createIcons();
-            }
+            if (window.lucide) lucide.createIcons();
         }
 
         function downloadWarrantyPDF() {
@@ -621,11 +731,9 @@
             handleSearch(searchInput.value);
         });
 
-        // Verificação de Parâmetros na URL (ex: portal.html?token=1048 ou portal.html?os=1048)
+        // Verificação de Parâmetros na URL (ex: portal.html?token=1 ou portal.html?os=1)
         window.addEventListener("DOMContentLoaded", () => {
-            if (window.lucide) {
-                lucide.createIcons();
-            }
+            if (window.lucide) lucide.createIcons();
 
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get("token") || urlParams.get("os") || urlParams.get("id");
@@ -634,7 +742,6 @@
                 searchInput.value = token;
                 handleSearch(token);
             } else {
-                // Carrega por padrão o exemplo de hardware para a página não abrir vazia
                 loadDemo('hw');
             }
         });
