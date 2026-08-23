@@ -33,9 +33,41 @@
 | **HW-05** | **Montagem de PC Gamer / Workstation** | Montagem do zero, gerenciamento de cabos (cable management militar), atualização de BIOS, teste de estresse de 1h e entrega com laudo. | 3h a 4h | **R$ 285,00 a R$ 415,00** *(25% OFF)* | R$ 90,00 |
 | **HW-06** | **Taxa de Leva-e-Traz (Bragança)** | Retirada e entrega do equipamento no endereço do cliente com termo de responsabilidade assinado. | - | **R$ 35,00** *(Grátis em serviços > R$ 350)* | R$ 20,00 (Uber/Gasolina) |
 
-### 📦 Política de Margem sobre Peças e Hardware
-- **Peças de giro rápido (SSDs NVMe, memórias RAM):** Adicionar **30% a 40%** sobre o valor de custo de fornecedor/distribuidor.
-- **Peças de alto valor (Placas de vídeo, Processadores, Placas-mãe):** Adicionar **15% a 25%** ou cobrar taxa de consultoria de compra (R$ 150) caso o cliente compre diretamente.
+### 📦 Política de Peças & Regra de Margem (7% Fixo)
+- **Estrutura Obrigatória do Item no ERP:** Marca + Modelo + Especificação Técnica Completa (ex: *Kingston Fury Renegade - 1TB NVMe M.2 PCIe 4.0 7300MB/s*).
+- **Cálculo Automático da Margem:** Adicionar **7% fixo** sobre o custo final de aquisição da peça (Custo do Produto + Frete).
+  $$\text{Preço da Peça para o Cliente} = \text{Custo Final} \times 1.07$$
+- **Preço Final do Orçamento:** $\sum (\text{Peças} + 7\%) + \text{Mão de Obra de Montagem/Upgrade}$.
+
+---
+
+### 📋 Fluxo de Aprovação Formal do Orçamento (Antes do Pagamento Asaas)
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   ETAPA 1: ELABORAÇÃO DO ORÇAMENTO (Cockpit)           │
+│   Gestor insere: Marca + Modelo + Specs + Custo + Mão de Obra          │
+│   Sistema calcula automaticamente os 7% e gera o resumo detalhado      │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                   ETAPA 2: PROPOSTA DIGITAL (Portal do Cliente)        │
+│   Cliente recebe link no WhatsApp e visualiza a proposta interativa    │
+│   • Lista detalhada peça por peça com especificações e garantias       │
+│   • Valor total discriminado (Peças vs Mão de Obra)                    │
+│   • Botões: [ APROVAR ORÇAMENTO ] ou [ SOLICITAR AJUSTE ]              │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼ (Cliente Clicou em APROVAR)
+┌────────────────────────────────────────────────────────────────────────┐
+│                   ETAPA 3: GERAÇÃO DA FATURA ASAAS & SINAL 100%        │
+│   No segundo em que o cliente aprova:                                  │
+│   1. Asaas gera o Pix Copia-e-Cola / Link Cartão até 12x na tela       │
+│   2. Webhook confirma o pagamento do sinal de 100% das peças           │
+│   3. OS muda para [ Peça Encomendada / Comprar ]                       │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
