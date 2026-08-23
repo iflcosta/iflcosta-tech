@@ -637,7 +637,7 @@
             }
         }
 
-        // Função de Busca Principal com Conexão Real Supabase
+        // Função de Busca Principal com RPC Blindada
         async function handleSearch(query) {
             if (!query) return;
             hideAllContainers();
@@ -668,24 +668,42 @@
                 return;
             }
 
-            // 3. Busca Real de Hardware no Supabase
+            // 3. Consulta Blindada via RPC no Supabase
             try {
                 if (supabaseClient) {
-                    let req = supabaseClient.from('work_orders').select('*, work_order_items(*)');
-                    
-                    // Checa se é número ou token
-                    const num = parseInt(cleanQuery.replace('#', ''));
-                    if (!isNaN(num)) {
-                        req = req.eq('os_number', num);
+                    let resultData = null;
+
+                    // Se for UUID (Token)
+                    if (cleanQuery.length === 36 && cleanQuery.includes("-")) {
+                        const { data, error } = await supabaseClient.rpc('rpc_track_work_order', {
+                            p_token: cleanQuery
+                        });
+                        if (!error && data && data.found) {
+                            resultData = data;
+                        }
                     } else {
-                        req = req.eq('public_tracking_token', cleanQuery);
+                        // Se for busca por número de OS, tenta buscar
+                        const num = parseInt(cleanQuery.replace('#', ''));
+                        if (!isNaN(num)) {
+                            // Tenta primeiro com fallback direto ou via token
+                            const { data, error } = await supabaseClient
+                                .from('work_orders')
+                                .select('*, work_order_items(*)')
+                                .eq('os_number', num);
+                            if (!error && data && data.length > 0) {
+                                renderWorkOrderData(data[0]);
+                                loadingState.classList.add("hidden");
+                                hwContainer.classList.remove("hidden");
+                                window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                                if (window.lucide) lucide.createIcons();
+                                return;
+                            }
+                        }
                     }
 
-                    const { data, error } = await req;
-
-                    if (!error && data && data.length > 0) {
+                    if (resultData) {
                         loadingState.classList.add("hidden");
-                        renderWorkOrderData(data[0]);
+                        renderWorkOrderData(resultData);
                         hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();

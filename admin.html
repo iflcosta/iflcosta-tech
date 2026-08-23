@@ -652,7 +652,7 @@ Qualquer dúvida, estou à disposição!
             e.preventDefault();
             const saveBtn = e.target.querySelector('button[type="submit"]');
             saveBtn.disabled = true;
-            saveBtn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando no Supabase...</span>`;
+            saveBtn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando com Segurança...</span>`;
             if (window.lucide) lucide.createIcons();
 
             const clientName = document.getElementById('client-name').value.trim();
@@ -661,105 +661,64 @@ Qualquer dúvida, estou à disposição!
             const serviceType = document.getElementById('service-type').value;
             const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
 
-            // Coleta Peças da Tabela
+            // Coleta Peças
             const items = [];
-            let partsTotal = 0;
             document.querySelectorAll('.part-row').forEach(row => {
                 const type = row.querySelector('.part-type').value.trim() || 'Componente';
                 const name = row.querySelector('.part-name').value.trim() || 'Peça';
                 const cost = parseFloat(row.querySelector('.part-cost').value) || 0;
                 const sale = parseFloat(row.querySelector('.part-sale').value) || 0;
-                partsTotal += sale;
-                items.push({ type, name, cost, sale });
+                items.push({
+                    item_type: 'Part',
+                    description: `${type}: ${name}`,
+                    cost_price: cost,
+                    unit_price: sale,
+                    quantity: 1
+                });
             });
 
-            let finalOsNum = document.getElementById('wizard-os-num').textContent.replace('#', '');
+            // Adiciona mão de obra aos itens da RPC
+            if (laborPrice > 0) {
+                items.push({
+                    item_type: 'Labor',
+                    description: `Mão de Obra do Serviço (${serviceType.replace(/_/g, ' ')})`,
+                    cost_price: 90.00,
+                    unit_price: laborPrice,
+                    quantity: 1
+                });
+            }
+
+            let finalOsNum = "1051";
             let trackingToken = null;
 
-            // Persistência Real no Supabase
-            let dbSuccess = false;
             if (supabaseClient) {
                 try {
-                    // 1. Criar Cliente
-                    const randomDoc = 'CLI-' + Math.floor(100000000 + Math.random() * 900000000);
-                    const { data: clientData, error: clientErr } = await supabaseClient
-                        .from('clients')
-                        .insert([{
-                            type: 'B2C',
-                            name: clientName,
-                            document: randomDoc,
-                            whatsapp: clientPhone || '11999999999',
-                            street: 'Balcão / Presencial',
-                            number: 'S/N',
-                            neighborhood: 'Centro',
-                            city: 'Bragança Paulista',
-                            state: 'SP'
-                        }])
-                        .select();
+                    const { data, error } = await supabaseClient.rpc('rpc_create_work_order_atomic', {
+                        p_client_name: clientName,
+                        p_client_whatsapp: clientPhone || '11999999999',
+                        p_service_type: serviceType,
+                        p_device_brand: 'Custom Build IFL',
+                        p_device_model: serviceType.replace(/_/g, ' '),
+                        p_reported_defect: `Serviço solicitado: ${serviceType.replace(/_/g, ' ')} para ${clientName}`,
+                        p_pickup_fee: 0.00,
+                        p_items: items
+                    });
 
-                    if (clientErr) {
-                        console.error("Erro ao inserir cliente (RLS / Permissão):", clientErr);
-                        alert("Atenção: O Supabase bloqueou a gravação do cliente por política RLS. Execute o script fix_rls_policies.sql no painel do Supabase para liberar.");
-                    } else if (clientData && clientData.length > 0) {
-                        const clientId = clientData[0].id;
-
-                        // 2. Criar Ordem de Serviço
-                        const grandTotal = partsTotal + laborPrice;
-                        const { data: woData, error: woErr } = await supabaseClient
-                            .from('work_orders')
-                            .insert([{
-                                client_id: clientId,
-                                device_brand: 'Custom Build IFL',
-                                device_model: serviceType.replace(/_/g, ' '),
-                                service_type: serviceType,
-                                reported_defect: `Serviço solicitado: ${serviceType} para ${clientName}`,
-                                status: 'Triagem',
-                                labor_price: laborPrice,
-                                parts_price: partsTotal,
-                                total_amount: grandTotal
-                            }])
-                            .select();
-
-                        if (!woErr && woData && woData.length > 0) {
-                            const newWo = woData[0];
-                            finalOsNum = newWo.os_number;
-                            trackingToken = newWo.public_tracking_token;
-                            dbSuccess = true;
-
-                            // 3. Inserir Peças e Mão de Obra
-                            const dbItems = items.map(it => ({
-                                work_order_id: newWo.id,
-                                item_type: 'Part',
-                                description: `${it.type}: ${it.name}`,
-                                cost_price: it.cost,
-                                unit_price: it.sale,
-                                quantity: 1
-                            }));
-
-                            if (laborPrice > 0) {
-                                dbItems.push({
-                                    work_order_id: newWo.id,
-                                    item_type: 'Labor',
-                                    description: `Mão de Obra (${serviceType.replace(/_/g, ' ')})`,
-                                    cost_price: 90.00,
-                                    unit_price: laborPrice,
-                                    quantity: 1
-                                });
-                            }
-
-                            await supabaseClient.from('work_order_items').insert(dbItems);
-                        } else if (woErr) {
-                            console.error("Erro ao inserir OS:", woErr);
-                            alert("Erro ao gravar OS no Supabase: " + woErr.message);
-                        }
+                    if (error) {
+                        console.error("Erro na RPC do Supabase:", error);
+                        alert("Erro ao gravar OS no Supabase: " + error.message + "\n\nCertifique-se de executar o script supabase_defense_v2.sql no SQL Editor do Supabase.");
+                    } else if (data && data.success) {
+                        finalOsNum = data.os_number;
+                        trackingToken = data.tracking_token;
                     }
                 } catch (err) {
-                    console.error("Exceção ao persistir no Supabase:", err);
+                    console.error("Exceção ao chamar RPC:", err);
                 }
             }
 
-            // Mensagem de Proposta para WhatsApp
-            const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?os=${finalOsNum}\n\nQualquer dúvida, estou à disposição!`;
+            // Gera link mágico seguro com token UUID
+            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
+            const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
