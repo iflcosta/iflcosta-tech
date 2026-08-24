@@ -607,7 +607,7 @@
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">Finalidade da Entrada *</label>
                         <select id="intake-service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
-                            <option value="Hardware_Reparo">🔧 Diagnóstico / Reparo (Não liga, sem vídeo)</option>
+                            <option value="Hardware_Reparo">🔧 Diagnóstico / Reparo</option>
                             <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica</option>
                             <option value="Hardware_Upgrade">⚡ Upgrade de Peças (SSD / RAM / GPU)</option>
                             <option value="Software_Formatacao">💻 Formatação & Otimização Windows 11</option>
@@ -635,20 +635,60 @@
                     <textarea id="intake-defect" rows="2" placeholder="Ex: Máquina não liga, bipa 3 vezes ao pressionar o power. Cliente precisa urgente para trabalho." required class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-sm focus:outline-none focus:border-brand"></textarea>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-zinc-400 font-bold uppercase mb-1">Acessórios Deixados na Bancada</label>
-                        <input type="text" id="intake-accessories" placeholder="Ex: Fonte/Carregador original + Cabo de força" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                <!-- Checklist Visual de Entrada & Estado Físico (Estilo Cyber Tech) -->
+                <div class="border-2 border-zinc-800 bg-black p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-brand font-bold uppercase text-xs flex items-center gap-1.5">
+                            <i data-lucide="check-square" class="w-4 h-4 text-brand"></i> Checklist Visual & Estado Físico
+                        </label>
+                        <span class="text-[10px] text-zinc-500 font-sans">Marque o estado do equipamento</span>
                     </div>
-                    <div>
-                        <label class="block text-zinc-400 font-bold uppercase mb-1">Avarias Físicas / Checklist Visual</label>
-                        <input type="text" id="intake-visual-condition" placeholder="Ex: Risco na tampa superior, sem parafusos traseiros" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono">
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-liga" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Equipamento Liga</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-display" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Tela / Display OK</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-carrega" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Carregador Incluso</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-cabo" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Cabo de Força</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-riscos" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Riscos / Marcas</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-queda" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Queda / Quebrado</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-molhou" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Contato c/ Líquido</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 cursor-pointer">
+                            <input type="checkbox" id="chk-parafusos" class="accent-[#ccff00] w-3.5 h-3.5">
+                            <span>Faltando Parafusos</span>
+                        </label>
                     </div>
-                </div>
 
-                <div class="bg-black border border-zinc-800 p-3 text-[11px] text-zinc-400 flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-brand flex-shrink-0"></i>
-                    <span>A OS será criada em <strong>01. Triagem (R$ 0,00)</strong>. O orçamento com peças e laudo técnico será adicionado após o diagnóstico na bancada.</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <label class="block text-zinc-400 font-bold uppercase mb-1">Outros Acessórios</label>
+                            <input type="text" id="intake-accessories" placeholder="Ex: Mouse, Mochila, Capa, Adaptador..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                        </div>
+                        <div>
+                            <label class="block text-zinc-400 font-bold uppercase mb-1">Outras Avarias / Detalhes</label>
+                            <input type="text" id="intake-visual-condition" placeholder="Ex: Dobradiça estalando, tampa riscada..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="pt-3 flex justify-end gap-3">
@@ -1163,6 +1203,16 @@ Qualquer dúvida, estou à disposição!
             const deviceType = document.getElementById('intake-device-type').value;
             const deviceModel = document.getElementById('intake-device-model').value.trim();
             const defect = document.getElementById('intake-defect').value.trim();
+            const checklistItems = [];
+            if (document.getElementById('chk-liga')?.checked) checklistItems.push('Liga');
+            if (document.getElementById('chk-display')?.checked) checklistItems.push('Display/Tela OK');
+            if (document.getElementById('chk-carrega')?.checked) checklistItems.push('Carregador Incluso');
+            if (document.getElementById('chk-cabo')?.checked) checklistItems.push('Cabo de Força');
+            if (document.getElementById('chk-riscos')?.checked) checklistItems.push('Marcas/Riscos');
+            if (document.getElementById('chk-queda')?.checked) checklistItems.push('Queda/Quebrado');
+            if (document.getElementById('chk-molhou')?.checked) checklistItems.push('Contato c/ Líquido');
+            if (document.getElementById('chk-parafusos')?.checked) checklistItems.push('Sem Parafusos');
+
             const accessories = document.getElementById('intake-accessories').value.trim();
             const visualNotes = document.getElementById('intake-visual-condition').value.trim();
 
@@ -1172,7 +1222,10 @@ Qualquer dúvida, estou à disposição!
             const client = getSupabase();
             if (client) {
                 try {
-                    const fullDefect = `${defect} [Acessórios: ${accessories || 'Nenhum'}] [Avarias: ${visualNotes || 'Nenhuma'}]`;
+                    const checklistStr = checklistItems.length > 0 ? `[Checklist: ${checklistItems.join(', ')}]` : '';
+                    const accStr = accessories ? `[Acessórios: ${accessories}]` : '';
+                    const avariasStr = visualNotes ? `[Avarias: ${visualNotes}]` : '';
+                    const fullDefect = `${defect} ${checklistStr} ${accStr} ${avariasStr}`.replace(/\s+/g, ' ').trim();
                     const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
                         p_client_name: clientName,
                         p_client_whatsapp: clientPhone || '11999999999',
