@@ -63,8 +63,8 @@
                     Bancada & OS (Kanban)
                 </button>
                 <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-                    <i data-lucide="cpu" class="w-4 h-4"></i>
-                    Assistente de Orçamento
+                    <i data-lucide="wrench" class="w-4 h-4"></i>
+                    Montagem de PCs (Custom Build)
                 </button>
                 <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
                     <i data-lucide="users" class="w-4 h-4"></i>
@@ -180,75 +180,64 @@
             </div>
 
             <!-- ============================================================= -->
-            <!-- 2. ABA: ASSISTENTE DE ORÇAMENTO & NOVA OS (CALCULADORA MARKUP)-->
+            <!-- 2. ABA: MONTAGEM DE PCS CUSTOM BUILD & WORKSTATION             -->
             <!-- ============================================================= -->
             <div id="tab-content-new-os" class="tab-content hidden space-y-8">
-                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
-                    <div class="flex justify-between items-center pb-6 border-b-2 border-zinc-800 mb-6">
+                <div class="bg-black border-2 border-brand p-6 sm:p-8 relative shadow-[8px_8px_0px_0px_rgba(204,255,0,0.25)]">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b-2 border-zinc-800 mb-6">
                         <div>
-                            <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Wizard de Precificação Inteligente ]</span>
-                            <h2 id="wizard-header-title" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Novo Orçamento & Ordem de Serviço</h2>
+                            <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Setup Builder // PC Gamer & Workstation ]</span>
+                            <h2 id="wizard-header-title" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Montagem de Computador Sob Medida</h2>
+                            <p class="text-zinc-400 text-xs mt-1 font-mono">Cotação de peças com trava de sinal 100% e M.O de engenharia de bancada</p>
                         </div>
-                        <div class="text-right font-mono text-xs text-zinc-400">
-                            <span>OS Gerada:</span> <strong class="text-brand text-sm" id="wizard-os-num">#1001</strong>
+                        <div class="flex items-center gap-2 font-mono text-xs">
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-700 text-zinc-300">
+                                Status: <strong class="text-brand">Nova Cotação</strong>
+                            </span>
+                            <strong class="text-brand text-sm hidden" id="wizard-os-num">#Nova Montagem</strong>
                         </div>
                     </div>
 
                     <form id="os-wizard-form" onsubmit="handleSaveOS(event)" class="space-y-8">
-                        <!-- Bloco 1: Identificação & Categoria do Serviço -->
+                        <!-- Bloco 1: Dados do Cliente e Perfil do Setup -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-1.5">Nome do Cliente *</label>
-                                <input type="text" id="client-name" placeholder="Ex: Carlos Alberto" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                <input type="text" id="client-name" placeholder="Ex: Lucas Mendes" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
                             </div>
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-1.5">WhatsApp do Cliente *</label>
                                 <input type="text" id="client-phone" placeholder="Ex: (11) 99999-8888" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
                             </div>
                             <div>
-                                <label class="block text-zinc-400 uppercase font-bold mb-1.5">Categoria do Serviço *</label>
-                                <select id="service-type" onchange="handleCategorySelect(this.value)" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
-                                    <option value="Hardware_Reparo">🔧 Reparo de Placa-Mãe (Break-Fix)</option>
-                                    <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica (Thermal Grizzly)</option>
-                                    <option value="Hardware_Upgrade">⚡ Upgrade de Componentes (SSD / RAM / GPU)</option>
-                                    <option value="Troca_Tela_Teclado">🖥️ Troca de Display LCD / Teclado / Carcaça</option>
-                                    <option value="Formatacao_Software">💻 Formatação Limpa & Otimização Windows 11 PRO</option>
-                                    <option value="Montagem_PC">🛠️ Montagem de Computador Custom / Gamer</option>
+                                <label class="block text-zinc-400 uppercase font-bold mb-1.5">Perfil do Setup Gamer / Pro *</label>
+                                <select id="build-profile-select" onchange="handleBuildProfileChange(this.value)" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-brand">
+                                    <option value="GAMER_MID">🎮 Setup Gamer 1080p / 1440p High (Ryzen 5 / i5 + RTX 4060)</option>
+                                    <option value="GAMER_HIGH">🔥 Setup Gamer 4K Ultra / Streaming (Ryzen 7 / i7 + RTX 4070Ti/4080)</option>
+                                    <option value="WORKSTATION">🧠 Workstation Edição 4K / IA & Render 3D (Ryzen 9 + 64GB + RTX)</option>
+                                    <option value="OFFICE_PRO">💼 Setup Escritório & Home Office Ultra-Rápido (Ryzen 5 + NVMe)</option>
                                 </select>
                             </div>
+                            <input type="hidden" id="service-type" value="Montagem_PC">
+                            <input type="hidden" id="technical-diagnosis" value="Montagem profissional sob medida com cable management de alta precisão, calibração de fluxo de ar, otimização de BIOS (XMP/EXPO) e testes de estresse FurMark/AIDA64.">
                         </div>
 
-                        <!-- Bloco 1.5: Laudo Técnico, Diagnóstico da Causa Raiz & Escopo Coberto pela Garantia CDC -->
-                        <div class="bg-zinc-950 border-2 border-zinc-800 p-5 font-mono text-xs space-y-3">
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                                <label class="text-brand font-bold uppercase flex items-center gap-1.5">
-                                    <i data-lucide="microscope" class="w-4 h-4"></i> Laudo Técnico, Diagnóstico da Causa Raiz & Escopo do Serviço
-                                </label>
-                                <span class="text-[10px] text-zinc-400">Garante a limitação jurídica da garantia (Art. 26 CDC 90 Dias)</span>
+                        <!-- Bloco 2: Tabela de Componentes de Hardware do Setup -->
+                        <div class="border-2 border-zinc-800 bg-zinc-950 p-5 font-mono">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                                <div>
+                                    <span class="text-brand text-xs font-bold uppercase block">[ 1. Hardware & Componentes do Setup (Custo Real vs Valor Venda) ]</span>
+                                    <span class="text-[11px] text-zinc-400 font-sans">O cliente visualiza apenas o Valor de Venda. O Custo e o Lucro são 100% confidenciais.</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="loadStandardBuildSlots()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-brand border border-zinc-700 text-xs font-bold uppercase transition-colors flex items-center gap-1">
+                                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Slots Padrão (8 Peças)
+                                    </button>
+                                    <button type="button" onclick="addPartRow()" class="px-3 py-1.5 bg-brand text-black hover:bg-white text-xs font-black uppercase transition-colors flex items-center gap-1">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Peça
+                                    </button>
+                                </div>
                             </div>
-
-                            <!-- Presets Rápidos de 1 Clique para a Bancada -->
-                            <div class="flex flex-wrap gap-1.5 pt-1">
-                                <span class="text-[10px] text-zinc-500 py-1 uppercase font-bold">Presets Rápidos:</span>
-                                <button type="button" onclick="injectDiagnosisPreset('curto_19v')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                                    ⚡ Curto Linha 19V / VIN
-                                </button>
-                                <button type="button" onclick="injectDiagnosisPreset('limpeza_mx4')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                                    ❄️ Limpeza + Thermal Grizzly
-                                </button>
-                                <button type="button" onclick="injectDiagnosisPreset('upgrade_nvme')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                                    💾 Upgrade SSD NVMe + Clonagem
-                                </button>
-                                <button type="button" onclick="injectDiagnosisPreset('tela_lcd')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                                    🖥️ Substituição de Display LCD
-                                </button>
-                                <button type="button" onclick="injectDiagnosisPreset('desoxidacao')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                                    💧 Desoxidação Química Ultrassônica
-                                </button>
-                            </div>
-
-                            <textarea id="technical-diagnosis" rows="3" placeholder="Descreva a causa raiz identificada e a solução técnica aplicada. Ex: Identificado curto-circuito na linha primária de alimentação de 19V. Realizada desoxidação química, substituição do MOSFET comutador de entrada e repaste térmico com Arctic MX-4." class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand leading-relaxed"></textarea>
-                        </div>
 
                         <!-- Bloco 2: Tabela Dinâmica de Peças (Custo vs Venda com Markup Automático) -->
                         <div class="border-2 border-zinc-800 bg-zinc-950 p-5">
@@ -1268,7 +1257,71 @@ Qualquer dúvida, estou à disposição!
             recalcTotals();
         }
 
-                function injectDiagnosisPreset(type) {
+                        // =========================================================================
+        // SETUP BUILDER // MONTAGEM DE PCS GAMER & WORKSTATION
+        // =========================================================================
+        const standardBuildSlots = [
+            { type: "Processador", desc: "AMD Ryzen 5 7600 (6c/12t, 5.1GHz Turbo)" },
+            { type: "Placa-Mãe", desc: "ASUS TUF Gaming B650M-Plus Wi-Fi DDR5" },
+            { type: "Memória RAM", desc: "Kingston Fury Beast 32GB (2x16GB) 6000MHz DDR5" },
+            { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4060 8GB GDDR6" },
+            { type: "SSD / Armaz.", desc: "SSD Kingston KC3000 1TB NVMe M.2 Gen4 (7000MB/s)" },
+            { type: "Fonte PSU", desc: "Corsair CV650 650W 80 Plus Bronze" },
+            { type: "Gabinete & Fans", desc: "Montech Air 903 Max (4x Fans 140mm PWM)" },
+            { type: "Refrigeração", desc: "Air Cooler DeepCool AK400 Digital" }
+        ];
+
+        function loadStandardBuildSlots() {
+            const tbody = document.getElementById('parts-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            standardBuildSlots.forEach(slot => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-zinc-900/60 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-2.5 px-2 font-bold text-white">${slot.type}</td>
+                    <td class="py-2.5 px-2">
+                        <input type="text" value="${slot.desc}" class="part-desc w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                    </td>
+                    <td class="py-2.5 px-2">
+                        <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-cost w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
+                    </td>
+                    <td class="py-2.5 px-2">
+                        <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-price w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
+                    </td>
+                    <td class="py-2.5 px-2 text-right font-mono font-bold text-zinc-400 part-profit">
+                        R$ 0,00
+                    </td>
+                    <td class="py-2.5 px-2 text-center">
+                        <button type="button" onclick="this.closest('tr').remove(); recalcTotals();" class="text-zinc-600 hover:text-red-400 p-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const laborEl = document.getElementById('labor-price');
+            if (laborEl && (!laborEl.value || laborEl.value === '0.00')) {
+                laborEl.value = '285.00';
+            }
+
+            recalcTotals();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function handleBuildProfileChange(val) {
+            const laborEl = document.getElementById('labor-price');
+            if (val === 'GAMER_HIGH' || val === 'WORKSTATION') {
+                if (laborEl) laborEl.value = '415.00';
+            } else {
+                if (laborEl) laborEl.value = '285.00';
+            }
+            recalcTotals();
+        }
+
+        function injectDiagnosisPreset(type) {
             const diagEl = document.getElementById('technical-diagnosis');
             const laborEl = document.getElementById('labor-price');
             const serviceTypeEl = document.getElementById('service-type');
