@@ -1255,23 +1255,15 @@ Qualquer dúvida, estou à disposição!
                     </button>
                 `;
             } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
+                const isApprovedClient = s.includes('fila') || s.includes('aprovad');
+                const isEncomendada = s.includes('encomendada') || (hasParts && wo.parts_deposit_paid && !s.includes('diagnostico') && !s.includes('sinal'));
+                
                 if (!hasParts) {
                     // Sem peças: 100% Mão de Obra / Serviços
-                    container.innerHTML = `
-                        <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-cyan-500 text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.4)] text-sm">
-                            <i data-lucide="play" class="w-5 h-5"></i> 🛠️ Iniciar Execução na Bancada
-                        </button>
-                        <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                            <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
-                        </button>
-                    `;
-                } else {
-                    // Com Peças
-                    const isEncomendada = s.includes('encomendada') || wo.parts_deposit_paid;
-                    if (isEncomendada) {
+                    if (isApprovedClient) {
                         container.innerHTML = `
-                            <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-cyan-500 text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.4)] text-sm">
-                                <i data-lucide="package-check" class="w-5 h-5"></i> 📦 Peças Recebidas no Hub • Iniciar Bancada
+                            <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] text-sm">
+                                <i data-lucide="wrench" class="w-5 h-5"></i> 🛠️ Puxar da Fila & Iniciar Execução na Bancada
                             </button>
                             <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
@@ -1279,14 +1271,44 @@ Qualquer dúvida, estou à disposição!
                         `;
                     } else {
                         container.innerHTML = `
-                            <button onclick="advanceOSStatus('Peca_Encomendada')" class="px-4 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                                <i data-lucide="check-check" class="w-4 h-4"></i> 💰 Confirmar Sinal das Peças Pago
+                            <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-4 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                                <i data-lucide="check-check" class="w-4 h-4"></i> ✅ Marcar Aprovado pelo Cliente
                             </button>
                             <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-3 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="play" class="w-4 h-4"></i> Iniciar Direto (Peça em Estoque)
+                                <i data-lucide="play" class="w-4 h-4"></i> Iniciar Direto na Bancada
                             </button>
                             <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
+                            </button>
+                        `;
+                    }
+                } else {
+                    // Com Peças Sob Encomenda
+                    if (isEncomendada) {
+                        container.innerHTML = `
+                            <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-cyan-500 text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.4)] text-sm">
+                                <i data-lucide="package-check" class="w-5 h-5"></i> 📦 Peças Recebidas no Hub • Iniciar Bancada
+                            </button>
+                            <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-3 py-2 bg-zinc-900 border border-brand/60 text-brand font-bold uppercase hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="clock" class="w-3.5 h-3.5"></i> Mover p/ Fila de Espera
+                            </button>
+                            <button onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar Orçamento
+                            </button>
+                        `;
+                    } else {
+                        container.innerHTML = `
+                            <button onclick="advanceOSStatus('Peca_Encomendada')" class="px-3 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)] text-xs">
+                                <i data-lucide="check-check" class="w-4 h-4"></i> 💰 Confirmar Sinal Pago (Pix/Balcão)
+                            </button>
+                            <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-3 py-3 bg-zinc-900 border-2 border-brand text-brand font-black uppercase hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="box" class="w-4 h-4"></i> 📦 Peça em Estoque / Fora ➔ Fila
+                            </button>
+                            <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-2 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="play" class="w-3.5 h-3.5"></i> Iniciar Bancada Agora
+                            </button>
+                            <button onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar Orçamento
                             </button>
                         `;
                     }
