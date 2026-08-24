@@ -1385,8 +1385,8 @@
                 }
             }
 
-            alert("✅ Orçamento aprovado com sucesso! Sua máquina entrou na fila de execução da Bancada Técnica.");
-            window.location.reload();
+            // Atualização fluida em tempo real sem pop-up bloqueante
+            await handleSearch(token);
         }
 
         function downloadWarrantyPDF() {
