@@ -82,16 +82,6 @@
                             Rastrear
                         </button>
                     </form>
-
-                    <!-- Atalhos Rápidos para Demonstração de Teste -->
-                    <div class="mt-4 flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-500">
-                        <span>Exemplos para teste rápido:</span>
-                        <button type="button" onclick="loadDemo('triagem')" class="text-brand font-bold hover:underline">[ 🔍 Triagem Carlos #1053 ]</button>
-                        <button type="button" onclick="loadDemo('hw')" class="text-zinc-400 hover:text-white hover:underline">[ 🛠️ OS Bancada #1048 ]</button>
-                        <button type="button" onclick="loadDemo('budget')" class="text-yellow-400 hover:underline">[ 📋 Aprovação Orçamento ]</button>
-                        <button type="button" onclick="loadDemo('sw')" class="text-cyan-400 hover:underline">[ 💻 Projeto Web PRJ-01 ]</button>
-                        <button type="button" onclick="loadDemo('msp')" class="text-purple-400 hover:underline">[ 🛡️ TI MSP Empresa ]</button>
-                    </div>
                 </div>
             </div>
 
@@ -1290,8 +1280,6 @@
             if (token) {
                 searchInput.value = token;
                 handleSearch(token);
-            } else {
-                loadDemo('triagem');
             }
         });
     </script>
