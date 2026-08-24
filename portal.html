@@ -706,10 +706,8 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 font-sans">
                                 <div class="bg-zinc-900 border border-zinc-800 p-4">
-                                    <span class="text-xs font-mono text-zinc-400 uppercase font-bold block mb-1">Defeito Relatado pelo Cliente:</span>
-                                    <p class="text-sm text-yellow-400 font-semibold leading-snug">
-                                        "${escapeHtml(wo.reported_defect || 'Equipamento não liga / não dá vídeo. Solicita análise técnica.')}"
-                                    </p>
+                                    <span class="text-xs font-mono text-zinc-400 uppercase font-bold block mb-1">Defeito Relatado & Checklist de Entrada:</span>
+                                    ${formatChecklistHTML(wo.reported_defect)}
                                 </div>
                                 <div class="bg-zinc-900 border border-zinc-800 p-4">
                                     <span class="text-xs font-mono text-zinc-400 uppercase font-bold block mb-1">Status da Custódia & Segurança:</span>
