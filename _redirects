@@ -1,0 +1,17 @@
+# ==============================================================================
+# Cloudflare Pages & Netlify Clean URLs / Rewrites Specification
+# Project: IFL Costa Tech
+# ==============================================================================
+
+# Rewrites transparentes (Código HTTP 200)
+/app            /admin.html     200
+/admin          /admin.html     200
+/status         /portal.html    200
+/portal         /portal.html    200
+/tracking       /portal.html    200
+/os/:id         /portal.html    200
+/t/:token       /portal.html    200
+
+# Redirecionamentos canônicos para evitar duplicação de .html (Código HTTP 301)
+/admin.html     /app            301
+/portal.html    /status         301
