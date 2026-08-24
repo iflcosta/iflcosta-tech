@@ -839,19 +839,79 @@
                 // Tabela de Orçamento discriminado com Peças e Mão de Obra
                 if (budgetCard) {
                     let bannerHtml = '';
-                    
-                    if (hasParts) {
+                    let actionButtonHtml = '';
+
+                    if (isPronto) {
+                        bannerHtml = `
+                            <div class="p-4 sm:p-5 bg-brand text-black border-2 border-brand mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[0_0_20px_rgba(204,255,0,0.25)]">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-black text-brand flex items-center justify-center font-black text-lg flex-shrink-0">📦</div>
+                                    <div>
+                                        <h4 class="font-black text-black text-sm sm:text-base uppercase tracking-tight">EQUIPAMENTO PRONTO PARA RETIRADA!</h4>
+                                        <p class="text-xs text-zinc-900 font-bold">Serviço concluído e certificado com Garantia Legal CDC de 90 Dias (Art. 26). Saldo quitado no ato da entrega.</p>
+                                    </div>
+                                </div>
+                                <span class="font-mono text-xs text-black font-black px-3 py-1.5 bg-white border border-black uppercase whitespace-nowrap">05. Pronto p/ Retirada</span>
+                            </div>
+                        `;
+                        actionButtonHtml = `
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vi%20que%20minha%20OS%20${formatOSNumber(osNum)}%20est%C3%A1%20pronta%20para%20retirada." target="_blank" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
+                                <i data-lucide="package-check" class="w-4 h-4"></i> Combinar Retirada / Entrega
+                            </a>
+                        `;
+                    } else if (isQA) {
+                        bannerHtml = `
+                            <div class="p-4 bg-brand/10 border-2 border-brand mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-brand text-black flex items-center justify-center font-black text-lg flex-shrink-0">⚡</div>
+                                    <div>
+                                        <h4 class="font-bold text-brand text-sm sm:text-base uppercase tracking-tight">Em Testes de Estresse & Telemetria QA</h4>
+                                        <p class="text-xs text-zinc-300">Executando testes contínuos de temperatura e estabilidade (AIDA64 / FurMark) para validação do CDC 90D.</p>
+                                    </div>
+                                </div>
+                                <span class="font-mono text-xs text-brand font-black px-2.5 py-1 bg-brand/20 border border-brand uppercase animate-pulse whitespace-nowrap">04. Testes QA</span>
+                            </div>
+                        `;
+                        actionButtonHtml = `
+                            <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center justify-center gap-2">
+                                <i data-lucide="cpu" class="w-4 h-4 animate-pulse"></i> Validando Estresse QA
+                            </div>
+                        `;
+                    } else if (isBancada) {
+                        bannerHtml = `
+                            <div class="p-4 bg-cyan-400/10 border-2 border-cyan-400 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-cyan-400 text-black flex items-center justify-center font-black text-lg flex-shrink-0">🛠️</div>
+                                    <div>
+                                        <h4 class="font-bold text-cyan-400 text-sm sm:text-base uppercase tracking-tight">Equipamento em Execução na Bancada</h4>
+                                        <p class="text-xs text-zinc-300">Nossa equipe técnica especializada está realizando os procedimentos de reparo e montagem com precisão.</p>
+                                    </div>
+                                </div>
+                                <span class="font-mono text-xs text-cyan-400 font-black px-2.5 py-1 bg-cyan-400/20 border border-cyan-400 uppercase animate-pulse whitespace-nowrap">03. Em Execução</span>
+                            </div>
+                        `;
+                        actionButtonHtml = `
+                            <div class="px-5 py-3 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono font-bold text-xs uppercase flex items-center justify-center gap-2">
+                                <i data-lucide="wrench" class="w-4 h-4 animate-spin"></i> Em Execução na Bancada
+                            </div>
+                        `;
+                    } else if (hasParts) {
                         if (rawStatus.includes("encomendada") || wo.parts_deposit_paid) {
                             bannerHtml = `
-                                <div class="p-4 bg-brand/10 border-2 border-brand mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="p-4 bg-cyan-400/10 border-2 border-cyan-400 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-brand text-black flex items-center justify-center font-black text-lg">✓</div>
+                                        <div class="w-10 h-10 bg-cyan-400 text-black flex items-center justify-center font-black text-lg flex-shrink-0">✓</div>
                                         <div>
-                                            <h4 class="font-bold text-brand text-sm sm:text-base uppercase tracking-tight">Sinal das Peças Confirmado!</h4>
-                                            <p class="text-xs text-zinc-300">Componentes encomendados com fornecedor oficial. Aguardando chegada para execução.</p>
+                                            <h4 class="font-bold text-cyan-400 text-sm sm:text-base uppercase tracking-tight">Sinal das Peças Confirmado!</h4>
+                                            <p class="text-xs text-zinc-300">Componentes encomendados com fornecedor oficial. Aguardando chegada para execução na bancada.</p>
                                         </div>
                                     </div>
-                                    <span class="font-mono text-xs text-brand font-black px-2.5 py-1 bg-brand/20 border border-brand uppercase">Peças em Trânsito</span>
+                                    <span class="font-mono text-xs text-cyan-400 font-black px-2.5 py-1 bg-cyan-400/20 border border-cyan-400 uppercase whitespace-nowrap">Peças em Trânsito</span>
+                                </div>
+                            `;
+                            actionButtonHtml = `
+                                <div class="px-5 py-3 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono font-bold text-xs uppercase flex items-center justify-center gap-2">
+                                    <i data-lucide="package" class="w-4 h-4"></i> Peça em Trânsito
                                 </div>
                             `;
                         } else {
@@ -861,22 +921,33 @@
                                         <h4 class="font-bold text-yellow-400 text-sm sm:text-base uppercase tracking-tight">Proposta Aguardando Sinal das Peças</h4>
                                         <p class="text-xs text-zinc-300">Para encomendarmos as peças necessárias (R$ ${totalParts.toFixed(2).replace('.', ',')}), realize o Pix do sinal de 100% dos componentes.</p>
                                     </div>
-                                    <span class="font-mono text-xs text-yellow-400 font-bold px-2.5 py-1 bg-yellow-400/20 border border-yellow-400 uppercase animate-pulse">Sinal Pendente</span>
+                                    <span class="font-mono text-xs text-yellow-400 font-bold px-2.5 py-1 bg-yellow-400/20 border border-yellow-400 uppercase animate-pulse whitespace-nowrap">Sinal Pendente</span>
                                 </div>
+                            `;
+                            actionButtonHtml = `
+                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token)}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i> Aprovar Orçamento & Solicitar Peças
+                                </button>
                             `;
                         }
                     } else {
+                        // Sem peças (100% Serviço)
                         if (isApproved) {
                             bannerHtml = `
                                 <div class="p-4 bg-brand/10 border-2 border-brand mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-brand text-black flex items-center justify-center font-black text-lg">✓</div>
+                                        <div class="w-10 h-10 bg-brand text-black flex items-center justify-center font-black text-lg flex-shrink-0">✓</div>
                                         <div>
                                             <h4 class="font-bold text-brand text-sm sm:text-base uppercase tracking-tight">Orçamento Aprovado com Sucesso!</h4>
                                             <p class="text-xs text-zinc-300">Seu equipamento está na fila de execução da bancada técnica. Pagamento 100% na entrega.</p>
                                         </div>
                                     </div>
-                                    <span class="font-mono text-xs text-brand font-black px-2.5 py-1 bg-brand/20 border border-brand uppercase">Aprovado • Na Fila</span>
+                                    <span class="font-mono text-xs text-brand font-black px-2.5 py-1 bg-brand/20 border border-brand uppercase whitespace-nowrap">Aprovado • Na Fila</span>
+                                </div>
+                            `;
+                            actionButtonHtml = `
+                                <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center justify-center gap-2">
+                                    <i data-lucide="clock" class="w-4 h-4"></i> Aprovado (Na Fila de Bancada)
                                 </div>
                             `;
                         } else {
@@ -886,8 +957,13 @@
                                         <h4 class="font-bold text-white text-sm sm:text-base uppercase tracking-tight">Orçamento Formal Disponível</h4>
                                         <p class="text-xs text-zinc-300">Revise os detalhes técnicos abaixo e clique em Aprovar para autorizar o conserto.</p>
                                     </div>
-                                    <span class="font-mono text-xs text-brand font-bold px-2.5 py-1 bg-brand/10 border border-brand uppercase">Sem Sinal Prévio</span>
+                                    <span class="font-mono text-xs text-brand font-bold px-2.5 py-1 bg-brand/10 border border-brand uppercase whitespace-nowrap">Sem Sinal Prévio</span>
                                 </div>
+                            `;
+                            actionButtonHtml = `
+                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token)}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i> Aprovar Orçamento & Autorizar Início
+                                </button>
                             `;
                         }
                     }
