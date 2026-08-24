@@ -1139,32 +1139,243 @@ Qualquer dúvida, estou à disposição!
 
         let editingWorkOrder = null;
 
+        // =========================================================================
+        // MODAL DEDICADO DE ORÇAMENTO & LAUDO TÉCNICO DE OS
+        // =========================================================================
+        let budgetModalOS = null;
+
         function actionBudgetFromOS() {
             if (!selectedWorkOrder) return;
-            editingWorkOrder = selectedWorkOrder;
+            budgetModalOS = selectedWorkOrder;
             closeOSDetailModal();
-            switchTab('new-os');
 
-            // Atualiza Header do Wizard para modo de Edição da OS existente
-            const wizardTitle = document.getElementById('wizard-header-title');
-            if (wizardTitle) wizardTitle.textContent = `Orçamento da OS #${selectedWorkOrder.os_number} — ${selectedWorkOrder.device_model || 'Equipamento'}`;
-            document.getElementById('wizard-os-num').textContent = '#' + selectedWorkOrder.os_number;
+            const titleEl = document.getElementById('budget-modal-title');
+            const clientInfoEl = document.getElementById('budget-modal-client-info');
+            const defectEl = document.getElementById('budget-modal-defect-text');
+            const sTypeEl = document.getElementById('budget-modal-service-type');
+            const diagEl = document.getElementById('budget-modal-diagnosis');
+            const laborEl = document.getElementById('budget-modal-labor');
+            const tbody = document.getElementById('budget-modal-parts-tbody');
 
-            // Preenche dados do cliente
-            document.getElementById('client-name').value = selectedWorkOrder.client_name || (selectedWorkOrder.clients ? selectedWorkOrder.clients.name : '');
-            document.getElementById('client-phone').value = selectedWorkOrder.client_whatsapp || '';
+            if (titleEl) titleEl.textContent = `Orçamento da OS #${budgetModalOS.os_number} — ${budgetModalOS.device_brand || ''} ${budgetModalOS.device_model || ''}`;
+            if (clientInfoEl) clientInfoEl.textContent = `Cliente: ${budgetModalOS.client_name || 'Cliente'} • WhatsApp: ${budgetModalOS.client_whatsapp || '-'}`;
+            if (defectEl) defectEl.textContent = budgetModalOS.reported_defect || 'Defeito informado pelo cliente na recepção da bancada.';
+            if (sTypeEl) sTypeEl.value = budgetModalOS.service_type || 'Hardware_Reparo';
+            if (diagEl) diagEl.value = budgetModalOS.technical_diagnosis || '';
+            if (laborEl) laborEl.value = parseFloat(budgetModalOS.total_labor || 0).toFixed(2);
             
-            if (selectedWorkOrder.service_type) {
-                const sTypeEl = document.getElementById('service-type');
-                if (sTypeEl) sTypeEl.value = selectedWorkOrder.service_type;
+            if (tbody) tbody.innerHTML = '';
+            
+            // Se já tiver itens cadastrados na OS, carrega
+            if (budgetModalOS.items && budgetModalOS.items.length > 0) {
+                budgetModalOS.items.forEach(item => {
+                    if (item.item_type !== 'Labor') {
+                        addModalBudgetPartRow(item.item_type, item.description, item.cost_price, item.unit_price);
+                    }
+                });
             }
 
-            // Inicia tabela de peças vazia pronta para novos componentes
-            const tbody = document.getElementById('parts-table-body');
-            if (tbody) tbody.innerHTML = '';
-            document.getElementById('labor-price').value = '0.00';
-            recalcTotals();
+            recalcModalBudgetTotals();
+            document.getElementById('budget-modal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
         }
+
+        function closeBudgetModal() {
+            document.getElementById('budget-modal').classList.add('hidden');
+        }
+
+        function injectModalDiagnosisPreset(type) {
+            const diagEl = document.getElementById('budget-modal-diagnosis');
+            const laborEl = document.getElementById('budget-modal-labor');
+            const serviceTypeEl = document.getElementById('budget-modal-service-type');
+
+            if (type === 'curto_19v') {
+                diagEl.value = "Identificado curto-circuito no circuito de alimentação primária (Linha de 19V / VIN). Realizada desoxidação química preventiva, substituição do MOSFET comutador de entrada de alta frequência e aplicação de pasta térmica de alta condutividade Arctic MX-4 na CPU/GPU.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "280.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
+            } else if (type === 'limpeza_mx4') {
+                diagEl.value = "Superaquecimento e estrangulamento térmico (thermal throttling). Realizada desmontagem completa, descarbonização ultrassônica da colmeia de dissipação, substituição de thermal pads e aplicação de pasta térmica Thermal Grizzly Hydronaut/Arctic MX-4.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "220.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Limpeza_Preventiva";
+            } else if (type === 'upgrade_nvme') {
+                diagEl.value = "Substituição/Instalação de unidade de armazenamento de alta velocidade SSD NVMe M.2 Gen4 com clonagem bit-a-bit de integridade do sistema operacional e alinhamento de partições para máxima performance.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "140.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Upgrade";
+            } else if (type === 'tela_lcd') {
+                diagEl.value = "Display LCD com avaria mecânica/linhas de sinal. Realizada a substituição por novo painel original IPS com calibração de torque e alívio de pressão das dobradiças metálicas para evitar rachaduras de carcaça.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "160.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Troca_Tela_Teclado";
+            } else if (type === 'desoxidacao') {
+                diagEl.value = "Oxidação por umidade detectada na placa-mãe. Realizado banho químico em cuba ultrassônica com álcool isopropílico 99.8%, secagem em estufa térmica controlada e ressolda SMD dos pontos afetados com fluxo no-clean.";
+                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "260.00";
+                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
+            }
+            recalcModalBudgetTotals();
+        }
+
+        function addModalBudgetPartRow(type = 'Componente', desc = '', cost = 0, price = 0) {
+            const tbody = document.getElementById('budget-modal-parts-tbody');
+            if (!tbody) return;
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-zinc-900/60 transition-colors';
+            tr.innerHTML = `
+                <td class="py-2 px-2 w-28">
+                    <input type="text" value="${type}" class="modal-part-type w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white font-mono text-xs focus:outline-none focus:border-brand">
+                </td>
+                <td class="py-2 px-2">
+                    <input type="text" value="${desc}" placeholder="Ex: MOSFET Canal N 30V / SSD NVMe 1TB" class="modal-part-desc w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                </td>
+                <td class="py-2 px-2">
+                    <input type="number" step="0.01" value="${parseFloat(cost).toFixed(2)}" oninput="recalcModalBudgetTotals()" class="modal-part-cost w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
+                </td>
+                <td class="py-2 px-2">
+                    <input type="number" step="0.01" value="${parseFloat(price).toFixed(2)}" oninput="recalcModalBudgetTotals()" class="modal-part-price w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
+                </td>
+                <td class="py-2 px-2 text-right font-mono font-bold text-zinc-400 modal-part-profit">
+                    R$ 0,00
+                </td>
+                <td class="py-2 px-2 text-center">
+                    <button type="button" onclick="this.closest('tr').remove(); recalcModalBudgetTotals();" class="text-zinc-600 hover:text-red-400 p-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+            recalcModalBudgetTotals();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function recalcModalBudgetTotals() {
+            let partsCostTotal = 0;
+            let partsPriceTotal = 0;
+
+            const rows = document.querySelectorAll('#budget-modal-parts-tbody tr');
+            rows.forEach(tr => {
+                const cost = parseFloat(tr.querySelector('.modal-part-cost')?.value) || 0;
+                const price = parseFloat(tr.querySelector('.modal-part-price')?.value) || 0;
+                const profit = price - cost;
+
+                partsCostTotal += cost;
+                partsPriceTotal += price;
+
+                const profitEl = tr.querySelector('.modal-part-profit');
+                if (profitEl) {
+                    profitEl.textContent = 'R$ ' + profit.toFixed(2).replace('.', ',');
+                    profitEl.className = profit >= 0 ? 'py-2 px-2 text-right font-mono font-bold text-brand modal-part-profit' : 'py-2 px-2 text-right font-mono font-bold text-red-400 modal-part-profit';
+                }
+            });
+
+            const laborPrice = parseFloat(document.getElementById('budget-modal-labor')?.value) || 0;
+            const grandTotal = partsPriceTotal + laborPrice;
+            const netProfit = (partsPriceTotal - partsCostTotal) + laborPrice;
+
+            document.getElementById('budget-modal-parts-total').textContent = 'R$ ' + partsPriceTotal.toFixed(2).replace('.', ',');
+            document.getElementById('budget-modal-labor-total').textContent = 'R$ ' + laborPrice.toFixed(2).replace('.', ',');
+            document.getElementById('budget-modal-grand-total').textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+            document.getElementById('budget-modal-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+        }
+
+        async function handleSaveBudgetFromModal(e) {
+            e.preventDefault();
+            if (!budgetModalOS) return;
+
+            const btn = document.getElementById('btn-save-budget-modal');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="animate-pulse flex items-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando Orçamento...</span>`;
+            if (window.lucide) lucide.createIcons();
+
+            const serviceType = document.getElementById('budget-modal-service-type').value;
+            const diagnosis = document.getElementById('budget-modal-diagnosis').value.trim() || `Laudo técnico da OS #${budgetModalOS.os_number}`;
+            const laborPrice = parseFloat(document.getElementById('budget-modal-labor').value) || 0;
+
+            const items = [];
+            const rows = document.querySelectorAll('#budget-modal-parts-tbody tr');
+            rows.forEach(tr => {
+                const itemType = tr.querySelector('.modal-part-type')?.value.trim() || 'Part';
+                const desc = tr.querySelector('.modal-part-desc')?.value.trim() || 'Componente';
+                const cost = parseFloat(tr.querySelector('.modal-part-cost')?.value) || 0;
+                const price = parseFloat(tr.querySelector('.modal-part-price')?.value) || 0;
+
+                if (desc) {
+                    items.push({
+                        item_type: 'Part',
+                        description: desc,
+                        cost_price: cost,
+                        unit_price: price,
+                        quantity: 1
+                    });
+                }
+            });
+
+            if (laborPrice > 0) {
+                items.push({
+                    item_type: 'Labor',
+                    description: `Mão de Obra Especializada // ${serviceType.replace(/_/g, ' ')}`,
+                    cost_price: 0.00,
+                    unit_price: laborPrice,
+                    quantity: 1
+                });
+            }
+
+            const client = getSupabase();
+            let trackingToken = budgetModalOS.public_tracking_token;
+
+            if (client) {
+                try {
+                    const { data, error } = await client.rpc('rpc_update_work_order_budget', {
+                        p_os_number: parseInt(budgetModalOS.os_number),
+                        p_service_type: serviceType,
+                        p_diagnosis: diagnosis,
+                        p_items: items
+                    });
+
+                    if (error) {
+                        alert("Erro ao atualizar orçamento: " + error.message);
+                        btn.disabled = false;
+                        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp`;
+                        return;
+                    }
+
+                    if (data && data.public_tracking_token) {
+                        trackingToken = data.public_tracking_token;
+                    }
+                } catch (err) {
+                    console.error("Exceção ao salvar orçamento:", err);
+                }
+            }
+
+            closeBudgetModal();
+            loadKanbanBoard();
+
+            // Mensagem de Orçamento Pronto para WhatsApp
+            const partsPriceTotal = parseFloat(document.getElementById('budget-modal-parts-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
+            const grandTotal = parseFloat(document.getElementById('budget-modal-grand-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
+            const clientPhone = (budgetModalOS.client_whatsapp || '').replace(/\D/g, '');
+            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${budgetModalOS.os_number}`;
+
+            const msg = `*Olá ${budgetModalOS.client_name || 'Cliente'}!*
+Aqui é da *IFL Costa Tech*.
+
+Concluímos o diagnóstico e elaboração do orçamento da sua *OS #${budgetModalOS.os_number} (${budgetModalOS.device_brand || ''} ${budgetModalOS.device_model || ''})*.
+
+*Laudo Técnico:* ${diagnosis}
+*Valor Total:* R$ ${grandTotal.toFixed(2).replace('.', ',')}${partsPriceTotal > 0 ? ` (Sinal de Peças: R$ ${partsPriceTotal.toFixed(2).replace('.', ',')})` : ''}
+
+> *Acesse o laudo e aprove o orçamento pelo link:* 
+https://iflcosta.tech/portal.html?${linkParam}
+
+Ficamos no aguardo para iniciar a execução!`;
+
+            document.getElementById('whatsapp-msg-preview').textContent = msg;
+            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
+            document.getElementById('whatsapp-modal').classList.remove('hidden');
+
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp`;
+            if (window.lucide) lucide.createIcons();
+        }
+
 
         function openNewOSModal() {
             editingWorkOrder = null;
