@@ -531,12 +531,22 @@
                     </div>
                 </div>
 
-                <!-- Defeito Relatado / Checklist -->
-                <div class="bg-zinc-900/60 border border-zinc-800 p-4">
-                    <span class="text-yellow-400 font-bold uppercase block mb-1">Defeito Relatado na Entrada:</span>
-                    <p id="detail-defect-text" class="text-zinc-300 font-sans text-sm leading-relaxed">
-                        Não dá vídeo e bipa 3 vezes ao ligar.
-                    </p>
+                <!-- Defeito Relatado & Checklist Visual em Boxes Neobrutalistas -->
+                <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3">
+                    <div>
+                        <span class="text-yellow-400 font-bold uppercase block text-[11px] mb-1">Defeito Informado pelo Cliente:</span>
+                        <p id="detail-defect-text" class="text-white font-sans text-xs sm:text-sm font-semibold leading-relaxed">
+                            Não dá vídeo e bipa 3 vezes ao ligar.
+                        </p>
+                    </div>
+
+                    <!-- Checklist Visual Tags / Boxes -->
+                    <div id="detail-checklist-wrapper" class="pt-2 border-t border-zinc-900 space-y-2">
+                        <span class="text-zinc-500 font-bold uppercase block text-[10px]">Checklist & Estado Físico:</span>
+                        <div id="detail-checklist-boxes" class="flex flex-wrap gap-1.5">
+                            <!-- Injetado dinamicamente via openOSDetailModal -->
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Ações Rápidas de Avanço de Etapa -->
@@ -574,6 +584,158 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+        <!-- ============================================================= -->
+    <!-- MODAL DEDICADO: ELABORAÇÃO DE ORÇAMENTO & LAUDO TÉCNICO DE OS -->
+    <!-- ============================================================= -->
+    <div id="budget-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-4xl p-6 sm:p-8 relative font-mono shadow-[8px_8px_0px_0px_rgba(204,255,0,0.35)] max-h-[90vh] overflow-y-auto">
+            <button onclick="closeBudgetModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2 mb-1">
+                <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
+                <span class="text-brand text-xs font-bold uppercase tracking-wider">[ BANCADA // ELABORAÇÃO DE ORÇAMENTO & LAUDO ]</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b-2 border-zinc-800 pb-4 mb-6">
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-white" id="budget-modal-title">Orçamento da OS #1001</h3>
+                    <p class="text-xs text-zinc-400 mt-0.5" id="budget-modal-client-info">Cliente: - • WhatsApp: -</p>
+                </div>
+                <span class="px-3 py-1 bg-yellow-950/80 border border-yellow-500 text-yellow-400 text-xs font-bold uppercase">
+                    Etapa: 02. Orçamento
+                </span>
+            </div>
+
+            <form id="budget-modal-form" onsubmit="handleSaveBudgetFromModal(event)" class="space-y-6 text-xs">
+                <!-- Defeito de Entrada Relatado -->
+                <div class="bg-zinc-950 border border-zinc-800 p-3.5">
+                    <span class="text-zinc-500 text-[10px] uppercase font-bold block mb-1">Defeito Relatado na Entrada:</span>
+                    <p class="text-zinc-300 font-sans text-xs sm:text-sm" id="budget-modal-defect-text">-</p>
+                </div>
+
+                <!-- Categoria do Serviço -->
+                <div>
+                    <label class="block text-zinc-400 uppercase font-bold mb-1">Categoria do Serviço *</label>
+                    <select id="budget-modal-service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand">
+                        <option value="Hardware_Reparo">🔧 Reparo Eletrônico de Placa-Mãe (Break-Fix)</option>
+                        <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica (Thermal Grizzly)</option>
+                        <option value="Hardware_Upgrade">⚡ Upgrade de Componentes (SSD / RAM / GPU)</option>
+                        <option value="Troca_Tela_Teclado">🖥️ Troca de Display LCD / Teclado / Carcaça</option>
+                        <option value="Formatacao_Software">💻 Formatação Limpa & Otimização Windows 11 PRO</option>
+                    </select>
+                </div>
+
+                <!-- Bloco de Laudo Técnico com Presets -->
+                <div class="bg-zinc-950 border-2 border-zinc-800 p-4 space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <label class="text-brand font-bold uppercase flex items-center gap-1.5">
+                            <i data-lucide="microscope" class="w-4 h-4"></i> Laudo Técnico, Causa Raiz & Escopo Coberto (CDC 90D)
+                        </label>
+                        <span class="text-[10px] text-zinc-400">Limita a garantia jurídica ao reparo executado</span>
+                    </div>
+
+                    <!-- Presets Rápidos de 1 Clique -->
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                        <span class="text-[10px] text-zinc-500 py-1 uppercase font-bold">Presets:</span>
+                        <button type="button" onclick="injectModalDiagnosisPreset('curto_19v')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                            ⚡ Curto Linha 19V
+                        </button>
+                        <button type="button" onclick="injectModalDiagnosisPreset('limpeza_mx4')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                            ❄️ Limpeza + Thermal Grizzly
+                        </button>
+                        <button type="button" onclick="injectModalDiagnosisPreset('upgrade_nvme')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                            💾 Upgrade SSD NVMe
+                        </button>
+                        <button type="button" onclick="injectModalDiagnosisPreset('tela_lcd')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                            🖥️ Troca de Display LCD
+                        </button>
+                        <button type="button" onclick="injectModalDiagnosisPreset('desoxidacao')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                            💧 Desoxidação Química
+                        </button>
+                    </div>
+
+                    <textarea id="budget-modal-diagnosis" rows="3" placeholder="Descreva a causa raiz identificada e a solução técnica aplicada..." class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand leading-relaxed"></textarea>
+                </div>
+
+                <!-- Tabela de Peças & Hardware -->
+                <div class="border-2 border-zinc-800 bg-zinc-950 p-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <span class="text-brand font-bold uppercase text-xs block">[ Peças & Componentes Necessários ]</span>
+                            <span class="text-[10px] text-zinc-500 font-sans">O cliente não vê custo nem lucro, apenas o valor final de venda.</span>
+                        </div>
+                        <button type="button" onclick="addModalBudgetPartRow()" class="px-3 py-1.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Peça
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse font-mono">
+                            <thead>
+                                <tr class="border-b border-zinc-800 text-zinc-400">
+                                    <th class="py-2 px-2">Tipo</th>
+                                    <th class="py-2 px-2">Descrição da Peça</th>
+                                    <th class="py-2 px-2 w-28">Custo Real (R$)</th>
+                                    <th class="py-2 px-2 w-28">Valor Venda (R$)</th>
+                                    <th class="py-2 px-2 w-24 text-right">Lucro Real</th>
+                                    <th class="py-2 px-2 w-10"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="budget-modal-parts-tbody" class="divide-y divide-zinc-900">
+                                <!-- Injetado dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Mão de Obra e Cortesia -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono">
+                    <div class="bg-zinc-950 border border-zinc-800 p-3.5">
+                        <label class="block text-brand font-bold uppercase mb-1.5">Mão de Obra do Reparo (R$)</label>
+                        <input type="number" step="0.01" id="budget-modal-labor" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-base font-bold focus:outline-none focus:border-brand">
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 p-3.5">
+                        <label class="block text-brand font-bold uppercase mb-1.5">Engenharia de Software</label>
+                        <input type="text" disabled value="R$ 0,00 (🎁 CORTESIA EXCLUSIVA IFL)" class="w-full bg-zinc-900/60 border border-zinc-800 px-3 py-2 text-brand font-mono text-xs">
+                    </div>
+                </div>
+
+                <!-- Resumo Consolidado & Lucro Real -->
+                <div class="bg-black border-2 border-brand p-4 font-mono">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
+                        <div>
+                            <span class="text-zinc-500 text-[10px] block mb-1">SINAL PEÇAS (100%)</span>
+                            <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-parts-total">R$ 0,00</strong>
+                        </div>
+                        <div>
+                            <span class="text-zinc-500 text-[10px] block mb-1">SALDO M.O. (ENTREGA)</span>
+                            <strong class="text-lg sm:text-xl text-brand font-black" id="budget-modal-labor-total">R$ 0,00</strong>
+                        </div>
+                        <div>
+                            <span class="text-zinc-500 text-[10px] block mb-1">TOTAL DO CLIENTE</span>
+                            <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-grand-total">R$ 0,00</strong>
+                        </div>
+                        <div class="bg-brand/10 border border-brand/40 p-2">
+                            <span class="text-brand text-[10px] font-bold block mb-0.5">LUCRO REAL GESTOR</span>
+                            <strong class="text-base sm:text-lg text-brand font-black" id="budget-modal-net-profit">R$ 0,00</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-3 border-t border-zinc-800 font-mono">
+                    <button type="button" onclick="closeBudgetModal()" class="px-4 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btn-save-budget-modal" class="px-6 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -979,7 +1141,56 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('detail-client-phone').textContent = wo.client_whatsapp || '(11) 91969-1542';
             document.getElementById('detail-status-badge').textContent = (wo.status || 'Triagem').replace(/_/g, ' ');
             document.getElementById('detail-total-amount').textContent = 'R$ ' + parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
-            document.getElementById('detail-defect-text').textContent = wo.reported_defect || 'Defeito informado pelo cliente na recepção da bancada.';
+            // Parse do Defeito e Tags de Checklist Visual
+            const rawDefect = wo.reported_defect || 'Defeito informado na recepção.';
+            const defectMatch = rawDefect.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
+            document.getElementById('detail-defect-text').textContent = defectMatch || rawDefect;
+
+            const checklistBoxesContainer = document.getElementById('detail-checklist-boxes');
+            const checklistWrapper = document.getElementById('detail-checklist-wrapper');
+            if (checklistBoxesContainer) {
+                checklistBoxesContainer.innerHTML = '';
+                let hasTags = false;
+
+                const chkMatch = rawDefect.match(/\[Checklist:\s*([^\]]+)\]/i);
+                if (chkMatch && chkMatch[1]) {
+                    const items = chkMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+                    items.forEach(item => {
+                        hasTags = true;
+                        const isWarning = item.toLowerCase().includes('risco') || item.toLowerCase().includes('queda') || item.toLowerCase().includes('quebrado') || item.toLowerCase().includes('líquido') || item.toLowerCase().includes('parafuso');
+                        const badge = document.createElement('span');
+                        badge.className = isWarning 
+                            ? "px-2.5 py-1 bg-yellow-950/40 border border-yellow-600/70 text-yellow-300 text-[11px] font-mono flex items-center gap-1"
+                            : "px-2.5 py-1 bg-zinc-900 border border-brand/60 text-brand text-[11px] font-mono flex items-center gap-1";
+                        badge.innerHTML = isWarning ? `⚠️ ${escapeHtml(item)}` : `✓ ${escapeHtml(item)}`;
+                        checklistBoxesContainer.appendChild(badge);
+                    });
+                }
+
+                const accMatch = rawDefect.match(/\[Acessórios:\s*([^\]]+)\]/i);
+                if (accMatch && accMatch[1] && !accMatch[1].toLowerCase().includes('nenhum')) {
+                    hasTags = true;
+                    const badge = document.createElement('span');
+                    badge.className = "px-2.5 py-1 bg-zinc-900 border border-cyan-500/60 text-cyan-300 text-[11px] font-mono flex items-center gap-1";
+                    badge.innerHTML = `🔌 Acessórios: ${escapeHtml(accMatch[1])}`;
+                    checklistBoxesContainer.appendChild(badge);
+                }
+
+                const avMatch = rawDefect.match(/\[Avarias:\s*([^\]]+)\]/i);
+                if (avMatch && avMatch[1] && !avMatch[1].toLowerCase().includes('nenhum')) {
+                    hasTags = true;
+                    const badge = document.createElement('span');
+                    badge.className = "px-2.5 py-1 bg-zinc-900 border border-red-500/60 text-red-300 text-[11px] font-mono flex items-center gap-1";
+                    badge.innerHTML = `🔍 Avarias: ${escapeHtml(avMatch[1])}`;
+                    checklistBoxesContainer.appendChild(badge);
+                }
+
+                if (!hasTags) {
+                    if (checklistWrapper) checklistWrapper.classList.add('hidden');
+                } else {
+                    if (checklistWrapper) checklistWrapper.classList.remove('hidden');
+                }
+            }
 
             const statusSelect = document.getElementById('detail-status-select');
             if (statusSelect) {
