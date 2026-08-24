@@ -135,7 +135,10 @@
                     <!-- Coluna 2: Orçamento / Aguardando Sinal -->
                     <div class="bg-black border-2 border-zinc-800 p-3 flex flex-col">
                         <div class="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800 font-mono text-xs">
-                            <span class="font-bold text-yellow-400">02. ORÇAMENTO</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-yellow-400">02. ORÇAMENTO</span>
+                                <span class="text-[10px] text-zinc-500 font-normal">(2A Pendente // 2B Fila)</span>
+                            </div>
                             <span id="count-orcamento" class="bg-yellow-950/80 text-yellow-400 px-1.5 py-0.5 text-[10px] font-bold">0</span>
                         </div>
                         <div id="col-orcamento" class="space-y-3 flex-grow min-h-[140px]">
@@ -1055,34 +1058,36 @@ Qualquer dúvida, estou à disposição!
                     cO++;
                     const totalParts = parseFloat(wo.total_parts || 0);
                     const hasParts = totalParts > 0;
-                    const isEncomendada = s.includes('encomendada') || (hasParts && wo.parts_deposit_paid);
-                    const isSinalPendente = hasParts && !isEncomendada && (s.includes('sinal') || !wo.parts_deposit_paid);
-                    const isFila = s.includes('fila') || s.includes('aprovad') || (!hasParts && s.includes('diagnostico'));
+                    const isEncomendada = s.includes('encomendada') || (hasParts && wo.parts_deposit_paid && !s.includes('diagnostico') && !s.includes('sinal'));
+                    const isSinalPendente = hasParts && !isEncomendada && s.includes('sinal');
+                    const isApprovedClient = s.includes('fila') || s.includes('aprovad');
                     
-                    let badgeLabel = 'Orçamento';
-                    let badgeColor = 'text-yellow-400';
-                    if (isEncomendada) {
-                        card.className += " border-cyan-700 hover:border-cyan-400";
-                        badgeLabel = '📦 Peça em Trânsito';
-                        badgeColor = 'text-cyan-300 font-bold';
+                    let badgeLabel = '📋 2A. Aguardando Aprovação';
+                    let badgeColor = 'text-yellow-400 font-bold';
+                    let categoryTag = hasParts ? 'Peças + M.O.' : 'Serviço Puro';
+
+                    if (isApprovedClient) {
+                        card.className += " border-2 border-brand bg-zinc-900/90 shadow-[0_0_12px_rgba(204,255,0,0.15)]";
+                        badgeLabel = '🚀 2B. Aprovado (Na Fila)';
+                        badgeColor = 'text-brand font-black animate-pulse';
+                    } else if (isEncomendada) {
+                        card.className += " border-2 border-cyan-500 bg-zinc-900/80";
+                        badgeLabel = '📦 2B. Peça em Trânsito';
+                        badgeColor = 'text-cyan-300 font-black';
                     } else if (isSinalPendente) {
-                        card.className += " border-yellow-800/80 hover:border-yellow-400";
-                        badgeLabel = '💳 Sinal Pendente';
-                        badgeColor = 'text-yellow-400 font-bold';
-                    } else if (isFila) {
-                        card.className += " border-2 border-brand bg-zinc-900";
-                        badgeLabel = '✅ Aprovado (Na Fila)';
-                        badgeColor = 'text-brand font-black';
+                        card.className += " border-2 border-yellow-500 bg-zinc-950";
+                        badgeLabel = '💳 2B. Sinal Pendente';
+                        badgeColor = 'text-yellow-300 font-black';
                     } else {
-                        card.className += " border-yellow-800/80 hover:border-yellow-400";
-                        badgeLabel = '📋 Orçamento Disponível';
-                        badgeColor = 'text-zinc-400';
+                        card.className += " border-2 border-yellow-700/70 hover:border-yellow-400 bg-zinc-950";
+                        badgeLabel = '⏳ 2A. Proposta Enviada';
+                        badgeColor = 'text-yellow-400 font-bold';
                     }
 
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
                             <span class="text-white font-bold font-mono">#${wo.os_number || '1049'}</span>
-                            <span class="text-[10px] text-zinc-500 font-mono">${hasParts ? (isEncomendada ? 'Peça OK' : 'Sinal') : 'Serviço'}</span>
+                            <span class="text-[10px] text-zinc-400 font-mono px-1.5 py-0.5 bg-zinc-900 border border-zinc-800">${categoryTag}</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Orçamento gerado.')}</p>
