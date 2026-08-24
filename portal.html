@@ -541,6 +541,48 @@
                 .replace(/'/g, '&#039;');
         }
 
+        // Formatador de Defeito & Badges de Checklist Visual
+        function formatChecklistHTML(rawDefect) {
+            if (!rawDefect) return `<p class="text-sm text-yellow-400 font-semibold leading-snug">"Equipamento sob análise técnica na bancada."</p>`;
+            
+            const pureDefect = rawDefect
+                .replace(/\[Checklist:[^\]]+\]/i, '')
+                .replace(/\[Acessórios:[^\]]+\]/i, '')
+                .replace(/\[Avarias:[^\]]+\]/i, '')
+                .trim();
+
+            let badgesHtml = '';
+            const chkMatch = rawDefect.match(/\[Checklist:\s*([^\]]+)\]/i);
+            if (chkMatch && chkMatch[1]) {
+                const items = chkMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+                items.forEach(item => {
+                    const isWarning = item.toLowerCase().includes('risco') || item.toLowerCase().includes('queda') || item.toLowerCase().includes('quebrado') || item.toLowerCase().includes('líquido') || item.toLowerCase().includes('parafuso');
+                    if (isWarning) {
+                        badgesHtml += `<span class="px-2 py-0.5 bg-yellow-950/50 border border-yellow-500/70 text-yellow-300 font-mono text-[11px] flex items-center gap-1">⚠️ ${escapeHtml(item)}</span>`;
+                    } else {
+                        badgesHtml += `<span class="px-2 py-0.5 bg-zinc-900 border border-brand/60 text-brand font-mono text-[11px] flex items-center gap-1">✓ ${escapeHtml(item)}</span>`;
+                    }
+                });
+            }
+
+            const accMatch = rawDefect.match(/\[Acessórios:\s*([^\]]+)\]/i);
+            if (accMatch && accMatch[1] && !accMatch[1].toLowerCase().includes('nenhum')) {
+                badgesHtml += `<span class="px-2 py-0.5 bg-zinc-900 border border-cyan-500/60 text-cyan-300 font-mono text-[11px] flex items-center gap-1">🔌 Acessórios: ${escapeHtml(accMatch[1])}</span>`;
+            }
+
+            const avMatch = rawDefect.match(/\[Avarias:\s*([^\]]+)\]/i);
+            if (avMatch && avMatch[1] && !avMatch[1].toLowerCase().includes('nenhum')) {
+                badgesHtml += `<span class="px-2 py-0.5 bg-zinc-900 border border-red-500/60 text-red-300 font-mono text-[11px] flex items-center gap-1">🔍 Avarias: ${escapeHtml(avMatch[1])}</span>`;
+            }
+
+            return `
+                <p class="text-sm text-yellow-400 font-semibold leading-snug">
+                    "${escapeHtml(pureDefect || 'Equipamento sob análise técnica na bancada.')}"
+                </p>
+                ${badgesHtml ? `<div class="mt-3 pt-2.5 border-t border-zinc-800 flex flex-wrap gap-1.5">${badgesHtml}</div>` : ''}
+            `;
+        }
+
         // Elementos DOM
         const searchForm = document.getElementById("search-form");
         const searchInput = document.getElementById("search-input");
