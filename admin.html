@@ -42,16 +42,12 @@
                         <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
                         <span>SUPABASE CONECTADO</span>
                     </div>
-                    <button onclick="openIntakeModal()" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                    <button onclick="openIntakeModal()" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
                         <i data-lucide="zap" class="w-4 h-4"></i>
                         <span class="hidden sm:inline">Check-in</span> Entrada (30s)
                     </button>
-                    <button onclick="openNewOSModal()" class="px-3 py-2 sm:px-4 sm:py-2.5 bg-zinc-900 border-2 border-zinc-700 text-white font-bold uppercase tracking-wider hover:border-brand hover:text-brand transition-colors flex items-center gap-1.5">
-                        <i data-lucide="cpu" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">Orçar</span> Montagem
-                    </button>
                     <a href="portal.html" target="_blank" class="hidden sm:flex px-3 py-2 sm:px-4 sm:py-2.5 bg-black border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1">
-                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal do Cliente
                     </a>
                 </div>
             </div>
@@ -69,6 +65,10 @@
                 <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
                     <i data-lucide="cpu" class="w-4 h-4"></i>
                     Assistente de Orçamento
+                </button>
+                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    Clientes & CRM
                 </button>
                 <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
                     <i data-lucide="code" class="w-4 h-4"></i>
@@ -323,6 +323,83 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+                        <!-- ============================================================= -->
+            <!-- 2.5. ABA: CRM ÚNICO & GESTÃO DE CLIENTES 360°                  -->
+            <!-- ============================================================= -->
+            <div id="tab-content-clients" class="tab-content hidden space-y-6">
+                <!-- Métricas do CRM -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">TOTAL DE CLIENTES</span>
+                        <span class="text-2xl sm:text-3xl font-black text-white" id="crm-total-clients">0</span>
+                        <span class="text-[11px] text-brand block mt-1">CRM Único IFL</span>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">CLIENTES B2C (GAMERS/PRO)</span>
+                        <span class="text-2xl sm:text-3xl font-black text-cyan-400" id="crm-total-b2c">0</span>
+                        <span class="text-[11px] text-zinc-500 block mt-1">Bancada & Hardware</span>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">CONTAS B2B / EMPRESAS</span>
+                        <span class="text-2xl sm:text-3xl font-black text-purple-400" id="crm-total-b2b">0</span>
+                        <span class="text-[11px] text-purple-400/80 block mt-1">Contratos MSP & Dev</span>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4">
+                        <span class="text-zinc-500 text-xs block mb-1">FATURAMENTO TOTAL CRM</span>
+                        <span class="text-2xl sm:text-3xl font-black text-brand" id="crm-total-ltv">R$ 0,00</span>
+                        <span class="text-[11px] text-zinc-500 block mt-1">LTV Acumulado</span>
+                    </div>
+                </div>
+
+                <!-- Barra de Busca e Ações Rápidas -->
+                <div class="bg-black border-2 border-zinc-800 p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+                    <div class="flex-grow flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-grow">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-zinc-500"></i>
+                            <input type="text" id="crm-search-input" oninput="filterClientsTable()" placeholder="Buscar cliente por nome, WhatsApp ou cidade..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-4 py-2 text-white font-mono text-xs focus:outline-none focus:border-brand">
+                        </div>
+                        <select id="crm-filter-type" onchange="filterClientsTable()" class="bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-brand">
+                            <option value="ALL">Todos os Tipos (B2C & B2B)</option>
+                            <option value="B2C">Apenas B2C (Consumidores)</option>
+                            <option value="B2B">Apenas B2B (Empresas)</option>
+                        </select>
+                    </div>
+                    <button onclick="openNewClientModal()" class="px-5 py-2 bg-brand text-black font-mono font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        Cadastrar Novo Cliente
+                    </button>
+                </div>
+
+                <!-- Tabela Neobrutalista de Clientes -->
+                <div class="bg-black border-2 border-zinc-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full font-mono text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="border-b-2 border-zinc-800 text-zinc-400 bg-zinc-950">
+                                    <th class="py-3 px-4">Cliente / Razão Social</th>
+                                    <th class="py-3 px-3">Tipo</th>
+                                    <th class="py-3 px-3">WhatsApp / Contato</th>
+                                    <th class="py-3 px-3">Localidade</th>
+                                    <th class="py-3 px-3 text-center">Total de OSs</th>
+                                    <th class="py-3 px-3 text-right">LTV (Faturado)</th>
+                                    <th class="py-3 px-4 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crm-clients-tbody" class="divide-y divide-zinc-900">
+                                <tr>
+                                    <td colspan="7" class="py-8 text-center text-zinc-500">
+                                        <div class="flex flex-col items-center justify-center gap-2">
+                                            <i data-lucide="users" class="w-6 h-6 text-zinc-600"></i>
+                                            <span>Carregando base de clientes do CRM...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1470,6 +1547,308 @@ Qualquer dúvida, estou à disposição!
             copyBtn.innerHTML = `✓ Copiado!`;
             setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
         }
+
+                // =========================================================================
+        // CRM ÚNICO & GESTÃO DE CLIENTES 360°
+        // =========================================================================
+        let crmClientsList = [];
+        let selectedClientForOS = null;
+
+        async function loadClients() {
+            const client = getSupabase();
+            if (!client) return;
+
+            try {
+                const { data, error } = await client.rpc('rpc_get_clients_overview');
+                if (error) {
+                    console.warn("Erro ao buscar clientes via RPC:", error);
+                    // Fallback para query direta na tabela clients
+                    const { data: directData, error: dirErr } = await client
+                        .from('clients')
+                        .select('*, work_orders(id, os_number, service_type, device_brand, device_model, status, total_order, total_parts, total_labor, pickup_fee, created_at)')
+                        .order('created_at', { ascending: false });
+                    
+                    if (!dirErr && directData) {
+                        crmClientsList = directData.map(c => {
+                            const orders = c.work_orders || [];
+                            const totalSpent = orders.reduce((sum, o) => sum + (parseFloat(o.total_order || (parseFloat(o.total_parts || 0) + parseFloat(o.total_labor || 0) + parseFloat(o.pickup_fee || 0))) || 0), 0);
+                            return {
+                                id: c.id,
+                                name: c.name,
+                                whatsapp: c.whatsapp,
+                                type: c.type || 'B2C',
+                                status: c.status || 'Ativo',
+                                email: c.email,
+                                document: c.document,
+                                street: c.street,
+                                neighborhood: c.neighborhood,
+                                city: c.city || 'Bragança Paulista',
+                                notes: c.notes,
+                                created_at: c.created_at,
+                                total_orders: orders.length,
+                                total_spent: totalSpent,
+                                orders: orders
+                            };
+                        });
+                    }
+                } else if (data) {
+                    crmClientsList = data;
+                }
+
+                renderClientsMetrics();
+                filterClientsTable();
+            } catch (err) {
+                console.error("Exceção ao carregar CRM:", err);
+            }
+        }
+
+        function renderClientsMetrics() {
+            const total = crmClientsList.length;
+            const b2c = crmClientsList.filter(c => (c.type || '').toUpperCase() === 'B2C').length;
+            const b2b = crmClientsList.filter(c => (c.type || '').toUpperCase() === 'B2B').length;
+            const totalLtv = crmClientsList.reduce((sum, c) => sum + (parseFloat(c.total_spent) || 0), 0);
+
+            const totEl = document.getElementById('crm-total-clients');
+            const b2cEl = document.getElementById('crm-total-b2c');
+            const b2bEl = document.getElementById('crm-total-b2b');
+            const ltvEl = document.getElementById('crm-total-ltv');
+
+            if (totEl) totEl.textContent = total;
+            if (b2cEl) b2cEl.textContent = b2c;
+            if (b2bEl) b2bEl.textContent = b2b;
+            if (ltvEl) ltvEl.textContent = "R$ " + totalLtv.toFixed(2).replace('.', ',');
+        }
+
+        function filterClientsTable() {
+            const query = (document.getElementById('crm-search-input')?.value || '').toLowerCase().trim();
+            const filterType = document.getElementById('crm-filter-type')?.value || 'ALL';
+
+            const filtered = crmClientsList.filter(c => {
+                const matchesQuery = !query || 
+                    (c.name || '').toLowerCase().includes(query) || 
+                    (c.whatsapp || '').includes(query) ||
+                    (c.city || '').toLowerCase().includes(query) ||
+                    (c.neighborhood || '').toLowerCase().includes(query);
+                
+                const matchesType = filterType === 'ALL' || (c.type || 'B2C').toUpperCase() === filterType.toUpperCase();
+
+                return matchesQuery && matchesType;
+            });
+
+            renderClientsTable(filtered);
+        }
+
+        function renderClientsTable(list) {
+            const tbody = document.getElementById('crm-clients-tbody');
+            if (!tbody) return;
+
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-zinc-500 font-mono text-xs">
+                            Nenhum cliente localizado no CRM.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = list.map(c => {
+                const isB2B = (c.type || '').toUpperCase() === 'B2B';
+                const typeBadge = isB2B 
+                    ? `<span class="px-2 py-0.5 bg-purple-950/80 border border-purple-500 text-purple-400 text-[10px] font-bold">B2B • EMPRESA</span>`
+                    : `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-cyan-400 text-[10px] font-bold">B2C • GAMER</span>`;
+                
+                const ltvVal = parseFloat(c.total_spent || 0);
+                const ltvText = ltvVal > 0 ? `R$ ${ltvVal.toFixed(2).replace('.', ',')}` : `<span class="text-zinc-600">R$ 0,00</span>`;
+                const locationText = c.neighborhood ? `${escapeHtml(c.neighborhood)}, ${escapeHtml(c.city || 'Bragança')}` : (c.city || 'Bragança Paulista');
+                const cleanPhone = (c.whatsapp || '').replace(/\D/g, '');
+
+                return `
+                    <tr class="hover:bg-zinc-950/80 transition-colors">
+                        <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2.5">
+                            <div class="w-7 h-7 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-brand text-xs font-black">
+                                ${(c.name || 'C').charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <span>${escapeHtml(c.name || 'Cliente')}</span>
+                                ${c.document ? `<span class="text-[10px] text-zinc-500 block font-normal">Doc: ${escapeHtml(c.document)}</span>` : ''}
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-3">${typeBadge}</td>
+                        <td class="py-3.5 px-3 font-mono">
+                            <a href="https://wa.me/55${cleanPhone}" target="_blank" class="text-zinc-300 hover:text-brand flex items-center gap-1.5">
+                                <i data-lucide="message-circle" class="w-3.5 h-3.5 text-brand"></i>
+                                ${escapeHtml(c.whatsapp || '-')}
+                            </a>
+                        </td>
+                        <td class="py-3.5 px-3 text-zinc-400">${locationText}</td>
+                        <td class="py-3.5 px-3 text-center">
+                            <span class="px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-white font-bold text-xs">${c.total_orders || 0}</span>
+                        </td>
+                        <td class="py-3.5 px-3 text-right font-bold text-brand">${ltvText}</td>
+                        <td class="py-3.5 px-4 text-center">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="openClientDetailModal('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand text-white hover:text-brand text-[11px] font-bold flex items-center gap-1 transition-colors">
+                                    <i data-lucide="eye" class="w-3 h-3"></i> Perfil 360°
+                                </button>
+                                <button onclick="quickNewOSForClient('${escapeHtml(c.name)}', '${escapeHtml(c.whatsapp)}')" class="px-2.5 py-1 bg-brand text-black hover:bg-white text-[11px] font-black uppercase flex items-center gap-1 transition-colors">
+                                    <i data-lucide="plus" class="w-3 h-3"></i> OS
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function openNewClientModal() {
+            document.getElementById('modal-client-id').value = '';
+            document.getElementById('modal-client-name').value = '';
+            document.getElementById('modal-client-whatsapp').value = '';
+            document.getElementById('modal-client-type').value = 'B2C';
+            document.getElementById('modal-client-doc').value = '';
+            document.getElementById('modal-client-email').value = '';
+            document.getElementById('modal-client-street').value = '';
+            document.getElementById('modal-client-neighborhood').value = '';
+            document.getElementById('modal-client-notes').value = '';
+            document.getElementById('client-modal-title').textContent = 'Cadastrar Novo Cliente no CRM';
+            document.getElementById('client-modal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeClientModal() {
+            document.getElementById('client-modal').classList.add('hidden');
+        }
+
+        async function handleSaveClient(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-client');
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Salvando...`;
+
+            const client = getSupabase();
+            const clientId = document.getElementById('modal-client-id').value;
+            const name = document.getElementById('modal-client-name').value.trim();
+            const rawPhone = document.getElementById('modal-client-whatsapp').value.replace(/\D/g, '');
+            const whatsapp = (rawPhone.length >= 12 && rawPhone.startsWith('55')) ? rawPhone.substring(2) : rawPhone;
+            const type = document.getElementById('modal-client-type').value;
+            const doc = document.getElementById('modal-client-doc').value.trim() || null;
+            const email = document.getElementById('modal-client-email').value.trim() || null;
+            const street = document.getElementById('modal-client-street').value.trim() || null;
+            const neighborhood = document.getElementById('modal-client-neighborhood').value.trim() || null;
+            const notes = document.getElementById('modal-client-notes').value.trim() || null;
+
+            const payload = {
+                name: name,
+                whatsapp: whatsapp || '11999999999',
+                type: type,
+                document: doc,
+                email: email,
+                street: street,
+                neighborhood: neighborhood,
+                notes: notes,
+                city: 'Bragança Paulista',
+                status: 'Ativo'
+            };
+
+            try {
+                if (clientId) {
+                    await client.from('clients').update(payload).eq('id', clientId);
+                } else {
+                    await client.from('clients').insert(payload);
+                }
+                closeClientModal();
+                await loadClients();
+            } catch (err) {
+                alert('Erro ao salvar cliente: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Salvar Cliente`;
+                if (window.lucide) lucide.createIcons();
+            }
+        }
+
+        async function openClientDetailModal(clientId) {
+            const clientObj = crmClientsList.find(c => c.id === clientId);
+            if (!clientObj) return;
+
+            document.getElementById('cdetail-name').textContent = clientObj.name || 'Cliente';
+            document.getElementById('cdetail-phone').textContent = clientObj.whatsapp || '-';
+            document.getElementById('cdetail-address').textContent = clientObj.neighborhood ? `${clientObj.neighborhood}, ${clientObj.city || 'Bragança'}` : (clientObj.city || 'Bragança Paulista');
+            document.getElementById('cdetail-orders-count').textContent = clientObj.total_orders || '0';
+            
+            const ltv = parseFloat(clientObj.total_spent || 0);
+            document.getElementById('cdetail-ltv').textContent = "R$ " + ltv.toFixed(2).replace('.', ',');
+
+            const isB2B = (clientObj.type || '').toUpperCase() === 'B2B';
+            document.getElementById('cdetail-type-badge').textContent = `${isB2B ? 'B2B • EMPRESA' : 'B2C • CONSUMIDOR'} • Cadastrado em ${new Date(clientObj.created_at || Date.now()).toLocaleDateString('pt-BR')}`;
+
+            const cleanPhone = (clientObj.whatsapp || '').replace(/\D/g, '');
+            document.getElementById('cdetail-whatsapp-btn').href = `https://wa.me/55${cleanPhone}`;
+
+            selectedClientForOS = clientObj;
+
+            // Carrega ordens de serviço do cliente
+            const client = getSupabase();
+            const tbody = document.getElementById('cdetail-orders-tbody');
+            tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Buscando histórico...</td></tr>`;
+
+            try {
+                const { data: orders, error } = await client
+                    .from('work_orders')
+                    .select('*')
+                    .eq('client_id', clientId)
+                    .order('created_at', { ascending: false });
+
+                if (!error && orders && orders.length > 0) {
+                    tbody.innerHTML = orders.map(o => {
+                        const total = parseFloat(o.total_order || (parseFloat(o.total_parts || 0) + parseFloat(o.total_labor || 0) + parseFloat(o.pickup_fee || 0))) || 0;
+                        return `
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-2.5 px-3 font-bold text-brand">#${o.os_number}</td>
+                                <td class="py-2.5 px-3 text-white">${escapeHtml(o.device_brand || '')} ${escapeHtml(o.device_model || '')}</td>
+                                <td class="py-2.5 px-3">
+                                    <span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 text-[10px] font-bold uppercase">${escapeHtml(o.status || 'Triagem')}</span>
+                                </td>
+                                <td class="py-2.5 px-3 text-right font-bold text-white">R$ ${total.toFixed(2).replace('.', ',')}</td>
+                                <td class="py-2.5 px-3 text-center">
+                                    <button onclick="closeClientDetailModal(); openOSModal(${o.os_number})" class="px-2 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand text-zinc-300 hover:text-brand text-[10px] font-bold uppercase">
+                                        Abrir OS
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada para este cliente.</td></tr>`;
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+
+            document.getElementById('client-detail-modal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeClientDetailModal() {
+            document.getElementById('client-detail-modal').classList.add('hidden');
+        }
+
+        function openNewOSForClient() {
+            if (!selectedClientForOS) return;
+            closeClientDetailModal();
+            quickNewOSForClient(selectedClientForOS.name, selectedClientForOS.whatsapp);
+        }
+
+        function quickNewOSForClient(name, phone) {
+            openIntakeModal();
+            document.getElementById('intake-client-name').value = name || '';
+            document.getElementById('intake-client-phone').value = phone || '';
+        }
+
 
         window.addEventListener('DOMContentLoaded', () => {
             if (window.lucide) lucide.createIcons();
