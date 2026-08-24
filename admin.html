@@ -693,16 +693,11 @@
                     </div>
                 </div>
 
-                <!-- Mão de Obra e Cortesia -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono">
-                    <div class="bg-zinc-950 border border-zinc-800 p-3.5">
-                        <label class="block text-brand font-bold uppercase mb-1.5">Mão de Obra do Reparo (R$)</label>
-                        <input type="number" step="0.01" id="budget-modal-labor" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-base font-bold focus:outline-none focus:border-brand">
-                    </div>
-                    <div class="bg-zinc-950 border border-zinc-800 p-3.5">
-                        <label class="block text-brand font-bold uppercase mb-1.5">Engenharia de Software</label>
-                        <input type="text" disabled value="R$ 0,00 (🎁 CORTESIA EXCLUSIVA IFL)" class="w-full bg-zinc-900/60 border border-zinc-800 px-3 py-2 text-brand font-mono text-xs">
-                    </div>
+                <!-- Mão de Obra do Reparo -->
+                <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono">
+                    <label class="block text-brand font-bold uppercase mb-1.5">Mão de Obra do Reparo / Serviço (R$)</label>
+                    <input type="number" step="0.01" id="budget-modal-labor" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-lg font-bold focus:outline-none focus:border-brand">
+                    <span class="text-[10px] text-zinc-500 block mt-1">Valor da engenharia técnica cobrado do cliente.</span>
                 </div>
 
                 <!-- Resumo Consolidado & Lucro Real -->
@@ -1557,7 +1552,7 @@ Qualquer dúvida, estou à disposição!
             }
 
             closeBudgetModal();
-            loadKanbanBoard();
+            loadSupabaseData();
 
             // Mensagem de Orçamento Pronto para WhatsApp
             const partsPriceTotal = parseFloat(document.getElementById('budget-modal-parts-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
