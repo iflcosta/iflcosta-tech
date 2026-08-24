@@ -602,12 +602,24 @@
             });
 
             const itemsList = wo.items || wo.work_order_items || [];
-            const totalParts = parseFloat(wo.total_parts || 0.00);
-            const isApproved = rawStatus.includes("aprovad") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || rawStatus.includes("encomendada");
+            let computedPartsSum = 0;
+            let computedLaborSum = 0;
+            itemsList.forEach(it => {
+                const p = parseFloat(it.unit_price) || 0;
+                const q = parseInt(it.quantity) || 1;
+                if (it.item_type === 'Labor') {
+                    computedLaborSum += p * q;
+                } else {
+                    computedPartsSum += p * q;
+                }
+            });
+            const totalParts = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : computedPartsSum;
+            const hasParts = totalParts > 0;
+            const isApproved = rawStatus.includes("aprovad") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || (hasParts && (rawStatus.includes("encomendada") || wo.parts_deposit_paid));
 
-            const isTriagem = rawStatus.includes("triagem") && itemsList.length === 0;
+            const isTriagem = (rawStatus.includes("triagem") || !rawStatus) && itemsList.length === 0;
             const isOrcamento = (rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || rawStatus.includes("aprovad") || itemsList.length > 0) && !rawStatus.includes("bancada") && !rawStatus.includes("qa") && !rawStatus.includes("pronto") && !rawStatus.includes("entregue");
-            const isBancada = rawStatus === 'na_bancada' || rawStatus.includes("execucao") || rawStatus.includes("montagem");
+            const isBancada = rawStatus === 'na_bancada' || (rawStatus.includes("bancada") && !rawStatus.includes("fila")) || rawStatus.includes("execucao") || rawStatus.includes("montagem");
             const isQA = rawStatus.includes("qa") || rawStatus.includes("teste") || rawStatus.includes("estresse");
             const isPronto = rawStatus.includes("pronto") || rawStatus.includes("entregue") || rawStatus.includes("finalizado") || rawStatus.includes("concluido");
 
@@ -616,26 +628,31 @@
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
                 if (step1) step1.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse";
             } else if (isOrcamento) {
-                if (rawStatus.includes("fila") || (rawStatus.includes("aprovad") && totalParts === 0)) {
-                    if (statusBadgeText) statusBadgeText.textContent = "02. APROVADO • NA FILA DE BANCADA";
-                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                    if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                    if (step2) step2.className = "border-2 border-brand bg-brand text-black p-3 font-bold";
-                } else if (rawStatus.includes("encomendada")) {
-                    if (statusBadgeText) statusBadgeText.textContent = "02. SINAL PAGO • PEÇA EM TRÂNSITO";
-                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                    if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                    if (step2) step2.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold";
-                } else if (rawStatus.includes("sinal") && totalParts > 0) {
-                    if (statusBadgeText) statusBadgeText.textContent = "02. AGUARDANDO SINAL DE PEÇAS";
-                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                    if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                    if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
+                if (!hasParts) {
+                    if (isApproved) {
+                        if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO APROVADO • NA FILA DE BANCADA";
+                        if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step2) step2.className = "border-2 border-brand bg-brand text-black p-3 font-bold";
+                    } else {
+                        if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO DISPONÍVEL PARA APROVAÇÃO";
+                        if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
+                    }
                 } else {
-                    if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO DISPONÍVEL";
-                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                    if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                    if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
+                    const isSinalPago = rawStatus.includes("encomendada") || wo.parts_deposit_paid;
+                    if (isSinalPago) {
+                        if (statusBadgeText) statusBadgeText.textContent = "02. SINAL PAGO • PEÇA EM TRÂNSITO";
+                        if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step2) step2.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold";
+                    } else {
+                        if (statusBadgeText) statusBadgeText.textContent = "02. AGUARDANDO SINAL DE PEÇAS";
+                        if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
+                    }
                 }
             } else if (isBancada) {
                 if (statusBadgeText) statusBadgeText.textContent = "03. EM EXECUÇÃO NA BANCADA";
@@ -747,7 +764,7 @@
                 if (budgetCard) {
                     let bannerHtml = '';
                     
-                    if (totalParts > 0) {
+                    if (hasParts) {
                         if (rawStatus.includes("encomendada") || wo.parts_deposit_paid) {
                             bannerHtml = `
                                 <div class="p-4 bg-brand/10 border-2 border-brand mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -821,7 +838,7 @@
                                 <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Composição de Peças & Mão de Obra ]</span>
                                 <h3 class="text-xl sm:text-2xl font-extrabold text-white">Discriminação do Orçamento</h3>
                             </div>
-                            <span class="text-xs font-mono text-zinc-400">Status Peças: <strong class="text-brand">${wo.parts_deposit_paid ? 'Sinal Quitado ✓' : 'Sinal Pendente'}</strong></span>
+                            <span class="text-xs font-mono text-zinc-400">Status Peças: <strong class="text-brand">${!hasParts ? 'Não Requer Peças (100% Serviço)' : (wo.parts_deposit_paid ? 'Sinal Quitado ✓' : 'Sinal Pendente')}</strong></span>
                         </div>
 
                         <div class="overflow-x-auto">
@@ -849,7 +866,7 @@
                                 ${!isApproved ? `
                                     <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token)}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
                                         <i data-lucide="check-circle" class="w-4 h-4"></i>
-                                        Aprovar Orçamento & Iniciar
+                                        ${hasParts ? 'Aprovar Orçamento & Solicitar Peças' : 'Aprovar Orçamento & Autorizar Início'}
                                     </button>
                                 ` : `
                                     <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center gap-2">

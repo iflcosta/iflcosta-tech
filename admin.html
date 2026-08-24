@@ -563,8 +563,9 @@
                         <label class="text-[10px] text-zinc-400 font-bold uppercase">Mover p/ Coluna:</label>
                         <select id="detail-status-select" onchange="handleManualStatusChange(this.value)" class="sm:col-span-2 bg-zinc-900 border border-zinc-700 px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-brand">
                             <option value="Triagem">01. Triagem (Diagnóstico)</option>
-                            <option value="Aguardando_Sinal_Peca">02. Orçamento (Aguardando Sinal)</option>
-                            <option value="Peca_Encomendada">02. Peça Encomendada</option>
+                            <option value="Diagnostico_Concluido">02. Orçamento (Diagnóstico Concluído)</option>
+                            <option value="Aguardando_Sinal_Peca">02. Aguardando Sinal de Peças</option>
+                            <option value="Peca_Encomendada">02. Peça Encomendada (Sinal Quitado)</option>
                             <option value="Na_Bancada">03. Na Bancada (Montagem/Reparo)</option>
                             <option value="Teste_Estresse_QA">04. Testes QA (FurMark/AIDA64)</option>
                             <option value="Pronto">05. Pronto (Aguardando Retirada)</option>
@@ -1052,17 +1053,15 @@ Qualquer dúvida, estou à disposição!
                     colTriagem.appendChild(card);
                 } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
                     cO++;
-                    const isFila = s.includes('fila') || (s.includes('aprovad') && !s.includes('sinal'));
-                    const isEncomendada = s.includes('encomendada');
-                    const isSinalPendente = s.includes('sinal') && !wo.parts_deposit_paid;
+                    const totalParts = parseFloat(wo.total_parts || 0);
+                    const hasParts = totalParts > 0;
+                    const isEncomendada = s.includes('encomendada') || (hasParts && wo.parts_deposit_paid);
+                    const isSinalPendente = hasParts && !isEncomendada && (s.includes('sinal') || !wo.parts_deposit_paid);
+                    const isFila = s.includes('fila') || s.includes('aprovad') || (!hasParts && s.includes('diagnostico'));
                     
                     let badgeLabel = 'Orçamento';
                     let badgeColor = 'text-yellow-400';
-                    if (isFila) {
-                        card.className += " border-2 border-brand bg-zinc-900";
-                        badgeLabel = '⏳ Aprovado (Na Fila)';
-                        badgeColor = 'text-brand font-black';
-                    } else if (isEncomendada) {
+                    if (isEncomendada) {
                         card.className += " border-cyan-700 hover:border-cyan-400";
                         badgeLabel = '📦 Peça em Trânsito';
                         badgeColor = 'text-cyan-300 font-bold';
@@ -1070,16 +1069,20 @@ Qualquer dúvida, estou à disposição!
                         card.className += " border-yellow-800/80 hover:border-yellow-400";
                         badgeLabel = '💳 Sinal Pendente';
                         badgeColor = 'text-yellow-400 font-bold';
+                    } else if (isFila) {
+                        card.className += " border-2 border-brand bg-zinc-900";
+                        badgeLabel = '✅ Aprovado (Na Fila)';
+                        badgeColor = 'text-brand font-black';
                     } else {
                         card.className += " border-yellow-800/80 hover:border-yellow-400";
-                        badgeLabel = '📋 Orçamento Enviado';
+                        badgeLabel = '📋 Orçamento Disponível';
                         badgeColor = 'text-zinc-400';
                     }
 
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
                             <span class="text-white font-bold font-mono">#${wo.os_number || '1049'}</span>
-                            <span class="text-[10px] text-zinc-500 font-mono">${isFila ? 'Fila' : (isEncomendada ? 'Peça' : 'Proposta')}</span>
+                            <span class="text-[10px] text-zinc-500 font-mono">${hasParts ? (isEncomendada ? 'Peça OK' : 'Sinal') : 'Serviço'}</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Orçamento gerado.')}</p>
@@ -1234,6 +1237,8 @@ Qualquer dúvida, estou à disposição!
             container.innerHTML = '';
 
             const s = (wo.status || 'Triagem').toLowerCase();
+            const totalParts = parseFloat(wo.total_parts || 0);
+            const hasParts = totalParts > 0;
 
             if (s.includes('triagem')) {
                 container.innerHTML = `
@@ -1245,52 +1250,41 @@ Qualquer dúvida, estou à disposição!
                     </button>
                 `;
             } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
-                const isFila = s.includes('fila') || (s.includes('aprovad') && !s.includes('sinal'));
-                const isEncomendada = s.includes('encomendada');
-                const isSinalPendente = s.includes('sinal') && !wo.parts_deposit_paid;
-
-                if (isFila) {
-                    container.innerHTML = `
-                        <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] text-sm">
-                            <i data-lucide="wrench" class="w-5 h-5"></i> 🛠️ Puxar da Fila & Iniciar Execução na Bancada
-                        </button>
-                        <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                            <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
-                        </button>
-                    `;
-                } else if (isEncomendada) {
+                if (!hasParts) {
+                    // Sem peças: 100% Mão de Obra / Serviços
                     container.innerHTML = `
                         <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-cyan-500 text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.4)] text-sm">
-                            <i data-lucide="package-check" class="w-5 h-5"></i> 📦 Peças Recebidas no Hub • Iniciar Bancada
-                        </button>
-                        <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                            <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
-                        </button>
-                    `;
-                } else if (isSinalPendente) {
-                    container.innerHTML = `
-                        <button onclick="advanceOSStatus('Peca_Encomendada')" class="px-4 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                            <i data-lucide="check-check" class="w-4 h-4"></i> 💰 Confirmar Sinal das Peças Pago
-                        </button>
-                        <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-3 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5">
-                            <i data-lucide="play" class="w-4 h-4"></i> Iniciar Direto na Bancada
+                            <i data-lucide="play" class="w-5 h-5"></i> 🛠️ Iniciar Execução na Bancada
                         </button>
                         <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
                             <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
                         </button>
                     `;
                 } else {
-                    container.innerHTML = `
-                        <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-4 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5">
-                            <i data-lucide="check" class="w-4 h-4"></i> Registrar Aprovação Manual
-                        </button>
-                        <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-3 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5">
-                            <i data-lucide="play" class="w-4 h-4"></i> Iniciar Direto na Bancada
-                        </button>
-                        <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                            <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
-                        </button>
-                    `;
+                    // Com Peças
+                    const isEncomendada = s.includes('encomendada') || wo.parts_deposit_paid;
+                    if (isEncomendada) {
+                        container.innerHTML = `
+                            <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-cyan-500 text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.4)] text-sm">
+                                <i data-lucide="package-check" class="w-5 h-5"></i> 📦 Peças Recebidas no Hub • Iniciar Bancada
+                            </button>
+                            <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
+                            </button>
+                        `;
+                    } else {
+                        container.innerHTML = `
+                            <button onclick="advanceOSStatus('Peca_Encomendada')" class="px-4 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                                <i data-lucide="check-check" class="w-4 h-4"></i> 💰 Confirmar Sinal das Peças Pago
+                            </button>
+                            <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-3 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5">
+                                <i data-lucide="play" class="w-4 h-4"></i> Iniciar Direto (Peça em Estoque)
+                            </button>
+                            <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
+                            </button>
+                        `;
+                    }
                 }
             } else if (s.includes('bancada')) {
                 container.innerHTML = `

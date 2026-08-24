@@ -478,8 +478,12 @@ BEGIN
     EXCEPTION WHEN OTHERS THEN
         IF p_new_status ILIKE '%triagem%' THEN
             v_status_enum := 'Triagem';
-        ELSIF p_new_status ILIKE '%orcamento%' OR p_new_status ILIKE '%aprovacao%' THEN
-            v_status_enum := 'Diagnostico_Concluido';
+        ELSIF p_new_status ILIKE '%aprovad%' OR p_new_status ILIKE '%orcamento%' OR p_new_status ILIKE '%aprovacao%' OR p_new_status ILIKE '%diagnostico%' OR p_new_status ILIKE '%fila%' THEN
+            IF COALESCE(v_wo.total_parts, 0) > 0 AND NOT COALESCE(v_wo.parts_deposit_paid, false) THEN
+                v_status_enum := 'Aguardando_Sinal_Peca';
+            ELSE
+                v_status_enum := 'Diagnostico_Concluido';
+            END IF;
         ELSIF p_new_status ILIKE '%sinal%' THEN
             v_status_enum := 'Aguardando_Sinal_Peca';
         ELSIF p_new_status ILIKE '%encomendada%' OR p_new_status ILIKE '%pago%' THEN
@@ -495,14 +499,18 @@ BEGIN
         ELSIF p_new_status ILIKE '%cancel%' THEN
             v_status_enum := 'Cancelado';
         ELSE
-            v_status_enum := 'Na_Bancada';
+            v_status_enum := v_wo.status;
         END IF;
     END;
 
     UPDATE work_orders
     SET 
         status = v_status_enum,
-        parts_deposit_paid = CASE WHEN v_status_enum IN ('Peca_Encomendada', 'Na_Bancada', 'Teste_Estresse_QA', 'Pronto', 'Entregue') THEN true ELSE parts_deposit_paid END,
+        parts_deposit_paid = CASE 
+            WHEN v_status_enum = 'Peca_Encomendada' THEN true 
+            WHEN COALESCE(total_parts, 0) = 0 THEN true
+            ELSE parts_deposit_paid 
+        END,
         stress_test_aida64_temp_max = COALESCE(p_stress_cpu, stress_test_aida64_temp_max),
         stress_test_furmark_temp_max = COALESCE(p_stress_gpu, stress_test_furmark_temp_max),
         stress_test_crystaldisk_health = COALESCE(p_stress_ssd, stress_test_crystaldisk_health),
@@ -529,7 +537,7 @@ GRANT EXECUTE ON FUNCTION rpc_advance_work_order_status(INT, TEXT, INT, INT, INT
 -- ------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION rpc_advance_work_order_status_by_token(
     p_token UUID,
-    p_new_status TEXT
+    p_new_status TEXT DEFAULT 'Aprovado_Pelo_Cliente'
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -538,27 +546,36 @@ SET search_path = public, pg_temp
 AS $$
 DECLARE
     v_wo RECORD;
-    v_status_enum os_status_enum;
+    v_target_status os_status_enum;
 BEGIN
     SELECT * INTO v_wo FROM work_orders WHERE public_tracking_token = p_token;
     IF NOT FOUND THEN
         RETURN JSONB_BUILD_OBJECT('success', false, 'error', 'Token de OS inválido.');
     END IF;
 
-    BEGIN
-        v_status_enum := p_new_status::os_status_enum;
-    EXCEPTION WHEN OTHERS THEN
-        v_status_enum := 'Aguardando_Sinal_Peca';
-    END;
+    -- Se o orçamento tem peças (> 0), transiciona para Aguardando_Sinal_Peca
+    -- Se o orçamento é 100% mão de obra / serviços (0 peças), permanece em Diagnostico_Concluido aguardando início técnico
+    -- Jamais pula direto para Na_Bancada sem a ação explícita do técnico no Cockpit Admin
+    IF COALESCE(v_wo.total_parts, 0) > 0 THEN
+        v_target_status := 'Aguardando_Sinal_Peca';
+    ELSE
+        v_target_status := 'Diagnostico_Concluido';
+    END IF;
 
     UPDATE work_orders
     SET 
-        status = v_status_enum,
-        parts_deposit_paid = CASE WHEN v_status_enum IN ('Peca_Encomendada', 'Na_Bancada', 'Teste_Estresse_QA', 'Pronto', 'Entregue') THEN true ELSE parts_deposit_paid END,
+        status = v_target_status,
+        parts_deposit_paid = CASE WHEN COALESCE(total_parts, 0) = 0 THEN true ELSE parts_deposit_paid END,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = v_wo.id;
 
-    RETURN JSONB_BUILD_OBJECT('success', true, 'os_number', v_wo.os_number, 'status', v_status_enum::TEXT);
+    RETURN JSONB_BUILD_OBJECT(
+        'success', true, 
+        'os_number', v_wo.os_number, 
+        'status', v_target_status::TEXT,
+        'total_parts', v_wo.total_parts,
+        'message', 'Orçamento aprovado pelo cliente com sucesso.'
+    );
 END;
 $$;
 
