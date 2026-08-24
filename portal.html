@@ -988,15 +988,7 @@
                             tbody.appendChild(tr);
                         });
 
-                        // Linha de Cortesia
-                        const trCortesia = document.createElement("tr");
-                        trCortesia.className = "bg-brand/5";
-                        trCortesia.innerHTML = `
-                            <td class="py-3 px-3 font-bold text-brand">Engenharia Software</td>
-                            <td class="py-3 px-3 text-zinc-300">Otimização Windows 11, Ajuste de BIOS & Perfil Térmico</td>
-                            <td class="py-3 px-3 text-right font-bold text-brand">R$ 0,00 (🎁 CORTESIA)</td>
-                        `;
-                        tbody.appendChild(trCortesia);
+
 
                         const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum);
                         const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;

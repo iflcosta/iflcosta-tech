@@ -259,18 +259,11 @@
                             </div>
                         </div>
 
-                        <!-- Bloco 3: Mão de Obra e Cortesia -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-xs">
-                            <div class="bg-zinc-950 border border-zinc-800 p-4">
-                                <label class="block text-brand font-bold uppercase mb-2">Mão de Obra do Serviço / Montagem (R$)</label>
-                                <input type="number" step="0.01" id="labor-price" value="0.00" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-base font-bold focus:outline-none focus:border-brand">
-                                <span class="text-[11px] text-zinc-500 block mt-1">Defina a mão de obra conforme o serviço executado</span>
-                            </div>
-                            <div class="bg-zinc-950 border border-zinc-800 p-4">
-                                <label class="block text-brand font-bold uppercase mb-2">Engenharia de Software & Otimização</label>
-                                <input type="text" disabled value="R$ 0,00 (🎁 CORTESIA / BRINDE EXCLUSIVO IFL)" class="w-full bg-zinc-900/60 border border-zinc-800 px-3.5 py-2.5 text-brand font-mono text-sm">
-                                <span class="text-[11px] text-zinc-500 block mt-1">Ajuste de BIOS, curva térmica e Windows 11 limpo</span>
-                            </div>
+                        <!-- Bloco 3: Mão de Obra do Serviço -->
+                        <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono text-xs">
+                            <label class="block text-brand font-bold uppercase mb-2">Mão de Obra do Serviço / Montagem Especializada (R$)</label>
+                            <input type="number" step="0.01" id="labor-price" value="0.00" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-base font-bold focus:outline-none focus:border-brand">
+                            <span class="text-[11px] text-zinc-500 block mt-1">Defina o valor da mão de obra de acordo com a complexidade técnica do serviço</span>
                         </div>
 
                         <!-- Bloco 4: Resumo Consolidado & Seu Lucro Real -->
