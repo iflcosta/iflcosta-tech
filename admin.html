@@ -46,7 +46,7 @@
                         <i data-lucide="zap" class="w-4 h-4"></i>
                         <span class="hidden sm:inline">Check-in</span> Entrada (30s)
                     </button>
-                    <a href="portal.html" target="_blank" class="hidden sm:flex px-3 py-2 sm:px-4 sm:py-2.5 bg-black border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1">
+                    <a href="/status" target="_blank" class="hidden sm:flex px-3 py-2 sm:px-4 sm:py-2.5 bg-black border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1">
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal do Cliente
                     </a>
                 </div>
@@ -884,7 +884,7 @@ Aqui é da *IFL Costa Tech*.
 Sua proposta técnica para a *OS #1051* está pronta com peças de alta durabilidade e laudo de estresse incluso!
 
 📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*
-👉 https://iflcosta.tech/portal.html?os=1051
+👉 https://iflcosta.tech/status?os=1051
 
 Qualquer dúvida, estou à disposição!
             </div>
@@ -1238,7 +1238,7 @@ Qualquer dúvida, estou à disposição!
             renderDetailActionButtons(wo);
 
             const tokenParam = wo.public_tracking_token ? `token=${wo.public_tracking_token}` : `os=${wo.os_number}`;
-            document.getElementById('detail-portal-link').href = `portal.html?${tokenParam}`;
+            document.getElementById('detail-portal-link').href = `/status?${tokenParam}`;
 
             document.getElementById('os-detail-modal').classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
@@ -1407,7 +1407,7 @@ Qualquer dúvida, estou à disposição!
             const eHand = String.fromCodePoint(0x1F449);
             const statusName = (wo.status || 'Triagem').replace(/_/g, ' ');
 
-            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IFL Costa Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/portal.html?${tokenParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IFL Costa Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/status?${tokenParam}\n\nQualquer dúvida, estamos à disposição!`;
             
             window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
@@ -1642,7 +1642,7 @@ Concluímos o diagnóstico e elaboração do orçamento da sua *OS #${budgetModa
 *Valor Total:* R$ ${grandTotal.toFixed(2).replace('.', ',')}${partsPriceTotal > 0 ? ` (Sinal de Peças: R$ ${partsPriceTotal.toFixed(2).replace('.', ',')})` : ''}
 
 > *Acesse o laudo e aprove o orçamento pelo link:* 
-https://iflcosta.tech/portal.html?${linkParam}
+https://iflcosta.tech/status?${linkParam}
 
 Ficamos no aguardo para iniciar a execução!`;
 
@@ -1744,7 +1744,7 @@ Ficamos no aguardo para iniciar a execução!`;
 
             // Mensagem de Comprovante de Custódia para WhatsApp (Formatação Nativa WhatsApp)
             const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `*Olá ${clientName}!*\nAqui é da *IFL Costa Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada especializada para diagnóstico técnico (OS #${finalOsNum}).\n\n> *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\nhttps://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const msg = `*Olá ${clientName}!*\nAqui é da *IFL Costa Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada especializada para diagnóstico técnico (OS #${finalOsNum}).\n\n> *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
@@ -2085,7 +2085,7 @@ Ficamos no aguardo para iniciar a execução!`;
 
             // Gera link mágico seguro com token UUID (Formatação Nativa WhatsApp)
             const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `*Olá ${clientName}!*\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n> *Acompanhe e aprove seu orçamento pelo link exclusivo:*\nhttps://iflcosta.tech/portal.html?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
+            const msg = `*Olá ${clientName}!*\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n> *Acompanhe e aprove seu orçamento pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
