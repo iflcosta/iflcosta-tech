@@ -918,6 +918,14 @@ Qualquer dúvida, estou à disposição!
         }
 
         // Sanitizador XSS Rigoroso
+        
+        function formatOSNumber(num) {
+            if (!num) return '082601';
+            const s = num.toString().trim();
+            if (s.length >= 6) return s;
+            return s.padStart(6, '0');
+        }
+
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)
@@ -1043,7 +1051,7 @@ Qualquer dúvida, estou à disposição!
                     card.className += " border-2 border-brand hover:bg-zinc-800";
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-brand font-bold">#${wo.os_number || '1050'}</span>
+                            <span class="text-brand font-bold">#${formatOSNumber(wo.os_number)}</span>
                             <span class="text-[10px] text-zinc-500">Recente</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
@@ -1086,7 +1094,7 @@ Qualquer dúvida, estou à disposição!
 
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-white font-bold font-mono">#${wo.os_number || '1049'}</span>
+                            <span class="text-white font-bold font-mono">#${formatOSNumber(wo.os_number)}</span>
                             <span class="text-[10px] text-zinc-400 font-mono px-1.5 py-0.5 bg-zinc-900 border border-zinc-800">${categoryTag}</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
@@ -1102,7 +1110,7 @@ Qualquer dúvida, estou à disposição!
                     card.className += " border-cyan-800/80 hover:border-cyan-400";
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-cyan-400 font-bold">#${wo.os_number || '1048'}</span>
+                            <span class="text-cyan-400 font-bold">#${formatOSNumber(wo.os_number)}</span>
                             <span class="text-[10px] text-brand">Sinal OK</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
@@ -1118,7 +1126,7 @@ Qualquer dúvida, estou à disposição!
                     card.className += " border-brand hover:bg-zinc-800";
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-brand font-bold">#${wo.os_number || '1047'}</span>
+                            <span class="text-brand font-bold">#${formatOSNumber(wo.os_number)}</span>
                             <span class="text-[10px] text-brand animate-pulse">Rodando QA</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
@@ -1135,7 +1143,7 @@ Qualquer dúvida, estou à disposição!
                     const isEntregue = s.includes('entregue');
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-white font-bold">#${wo.os_number || '1046'}</span>
+                            <span class="text-white font-bold">#${formatOSNumber(wo.os_number)}</span>
                             <span class="text-[10px] ${isEntregue ? 'text-zinc-400' : 'text-brand'}">${isEntregue ? 'Entregue' : 'Pronto'}</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
@@ -1399,7 +1407,7 @@ Qualquer dúvida, estou à disposição!
             const eHand = String.fromCodePoint(0x1F449);
             const statusName = (wo.status || 'Triagem').replace(/_/g, ' ');
 
-            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IFL Costa Tech*.\n\nInformamos que sua *OS #${wo.os_number}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/portal.html?${tokenParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IFL Costa Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/portal.html?${tokenParam}\n\nQualquer dúvida, estamos à disposição!`;
             
             window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
