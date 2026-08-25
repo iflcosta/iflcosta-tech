@@ -61,34 +61,46 @@
                         Consulte seu <span class="text-brand">Serviço ou Projeto</span>
                     </h1>
                     <p class="text-zinc-400 text-sm sm:text-base mb-6 font-medium">
-                        Digite o número da sua OS (ex: <code class="text-brand font-mono">1001</code>), código do projeto ou acesse via link direto enviado no seu WhatsApp.
+                        Acompanhe o diagnóstico em tempo real, aprove orçamentos e visualize laudos técnicos digitais.
                     </p>
 
-                    <form id="search-form" class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                        <div class="sm:col-span-6 relative">
-                            <input 
-                                type="text" 
-                                id="search-input" 
-                                placeholder="Nº da OS (ex: 082601) ou Token..." 
-                                class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3.5 text-white font-mono text-sm sm:text-base focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
-                                required
-                            >
+                    <form id="search-form" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <div>
+                                <label for="search-input" class="block text-zinc-300 font-mono text-xs uppercase font-bold mb-1.5 flex items-center gap-1.5">
+                                    <i data-lucide="hash" class="w-3.5 h-3.5 text-brand"></i> Número da OS ou Token
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="search-input" 
+                                    placeholder="Ex: 082601 ou Token..." 
+                                    class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
+                                    required
+                                >
+                            </div>
+                            <div>
+                                <label for="search-phone" class="block text-zinc-300 font-mono text-xs uppercase font-bold mb-1.5 flex items-center gap-1.5">
+                                    <i data-lucide="phone" class="w-3.5 h-3.5 text-brand"></i> WhatsApp do Cliente
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    id="search-phone" 
+                                    placeholder="DDD + Telefone ou 4 últimos dígitos" 
+                                    class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
+                                >
+                            </div>
                         </div>
-                        <div class="sm:col-span-4 relative">
-                            <input 
-                                type="text" 
-                                id="search-phone" 
-                                placeholder="WhatsApp ou 4 últimos dígitos..." 
-                                class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3.5 text-white font-mono text-sm sm:text-base focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
-                            >
-                        </div>
-                        <div class="sm:col-span-2">
+
+                        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 pt-1">
+                            <span class="text-zinc-500 text-xs font-mono flex items-center gap-1.5">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i> Validação segura de titularidade (LGPD)
+                            </span>
                             <button 
                                 type="submit" 
-                                class="w-full h-full min-h-[48px] px-4 py-3.5 bg-brand text-black font-mono font-black text-sm sm:text-base uppercase tracking-wider hover:bg-white transition-colors border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2"
+                                class="w-full sm:w-auto px-6 py-3 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white transition-colors border-2 border-transparent shadow-[3px_3px_0px_0px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2"
                             >
                                 <i data-lucide="search" class="w-4 h-4"></i>
-                                Rastrear
+                                Consultar Ordem de Serviço
                             </button>
                         </div>
                     </form>
