@@ -22,6 +22,29 @@
 
     <!-- Supabase JS Client SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- ESTILOS EXCLUSIVOS PARA IMPRESSÃO DE ETIQUETA ADESIVA DE BANCADA -->
+    <style id="thermal-label-style">
+        @media print {
+            body * { visibility: hidden !important; }
+            #thermal-device-label, #thermal-device-label * { visibility: visible !important; }
+            #thermal-device-label {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 70mm !important;
+                max-width: 80mm !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                font-family: 'Courier New', Courier, monospace !important;
+                padding: 3mm !important;
+                border: 2px solid #000000 !important;
+                display: block !important;
+                z-index: 999999 !important;
+            }
+        }
+    </style>
+
 </head>
 <body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col justify-between">
 
@@ -554,6 +577,13 @@
                         <!-- Gerado dinamicamente por openOSDetailModal -->
                     </div>
 
+                    <!-- Botão de Impressão de Etiqueta Adesiva para Colar no Aparelho -->
+                    <div class="pt-2 border-t border-zinc-800">
+                        <button type="button" onclick="printCurrentDeviceLabel()" class="w-full py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white hover:border-brand font-bold uppercase text-xs flex items-center justify-center gap-2 transition-colors">
+                            <i data-lucide="tag" class="w-4 h-4 text-brand"></i> Imprimir Etiqueta da Bancada (Adesivo)
+                        </button>
+                    </div>
+
                     <!-- Seletor Rápido de Mudança Manual de Coluna / Status -->
                     <div class="pt-2 border-t border-zinc-900 grid grid-cols-1 sm:grid-cols-3 gap-2 items-center">
                         <label class="text-[10px] text-zinc-400 font-bold uppercase">Mover p/ Coluna:</label>
@@ -781,6 +811,18 @@
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">Marca & Modelo *</label>
                         <input type="text" id="intake-device-model" placeholder="Ex: Dell Inspiron 15 3520" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+
+                <!-- Rastreabilidade de Bancada (Serial & PIN de Acesso) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-black border border-zinc-800 p-3">
+                    <div>
+                        <label class="block text-brand font-bold uppercase mb-1 text-[11px]">Nº de Série / Service Tag</label>
+                        <input type="text" id="intake-device-serial" placeholder="Ex: Dell ST: 8G7J2X3 ou SN Carcaça" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-white font-mono text-xs focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-brand font-bold uppercase mb-1 text-[11px]">PIN / Senha de Acesso (Windows/BIOS)</label>
+                        <input type="text" id="intake-device-pin" placeholder="Ex: 1234, Sem Senha, ou PIN" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-white font-mono text-xs focus:outline-none focus:border-brand">
                     </div>
                 </div>
 
@@ -1292,6 +1334,26 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('count-bancada').textContent = cB;
             document.getElementById('count-qa').textContent = cQ;
             document.getElementById('count-pronto').textContent = cP;
+        }
+
+        
+        function printCurrentDeviceLabel() {
+            if (!selectedWorkOrder) return;
+            const wo = selectedWorkOrder;
+
+            document.getElementById('lbl-os-number').textContent = '#' + formatOSNumber(wo.os_number);
+            document.getElementById('lbl-date').textContent = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+            document.getElementById('lbl-client-name').textContent = wo.client_name || (wo.clients ? wo.clients.name : 'Cliente');
+            document.getElementById('lbl-client-phone').textContent = wo.client_whatsapp || '-';
+            document.getElementById('lbl-device').textContent = (wo.device_brand || 'Equipamento') + ' ' + (wo.device_model || '');
+            document.getElementById('lbl-serial').textContent = wo.device_serial_number || 'Não informado';
+            document.getElementById('lbl-pin').textContent = wo.device_access_pin || 'Sem senha';
+            
+            const rawDef = wo.reported_defect || 'Entrada em triagem';
+            const cleanDef = rawDef.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').trim();
+            document.getElementById('lbl-defect').textContent = cleanDef.substring(0, 80) + (cleanDef.length > 80 ? '...' : '');
+
+            window.print();
         }
 
         function openOSDetailModal(wo) {
@@ -2576,5 +2638,33 @@ Ficamos no aguardo para iniciar a execução!`;
             loadSupabaseData();
         });
     </script>
+
+    <!-- CONTAINER OCULTO PARA IMPRESSÃO DE ETIQUETA TÉRMICA ADESIVA DA BANCADA -->
+    <div id="thermal-device-label" class="hidden font-mono text-black bg-white p-2">
+        <div class="border-2 border-black p-2 space-y-1 text-center">
+            <div class="border-b border-black pb-1">
+                <span class="font-black text-xs uppercase block tracking-wider">IFL COSTA TECH // BANCADA</span>
+                <span class="text-[9px] block">Laboratório Especializado • (11) 91969-1542</span>
+            </div>
+            <div class="py-1 flex justify-between items-center border-b border-black">
+                <span class="text-xl font-black text-black" id="lbl-os-number">#082601</span>
+                <span class="text-[9px] font-bold" id="lbl-date">25/08/2026</span>
+            </div>
+            <div class="text-left text-[10px] space-y-0.5 pt-1">
+                <div><strong>CLIENTE:</strong> <span id="lbl-client-name">Lucas M.</span></div>
+                <div><strong>WHATSAPP:</strong> <span id="lbl-client-phone">(11) 99999-8888</span></div>
+                <div><strong>APARELHO:</strong> <span id="lbl-device">Dell Inspiron 15</span></div>
+                <div><strong>SN/TAG:</strong> <span id="lbl-serial">8G7J2X3</span></div>
+                <div><strong>PIN/ACESSO:</strong> <span id="lbl-pin">1234</span></div>
+                <div class="border-t border-dashed border-black pt-1">
+                    <strong>DEFEITO:</strong> <span id="lbl-defect">Não liga / Bipa 3x</span>
+                </div>
+            </div>
+            <div class="border-t border-black pt-1 text-[8px] uppercase font-bold text-center">
+                Acompanhe em: iflcosta.tech/status
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
