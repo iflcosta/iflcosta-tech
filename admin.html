@@ -1702,6 +1702,7 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
 
             loadSupabaseData();
+            setupAdminRealtime();
         }
 
         function handleManualStatusChange(newStatus) {
@@ -1939,6 +1940,7 @@ Qualquer dúvida, estou à disposição!
 
             closeBudgetModal();
             loadSupabaseData();
+            setupAdminRealtime();
 
             // Mensagem de Orçamento Pronto para WhatsApp
             const partsPriceTotal = parseFloat(document.getElementById('budget-modal-parts-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
@@ -2089,6 +2091,7 @@ Ficamos no aguardo para iniciar a execução!`;
             renderFinancialDashboard(currentWorkOrders);
             document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
+            setupAdminRealtime();
         }
 
         function handleServiceTypeChange(type) {
@@ -2278,6 +2281,54 @@ Ficamos no aguardo para iniciar a execução!`;
         } catch (e) {}
         currentWorkOrders = [];
 
+        
+        // =====================================================================
+        // MOTOR DE REALTIME AUTO-SYNC DO KANBAN & COCKPIT // IFL COSTA TECH
+        // =====================================================================
+        let adminRealtimeChannel = null;
+
+        function setupAdminRealtime() {
+            const client = getSupabase();
+            if (!client || adminRealtimeChannel) return;
+
+            try {
+                adminRealtimeChannel = client.channel('admin-kanban-sync')
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'work_orders'
+                    }, (payload) => {
+                        console.log("⚡ [Admin Realtime] Mudança detectada na tabela work_orders!", payload);
+                        loadSupabaseData();
+            setupAdminRealtime();
+                    })
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'work_order_items'
+                    }, () => {
+                        loadSupabaseData();
+            setupAdminRealtime();
+                    })
+                    .subscribe();
+            } catch (err) {
+                console.warn("Aviso ao ativar Realtime do Admin:", err);
+            }
+        }
+
+        // Heartbeat de Sincronização do Cockpit a cada 10 segundos
+        setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                loadSupabaseData();
+            setupAdminRealtime();
+            }
+        }, 10000);
+
+        window.addEventListener('focus', () => {
+            loadSupabaseData();
+            setupAdminRealtime();
+        });
+
         async function loadSupabaseData() {
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
@@ -2435,6 +2486,7 @@ Ficamos no aguardo para iniciar a execução!`;
             renderFinancialDashboard(currentWorkOrders);
             document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
+            setupAdminRealtime();
         }
 
         function closeModal() {
@@ -2756,6 +2808,7 @@ Ficamos no aguardo para iniciar a execução!`;
             if (window.lucide) lucide.createIcons();
             recalcTotals();
             loadSupabaseData();
+            setupAdminRealtime();
         });
     </script>
 

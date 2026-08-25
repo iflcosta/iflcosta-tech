@@ -1304,7 +1304,15 @@
         }
 
         // Função de Busca com Dupla Confirmação (OS + WhatsApp ou Token)
-        async function handleSearch(query, phone = '') {
+        async function handleSearch(query, phone = '', isSilent = false) {
+            if (!query) return;
+            activeTrackingQuery = query.trim();
+            activeTrackingPhone = phone ? phone.trim() : '';
+
+            if (!isSilent) {
+                hideAllContainers();
+                loadingState.classList.remove("hidden");
+            }
             if (!query) return;
             hideAllContainers();
             loadingState.classList.remove("hidden");
@@ -1352,6 +1360,7 @@
                     if (!error && data && data.found) {
                         loadingState.classList.add("hidden");
                         renderWorkOrderData(data);
+                        if (data.id) setupPortalRealtime(data.id);
                         hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
@@ -1375,6 +1384,7 @@
                     if (!error && data && data.found) {
                         loadingState.classList.add("hidden");
                         renderWorkOrderData(data);
+                        if (data.id) setupPortalRealtime(data.id);
                         hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
@@ -1395,6 +1405,7 @@
                     if (!error && data && data.found) {
                         loadingState.classList.add("hidden");
                         renderWorkOrderData(data);
+                        if (data.id) setupPortalRealtime(data.id);
                         hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
