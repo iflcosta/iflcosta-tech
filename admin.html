@@ -945,6 +945,10 @@ Qualquer dúvida, estou à disposição!
                 targetBtn.classList.add('text-brand', 'border-brand', 'bg-brand/5');
             }
 
+            if (tabId === 'financial') {
+                renderFinancialDashboard(currentWorkOrders);
+            }
+
             if (window.lucide) lucide.createIcons();
         }
 
@@ -1015,6 +1019,139 @@ Qualquer dúvida, estou à disposição!
                 created_at: new Date().toISOString()
             }
         ];
+
+        
+        // =====================================================================
+        // MOTOR FINANCEIRO & DRE EM TEMPO REAL (IFL COSTA TECH)
+        // =====================================================================
+        function renderFinancialDashboard(orders) {
+            if (!orders) orders = currentWorkOrders || [];
+
+            let totalGross = 0;
+            let totalLabor = 0;
+            let totalPartsSale = 0;
+            let totalPartsCost = 0;
+            let deliveredCount = 0;
+            let deliveredOrders = [];
+
+            orders.forEach(wo => {
+                const s = (wo.status || '').toLowerCase();
+                const labor = parseFloat(wo.total_labor || 0);
+                const parts = parseFloat(wo.total_parts || 0);
+                const cost = parseFloat(wo.total_parts_cost || (wo.parts_deposit_required ? parts * 0.6 : 0));
+                const total = parseFloat(wo.total_amount || (labor + parts));
+
+                // Considera faturamento de OSs Entregues, Prontas ou com Orçamento Aprovado
+                const isFaturada = s.includes('entregue') || s.includes('pronto') || s.includes('qa') || s.includes('bancada') || s.includes('fila') || s.includes('aprovad');
+                
+                if (isFaturada) {
+                    totalGross += total;
+                    totalLabor += labor;
+                    totalPartsSale += parts;
+                    totalPartsCost += cost;
+                }
+
+                if (s.includes('entregue') || s.includes('pronto')) {
+                    deliveredCount++;
+                    deliveredOrders.push(wo);
+                }
+            });
+
+            const netProfit = totalLabor + (totalPartsSale - totalPartsCost);
+            const marginPct = totalGross > 0 ? ((netProfit / totalGross) * 100).toFixed(0) : '100';
+            const avgTicket = deliveredCount > 0 ? (totalGross / deliveredCount) : (orders.length > 0 ? (totalGross / orders.length) : 0);
+
+            // 1. Atualizar KPIs do Topo do Painel
+            const statProfitEl = document.getElementById('stat-month-profit');
+            const statProfitSubEl = document.getElementById('stat-profit-subtitle');
+            if (statProfitEl) statProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) pronta(s)/entregue(s)`;
+
+            // 2. Atualizar Cards da Aba DRE
+            const grossEl = document.getElementById('dre-gross-revenue');
+            const grossSubEl = document.getElementById('dre-gross-subtitle');
+            const partsCostEl = document.getElementById('dre-parts-cost');
+            const netProfitEl = document.getElementById('dre-net-profit');
+            const marginPctEl = document.getElementById('dre-margin-pct');
+            const avgTicketEl = document.getElementById('dre-avg-ticket');
+            const deliveredCountEl = document.getElementById('dre-delivered-count');
+
+            if (grossEl) grossEl.textContent = 'R$ ' + totalGross.toFixed(2).replace('.', ',');
+            if (grossSubEl) grossSubEl.textContent = `${deliveredCount} OSs faturadas / ${orders.length} total`;
+            if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
+            if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
+            if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
+            if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
+
+            // 3. Atualizar Linhas da Tabela DRE
+            const lineLabor = document.getElementById('dre-line-labor');
+            const pctLabor = document.getElementById('dre-pct-labor');
+            const lineParts = document.getElementById('dre-line-parts-sale');
+            const pctParts = document.getElementById('dre-pct-parts');
+            const lineCogs = document.getElementById('dre-line-cogs');
+            const pctCogs = document.getElementById('dre-pct-cogs');
+            const lineNet = document.getElementById('dre-line-net-total');
+            const pctNet = document.getElementById('dre-pct-net-total');
+
+            if (lineLabor) lineLabor.textContent = 'R$ ' + totalLabor.toFixed(2).replace('.', ',');
+            if (pctLabor) pctLabor.textContent = totalGross > 0 ? `${((totalLabor / totalGross) * 100).toFixed(0)}%` : '0%';
+            if (lineParts) lineParts.textContent = 'R$ ' + totalPartsSale.toFixed(2).replace('.', ',');
+            if (pctParts) pctParts.textContent = totalGross > 0 ? `${((totalPartsSale / totalGross) * 100).toFixed(0)}%` : '0%';
+            if (lineCogs) lineCogs.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
+            if (pctCogs) pctCogs.textContent = totalGross > 0 ? `${((totalPartsCost / totalGross) * 100).toFixed(0)}%` : '0%';
+            if (lineNet) lineNet.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            if (pctNet) pctNet.textContent = `${marginPct}%`;
+
+            // 4. Renderizar Tabela Analítica de Ordens de Serviço
+            const tbody = document.getElementById('dre-orders-table-body');
+            const tableCountEl = document.getElementById('dre-os-table-count');
+            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
+
+            if (tbody) {
+                if (orders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>`;
+                } else {
+                    tbody.innerHTML = '';
+                    orders.forEach(wo => {
+                        const s = (wo.status || '').toLowerCase();
+                        const isEntregue = s.includes('entregue');
+                        const isPronto = s.includes('pronto');
+                        const isAtivo = !isEntregue && !isPronto;
+                        
+                        const dateStr = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+                        const labor = parseFloat(wo.total_labor || 0);
+                        const parts = parseFloat(wo.total_parts || 0);
+                        const total = parseFloat(wo.total_amount || (labor + parts));
+
+                        let statusBadgeHtml = '';
+                        if (isEntregue) {
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>`;
+                        } else if (isPronto) {
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>`;
+                        } else {
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>`;
+                        }
+
+                        const tr = document.createElement('tr');
+                        tr.className = isEntregue ? "bg-zinc-950 hover:bg-zinc-900" : "hover:bg-zinc-900";
+                        tr.innerHTML = `
+                            <td class="py-3 px-3 font-bold font-mono text-brand">#${formatOSNumber(wo.os_number)}</td>
+                            <td class="py-3 px-3 text-zinc-400">${dateStr}</td>
+                            <td class="py-3 px-3 font-bold text-white">${escapeHtml(wo.client_name || 'Cliente')}</td>
+                            <td class="py-3 px-3 text-zinc-300">${escapeHtml(wo.device_brand || '')} ${escapeHtml(wo.device_model || '')} <span class="text-zinc-500 block text-[10px]">${escapeHtml((wo.service_type || '').replace(/_/g, ' '))}</span></td>
+                            <td class="py-3 px-3 text-right font-mono text-zinc-300">R$ ${parts.toFixed(2).replace('.', ',')}</td>
+                            <td class="py-3 px-3 text-right font-mono text-brand font-bold">R$ ${labor.toFixed(2).replace('.', ',')}</td>
+                            <td class="py-3 px-3 text-right font-mono text-white font-black text-sm">R$ ${total.toFixed(2).replace('.', ',')}</td>
+                            <td class="py-3 px-3 text-center">${statusBadgeHtml}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
+        }
 
         function renderKanbanBoard(orders) {
             const colTriagem = document.getElementById('col-triagem');
@@ -1375,6 +1512,7 @@ Qualquer dúvida, estou à disposição!
 
             try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
             renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
 
             // Atualiza o modal aberto
             document.getElementById('detail-status-badge').textContent = newStatus.replace(/_/g, ' ');
@@ -1766,6 +1904,7 @@ Ficamos no aguardo para iniciar a execução!`;
             currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
             try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
             renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
             document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
         }
@@ -1959,6 +2098,7 @@ Ficamos no aguardo para iniciar a execução!`;
 
         async function loadSupabaseData() {
             renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
             const client = getSupabase();
             if (!client) return;
 
@@ -1978,6 +2118,7 @@ Ficamos no aguardo para iniciar a execução!`;
                     currentWorkOrders = realOrders;
                     try { localStorage.setItem('ifl_work_orders', JSON.stringify(realOrders)); } catch (e) {}
                     renderKanbanBoard(realOrders);
+                    renderFinancialDashboard(realOrders);
                 }
             } catch (err) {
                 console.warn("Aviso ao carregar dados do Supabase:", err);
@@ -2109,6 +2250,7 @@ Ficamos no aguardo para iniciar a execução!`;
             currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
             try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
             renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
             document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
         }
