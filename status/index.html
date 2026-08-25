@@ -718,12 +718,12 @@
             const hasParts = totalParts > 0;
             const isApproved = rawStatus.includes("aprovad") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || (hasParts && (rawStatus.includes("encomendada") || wo.parts_deposit_paid));
 
-            const isTriagem = (rawStatus.includes("triagem") || !rawStatus) && itemsList.length === 0;
-            const isOrcamento = (rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || rawStatus.includes("aprovad") || itemsList.length > 0) && !rawStatus.includes("bancada") && !rawStatus.includes("qa") && !rawStatus.includes("pronto") && !rawStatus.includes("entregue");
-            const isBancada = rawStatus === 'na_bancada' || (rawStatus.includes("bancada") && !rawStatus.includes("fila")) || rawStatus.includes("execucao") || rawStatus.includes("montagem");
-            const isQA = rawStatus.includes("qa") || rawStatus.includes("teste") || rawStatus.includes("estresse");
-            const isEntregue = rawStatus.includes("entregue") || rawStatus.includes("finalizado") || rawStatus.includes("concluido");
+            const isEntregue = rawStatus.includes("entregue") || (rawStatus.includes("finalizado") && !rawStatus.includes("diagnostico")) || rawStatus === "concluido" || rawStatus === "servico_concluido";
             const isPronto = (rawStatus.includes("pronto") || rawStatus.includes("retirada")) && !isEntregue;
+            const isQA = (rawStatus.includes("qa") || rawStatus.includes("teste") || rawStatus.includes("estresse")) && !isPronto && !isEntregue;
+            const isBancada = (rawStatus === 'na_bancada' || (rawStatus.includes("bancada") && !rawStatus.includes("fila")) || rawStatus.includes("execucao") || rawStatus.includes("montagem")) && !isQA && !isPronto && !isEntregue;
+            const isOrcamento = (rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || rawStatus.includes("aprovad") || itemsList.length > 0) && !isBancada && !isQA && !isPronto && !isEntregue;
+            const isTriagem = (rawStatus.includes("triagem") || !rawStatus) && itemsList.length === 0 && !isOrcamento && !isBancada && !isQA && !isPronto && !isEntregue;
 
             if (isTriagem) {
                 if (statusBadgeText) statusBadgeText.textContent = "01. EM TRIAGEM & DIAGNÓSTICO";
