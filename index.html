@@ -46,8 +46,8 @@
 </head>
 <body class="bg-dark text-gray-300 font-sans antialiased selection:bg-brand selection:text-black">
 
-    <!-- Navbar Brutalista com Menu Mobile -->
-    <header id="main-header" class="fixed w-full top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
+    <!-- Navbar Brutalista com Menu Mobile (Sticky Top-0 Infalível) -->
+    <header id="main-header" class="sticky top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 sm:h-20">
                 <a href="#" class="flex items-center gap-2 group">
@@ -112,9 +112,9 @@
         </div>
     </header>
 
-    <main class="pt-16 sm:pt-20">
-        <!-- Hero Brutalista Calibrado (Sem espaço morto no topo) -->
-        <section class="border-b-2 border-zinc-800 relative pt-4 pb-10 sm:pt-6 sm:pb-14 lg:pt-8 lg:pb-16">
+    <main class="flex-grow">
+        <!-- Hero Brutalista Calibrado (Perfeito sem clipping e sem espaço morto) -->
+        <section class="border-b-2 border-zinc-800 relative py-8 sm:py-12 lg:py-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                     <div>
