@@ -141,6 +141,29 @@
                     </div>
                 </div>
 
+                
+                <!-- Seletor Rápido de Coluna no Celular (One-Thumb Mobile Segmenter) -->
+                <div class="flex md:hidden overflow-x-auto gap-1.5 pb-2 mb-2 no-scrollbar font-mono text-xs">
+                    <button type="button" onclick="setMobileKanbanCol('all')" id="mob-pill-all" class="mob-col-pill px-3 py-2 bg-brand text-black font-black uppercase whitespace-nowrap min-h-[40px] border border-transparent">
+                        Todas (5)
+                    </button>
+                    <button type="button" onclick="setMobileKanbanCol('triagem')" id="mob-pill-triagem" class="mob-col-pill px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase whitespace-nowrap min-h-[40px]">
+                        01. Triagem
+                    </button>
+                    <button type="button" onclick="setMobileKanbanCol('orcamento')" id="mob-pill-orcamento" class="mob-col-pill px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase whitespace-nowrap min-h-[40px]">
+                        02. Orçamento
+                    </button>
+                    <button type="button" onclick="setMobileKanbanCol('bancada')" id="mob-pill-bancada" class="mob-col-pill px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase whitespace-nowrap min-h-[40px]">
+                        03. Bancada
+                    </button>
+                    <button type="button" onclick="setMobileKanbanCol('qa')" id="mob-pill-qa" class="mob-col-pill px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase whitespace-nowrap min-h-[40px]">
+                        04. QA
+                    </button>
+                    <button type="button" onclick="setMobileKanbanCol('pronto')" id="mob-pill-pronto" class="mob-col-pill px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase whitespace-nowrap min-h-[40px]">
+                        05. Pronto
+                    </button>
+                </div>
+
                 <!-- O KANBAN DE 5 COLUNAS DA BANCADA -->
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     
@@ -969,6 +992,103 @@ Qualquer dúvida, estou à disposição!
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        }
+
+        
+        // =====================================================================
+        // RECURSOS DE UX/UI: TOASTS, MOBILE KANBAN & ATALHOS DE TECLADO
+        // =====================================================================
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed top-5 right-5 z-[99999] flex flex-col gap-2 pointer-events-none';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            const isSuccess = type === 'success';
+            const isWarning = type === 'warning';
+            
+            const borderClass = isSuccess ? 'border-brand text-white' : (isWarning ? 'border-yellow-400 text-white' : 'border-red-500 text-white');
+            const accentClass = isSuccess ? 'text-brand' : (isWarning ? 'text-yellow-400' : 'text-red-500');
+            const icon = isSuccess ? '✓' : (isWarning ? '⚠️' : '✕');
+
+            toast.className = `pointer-events-auto bg-black border-2 ${borderClass} p-3.5 font-mono text-xs font-bold shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0`;
+            toast.innerHTML = `
+                <span class="${accentClass} font-black text-sm">${icon}</span>
+                <span class="leading-tight">${escapeHtml(message)}</span>
+            `;
+
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function setMobileKanbanCol(colName) {
+            document.querySelectorAll('.mob-col-pill').forEach(btn => {
+                btn.classList.remove('bg-brand', 'text-black', 'font-black');
+                btn.classList.add('bg-zinc-900', 'border', 'border-zinc-700', 'text-zinc-300');
+            });
+            const activePill = document.getElementById('mob-pill-' + colName);
+            if (activePill) {
+                activePill.classList.remove('bg-zinc-900', 'border', 'border-zinc-700', 'text-zinc-300');
+                activePill.classList.add('bg-brand', 'text-black', 'font-black');
+            }
+
+            const cols = {
+                triagem: document.getElementById('col-triagem')?.parentElement,
+                orcamento: document.getElementById('col-orcamento')?.parentElement,
+                bancada: document.getElementById('col-bancada')?.parentElement,
+                qa: document.getElementById('col-qa')?.parentElement,
+                pronto: document.getElementById('col-pronto')?.parentElement
+            };
+
+            Object.keys(cols).forEach(k => {
+                if (!cols[k]) return;
+                if (colName === 'all' || colName === k) {
+                    cols[k].classList.remove('hidden');
+                } else {
+                    cols[k].classList.add('hidden');
+                }
+            });
+        }
+
+        // Atalhos de Teclado Globais para Gestores Power Users
+        document.addEventListener('keydown', (e) => {
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+                if (e.key === 'Escape') {
+                    closeAllModals();
+                }
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                closeAllModals();
+            }
+
+            if (e.key === 'n' || e.key === 'N') {
+                e.preventDefault();
+                openIntakeModal();
+            }
+            
+            const tabs = ['kanban', 'new-os', 'clients', 'software', 'msp', 'financial'];
+            const digit = parseInt(e.key);
+            if (!isNaN(digit) && digit >= 1 && digit <= tabs.length) {
+                e.preventDefault();
+                switchTab(tabs[digit - 1]);
+            }
+        });
+
+        function closeAllModals() {
+            closeIntakeModal();
+            closeOSDetailModal();
+            closeBudgetModal();
+            closeWhatsAppModal();
         }
 
         function switchTab(tabId) {

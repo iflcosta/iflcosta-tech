@@ -31,3 +31,75 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: #ccff00;
 }
+
+
+/* ========================================================================== */
+/* UX/UI & MOBILE REFINEMENTS // IFL COSTA TECH                               */
+/* ========================================================================== */
+
+/* 1. Prevenção de Auto-Zoom no iOS Safari em Telas < 768px */
+@media screen and (max-width: 768px) {
+    input[type="text"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="search"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px !important; /* Mínimo exigido pela Apple para evitar zoom automático */
+    }
+}
+
+/* 2. Suporte à Safe Area Inferior de iPhones modernos e Android (Gestos) */
+.safe-pb {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+.safe-bottom {
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* 3. Botões e Cards Neobrutalistas Táteis */
+.btn-brutal-primary {
+    background-color: #ccff00;
+    color: #000000;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.25);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-brutal-primary:hover {
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: 4px 4px 0px 0px #ccff00;
+    transform: translate(-1px, -1px);
+}
+
+.btn-brutal-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.card-brutal {
+    background-color: #000000;
+    border: 2px solid #27272a;
+    box-shadow: 6px 6px 0px 0px rgba(39, 39, 42, 0.5);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-brutal:hover {
+    border-color: #ccff00;
+    box-shadow: 6px 6px 0px 0px rgba(204, 255, 0, 0.2);
+}
+
+/* 4. Ocultação de barra de scroll em seletores horizontais mantendo usabilidade */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

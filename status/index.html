@@ -1123,6 +1123,21 @@
             // Atualização Contextual das Fotos da Bancada
             renderPhotoGallery(wo);
 
+            
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
             if (window.lucide) lucide.createIcons();
         }
 
@@ -1288,7 +1303,22 @@
                     loadingState.classList.add("hidden");
                     swContainer.classList.remove("hidden");
                     window.scrollTo({ top: swContainer.offsetTop - 100, behavior: 'smooth' });
-                    if (window.lucide) lucide.createIcons();
+                    
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
                 }, 150);
                 return;
             }
@@ -1299,7 +1329,22 @@
                     loadingState.classList.add("hidden");
                     mspContainer.classList.remove("hidden");
                     window.scrollTo({ top: mspContainer.offsetTop - 100, behavior: 'smooth' });
-                    if (window.lucide) lucide.createIcons();
+                    
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
                 }, 150);
                 return;
             }
@@ -1317,7 +1362,22 @@
                             renderWorkOrderData(data);
                             hwContainer.classList.remove("hidden");
                             window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                            if (window.lucide) lucide.createIcons();
+                            
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
                             return;
                         }
                     }
@@ -1344,7 +1404,22 @@
                             renderWorkOrderData(data);
                             hwContainer.classList.remove("hidden");
                             window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                            if (window.lucide) lucide.createIcons();
+                            
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
                             return;
                         }
                     }
@@ -1359,7 +1434,22 @@
                     renderWorkOrderData(defaultMockLookup[numKey]);
                     hwContainer.classList.remove("hidden");
                     window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                    if (window.lucide) lucide.createIcons();
+                    
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
                     return;
                 }
             }
@@ -1369,7 +1459,22 @@
                 loadingState.classList.add("hidden");
                 notFoundState.classList.remove("hidden");
                 window.scrollTo({ top: notFoundState.offsetTop - 100, behavior: 'smooth' });
-                if (window.lucide) lucide.createIcons();
+                
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
             }, 200);
         }
 
@@ -1396,6 +1501,21 @@
                 searchInput.value = "MSP-2026-004";
                 mspContainer.classList.remove("hidden");
             }
+            
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
             if (window.lucide) lucide.createIcons();
         }
 
@@ -1435,7 +1555,22 @@
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = `<span class="animate-pulse flex items-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando Avaliação...</span>`;
-                if (window.lucide) lucide.createIcons();
+                
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
             }
 
             const client = getSupabase();
@@ -1464,6 +1599,21 @@
                 document.getElementById('nps-success-text').textContent = 'Agradecemos o seu feedback! Nossa equipe técnica entrará em contato para garantir sua total satisfação.';
             }
 
+            
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
             if (window.lucide) lucide.createIcons();
         }
 
@@ -1473,7 +1623,22 @@
             const btn = document.getElementById('btn-google-copy');
             if (btn) {
                 btn.innerHTML = `✓ Copiado!`;
-                setTimeout(() => { btn.innerHTML = `<i data-lucide="copy" class="w-4 h-4"></i> Copiar Comentário`; if (window.lucide) lucide.createIcons(); }, 2500);
+                setTimeout(() => { btn.innerHTML = `<i data-lucide="copy" class="w-4 h-4"></i> Copiar Comentário`; 
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons(); }, 2500);
             }
         }
 
@@ -1483,7 +1648,22 @@
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Confirmando Aprovação...</span>`;
-                if (window.lucide) lucide.createIcons();
+                
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
+            if (window.lucide) lucide.createIcons();
             }
 
             const client = getSupabase();
@@ -1519,6 +1699,21 @@
 
         // Verificação de Parâmetros na URL
         window.addEventListener("DOMContentLoaded", () => {
+            
+            // Atualiza Barra Flutuante de Aprovação no Mobile (Thumb Zone)
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            const stickyAmount = document.getElementById('sticky-amount');
+            const stickyLabel = document.getElementById('sticky-label');
+            if (stickyBar) {
+                if (isOrcamento && !isApproved) {
+                    stickyBar.classList.remove('hidden');
+                    if (stickyAmount) stickyAmount.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+                    if (stickyLabel) stickyLabel.textContent = hasParts ? 'Sinal Peças (100%)' : 'Total do Reparo';
+                } else {
+                    stickyBar.classList.add('hidden');
+                }
+            }
+
             if (window.lucide) lucide.createIcons();
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -1530,5 +1725,20 @@
             }
         });
     </script>
+
+    <!-- BARRA FLUTUANTE DE APROVAÇÃO RÁPIDA NO CELULAR (THUMB ZONE) -->
+    <div id="mobile-sticky-bar" class="fixed bottom-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-t-2 border-brand p-3.5 sm:hidden hidden shadow-[0_-8px_20px_rgba(0,0,0,0.8)] safe-pb">
+        <div class="flex items-center justify-between gap-3">
+            <div>
+                <span class="text-[10px] font-mono text-zinc-400 block uppercase" id="sticky-label">Orçamento</span>
+                <strong class="text-base font-mono font-black text-brand" id="sticky-amount">R$ 0,00</strong>
+            </div>
+            <button id="sticky-approve-btn" onclick="document.getElementById('btn-approve-budget')?.click()" class="flex-1 px-4 py-3 bg-brand text-black font-mono font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.3)] animate-pulse min-h-[44px]">
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                <span>Aprovar Orçamento</span>
+            </button>
+        </div>
+    </div>
+
 </body>
 </html>
