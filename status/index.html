@@ -73,19 +73,20 @@
                                 <input 
                                     type="text" 
                                     id="search-input" 
-                                    placeholder="Ex: 082601 ou Token..." 
+                                    placeholder="Ex: 082601" 
                                     class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
                                     required
                                 >
                             </div>
                             <div>
                                 <label for="search-phone" class="block text-zinc-300 font-mono text-xs uppercase font-bold mb-1.5 flex items-center gap-1.5">
-                                    <i data-lucide="phone" class="w-3.5 h-3.5 text-brand"></i> WhatsApp do Cliente
+                                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i> 4 Últimos Dígitos do WhatsApp
                                 </label>
                                 <input 
                                     type="tel" 
                                     id="search-phone" 
-                                    placeholder="DDD + Telefone ou 4 últimos dígitos" 
+                                    placeholder="Ex: 9542 (4 últimos dígitos)" 
+                                    maxlength="15"
                                     class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
                                 >
                             </div>
@@ -93,7 +94,7 @@
 
                         <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 pt-1">
                             <span class="text-zinc-500 text-xs font-mono flex items-center gap-1.5">
-                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i> Validação segura de titularidade (LGPD)
+                                <i data-lucide="shield" class="w-3.5 h-3.5 text-brand"></i> Confirmação de titularidade e sigilo (LGPD)
                             </span>
                             <button 
                                 type="submit" 
