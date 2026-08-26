@@ -291,7 +291,9 @@
                                     <option value="GAMER_ULTRA">👑 Setup Gamer Entusiasta 4K Ultra AM5 (Ryzen 7 7800X3D + RTX 4080 Super)</option>
                                     <option value="WORKSTATION">🧠 Workstation Edição 4K / IA & Render 3D (Ryzen 9 + RTX 4090 + 64GB DDR5)</option>
                                     <option value="GAMER_ENTRY">⚡ Setup Gamer Entrada / eSports (Core i3 + RX 6600 8GB + 16GB)</option>
-                                    <option value="OFFICE_PRO">💼 Setup Escritório & Home Office Ultra-Rápido (Ryzen 5 5600G + NVMe)</option>
+                                    <option value="OFFICE_RYZEN3">💼 Setup Escritório Ágil AM4 (Ryzen 3 3200G/4300G + 16GB + NVMe)</option>
+                                    <option value="OFFICE_INTEL_BUDGET">💼 Setup Escritório Econômico / PDV (Core i5-4690 + 16GB + SSD)</option>
+                                    <option value="OFFICE_PRO">💼 Setup Escritório Performance (Ryzen 5 5600G + 16GB + NVMe)</option>
                                     <option value="CUSTOM_BLANK">✏️ Setup Personalizado (Slots em Branco para Cotação Livre)</option>
                                 </select>
                             </div>
@@ -2579,6 +2581,36 @@ Ficamos no aguardo para iniciar a execução!`;
                     { type: "Fonte PSU", desc: "SilverStone 500W 80 Plus Bronze PFC Ativo", cost: 190.00, price: 240.00 },
                     { type: "Gabinete & Fans", desc: "Gabinete Gamer M-ATX Frente Mesh c/ 3x Fans 120mm", cost: 180.00, price: 230.00 },
                     { type: "Refrigeração", desc: "Cooler Box Intel Original / DeepCool Gammaxx AG300", cost: 60.00, price: 85.00 }
+                ]
+            },
+                        'OFFICE_RYZEN3': {
+                name: '💼 Setup Escritório Ágil AM4 (Ryzen 3 3200G/4300G + 16GB + NVMe)',
+                labor: 160.00,
+                diagnosis: 'Computador de escritório moderno e ágil para emissão de notas, planilhas, sistemas de gestão ERP e navegação fluida com inicialização em menos de 10s.',
+                parts: [
+                    { type: "Processador", desc: "AMD Ryzen 3 3200G / 4300G (4 Cores / 8 Threads, 4.0GHz c/ Vega Graphics)", cost: 390.00, price: 490.00 },
+                    { type: "Placa-Mãe", desc: "ASUS Prime A320M-K / Gigabyte A520M K V2 DDR4", cost: 320.00, price: 390.00 },
+                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4", cost: 230.00, price: 290.00 },
+                    { type: "Placa de Vídeo", desc: "Gráficos Integrados Radeon Vega Graphics (HDMI + VGA)", cost: 0.00, price: 0.00 },
+                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 500GB Kingston NV2 PCIe 4.0 (3500MB/s)", cost: 190.00, price: 240.00 },
+                    { type: "Fonte PSU", desc: "Fonte 400W / 500W 80 Plus Bronze PFC Ativo Bivolt", cost: 160.00, price: 210.00 },
+                    { type: "Gabinete & Fans", desc: "Gabinete Micro-ATX Minimalista Compacto c/ 1x Fan 120mm", cost: 130.00, price: 170.00 },
+                    { type: "Refrigeração", desc: "Cooler Box AMD Wraith Stealth Original", cost: 0.00, price: 0.00 }
+                ]
+            },
+            'OFFICE_INTEL_BUDGET': {
+                name: '💼 Setup Escritório Econômico / PDV (Core i5-4690 + 16GB + SSD)',
+                labor: 140.00,
+                diagnosis: 'Computador econômico de alta durabilidade para balcão, caixa/PDV e escritório padrão com SSD rápido e 16GB de memória RAM para zero travamentos.',
+                parts: [
+                    { type: "Processador", desc: "Intel Core i5-4690 / i5-4590 (4 Cores / 4 Threads, 3.9GHz Turbo c/ Intel HD 4600)", cost: 160.00, price: 240.00 },
+                    { type: "Placa-Mãe", desc: "Placa-Mãe Intel H81M LGA 1150 DDR3 (HDMI + VGA + USB 3.0)", cost: 210.00, price: 280.00 },
+                    { type: "Memória RAM", desc: "16GB (2x8GB) DDR3 1600MHz Kingston / HyperX", cost: 120.00, price: 170.00 },
+                    { type: "Placa de Vídeo", desc: "Gráficos Integrados Intel HD Graphics 4600 (HDMI + VGA)", cost: 0.00, price: 0.00 },
+                    { type: "SSD / Armaz.", desc: "SSD SATA III 480GB Kingston / Crucial (500MB/s Leitura)", cost: 130.00, price: 180.00 },
+                    { type: "Fonte PSU", desc: "Fonte 400W Bivolt Silenciosa c/ Cooler 120mm", cost: 110.00, price: 150.00 },
+                    { type: "Gabinete & Fans", desc: "Gabinete Micro-ATX Slim/Mini Escritório Preto", cost: 95.00, price: 135.00 },
+                    { type: "Refrigeração", desc: "Cooler Box Intel LGA 1150 Original c/ Base de Cobre", cost: 25.00, price: 40.00 }
                 ]
             },
             'OFFICE_PRO': {
