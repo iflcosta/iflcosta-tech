@@ -273,20 +273,21 @@
 
                         <!-- Bloco 2: Tabela de Componentes de Hardware do Setup -->
                         <div class="border-2 border-zinc-800 bg-zinc-950 p-5 font-mono">
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-                                <div>
-                                    <span class="text-brand text-xs font-bold uppercase block">[ 1. Hardware & Componentes do Setup (Custo Real vs Valor Venda) ]</span>
-                                    <span class="text-[11px] text-zinc-400 font-sans">O cliente visualiza apenas o Valor de Venda. O Custo e o Lucro são 100% confidenciais.</span>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button type="button" onclick="loadStandardBuildSlots()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-brand border border-zinc-700 text-xs font-bold uppercase transition-colors flex items-center gap-1">
+                            <div class="mb-5">
+                                <span class="text-brand text-xs font-bold uppercase block">[ 1. Hardware & Componentes do Setup (Custo Real vs Valor Venda) ]</span>
+                                <span class="text-[11px] text-zinc-400 font-sans block mt-0.5">O cliente visualiza apenas o Valor de Venda. O Custo e o Lucro são 100% confidenciais.</span>
+                                
+                                <div class="flex flex-wrap items-center gap-2.5 mt-3.5">
+                                    <button type="button" onclick="loadStandardBuildSlots()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-brand border border-zinc-700 text-xs font-bold uppercase transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)]">
                                         <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Slots Padrão (8 Peças)
                                     </button>
-                                    <button type="button" onclick="addPartRow()" class="px-3 py-1.5 bg-brand text-black hover:bg-white text-xs font-black uppercase transition-colors flex items-center gap-1">
+                                    <button type="button" onclick="addPartRow()" class="px-4 py-2 bg-brand text-black hover:bg-white text-xs font-black uppercase transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
                                         <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Peça
                                     </button>
                                 </div>
-                            <div class="overflow-x-auto">
+                            </div>
+
+                            <div class="overflow-x-auto w-full">
                                 <table class="w-full font-mono text-xs border-collapse text-left">
                                     <thead>
                                         <tr class="border-b border-zinc-800 text-zinc-400">
