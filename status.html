@@ -1303,6 +1303,56 @@
             }
         };
 
+        // =========================================================================
+        // APROVAÇÃO DE ORÇAMENTO PELO CLIENTE (1-CLIQUE SEGURO VIA TOKEN)
+        // =========================================================================
+        async function handleApproveBudget(token) {
+            if (!token) return;
+
+            const btn = document.getElementById('btn-approve-budget');
+            const stickyBtn = document.getElementById('sticky-approve-btn');
+            
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Confirmando Aprovação...</span>`;
+            }
+            if (stickyBtn) {
+                stickyBtn.disabled = true;
+                stickyBtn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Aprovando...</span>`;
+            }
+            if (window.lucide) lucide.createIcons();
+
+            try {
+                const client = getSupabase();
+                if (!client) throw new Error("Cliente Supabase não inicializado.");
+
+                const { data, error } = await client.rpc('rpc_advance_work_order_status_by_token', {
+                    p_token: token,
+                    p_new_status: 'Aprovado_Pelo_Cliente'
+                });
+
+                if (error) throw error;
+
+                if (data && data.success) {
+                    // Re-renderiza os dados atualizados com o novo status
+                    if (activeTrackingQuery) {
+                        await handleSearch(activeTrackingQuery, activeTrackingPhone, true);
+                    }
+                } else {
+                    alert("Não foi possível registrar a aprovação. Por favor, tente novamente ou fale com nosso suporte.");
+                    if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+                    if (stickyBtn) { stickyBtn.disabled = false; stickyBtn.innerHTML = `<span>Aprovar Orçamento</span>`; }
+                }
+            } catch (err) {
+                console.error("Erro ao aprovar orçamento:", err);
+                alert("Erro ao aprovar orçamento: " + (err.message || err));
+                if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+                if (stickyBtn) { stickyBtn.disabled = false; stickyBtn.innerHTML = `<span>Aprovar Orçamento</span>`; }
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
         function submitTrackingForm() {
             const osVal = document.getElementById('search-input').value.trim();
             const phoneVal = document.getElementById('search-phone') ? document.getElementById('search-phone').value.trim() : '';
