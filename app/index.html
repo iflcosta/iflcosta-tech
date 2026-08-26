@@ -2096,6 +2096,7 @@ Qualquer dúvida, estou à disposição!
 
             loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
         }
 
         function handleManualStatusChange(newStatus) {
@@ -2334,6 +2335,7 @@ Qualquer dúvida, estou à disposição!
             closeBudgetModal();
             loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
 
             // Mensagem de Orçamento Pronto para WhatsApp
             const partsPriceTotal = parseFloat(document.getElementById('budget-modal-parts-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
@@ -2485,6 +2487,7 @@ Ficamos no aguardo para iniciar a execução!`;
             document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
         }
 
         function handleServiceTypeChange(type) {
@@ -2499,134 +2502,197 @@ Ficamos no aguardo para iniciar a execução!`;
             recalcTotals();
         }
 
-                        // =========================================================================
-        // SETUP BUILDER // MONTAGEM DE PCS GAMER & WORKSTATION
         // =========================================================================
-        const standardBuildSlots = [
-            { type: "Processador", desc: "AMD Ryzen 5 7600 (6c/12t, 5.1GHz Turbo)" },
-            { type: "Placa-Mãe", desc: "ASUS TUF Gaming B650M-Plus Wi-Fi DDR5" },
-            { type: "Memória RAM", desc: "Kingston Fury Beast 32GB (2x16GB) 6000MHz DDR5" },
-            { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4060 8GB GDDR6" },
-            { type: "SSD / Armaz.", desc: "SSD Kingston KC3000 1TB NVMe M.2 Gen4 (7000MB/s)" },
-            { type: "Fonte PSU", desc: "Corsair CV650 650W 80 Plus Bronze" },
-            { type: "Gabinete & Fans", desc: "Montech Air 903 Max (4x Fans 140mm PWM)" },
-            { type: "Refrigeração", desc: "Air Cooler DeepCool AK400 Digital" }
-        ];
+        // SETUP BUILDER // CATÁLOGO DE PERFIS E COMPONENTES DINÂMICOS
+        // =========================================================================
+        const buildProfiles = {
+            'GAMER_MID': {
+                name: '🎮 Setup Gamer 1080p / 1440p High (Ryzen 5 + RTX 4060 8GB)',
+                labor: 285.00,
+                diagnosis: 'Montagem gamer de alta eficiência com calibração de fluxo de ar de pressão positiva, otimização de latência de memória XMP/EXPO e testes de estresse FurMark/AIDA64 15min.',
+                parts: [
+                    { type: "Processador", desc: "AMD Ryzen 5 5600 (6 Cores / 12 Threads, 4.4GHz Turbo)", cost: 680.00, price: 799.00 },
+                    { type: "Placa-Mãe", desc: "ASUS Prime B550M-A / ASRock B550M Phantom Gaming 4", cost: 520.00, price: 630.00 },
+                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4 CL16", cost: 230.00, price: 290.00 },
+                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4060 8GB GDDR6 (DLSS 3 / Ray Tracing)", cost: 1850.00, price: 2190.00 },
+                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 1TB Kingston NV2 PCIe 4.0 (3500MB/s)", cost: 320.00, price: 399.00 },
+                    { type: "Fonte PSU", desc: "MSI MAG A650BN 650W 80 Plus Bronze PFC Ativo", cost: 260.00, price: 320.00 },
+                    { type: "Gabinete & Fans", desc: "Montech Air 903 Base Black (3x Fans 140mm High Airflow)", cost: 290.00, price: 360.00 },
+                    { type: "Refrigeração", desc: "Air Cooler DeepCool AG400 ARGB 120mm", cost: 120.00, price: 159.00 }
+                ]
+            },
+            'GAMER_HIGH': {
+                name: '🔥 Setup Gamer Competitivo / Streaming 1440p (Ryzen 7 + RTX 4070 Super)',
+                labor: 350.00,
+                diagnosis: 'Montagem de alta performance com cable management cirúrgico, refrigeração líquida balanceada e calibração de curvas de ventoinha para máxima silenciosidade e estabilidade.',
+                parts: [
+                    { type: "Processador", desc: "AMD Ryzen 7 5700X3D (8 Cores / 16 Threads, 3D V-Cache Gamer)", cost: 1250.00, price: 1450.00 },
+                    { type: "Placa-Mãe", desc: "ASUS TUF Gaming B550M-Plus Wi-Fi II DDR4", cost: 790.00, price: 920.00 },
+                    { type: "Memória RAM", desc: "32GB (2x16GB) Corsair Vengeance RGB Pro 3600MHz DDR4", cost: 480.00, price: 590.00 },
+                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4070 Super 12GB GDDR6X", cost: 3890.00, price: 4390.00 },
+                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 2TB Kingston KC3000 PCIe 4.0 (7000MB/s)", cost: 680.00, price: 820.00 },
+                    { type: "Fonte PSU", desc: "Corsair RM750e 750W 80 Plus Gold Full Modular ATX 3.0", cost: 580.00, price: 690.00 },
+                    { type: "Gabinete & Fans", desc: "Lian Li Lancool 216 RGB Black (2x 160mm + 1x 140mm Fans)", cost: 550.00, price: 680.00 },
+                    { type: "Refrigeração", desc: "Water Cooler DeepCool LE520 240mm ARGB", cost: 320.00, price: 399.00 }
+                ]
+            },
+            'GAMER_ULTRA': {
+                name: '👑 Setup Gamer Entusiasta 4K Ultra AM5 (Ryzen 7 7800X3D + RTX 4080 Super)',
+                labor: 415.00,
+                diagnosis: 'Montagem entusiasta de ponta AM5 com DDR5 de 6000MHz low latency, water cooler 360mm de alto fluxo térmico e bancada de validação com 3DMark TimeSpy.',
+                parts: [
+                    { type: "Processador", desc: "AMD Ryzen 7 7800X3D (8 Cores / 16 Threads, AM5 Melhor CPU Gamer)", cost: 2650.00, price: 2990.00 },
+                    { type: "Placa-Mãe", desc: "ASUS ROG Strix B650E-F Gaming Wi-Fi DDR5", cost: 1750.00, price: 2050.00 },
+                    { type: "Memória RAM", desc: "32GB (2x16GB) G.Skill Trident Z5 Neo 6000MHz CL30 DDR5 AMD EXPO", cost: 790.00, price: 950.00 },
+                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4080 Super 16GB GDDR6X", cost: 6790.00, price: 7490.00 },
+                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 2TB Samsung 990 Pro PCIe 4.0 (7450MB/s)", cost: 980.00, price: 1190.00 },
+                    { type: "Fonte PSU", desc: "Corsair RM850x 850W 80 Plus Gold Full Modular ATX 3.0", cost: 790.00, price: 920.00 },
+                    { type: "Gabinete & Fans", desc: "NZXT H9 Flow Dual Chamber + Kit 6x Fans PWM 120mm", cost: 980.00, price: 1190.00 },
+                    { type: "Refrigeração", desc: "Water Cooler Lian Li Galahad II Trinity 360mm ARGB", cost: 780.00, price: 920.00 }
+                ]
+            },
+            'WORKSTATION': {
+                name: '🧠 Workstation Edição 4K / IA & Render 3D (Ryzen 9 7950X + RTX 4090 + 64GB)',
+                labor: 450.00,
+                diagnosis: 'Estação de trabalho profissional calibrada para estabilidade contínua sob carga pesada 24/7 (Blender/Premiere/PyTorch), com curva acústica otimizada e telemetria de VRM.',
+                parts: [
+                    { type: "Processador", desc: "AMD Ryzen 9 7950X (16 Cores / 32 Threads, 5.7GHz AM5)", cost: 3450.00, price: 3890.00 },
+                    { type: "Placa-Mãe", desc: "ASUS ProArt X670E-Creator Wi-Fi DDR5 (Dual Thunderbolt 4 / 10GbE)", cost: 3200.00, price: 3650.00 },
+                    { type: "Memória RAM", desc: "64GB (2x32GB) Corsair Vengeance DDR5 5600MHz CL36", cost: 1350.00, price: 1590.00 },
+                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4090 24GB GDDR6X (CUDA / Tensor Cores IA)", cost: 12900.00, price: 13900.00 },
+                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 4TB Samsung 990 Pro PCIe 4.0 c/ Dissipador", cost: 1950.00, price: 2350.00 },
+                    { type: "Fonte PSU", desc: "Seasonic Focus GX-1200 1200W 80 Plus Platinum ATX 3.0", cost: 1450.00, price: 1690.00 },
+                    { type: "Gabinete & Fans", desc: "Fractal Design Meshify 2 XL Black Solid (E-ATX Workstation)", cost: 1290.00, price: 1490.00 },
+                    { type: "Refrigeração", desc: "Water Cooler Arctic Liquid Freezer III 420mm", cost: 890.00, price: 1050.00 }
+                ]
+            },
+            'GAMER_ENTRY': {
+                name: '⚡ Setup Gamer Entrada / eSports (Core i3-12100F + RX 6600 8GB + 16GB)',
+                labor: 250.00,
+                diagnosis: 'Montagem de alta relação custo-benefício para jogos competitivos (CS2, Valorant, Fortnite) em 1080p com temperaturas controladas e fonte de energia certificada.',
+                parts: [
+                    { type: "Processador", desc: "Intel Core i3-12100F (4 Cores / 8 Threads, 4.3GHz Turbo LGA1700)", cost: 490.00, price: 590.00 },
+                    { type: "Placa-Mãe", desc: "ASRock H610M-HVS / Gigabyte H610M K DDR4", cost: 390.00, price: 470.00 },
+                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4", cost: 230.00, price: 290.00 },
+                    { type: "Placa de Vídeo", desc: "AMD Radeon RX 6600 8GB GDDR6 (Excelente Custo-Benefício 1080p)", cost: 1250.00, price: 1450.00 },
+                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 512GB Kingston NV2 PCIe 4.0 (3500MB/s)", cost: 190.00, price: 240.00 },
+                    { type: "Fonte PSU", desc: "SilverStone 500W 80 Plus Bronze PFC Ativo", cost: 190.00, price: 240.00 },
+                    { type: "Gabinete & Fans", desc: "Gabinete Gamer M-ATX Frente Mesh c/ 3x Fans 120mm", cost: 180.00, price: 230.00 },
+                    { type: "Refrigeração", desc: "Cooler Box Intel Original / DeepCool Gammaxx AG300", cost: 60.00, price: 85.00 }
+                ]
+            },
+            'OFFICE_PRO': {
+                name: '💼 Setup Escritório & Home Office Ultra-Rápido (Ryzen 5 5600G + NVMe)',
+                labor: 190.00,
+                diagnosis: 'Computador corporativo de alta confiabilidade para multitarefas pesadas, planilhas complexas e navegação rápida com inicialização em menos de 10 segundos.',
+                parts: [
+                    { type: "Processador", desc: "AMD Ryzen 5 5600G (6 Cores / 12 Threads c/ Vídeo Integrado Vega 7)", cost: 750.00, price: 890.00 },
+                    { type: "Placa-Mãe", desc: "ASUS Prime A520M-E / Gigabyte A520M K V2", cost: 380.00, price: 460.00 },
+                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4", cost: 230.00, price: 290.00 },
+                    { type: "Placa de Vídeo", desc: "Gráficos Integrados Radeon Vega 7 (Suporta até 3 Telas)", cost: 0.00, price: 0.00 },
+                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 500GB Kingston NV2 (3500MB/s)", cost: 190.00, price: 240.00 },
+                    { type: "Fonte PSU", desc: "SilverStone 500W 80 Plus Bronze PFC Ativo", cost: 190.00, price: 240.00 },
+                    { type: "Gabinete & Fans", desc: "Gabinete Micro-ATX Minimalista Compacto c/ 1x Fan 120mm", cost: 150.00, price: 199.00 },
+                    { type: "Refrigeração", desc: "Cooler Box AMD Wraith Stealth Original", cost: 0.00, price: 0.00 }
+                ]
+            },
+            'CUSTOM_BLANK': {
+                name: '✏️ Setup Personalizado (Slots em Branco para Cotação Livre)',
+                labor: 285.00,
+                diagnosis: 'Montagem customizada de precisão conforme especificação técnica personalizada pelo cliente com testes de estabilidade em bancada.',
+                parts: [
+                    { type: "Processador", desc: "", cost: 0.00, price: 0.00 },
+                    { type: "Placa-Mãe", desc: "", cost: 0.00, price: 0.00 },
+                    { type: "Memória RAM", desc: "", cost: 0.00, price: 0.00 },
+                    { type: "Placa de Vídeo", desc: "", cost: 0.00, price: 0.00 },
+                    { type: "SSD / Armaz.", desc: "", cost: 0.00, price: 0.00 },
+                    { type: "Fonte PSU", desc: "", cost: 0.00, price: 0.00 },
+                    { type: "Gabinete & Fans", desc: "", cost: 0.00, price: 0.00 },
+                    { type: "Refrigeração", desc: "", cost: 0.00, price: 0.00 }
+                ]
+            }
+        };
 
-        function loadStandardBuildSlots() {
+        function handleBuildProfileChange(val) {
+            const profile = buildProfiles[val] || buildProfiles['GAMER_MID'];
             const tbody = document.getElementById('parts-table-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            standardBuildSlots.forEach(slot => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-zinc-900/60 transition-colors';
-                tr.innerHTML = `
-                    <td class="py-2.5 px-2 font-bold text-white">${slot.type}</td>
-                    <td class="py-2.5 px-2">
-                        <input type="text" value="${slot.desc}" class="part-desc w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
-                    </td>
-                    <td class="py-2.5 px-2">
-                        <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-cost w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
-                    </td>
-                    <td class="py-2.5 px-2">
-                        <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-price w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
-                    </td>
-                    <td class="py-2.5 px-2 text-right font-mono font-bold text-zinc-400 part-profit">
-                        R$ 0,00
-                    </td>
-                    <td class="py-2.5 px-2 text-center">
-                        <button type="button" onclick="this.closest('tr').remove(); recalcTotals();" class="text-zinc-600 hover:text-red-400 p-1">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
             const laborEl = document.getElementById('labor-price');
-            if (laborEl && (!laborEl.value || laborEl.value === '0.00')) {
-                laborEl.value = '285.00';
+            const diagEl = document.getElementById('technical-diagnosis');
+
+            if (laborEl) laborEl.value = profile.labor.toFixed(2);
+            if (diagEl && profile.diagnosis) diagEl.value = profile.diagnosis;
+
+            if (tbody && profile.parts) {
+                tbody.innerHTML = '';
+                profile.parts.forEach(part => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'part-row hover:bg-zinc-900/60 transition-colors';
+                    tr.innerHTML = `
+                        <td class="py-2.5 px-2 font-bold text-white whitespace-nowrap">
+                            <span class="part-type-text">${part.type}</span>
+                            <input type="hidden" class="part-type" value="${part.type}">
+                        </td>
+                        <td class="py-2.5 px-2">
+                            <input type="text" value="${escapeHtml(part.desc)}" placeholder="Marca, modelo e especificação..." class="part-desc part-name w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
+                        </td>
+                        <td class="py-2.5 px-2">
+                            <input type="number" step="0.01" value="${part.cost.toFixed(2)}" oninput="recalcTotals()" class="part-cost w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
+                        </td>
+                        <td class="py-2.5 px-2">
+                            <input type="number" step="0.01" value="${part.price.toFixed(2)}" oninput="recalcTotals()" class="part-price part-sale w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
+                        </td>
+                        <td class="py-2.5 px-2 text-right font-mono font-bold text-zinc-400 part-profit">
+                            R$ ${(part.price - part.cost).toFixed(2).replace('.', ',')}
+                        </td>
+                        <td class="py-2.5 px-2 text-center">
+                            <button type="button" onclick="this.closest('tr').remove(); recalcTotals();" class="text-zinc-600 hover:text-red-400 p-1">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             }
 
             recalcTotals();
             if (window.lucide) lucide.createIcons();
         }
 
-        function handleBuildProfileChange(val) {
-            const laborEl = document.getElementById('labor-price');
-            if (val === 'GAMER_HIGH' || val === 'WORKSTATION') {
-                if (laborEl) laborEl.value = '415.00';
-            } else {
-                if (laborEl) laborEl.value = '285.00';
-            }
-            recalcTotals();
-        }
-
-        function injectDiagnosisPreset(type) {
-            const diagEl = document.getElementById('technical-diagnosis');
-            const laborEl = document.getElementById('labor-price');
-            const serviceTypeEl = document.getElementById('service-type');
-
-            if (type === 'curto_19v') {
-                diagEl.value = "Identificado curto-circuito no circuito de alimentação primária (Linha de 19V / VIN). Realizada desoxidação química preventiva, substituição do MOSFET comutador de entrada de alta frequência e aplicação de pasta térmica de alta condutividade Arctic MX-4 na CPU/GPU.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "280.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
-            } else if (type === 'limpeza_mx4') {
-                diagEl.value = "Superaquecimento e estrangulamento térmico (thermal throttling). Realizada desmontagem completa, descarbonização ultrassônica da colmeia de dissipação, substituição de thermal pads e aplicação de pasta térmica Thermal Grizzly Hydronaut/Arctic MX-4.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "220.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Limpeza_Preventiva";
-            } else if (type === 'upgrade_nvme') {
-                diagEl.value = "Substituição/Instalação de unidade de armazenamento de alta velocidade SSD NVMe M.2 Gen4 com clonagem bit-a-bit de integridade do sistema operacional e alinhamento de partições para máxima performance.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "140.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Upgrade";
-            } else if (type === 'tela_lcd') {
-                diagEl.value = "Display LCD com avaria mecânica/linhas de sinal. Realizada a substituição por novo painel original IPS com calibração de torque e alívio de pressão das dobradiças metálicas para evitar rachaduras de carcaça.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "160.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Troca_Tela_Teclado";
-            } else if (type === 'desoxidacao') {
-                diagEl.value = "Oxidação por umidade detectada na placa-mãe. Realizado banho químico em cuba ultrassônica com álcool isopropílico 99.8%, secagem em estufa térmica controlada e ressolda SMD dos pontos afetados com fluxo no-clean.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "260.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
-            }
-            recalcTotals();
-        }
-
-        function handleCategorySelect(val) {
-            const laborEl = document.getElementById('labor-price');
-            if (val === 'Montagem_PC' && laborEl) {
-                laborEl.value = '285.00';
-            } else if (val === 'Limpeza_Preventiva' && laborEl) {
-                laborEl.value = '220.00';
-            } else if (val === 'Formatacao_Software' && laborEl) {
-                laborEl.value = '140.00';
-            }
-            recalcTotals();
+        function loadStandardBuildSlots() {
+            const select = document.getElementById('build-profile-select');
+            const val = select ? select.value : 'GAMER_MID';
+            handleBuildProfileChange(val);
         }
 
         function addPartRow() {
             const tbody = document.getElementById('parts-table-body');
-            const row = document.createElement('tr');
-            row.className = 'part-row';
-            row.innerHTML = `
-                <td class="py-2 px-2">
-                    <input type="text" placeholder="Ex: Memória RAM" class="part-type bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-24">
+            if (!tbody) return;
+            const tr = document.createElement('tr');
+            tr.className = 'part-row hover:bg-zinc-900/60 transition-colors';
+            tr.innerHTML = `
+                <td class="py-2.5 px-2">
+                    <input type="text" placeholder="Ex: Fans / Cabos" class="part-type w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-mono text-xs focus:outline-none focus:border-brand">
                 </td>
-                <td class="py-2 px-2">
-                    <input type="text" placeholder="Marca, Modelo & Specs" class="part-name bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-white w-full">
+                <td class="py-2.5 px-2">
+                    <input type="text" placeholder="Marca, Modelo & Specs" class="part-desc part-name w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
                 </td>
-                <td class="py-2 px-2">
-                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-cost bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-yellow-400 w-28">
+                <td class="py-2.5 px-2">
+                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-cost w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
                 </td>
-                <td class="py-2 px-2">
-                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-sale bg-zinc-900 border border-zinc-800 px-2 py-1.5 text-brand font-bold w-28">
+                <td class="py-2.5 px-2">
+                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-price part-sale w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
                 </td>
-                <td class="py-2 px-2 text-right text-brand font-bold part-profit">R$ 0,00</td>
-                <td class="py-2 px-2 text-center">
-                    <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                <td class="py-2.5 px-2 text-right font-mono font-bold text-zinc-400 part-profit">
+                    R$ 0,00
+                </td>
+                <td class="py-2.5 px-2 text-center">
+                    <button type="button" onclick="this.closest('tr').remove(); recalcTotals();" class="text-zinc-600 hover:text-red-400 p-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
                 </td>
             `;
-            tbody.appendChild(row);
+            tbody.appendChild(tr);
+            recalcTotals();
             if (window.lucide) lucide.createIcons();
         }
 
@@ -2643,24 +2709,32 @@ Ficamos no aguardo para iniciar a execução!`;
             let totalSale = 0;
 
             document.querySelectorAll('.part-row').forEach(row => {
-                const cost = parseFloat(row.querySelector('.part-cost').value) || 0;
-                const sale = parseFloat(row.querySelector('.part-sale').value) || 0;
+                const costEl = row.querySelector('.part-cost');
+                const saleEl = row.querySelector('.part-price') || row.querySelector('.part-sale');
+                const cost = parseFloat(costEl ? costEl.value : 0) || 0;
+                const sale = parseFloat(saleEl ? saleEl.value : 0) || 0;
                 const profit = sale - cost;
 
-                row.querySelector('.part-profit').textContent = 'R$ ' + profit.toFixed(2).replace('.', ',');
+                const profitEl = row.querySelector('.part-profit');
+                if (profitEl) profitEl.textContent = 'R$ ' + profit.toFixed(2).replace('.', ',');
                 totalCost += cost;
                 totalSale += sale;
             });
 
-            const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
+            const laborPrice = parseFloat(document.getElementById('labor-price') ? document.getElementById('labor-price').value : 0) || 0;
             const grandTotal = totalSale + laborPrice;
             const partsProfit = totalSale - totalCost;
             const netProfit = partsProfit + laborPrice;
 
-            document.getElementById('calc-parts-total').textContent = 'R$ ' + totalSale.toFixed(2).replace('.', ',');
-            document.getElementById('calc-labor-total').textContent = 'R$ ' + laborPrice.toFixed(2).replace('.', ',');
-            document.getElementById('calc-grand-total').textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
-            document.getElementById('calc-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            const partsTotalEl = document.getElementById('calc-parts-total');
+            const laborTotalEl = document.getElementById('calc-labor-total');
+            const grandTotalEl = document.getElementById('calc-grand-total');
+            const netProfitEl = document.getElementById('calc-net-profit');
+
+            if (partsTotalEl) partsTotalEl.textContent = 'R$ ' + totalSale.toFixed(2).replace('.', ',');
+            if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + laborPrice.toFixed(2).replace('.', ',');
+            if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+            if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
             
             const breakdownEl = document.getElementById('calc-profit-breakdown');
             if (breakdownEl) {
@@ -2694,6 +2768,7 @@ Ficamos no aguardo para iniciar a execução!`;
                         console.log("⚡ [Admin Realtime] Mudança detectada na tabela work_orders!", payload);
                         loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
                     })
                     .on('postgres_changes', {
                         event: '*',
@@ -2702,6 +2777,7 @@ Ficamos no aguardo para iniciar a execução!`;
                     }, () => {
                         loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
                     })
                     .subscribe();
             } catch (err) {
@@ -2714,12 +2790,14 @@ Ficamos no aguardo para iniciar a execução!`;
             if (document.visibilityState === 'visible') {
                 loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
             }
         }, 10000);
 
         window.addEventListener('focus', () => {
             loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
         });
 
         async function loadSupabaseData() {
@@ -2880,6 +2958,7 @@ Ficamos no aguardo para iniciar a execução!`;
             document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
             loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
         }
 
         function closeModal() {
@@ -3202,6 +3281,7 @@ Ficamos no aguardo para iniciar a execução!`;
             recalcTotals();
             loadSupabaseData();
             setupAdminRealtime();
+            loadStandardBuildSlots();
         });
     </script>
 
