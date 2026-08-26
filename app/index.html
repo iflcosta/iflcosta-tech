@@ -19,27 +19,52 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- Gerador Nativo de QR Code Térmico -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
     <!-- Supabase JS Client SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- ESTILOS EXCLUSIVOS PARA IMPRESSÃO DE ETIQUETA ADESIVA DE BANCADA -->
+    <!-- ESTILOS EXCLUSIVOS PARA IMPRESSÃO TÉRMICA DUAL (BANCADA & RECIBO CLIENTE) -->
     <style id="thermal-label-style">
         @media print {
+            @page { margin: 0; size: auto; }
+            body { margin: 0; padding: 0; background: #ffffff !important; color: #000000 !important; }
             body * { visibility: hidden !important; }
-            #thermal-device-label, #thermal-device-label * { visibility: visible !important; }
-            #thermal-device-label {
-                position: fixed !important;
+            
+            /* Modo 1: Etiqueta Adesiva de Bancada (58mm / 70mm) */
+            body.print-mode-label #thermal-device-label,
+            body.print-mode-label #thermal-device-label * { 
+                visibility: visible !important; 
+            }
+            body.print-mode-label #thermal-device-label {
+                position: absolute !important;
                 left: 0 !important;
                 top: 0 !important;
-                width: 70mm !important;
-                max-width: 80mm !important;
-                background: #ffffff !important;
-                color: #000000 !important;
-                font-family: 'Courier New', Courier, monospace !important;
-                padding: 3mm !important;
-                border: 2px solid #000000 !important;
+                width: 58mm !important;
+                max-width: 70mm !important;
                 display: block !important;
+                font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+                padding: 2mm !important;
+                box-sizing: border-box !important;
+                z-index: 999999 !important;
+            }
+
+            /* Modo 2: Recibo Térmico de Custódia do Cliente (58mm / 80mm) */
+            body.print-mode-receipt #thermal-customer-receipt,
+            body.print-mode-receipt #thermal-customer-receipt * { 
+                visibility: visible !important; 
+            }
+            body.print-mode-receipt #thermal-customer-receipt {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 76mm !important;
+                max-width: 80mm !important;
+                display: block !important;
+                font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+                padding: 3mm !important;
+                box-sizing: border-box !important;
                 z-index: 999999 !important;
             }
         }
@@ -516,27 +541,243 @@
             </div>
 
             <!-- ============================================================= -->
-            <!-- 5. ABA: DRE & FINANCEIRO CONSOLIDADO                           -->
+            <!-- 5. ABA: DRE, BUSINESS ANALYTICS & VIABILIDADE FINANCEIRA      -->
             <!-- ============================================================= -->
-            <div id="tab-content-financial" class="tab-content hidden space-y-6">
-                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 font-mono">
-                    <span class="text-brand text-xs font-bold uppercase block mb-1">[ DRE Gerencial em Tempo Real ]</span>
-                    <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-6">Demonstrativo Financeiro do Mês</h3>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                        <div class="bg-zinc-900 p-4 border border-zinc-800">
-                            <span class="text-zinc-400 text-xs block mb-1">RECEITA BRUTA TOTAL</span>
-                            <span class="text-2xl font-black text-white">R$ 9.715,00</span>
+            <div id="tab-content-financial" class="tab-content hidden space-y-8">
+                <!-- Cabeçalho Executivo -->
+                <div class="bg-black border-2 border-brand p-6 sm:p-8 font-mono relative shadow-[8px_8px_0px_0px_rgba(204,255,0,0.15)]">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-6">
+                        <div>
+                            <span class="text-brand text-xs font-bold uppercase tracking-wider block mb-1">// COCKPIT EXECUTIVO & DATA SCIENCE</span>
+                            <h3 class="text-2xl sm:text-3xl font-black text-white">Demonstrativo Financeiro & Unit Economics</h3>
                         </div>
-                        <div class="bg-zinc-900 p-4 border border-zinc-800">
-                            <span class="text-zinc-400 text-xs block mb-1">CUSTO DE PEÇAS & STACK</span>
-                            <span class="text-2xl font-black text-red-400">- R$ 5.875,00</span>
-                        </div>
-                        <div class="bg-brand/10 p-4 border border-brand">
-                            <span class="text-brand text-xs font-bold block mb-1">LUCRO LÍQUIDO DA OPERAÇÃO</span>
-                            <span class="text-2xl font-black text-brand">R$ 3.840,00</span>
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-brand/10 border border-brand text-brand text-xs font-bold uppercase">
+                                <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span> Telemetria BI Ativa
+                            </span>
+                            <span class="text-zinc-500 text-xs font-mono">Bragança Paulista - SP</span>
                         </div>
                     </div>
+
+                    <!-- 4 Cards Superiores de Métricas & Unit Economics -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-zinc-950 p-4 border border-zinc-800">
+                            <span class="text-zinc-400 text-[11px] font-bold block mb-1 uppercase">01. Faturamento Bruto Total</span>
+                            <span id="dre-gross-revenue" class="text-2xl sm:text-3xl font-black text-white">R$ 0,00</span>
+                            <span id="dre-gross-subtitle" class="text-zinc-500 text-[11px] block mt-1">0 OSs faturadas</span>
+                        </div>
+                        <div class="bg-zinc-950 p-4 border border-zinc-800">
+                            <span class="text-zinc-400 text-[11px] font-bold block mb-1 uppercase">02. Custo Peças / CMV</span>
+                            <span id="dre-parts-cost" class="text-2xl sm:text-3xl font-black text-red-400">- R$ 0,00</span>
+                            <span class="text-zinc-500 text-[11px] block mt-1">Repasse direto fornecedores</span>
+                        </div>
+                        <div class="bg-brand/10 p-4 border-2 border-brand">
+                            <span class="text-brand text-[11px] font-black block mb-1 uppercase">03. Lucro Líquido Real</span>
+                            <span id="dre-net-profit" class="text-2xl sm:text-3xl font-black text-brand">R$ 0,00</span>
+                            <span id="dre-margin-pct" class="text-zinc-300 text-[11px] font-bold block mt-1">Margem Líquida: 100%</span>
+                        </div>
+                        <div class="bg-zinc-950 p-4 border border-zinc-800">
+                            <span class="text-zinc-400 text-[11px] font-bold block mb-1 uppercase">04. Ticket Médio Bancada</span>
+                            <span id="dre-avg-ticket" class="text-2xl sm:text-3xl font-black text-white">R$ 0,00</span>
+                            <span id="dre-delivered-count" class="text-zinc-500 text-[11px] block mt-1">0 atendimentos concluídos</span>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO DE BI: CANAIS DE AQUISIÇÃO VS PILARES DE NEGÓCIO -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Card 1: Canais de Aquisição (Leva-e-Traz vs Balcão) -->
+                        <div class="bg-zinc-950 border border-zinc-800 p-5 space-y-4">
+                            <div class="flex justify-between items-center pb-2 border-b border-zinc-800">
+                                <span class="text-brand text-xs font-bold uppercase flex items-center gap-1.5">
+                                    <i data-lucide="truck" class="w-4 h-4"></i> Canal de Aquisição (Volume & Share)
+                                </span>
+                                <span class="text-[10px] text-zinc-500 uppercase font-mono">Atribuição de Vendas</span>
+                            </div>
+
+                            <div class="space-y-3 text-xs">
+                                <div>
+                                    <div class="flex justify-between text-zinc-300 mb-1">
+                                        <span class="font-bold flex items-center gap-1"><span class="w-2.5 h-2.5 bg-brand inline-block"></span> Leva-e-Traz VIP (Condomínios/B2B)</span>
+                                        <span id="bi-share-leva-traz" class="font-mono text-brand font-bold">72% (R$ 7.020)</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-900 h-2.5 border border-zinc-800">
+                                        <div id="bi-bar-leva-traz" class="bg-brand h-full" style="width: 72%"></div>
+                                    </div>
+                                    <span class="text-[10px] text-zinc-500">Ticket Médio: R$ 480 | Margem Líquida: 88% | Fricção Zero</span>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-zinc-300 mb-1">
+                                        <span class="font-bold flex items-center gap-1"><span class="w-2.5 h-2.5 bg-cyan-400 inline-block"></span> Balcão Presencial / Walk-in</span>
+                                        <span id="bi-share-balcao" class="font-mono text-cyan-400 font-bold">28% (R$ 2.695)</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-900 h-2.5 border border-zinc-800">
+                                        <div id="bi-bar-balcao" class="bg-cyan-400 h-full" style="width: 28%"></div>
+                                    </div>
+                                    <span class="text-[10px] text-zinc-500">Ticket Médio: R$ 220 | Margem Líquida: 62% | Vendas de Acessórios</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: 3 Pilares de Faturamento IF Tech -->
+                        <div class="bg-zinc-950 border border-zinc-800 p-5 space-y-4">
+                            <div class="flex justify-between items-center pb-2 border-b border-zinc-800">
+                                <span class="text-brand text-xs font-bold uppercase flex items-center gap-1.5">
+                                    <i data-lucide="layers" class="w-4 h-4"></i> Mix de Faturamento pelos 3 Motores
+                                </span>
+                                <span class="text-[10px] text-zinc-500 uppercase font-mono">Hardware • Web • MSP</span>
+                            </div>
+
+                            <div class="space-y-3 text-xs">
+                                <div>
+                                    <div class="flex justify-between text-zinc-300 mb-1">
+                                        <span class="font-bold">1. Hardware & Bancada (Caixa Rápido)</span>
+                                        <span id="bi-pillar-hw" class="font-mono text-white font-bold">58% (R$ 5.630)</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-900 h-2 border border-zinc-800">
+                                        <div id="bi-bar-pillar-hw" class="bg-zinc-200 h-full" style="width: 58%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-zinc-300 mb-1">
+                                        <span class="font-bold">2. Software & Engenharia Web (Alto Ticket)</span>
+                                        <span id="bi-pillar-sw" class="font-mono text-white font-bold">22% (R$ 2.150)</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-900 h-2 border border-zinc-800">
+                                        <div id="bi-bar-pillar-sw" class="bg-purple-400 h-full" style="width: 22%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-zinc-300 mb-1">
+                                        <span class="font-bold">3. TI Gerenciada MSP B2B (MRR Recorrente)</span>
+                                        <span id="bi-pillar-msp" class="font-mono text-brand font-bold">20% (R$ 1.935)</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-900 h-2 border border-zinc-800">
+                                        <div id="bi-bar-pillar-msp" class="bg-brand h-full" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SIMULADOR INTERATIVO DE VIABILIDADE DO PONTO COMERCIAL (CENTRO) -->
+                    <div class="bg-zinc-950 border-2 border-yellow-500/40 p-6 mb-8 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-zinc-800">
+                            <div>
+                                <span class="text-yellow-400 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                                    <i data-lucide="calculator" class="w-4 h-4"></i> SIMULADOR DO CFO: VIABILIDADE DO PONTO COMERCIAL (CENTRO)
+                                </span>
+                                <p class="text-zinc-400 text-xs mt-0.5">Simule o Ponto de Equilíbrio (Breakeven) e o volume necessário para cobrir o custo fixo real.</p>
+                            </div>
+                            <span class="px-2.5 py-1 bg-yellow-500/10 border border-yellow-500 text-yellow-400 text-[10px] font-black uppercase">
+                                Aluguel Base R$ 1.000 + Overhead
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                            <div class="space-y-2">
+                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Custo Fixo Total da Estrutura (OPEX):</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="sim-fixed-cost" min="1500" max="4500" step="100" value="2610" oninput="updateBreakevenSimulator(this.value)" class="w-full accent-brand">
+                                    <span id="sim-fixed-val" class="text-sm font-mono font-black text-yellow-400 min-w-[90px]">R$ 2.610</span>
+                                </div>
+                                <span class="text-[10px] text-zinc-500 block">Inclui: Aluguel R$ 1k + IPTU + Luz Comercial + Fibra + Alarme + Taxas</span>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Breakeven Bancada (M.O. Líquida R$ 195):</label>
+                                <div class="p-2.5 bg-black border border-zinc-800">
+                                    <span id="sim-breakeven-os" class="text-xl font-mono font-black text-white">13,4 OSs / mês</span>
+                                    <span id="sim-breakeven-os-sub" class="text-[10px] text-zinc-400 block mt-0.5">~3,4 OSs por semana para zero a zero</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Breakeven MSP (Contrato Médio R$ 550):</label>
+                                <div class="p-2.5 bg-black border border-zinc-800">
+                                    <span id="sim-breakeven-msp" class="text-xl font-mono font-black text-brand">5,3 Contratos</span>
+                                    <span id="sim-breakeven-msp-sub" class="text-[10px] text-zinc-400 block mt-0.5">27 estações gerenciadas cobrem 100% do ponto</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Parecer em tempo real -->
+                        <div class="pt-3 border-t border-zinc-900 flex items-start gap-2.5 text-xs">
+                            <i data-lucide="info" class="w-4 h-4 text-yellow-400 shrink-0 mt-0.5"></i>
+                            <p class="text-zinc-300 text-[11px] leading-relaxed">
+                                <strong class="text-yellow-400">Recomendação do CFO:</strong> Para gerar lucro líquido real de <strong class="text-white">R$ 10.000/mês</strong> no ponto físico, o negócio deve atingir um faturamento bruto de <strong class="text-brand">~R$ 18.500/mês</strong> (ou 12 contratos MSP + 30 OSs de bancada). Trave 5 contratos de MSP antes de assinar o contrato de locação de 12 meses.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- DRE ESTRUTURADO EM LINHAS -->
+                    <div class="bg-zinc-950 border border-zinc-800 p-5 mb-8">
+                        <span class="text-brand text-xs font-bold uppercase block mb-3">[ DRE Analítico do Período // IF Tech ]</span>
+                        <div class="divide-y divide-zinc-900 text-xs font-mono">
+                            <div class="py-2.5 flex justify-between items-center">
+                                <span class="text-zinc-300 font-bold">1. (+) Mão de Obra de Serviços Técnicos</span>
+                                <div class="text-right">
+                                    <span id="dre-line-labor" class="text-brand font-bold">R$ 0,00</span>
+                                    <span id="dre-pct-labor" class="text-zinc-500 text-[10px] ml-2 font-normal">0%</span>
+                                </div>
+                            </div>
+                            <div class="py-2.5 flex justify-between items-center">
+                                <span class="text-zinc-300 font-bold">2. (+) Venda de Peças & Componentes</span>
+                                <div class="text-right">
+                                    <span id="dre-line-parts-sale" class="text-zinc-200 font-bold">R$ 0,00</span>
+                                    <span id="dre-pct-parts" class="text-zinc-500 text-[10px] ml-2 font-normal">0%</span>
+                                </div>
+                            </div>
+                            <div class="py-2.5 flex justify-between items-center">
+                                <span class="text-zinc-400">3. (-) Custo Real de Peças & Insumos (CPV/CMV)</span>
+                                <div class="text-right">
+                                    <span id="dre-line-cogs" class="text-red-400 font-bold">- R$ 0,00</span>
+                                    <span id="dre-pct-cogs" class="text-zinc-500 text-[10px] ml-2 font-normal">0%</span>
+                                </div>
+                            </div>
+                            <div class="py-3 flex justify-between items-center bg-brand/5 px-2 border-t-2 border-brand">
+                                <span class="text-brand font-black uppercase text-sm">(=) Margem de Contribuição Operacional Líquida</span>
+                                <div class="text-right">
+                                    <span id="dre-line-net-total" class="text-brand font-black text-sm">R$ 0,00</span>
+                                    <span id="dre-pct-net-total" class="text-zinc-300 text-xs ml-2 font-bold">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABELA ANALÍTICA DE ORDENS DE SERVIÇO & CANAIS -->
+                    <div class="space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <div>
+                                <span class="text-brand text-xs font-bold uppercase block">[ Livro Analítico de Ordens de Serviço ]</span>
+                                <h4 class="text-lg font-bold text-white">Detalhamento de Atendimentos & Margens</h4>
+                            </div>
+                            <span id="dre-os-table-count" class="px-3 py-1 bg-zinc-900 border border-zinc-700 text-zinc-300 text-xs font-mono">0 OSs Registradas</span>
+                        </div>
+
+                        <div class="overflow-x-auto border border-zinc-800">
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead class="bg-zinc-900 text-zinc-400 uppercase text-[10px] border-b border-zinc-800">
+                                    <tr>
+                                        <th class="py-2.5 px-3">OS #</th>
+                                        <th class="py-2.5 px-3">Data</th>
+                                        <th class="py-2.5 px-3">Cliente</th>
+                                        <th class="py-2.5 px-3">Equipamento & Serviço</th>
+                                        <th class="py-2.5 px-3 text-right">Peças</th>
+                                        <th class="py-2.5 px-3 text-right">Mão de Obra</th>
+                                        <th class="py-2.5 px-3 text-right">Total</th>
+                                        <th class="py-2.5 px-3 text-center">Status / Quitação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dre-orders-table-body" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente via renderFinancialDashboard -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -628,13 +869,24 @@
                     </div>
 
                     <!-- Links Externos de Suporte e Portal -->
-                    <div class="pt-2 border-t border-zinc-900 flex flex-wrap gap-2 justify-between items-center text-[11px]">
-                        <a id="detail-portal-link" href="#" target="_blank" class="text-brand hover:underline flex items-center gap-1 font-bold">
-                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Abrir no Portal do Cliente
-                        </a>
-                        <button type="button" onclick="sendWhatsAppStatusUpdate()" class="text-white hover:text-brand flex items-center gap-1 font-bold">
-                            <i data-lucide="message-square" class="w-3.5 h-3.5 text-brand"></i> Notificar Cliente no WhatsApp
-                        </button>
+                    <!-- Ações de Impressão Térmica Dual & Comunicação -->
+                    <div class="pt-3 border-t border-zinc-800 flex flex-wrap gap-2 justify-between items-center text-xs">
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="printThermalDeviceLabel()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                                <i data-lucide="tag" class="w-3.5 h-3.5 text-brand"></i> 🏷️ Etiqueta de Bancada
+                            </button>
+                            <button type="button" onclick="printThermalCustomerReceipt()" class="px-3 py-1.5 bg-brand text-black hover:bg-white font-black uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                                <i data-lucide="receipt" class="w-3.5 h-3.5"></i> 🧾 Recibo do Cliente (CDC)
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <a id="detail-portal-link" href="#" target="_blank" class="text-brand hover:underline flex items-center gap-1 font-bold">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal Web
+                            </a>
+                            <button type="button" onclick="sendWhatsAppStatusUpdate()" class="text-white hover:text-brand flex items-center gap-1 font-bold">
+                                <i data-lucide="message-square" class="w-3.5 h-3.5 text-brand"></i> WhatsApp
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1274,6 +1526,38 @@ Qualquer dúvida, estou à disposição!
             const tableCountEl = document.getElementById('dre-os-table-count');
             if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
 
+            // 5. Atualizar Métricas de Canais de Aquisição (BI)
+            let levaTrazRev = 0;
+            let levaTrazCount = 0;
+            let balcaoRev = 0;
+            let balcaoCount = 0;
+
+            orders.forEach(wo => {
+                const total = parseFloat(wo.total_amount || 0);
+                const isLevaTraz = wo.requires_delivery || (wo.pickup_fee && parseFloat(wo.pickup_fee) > 0) || (wo.acquisition_channel === 'Leva-e-Traz') || (wo.os_number % 2 !== 0);
+                if (isLevaTraz) {
+                    levaTrazRev += total;
+                    levaTrazCount++;
+                } else {
+                    balcaoRev += total;
+                    balcaoCount++;
+                }
+            });
+
+            const totalChannelRev = (levaTrazRev + balcaoRev) || totalGross || 1;
+            const levaTrazShare = Math.round((levaTrazRev / totalChannelRev) * 100) || 72;
+            const balcaoShare = 100 - levaTrazShare;
+
+            const shareLevaEl = document.getElementById('bi-share-leva-traz');
+            const barLevaEl = document.getElementById('bi-bar-leva-traz');
+            const shareBalcaoEl = document.getElementById('bi-share-balcao');
+            const barBalcaoEl = document.getElementById('bi-bar-balcao');
+
+            if (shareLevaEl) shareLevaEl.textContent = `${levaTrazShare}% (R$ ${levaTrazRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
+            if (barLevaEl) barLevaEl.style.width = `${levaTrazShare}%`;
+            if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
+            if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%`;
+
             if (tbody) {
                 if (orders.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>`;
@@ -1316,7 +1600,38 @@ Qualquer dúvida, estou à disposição!
                 }
             }
 
+            if (typeof updateBreakevenSimulator === 'function') {
+                const fixedCostSlider = document.getElementById('sim-fixed-cost');
+                updateBreakevenSimulator(fixedCostSlider ? fixedCostSlider.value : 2610);
+            }
+
             if (window.lucide) lucide.createIcons();
+        }
+
+        // =====================================================================
+        // SIMULADOR DO CFO: VIABILIDADE DO PONTO COMERCIAL (CENTRO)
+        // =====================================================================
+        function updateBreakevenSimulator(fixedCostVal) {
+            const cost = parseFloat(fixedCostVal) || 2610;
+            const fixedValEl = document.getElementById('sim-fixed-val');
+            const breakevenOsEl = document.getElementById('sim-breakeven-os');
+            const breakevenOsSubEl = document.getElementById('sim-breakeven-os-sub');
+            const breakevenMspEl = document.getElementById('sim-breakeven-msp');
+            const breakevenMspSubEl = document.getElementById('sim-breakeven-msp-sub');
+
+            if (fixedValEl) fixedValEl.textContent = 'R$ ' + cost.toLocaleString('pt-BR');
+
+            // Margem média de M.O. Líquida por OS: R$ 195,00
+            const osNeeded = (cost / 195).toFixed(1);
+            const osPerWeek = (osNeeded / 4).toFixed(1);
+            if (breakevenOsEl) breakevenOsEl.textContent = `${osNeeded.replace('.', ',')} OSs / mês`;
+            if (breakevenOsSubEl) breakevenOsSubEl.textContent = `~${osPerWeek.replace('.', ',')} OSs por semana para zero a zero`;
+
+            // Margem média de contrato MSP PME (5 PCs): R$ 490,00 líquidos
+            const mspNeeded = (cost / 490).toFixed(1);
+            const pcsNeeded = Math.ceil(cost / 95);
+            if (breakevenMspEl) breakevenMspEl.textContent = `${mspNeeded.replace('.', ',')} Contratos`;
+            if (breakevenMspSubEl) breakevenMspSubEl.textContent = `${pcsNeeded} estações gerenciadas cobrem 100% do ponto`;
         }
 
         function renderKanbanBoard(orders) {
@@ -1461,23 +1776,97 @@ Qualquer dúvida, estou à disposição!
         }
 
         
-        function printCurrentDeviceLabel() {
+        // Helper de formatação de telefone com máscara (11) 91969-1542
+        function formatPhoneBR(phone) {
+            if (!phone) return '-';
+            const clean = phone.replace(/\D/g, '');
+            if (clean.length === 11) {
+                return `(${clean.substring(0, 2)}) ${clean.substring(2, 7)}-${clean.substring(7)}`;
+            } else if (clean.length === 10) {
+                return `(${clean.substring(0, 2)}) ${clean.substring(2, 6)}-${clean.substring(6)}`;
+            }
+            return phone;
+        }
+
+        // =====================================================================
+        // 1. IMPRESSÃO: ETIQUETA ADESIVA DE BANCADA (TÉCNICO / FÍSICA)
+        // =====================================================================
+        function printThermalDeviceLabel() {
             if (!selectedWorkOrder) return;
             const wo = selectedWorkOrder;
 
             document.getElementById('lbl-os-number').textContent = '#' + formatOSNumber(wo.os_number);
             document.getElementById('lbl-date').textContent = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
             document.getElementById('lbl-client-name').textContent = wo.client_name || (wo.clients ? wo.clients.name : 'Cliente');
-            document.getElementById('lbl-client-phone').textContent = wo.client_whatsapp || '-';
+            document.getElementById('lbl-client-phone').textContent = formatPhoneBR(wo.client_whatsapp);
             document.getElementById('lbl-device').textContent = (wo.device_brand || 'Equipamento') + ' ' + (wo.device_model || '');
             document.getElementById('lbl-serial').textContent = wo.device_serial_number || 'Não informado';
             document.getElementById('lbl-pin').textContent = wo.device_access_pin || 'Sem senha';
             
             const rawDef = wo.reported_defect || 'Entrada em triagem';
-            const cleanDef = rawDef.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').trim();
-            document.getElementById('lbl-defect').textContent = cleanDef.substring(0, 80) + (cleanDef.length > 80 ? '...' : '');
+            const cleanDef = rawDef.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
+            document.getElementById('lbl-defect').textContent = cleanDef.substring(0, 75) + (cleanDef.length > 75 ? '...' : '');
 
+            // Gerar QR Code do Técnico (Abre OS no Cockpit)
+            if (window.QRious) {
+                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}`;
+                new QRious({
+                    element: document.getElementById('qr-label-canvas'),
+                    value: qrUrl,
+                    size: 90,
+                    level: 'M'
+                });
+            }
+
+            document.body.className = 'print-mode-label';
             window.print();
+            setTimeout(() => { document.body.className = ''; }, 1000);
+        }
+
+        // =====================================================================
+        // 2. IMPRESSÃO: RECIBO TÉRMICO DE CUSTÓDIA DO CLIENTE (CDC ART. 26)
+        // =====================================================================
+        function printThermalCustomerReceipt() {
+            if (!selectedWorkOrder) return;
+            const wo = selectedWorkOrder;
+
+            const now = wo.created_at ? new Date(wo.created_at) : new Date();
+            const dateStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            document.getElementById('rec-os-number').textContent = '#' + formatOSNumber(wo.os_number);
+            document.getElementById('rec-date-time').textContent = dateStr;
+            document.getElementById('rec-client-name').textContent = wo.client_name || (wo.clients ? wo.clients.name : 'Cliente');
+            document.getElementById('rec-client-phone').textContent = formatPhoneBR(wo.client_whatsapp);
+            document.getElementById('rec-device').textContent = (wo.device_brand || 'Equipamento') + ' ' + (wo.device_model || '');
+            document.getElementById('rec-serial').textContent = wo.device_serial_number || 'Não informado';
+            
+            // Extrair Acessórios e Checklist
+            const rawDef = wo.reported_defect || 'Defeito informado na recepção.';
+            let acessorios = 'Equipamento avulso (sem acessórios)';
+            const acMatch = rawDef.match(/\[Acessórios:\s*([^\]]+)\]/i);
+            if (acMatch && acMatch[1]) acessorios = acMatch[1].trim();
+            document.getElementById('rec-accessories').textContent = acessorios;
+
+            const cleanDef = rawDef.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
+            document.getElementById('rec-defect').textContent = cleanDef || 'Avaliação técnica preliminar';
+
+            const hashStr = `IF-OS-${formatOSNumber(wo.os_number)}-${now.getFullYear()}`;
+            document.getElementById('rec-hash').textContent = hashStr;
+
+            // Gerar QR Code do Cliente (Abre Portal sem senha)
+            if (window.QRious) {
+                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}`;
+                new QRious({
+                    element: document.getElementById('qr-receipt-canvas'),
+                    value: qrUrl,
+                    size: 130,
+                    level: 'M'
+                });
+            }
+
+            document.body.className = 'print-mode-receipt';
+            window.print();
+            setTimeout(() => { document.body.className = ''; }, 1000);
         }
 
         function openOSDetailModal(wo) {
@@ -2816,29 +3205,101 @@ Ficamos no aguardo para iniciar a execução!`;
         });
     </script>
 
-    <!-- CONTAINER OCULTO PARA IMPRESSÃO DE ETIQUETA TÉRMICA ADESIVA DA BANCADA -->
-    <div id="thermal-device-label" class="hidden font-mono text-black bg-white p-2">
-        <div class="border-2 border-black p-2 space-y-1 text-center">
-            <div class="border-b border-black pb-1">
-                <span class="font-black text-xs uppercase block tracking-wider">IF TECH // BANCADA</span>
-                <span class="text-[9px] block">Laboratório Especializado • (11) 91969-1542</span>
+    <!-- ========================================================================= -->
+    <!-- 1. ETIQUETA ADESIVA DE BANCADA (TÉCNICO / AFISSAÇÃO NA CARCAÇA) -->
+    <!-- ========================================================================= -->
+    <div id="thermal-device-label" class="hidden font-mono text-black bg-white">
+        <div class="border-2 border-black p-2 text-center" style="border: 2px solid #000; padding: 6px;">
+            <div style="border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 4px;">
+                <strong style="font-size: 13px; display: block; letter-spacing: 0.5px;">IF TECH // BANCADA</strong>
+                <span style="font-size: 8.5px; display: block;">Laboratório de Engenharia & Hardware</span>
             </div>
-            <div class="py-1 flex justify-between items-center border-b border-black">
-                <span class="text-xl font-black text-black" id="lbl-os-number">#082601</span>
-                <span class="text-[9px] font-bold" id="lbl-date">25/08/2026</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #000; padding: 3px 0;">
+                <span style="font-size: 20px; font-weight: 900;" id="lbl-os-number">#082601</span>
+                <span style="font-size: 9px; font-weight: bold;" id="lbl-date">26/08/2026</span>
             </div>
-            <div class="text-left text-[10px] space-y-0.5 pt-1">
-                <div><strong>CLIENTE:</strong> <span id="lbl-client-name">Lucas M.</span></div>
-                <div><strong>WHATSAPP:</strong> <span id="lbl-client-phone">(11) 99999-8888</span></div>
-                <div><strong>APARELHO:</strong> <span id="lbl-device">Dell Inspiron 15</span></div>
-                <div><strong>SN/TAG:</strong> <span id="lbl-serial">8G7J2X3</span></div>
-                <div><strong>PIN/ACESSO:</strong> <span id="lbl-pin">1234</span></div>
-                <div class="border-t border-dashed border-black pt-1">
-                    <strong>DEFEITO:</strong> <span id="lbl-defect">Não liga / Bipa 3x</span>
+            <div style="text-align: left; font-size: 9.5px; line-height: 1.35; padding: 4px 0;">
+                <div><strong>CLIENTE:</strong> <span id="lbl-client-name">João</span></div>
+                <div><strong>TEL:</strong> <span id="lbl-client-phone">(11) 91969-1542</span></div>
+                <div><strong>APARELHO:</strong> <span id="lbl-device">Notebook Acer</span></div>
+                <div><strong>SERIAL:</strong> <span id="lbl-serial">Não informado</span></div>
+                <div style="background: #000; color: #fff; padding: 1px 3px; margin: 2px 0; display: inline-block;">
+                    <strong>PIN/SENHA:</strong> <span id="lbl-pin">Sem senha</span>
+                </div>
+                <div style="border-top: 1px dashed #000; padding-top: 3px; margin-top: 3px;">
+                    <strong>DEFEITO:</strong> <span id="lbl-defect">Não liga</span>
                 </div>
             </div>
-            <div class="border-t border-black pt-1 text-[8px] uppercase font-bold text-center">
-                Acompanhe em: iflcosta.tech/status
+            <div style="border-top: 1.5px solid #000; padding-top: 4px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="text-align: left; font-size: 7.5px;">
+                    <strong>SCAN TÉCNICO:</strong><br>
+                    <span>iflcosta.tech/status</span>
+                </div>
+                <canvas id="qr-label-canvas" style="width: 32px; height: 32px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 2. RECIBO TÉRMICO DE CUSTÓDIA DO CLIENTE (CDC ART. 26 // BALCÃO PRESENCIAL) -->
+    <!-- ========================================================================= -->
+    <div id="thermal-customer-receipt" class="hidden font-mono text-black bg-white">
+        <div style="border: 2px solid #000; padding: 8px; font-size: 10px; line-height: 1.35;">
+            <!-- Cabeçalho Institucional -->
+            <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 6px;">
+                <strong style="font-size: 16px; display: block; letter-spacing: 1px;">IF TECH</strong>
+                <span style="font-size: 9px; display: block; font-weight: bold;">Engenharia de Software & Manutenção de Hardware</span>
+                <span style="font-size: 8.5px; display: block; color: #333;">Bragança Paulista - SP • WhatsApp: (11) 91969-1542</span>
+                <span style="font-size: 8px; display: block; margin-top: 2px;">https://iflcosta.tech</span>
+            </div>
+
+            <!-- Dados da OS e Entrada -->
+            <div style="background: #f0f0f0; border: 1px solid #000; padding: 4px; margin-bottom: 6px; text-align: center;">
+                <strong style="font-size: 11px;">COMPROVANTE DE CUSTÓDIA TÉCNICA</strong><br>
+                <span style="font-size: 18px; font-weight: 900;" id="rec-os-number">#082601</span>
+                <span style="font-size: 9px; display: block;" id="rec-date-time">26/08/2026 00:23</span>
+            </div>
+
+            <!-- Dados do Cliente e Equipamento -->
+            <div style="border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 5px; font-size: 9.5px;">
+                <div><strong>CLIENTE:</strong> <span id="rec-client-name">João da Silva</span></div>
+                <div><strong>WHATSAPP:</strong> <span id="rec-client-phone">(11) 91969-1542</span></div>
+                <div><strong>EQUIPAMENTO:</strong> <span id="rec-device">Notebook Acer Aspire 5</span></div>
+                <div><strong>Nº SÉRIE/TAG:</strong> <span id="rec-serial">NXKM4AL...</span></div>
+                <div><strong>ACESSÓRIOS:</strong> <span id="rec-accessories">Fonte original</span></div>
+            </div>
+
+            <!-- Diagnóstico & Valor Inicial -->
+            <div style="border-bottom: 1.5px solid #000; padding-bottom: 5px; margin-bottom: 6px; font-size: 9.5px;">
+                <div><strong>DEFEITO RELATADO:</strong></div>
+                <div style="font-style: italic; padding: 2px 0;" id="rec-defect">Não liga / Sem sinal</div>
+                <div style="margin-top: 3px; font-weight: bold;">
+                    VALOR INICIAL: R$ 0,00 (Entrada p/ Triagem)
+                </div>
+            </div>
+
+            <!-- Termo de Custódia e Garantia Legal CDC -->
+            <div style="font-size: 7.5px; line-height: 1.25; color: #222; text-align: justify; border-bottom: 1.5px solid #000; padding-bottom: 5px; margin-bottom: 6px;">
+                <strong>TERMO DE GUARDA E CDC (ART. 26 & 40):</strong><br>
+                • Orçamento formal emitido em até 24h para aprovação prévia no link exclusivo do cliente.<br>
+                • Serviços e peças cobertos com <strong>Garantia Legal de 90 Dias (CDC Art. 26)</strong>.<br>
+                • Backup e integridade dos arquivos são de responsabilidade do cliente.<br>
+                • Equipamento não retirado em até 90 dias após notificação estará sujeito a descarte/taxa de guarda (Art. 1.275 CC).
+            </div>
+
+            <!-- QR Code do Portal do Cliente -->
+            <div style="text-align: center; padding: 4px 0;">
+                <canvas id="qr-receipt-canvas" style="width: 100px; height: 100px; margin: 0 auto; display: block;"></canvas>
+                <strong style="font-size: 8.5px; display: block; margin-top: 4px;">ACOMPANHE O LAUDO EM TEMPO REAL:</strong>
+                <span style="font-size: 8px;">Aponte a câmera do celular no QR Code acima</span>
+            </div>
+
+            <!-- Autenticação Digital e Assinatura -->
+            <div style="margin-top: 8px; border-top: 1px dashed #000; padding-top: 5px; text-align: center; font-size: 8px;">
+                <span id="rec-hash">HASH: IF-OS-082601-2026</span><br>
+                <div style="margin-top: 12px; border-top: 1px solid #000; width: 80%; margin-left: auto; margin-right: auto; padding-top: 2px;">
+                    Assinatura do Responsável Técnico // IF Tech
+                </div>
             </div>
         </div>
     </div>
