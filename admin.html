@@ -669,36 +669,36 @@
                                 <span class="text-yellow-400 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
                                     <i data-lucide="calculator" class="w-4 h-4"></i> SIMULADOR DO CFO: VIABILIDADE DO PONTO COMERCIAL (CENTRO)
                                 </span>
-                                <p class="text-zinc-400 text-xs mt-0.5">Simule o Ponto de Equilíbrio (Breakeven) e o volume necessário para cobrir o custo fixo real.</p>
+                                <p class="text-zinc-400 text-xs mt-0.5">Simule o Ponto de Equilíbrio (Breakeven) e o volume necessário para cobrir o custo fixo real calibrado.</p>
                             </div>
                             <span class="px-2.5 py-1 bg-yellow-500/10 border border-yellow-500 text-yellow-400 text-[10px] font-black uppercase">
-                                Aluguel Base R$ 1.000 + Overhead
+                                Aluguel R$ 1.000 (IPTU Incluso) + OPEX Real: R$ 1.300
                             </span>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                             <div class="space-y-2">
-                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Custo Fixo Total da Estrutura (OPEX):</label>
+                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Custo Fixo Real da Estrutura (OPEX Enxuto):</label>
                                 <div class="flex items-center gap-2">
-                                    <input type="range" id="sim-fixed-cost" min="1500" max="4500" step="100" value="2610" oninput="updateBreakevenSimulator(this.value)" class="w-full accent-brand">
-                                    <span id="sim-fixed-val" class="text-sm font-mono font-black text-yellow-400 min-w-[90px]">R$ 2.610</span>
+                                    <input type="range" id="sim-fixed-cost" min="800" max="3500" step="50" value="1300" oninput="updateBreakevenSimulator(this.value)" class="w-full accent-brand">
+                                    <span id="sim-fixed-val" class="text-sm font-mono font-black text-yellow-400 min-w-[90px]">R$ 1.300</span>
                                 </div>
-                                <span class="text-[10px] text-zinc-500 block">Inclui: Aluguel R$ 1k + IPTU + Luz Comercial + Fibra + Alarme + Taxas</span>
+                                <span class="text-[10px] text-zinc-500 block">Aluguel R$ 1k (IPTU incluso) + Luz R$ 150 + Fibra/Água R$ 150</span>
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Breakeven Bancada (M.O. Líquida R$ 195):</label>
+                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Breakeven Bancada (M.O. Média R$ 237,50):</label>
                                 <div class="p-2.5 bg-black border border-zinc-800">
-                                    <span id="sim-breakeven-os" class="text-xl font-mono font-black text-white">13,4 OSs / mês</span>
-                                    <span id="sim-breakeven-os-sub" class="text-[10px] text-zinc-400 block mt-0.5">~3,4 OSs por semana para zero a zero</span>
+                                    <span id="sim-breakeven-os" class="text-xl font-mono font-black text-white">5,5 OSs / mês</span>
+                                    <span id="sim-breakeven-os-sub" class="text-[10px] text-brand block mt-0.5">~1,3 OSs por semana para zero a zero</span>
                                 </div>
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Breakeven MSP (Contrato Médio R$ 550):</label>
+                                <label class="text-[11px] text-zinc-300 font-bold uppercase block">Breakeven MSP (Contrato PME R$ 475):</label>
                                 <div class="p-2.5 bg-black border border-zinc-800">
-                                    <span id="sim-breakeven-msp" class="text-xl font-mono font-black text-brand">5,3 Contratos</span>
-                                    <span id="sim-breakeven-msp-sub" class="text-[10px] text-zinc-400 block mt-0.5">27 estações gerenciadas cobrem 100% do ponto</span>
+                                    <span id="sim-breakeven-msp" class="text-xl font-mono font-black text-brand">2,7 Contratos</span>
+                                    <span id="sim-breakeven-msp-sub" class="text-[10px] text-zinc-400 block mt-0.5">14 estações gerenciadas cobrem 100% do ponto</span>
                                 </div>
                             </div>
                         </div>
@@ -707,7 +707,7 @@
                         <div class="pt-3 border-t border-zinc-900 flex items-start gap-2.5 text-xs">
                             <i data-lucide="info" class="w-4 h-4 text-yellow-400 shrink-0 mt-0.5"></i>
                             <p class="text-zinc-300 text-[11px] leading-relaxed">
-                                <strong class="text-yellow-400">Recomendação do CFO:</strong> Para gerar lucro líquido real de <strong class="text-white">R$ 10.000/mês</strong> no ponto físico, o negócio deve atingir um faturamento bruto de <strong class="text-brand">~R$ 18.500/mês</strong> (ou 12 contratos MSP + 30 OSs de bancada). Trave 5 contratos de MSP antes de assinar o contrato de locação de 12 meses.
+                                <strong class="text-yellow-400">Veredito do Diretor de BI:</strong> Com o custo fixo real de <strong class="text-white">R$ 1.300/mês</strong> (R$ 43,33/dia), a equação de risco é ultrabaixa. Apenas <strong class="text-brand">1 a 2 serviços por semana</strong> (ou 3 contratos micro-PME de MSP) pagam 100% do ponto no Centro de Bragança Paulista.
                             </p>
                         </div>
                     </div>
@@ -1602,7 +1602,7 @@ Qualquer dúvida, estou à disposição!
 
             if (typeof updateBreakevenSimulator === 'function') {
                 const fixedCostSlider = document.getElementById('sim-fixed-cost');
-                updateBreakevenSimulator(fixedCostSlider ? fixedCostSlider.value : 2610);
+                updateBreakevenSimulator(fixedCostSlider ? fixedCostSlider.value : 1300);
             }
 
             if (window.lucide) lucide.createIcons();
@@ -1612,7 +1612,7 @@ Qualquer dúvida, estou à disposição!
         // SIMULADOR DO CFO: VIABILIDADE DO PONTO COMERCIAL (CENTRO)
         // =====================================================================
         function updateBreakevenSimulator(fixedCostVal) {
-            const cost = parseFloat(fixedCostVal) || 2610;
+            const cost = parseFloat(fixedCostVal) || 1300;
             const fixedValEl = document.getElementById('sim-fixed-val');
             const breakevenOsEl = document.getElementById('sim-breakeven-os');
             const breakevenOsSubEl = document.getElementById('sim-breakeven-os-sub');
@@ -1621,14 +1621,14 @@ Qualquer dúvida, estou à disposição!
 
             if (fixedValEl) fixedValEl.textContent = 'R$ ' + cost.toLocaleString('pt-BR');
 
-            // Margem média de M.O. Líquida por OS: R$ 195,00
-            const osNeeded = (cost / 195).toFixed(1);
-            const osPerWeek = (osNeeded / 4).toFixed(1);
+            // Margem média de M.O. Líquida por OS calibrada: R$ 237,50
+            const osNeeded = (cost / 237.5).toFixed(1);
+            const osPerWeek = (osNeeded / 4.33).toFixed(1);
             if (breakevenOsEl) breakevenOsEl.textContent = `${osNeeded.replace('.', ',')} OSs / mês`;
             if (breakevenOsSubEl) breakevenOsSubEl.textContent = `~${osPerWeek.replace('.', ',')} OSs por semana para zero a zero`;
 
-            // Margem média de contrato MSP PME (5 PCs): R$ 490,00 líquidos
-            const mspNeeded = (cost / 490).toFixed(1);
+            // Margem média de contrato MSP PME (5 PCs): R$ 475,00 líquidos
+            const mspNeeded = (cost / 475).toFixed(1);
             const pcsNeeded = Math.ceil(cost / 95);
             if (breakevenMspEl) breakevenMspEl.textContent = `${mspNeeded.replace('.', ',')} Contratos`;
             if (breakevenMspSubEl) breakevenMspSubEl.textContent = `${pcsNeeded} estações gerenciadas cobrem 100% do ponto`;
