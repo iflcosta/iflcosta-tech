@@ -1,5 +1,5 @@
 # 🏛️ PARECER ARQUITETURAL & BLUEPRINT DA MÁQUINA DE ESTADOS DEFINITIVA (v3.0)
-## IFL Costa Tech // Engenharia de Software, Bancada de Hardware & TI Gerenciada (MSP)
+## IF Tech // Engenharia de Software, Bancada de Hardware & TI Gerenciada (MSP)
 **Documento:** `docs/ops/STATE_MACHINE_WORKBENCH_V3_BLUEPRINT.md`  
 **Data:** 23 de Agosto de 2026  
 **Autor:** Arquiteto Principal de Software & Engenharia de Operações  

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cockpit do Gestor // IFL Costa Tech ERP</title>
+    <title>Cockpit do Gestor // IF Tech ERP</title>
     <meta name="robots" content="noindex, nofollow">
     
     <!-- Favicon Brutalista SVG -->
@@ -55,7 +55,7 @@
                 <div class="flex items-center gap-3">
                     <a href="index.html" class="flex items-center gap-2 group">
                         <div class="w-3.5 h-7 bg-brand group-hover:scale-110 transition-transform"></div>
-                        <span class="text-lg sm:text-xl font-extrabold text-white tracking-tight">IFL Costa Tech</span>
+                        <span class="text-lg sm:text-xl font-extrabold text-white tracking-tight">IF Tech</span>
                     </a>
                     <span class="font-mono text-[10px] sm:text-xs font-black text-black bg-brand px-2 py-0.5 uppercase tracking-widest">COCKPIT ADMIN // 360°</span>
                 </div>
@@ -355,7 +355,7 @@
                     <div class="bg-black border-2 border-zinc-800 p-4">
                         <span class="text-zinc-500 text-xs block mb-1">TOTAL DE CLIENTES</span>
                         <span class="text-2xl sm:text-3xl font-black text-white" id="crm-total-clients">0</span>
-                        <span class="text-[11px] text-brand block mt-1">CRM Único IFL</span>
+                        <span class="text-[11px] text-brand block mt-1">CRM Único IF Tech</span>
                     </div>
                     <div class="bg-black border-2 border-zinc-800 p-4">
                         <span class="text-zinc-500 text-xs block mb-1">CLIENTES B2C (GAMERS/PRO)</span>
@@ -544,7 +544,7 @@
         <div class="bg-zinc-950 border-2 border-brand p-6 sm:p-8 max-w-2xl w-full shadow-2xl font-mono relative max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
                 <div>
-                    <span class="text-brand text-[10px] font-bold uppercase block">[ Gestão da Bancada // IFL Costa Tech ]</span>
+                    <span class="text-brand text-[10px] font-bold uppercase block">[ Gestão da Bancada // IF Tech ]</span>
                     <h3 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2">
                         <span id="detail-os-num">#1050</span> - <span id="detail-device-title" class="text-zinc-200">Notebook Dell</span>
                     </h3>
@@ -937,7 +937,7 @@
 
             <div class="bg-black border border-zinc-800 p-4 text-xs text-zinc-300 font-mono whitespace-pre-wrap mb-6" id="whatsapp-msg-preview">
 Olá Lucas! 👋
-Aqui é da *IFL Costa Tech*.
+Aqui é da *IF Tech*.
 
 Sua proposta técnica para a *OS #1051* está pronta com peças de alta durabilidade e laudo de estresse incluso!
 
@@ -1184,7 +1184,7 @@ Qualquer dúvida, estou à disposição!
 
         
         // =====================================================================
-        // MOTOR FINANCEIRO & DRE EM TEMPO REAL (IFL COSTA TECH)
+        // MOTOR FINANCEIRO & DRE EM TEMPO REAL (IF TECH)
         // =====================================================================
         function renderFinancialDashboard(orders) {
             if (!orders) orders = currentWorkOrders || [];
@@ -1721,7 +1721,7 @@ Qualquer dúvida, estou à disposição!
             const eHand = String.fromCodePoint(0x1F449);
             const statusName = (wo.status || 'Triagem').replace(/_/g, ' ');
 
-            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IFL Costa Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/status?${tokenParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IF Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/status?${tokenParam}\n\nQualquer dúvida, estamos à disposição!`;
             
             window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
@@ -1949,7 +1949,7 @@ Qualquer dúvida, estou à disposição!
             const linkParam = trackingToken ? `token=${trackingToken}` : `os=${budgetModalOS.os_number}`;
 
             const msg = `*Olá ${budgetModalOS.client_name || 'Cliente'}!*
-Aqui é da *IFL Costa Tech*.
+Aqui é da *IF Tech*.
 
 Concluímos o diagnóstico e elaboração do orçamento da sua *OS #${budgetModalOS.os_number} (${budgetModalOS.device_brand || ''} ${budgetModalOS.device_model || ''})*.
 
@@ -2059,7 +2059,7 @@ Ficamos no aguardo para iniciar a execução!`;
 
             // Mensagem de Comprovante de Custódia para WhatsApp (Formatação Nativa WhatsApp)
             const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `*Olá ${clientName}!*\nAqui é da *IFL Costa Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada especializada para diagnóstico técnico (OS #${finalOsNum}).\n\n> *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada especializada para diagnóstico técnico (OS #${finalOsNum}).\n\n> *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
@@ -2283,7 +2283,7 @@ Ficamos no aguardo para iniciar a execução!`;
 
         
         // =====================================================================
-        // MOTOR DE REALTIME AUTO-SYNC DO KANBAN & COCKPIT // IFL COSTA TECH
+        // MOTOR DE REALTIME AUTO-SYNC DO KANBAN & COCKPIT // IF TECH
         // =====================================================================
         let adminRealtimeChannel = null;
 
@@ -2430,7 +2430,7 @@ Ficamos no aguardo para iniciar a execução!`;
                             p_client_name: clientName,
                             p_client_whatsapp: clientPhone || '11999999999',
                             p_service_type: serviceType,
-                            p_device_brand: 'Custom Build IFL',
+                            p_device_brand: 'Custom Build IF Tech',
                             p_device_model: serviceType.replace(/_/g, ' '),
                             p_reported_defect: technicalDiagnosis || `Serviço solicitado: ${serviceType.replace(/_/g, ' ')} para ${clientName}`,
                             p_pickup_fee: 0.00,
@@ -2452,7 +2452,7 @@ Ficamos no aguardo para iniciar a execução!`;
 
             // Gera link mágico seguro com token UUID (Formatação Nativa WhatsApp)
             const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `*Olá ${clientName}!*\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n> *Acompanhe e aprove seu orçamento pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
+            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n> *Acompanhe e aprove seu orçamento pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
             document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
@@ -2471,7 +2471,7 @@ Ficamos no aguardo para iniciar a execução!`;
                 os_number: parseInt(finalOsNum),
                 public_tracking_token: trackingToken,
                 status: targetStatus,
-                device_brand: 'Custom Build IFL',
+                device_brand: 'Custom Build IF Tech',
                 device_model: serviceType.replace(/_/g, ' '),
                 reported_defect: `Serviço solicitado: ${serviceType.replace(/_/g, ' ')}`,
                 client_name: clientName,
@@ -2816,7 +2816,7 @@ Ficamos no aguardo para iniciar a execução!`;
     <div id="thermal-device-label" class="hidden font-mono text-black bg-white p-2">
         <div class="border-2 border-black p-2 space-y-1 text-center">
             <div class="border-b border-black pb-1">
-                <span class="font-black text-xs uppercase block tracking-wider">IFL COSTA TECH // BANCADA</span>
+                <span class="font-black text-xs uppercase block tracking-wider">IF TECH // BANCADA</span>
                 <span class="text-[9px] block">Laboratório Especializado • (11) 91969-1542</span>
             </div>
             <div class="py-1 flex justify-between items-center border-b border-black">

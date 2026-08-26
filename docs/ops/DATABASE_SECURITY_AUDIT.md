@@ -1,7 +1,7 @@
 # 🛡️ LAUDO DE AUDITORIA DE SEGURANÇA DE BANCO DE DADOS, RLS, APIS & LGPD
 ## Parecer Técnico de Engenharia de Segurança de Aplicações (AppSec) e Blindagem PostgreSQL / Supabase
 
-**Projeto:** IFL Costa Tech // Ecossistema Digital, ERP de Bancada e Portal de Telemetria  
+**Projeto:** IF Tech // Ecossistema Digital, ERP de Bancada e Portal de Telemetria  
 **Data da Auditoria:** 23 de Agosto de 2026  
 **Auditor Responsável:** Principal Application Security Engineer (AppSec), Especialista em PostgreSQL/Supabase & DPO/LGPD  
 **Classificação do Documento:** Confidencial / Relatório Técnico de Engenharia e Defesa  
@@ -12,7 +12,7 @@
 
 ## 📑 1. Sumário Executivo & Diagnóstico Geral
 
-A presente auditoria de segurança avaliou minuciosamente o ecossistema de dados da **IFL Costa Tech**, compreendendo a modelagem relacional (`DATABASE_SCHEMA.md`), scripts de migração DDL (`supabase_migration_v1.sql`), scripts de remediação emergencial (`fix_rls_policies.sql`), o Portal do Cliente (`portal.html`) e o Cockpit Administrativo (`admin.html`).
+A presente auditoria de segurança avaliou minuciosamente o ecossistema de dados da **IF Tech**, compreendendo a modelagem relacional (`DATABASE_SCHEMA.md`), scripts de migração DDL (`supabase_migration_v1.sql`), scripts de remediação emergencial (`fix_rls_policies.sql`), o Portal do Cliente (`portal.html`) e o Cockpit Administrativo (`admin.html`).
 
 O ecossistema foi projetado para suportar operações de alta intensidade em três pilares de negócio: **Bancada e Montagem de Hardware**, **Engenharia de Software (50/50)** e **TI Gerenciada (MSP B2B)**. 
 
@@ -101,7 +101,7 @@ Este laudo formaliza a **Matriz de Riscos**, a **Arquitetura Defensiva Proposta*
   - `technician_payout_amount` (repasse ao técnico júnior).
   A query do cliente executa `select('*')`, enviando todos esses campos no payload JSON de resposta, mesmo que a interface visual oculte algumas colunas.
 * **Vetor de Exploração:**
-  Inspecionando a aba *Network (Rede)* do DevTools, o cliente ou concorrente obtém o custo exato de cada peça e o lucro líquido auferido pela IFL Costa Tech em cada serviço.
+  Inspecionando a aba *Network (Rede)* do DevTools, o cliente ou concorrente obtém o custo exato de cada peça e o lucro líquido auferido pela IF Tech em cada serviço.
 
 ---
 
@@ -123,7 +123,7 @@ Este laudo formaliza a **Matriz de Riscos**, a **Arquitetura Defensiva Proposta*
 
 ## 🏛️ 4. Arquitetura Defensiva Recomendada (Defense-in-Depth)
 
-Para garantir segurança máxima com conformidade LGPD sem degradar a facilidade de uso, a IFL Costa Tech adota a seguinte arquitetura de 3 camadas:
+Para garantir segurança máxima com conformidade LGPD sem degradar a facilidade de uso, a IF Tech adota a seguinte arquitetura de 3 camadas:
 
 ```mermaid
 flowchart TD
@@ -134,7 +134,7 @@ flowchart TD
     end
 
     subgraph ADMIN_LAYER["🔐 CAMADA AUTENTICADA (GESTOR & ENGENHEIROS)"]
-        ADMIN[Gestor IFL Costa Tech] -->|Supabase Auth: Email + Senha + MFA| AUTH_GUARD[Supabase Auth Guard / JWT]
+        ADMIN[Gestor IF Tech] -->|Supabase Auth: Email + Senha + MFA| AUTH_GUARD[Supabase Auth Guard / JWT]
         AUTH_GUARD -->|Role: authenticated| ADMIN_COCKPIT[admin.html Cockpit 360°]
         ADMIN_COCKPIT -->|Transação Atômica ACID| RPC_SAVE[PostgreSQL RPC: rpc_create_work_order_atomic]
         ADMIN_COCKPIT -->|SELECT com RLS| DB_CORE[(PostgreSQL Database)]
@@ -200,7 +200,7 @@ Abaixo encontra-se o script SQL completo, testado, idempotente e pronto para exe
 
 ```sql
 -- ==============================================================================
--- IFL COSTA TECH — BLINDAGEM DEFINITIVA DE BANCO DE DADOS & RLS V2.0 (PRODUÇÃO)
+-- IF TECH — BLINDAGEM DEFINITIVA DE BANCO DE DADOS & RLS V2.0 (PRODUÇÃO)
 -- Projeto Supabase: togrnwxazuweuihlaljo (iflcosta-tech)
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================
@@ -538,7 +538,7 @@ BEGIN
     ) VALUES (
         v_client_id,
         p_service_type,
-        COALESCE(NULLIF(TRIM(p_device_brand), ''), 'Custom Build IFL'),
+        COALESCE(NULLIF(TRIM(p_device_brand), ''), 'Custom Build IF Tech'),
         COALESCE(NULLIF(TRIM(p_device_model), ''), p_service_type::TEXT),
         COALESCE(NULLIF(TRIM(p_reported_defect), ''), 'Serviço solicitado: ' || p_service_type::TEXT),
         (COALESCE(p_pickup_fee, 0.00) > 0),
@@ -677,7 +677,7 @@ ALTER SEQUENCE work_orders_os_number_seq RESTART WITH 1051;
 Substituir o parâmetro de URL de número sequencial pelo Token UUID:
 ```diff
 - const msg = `... 👉 https://iflcosta.tech/portal.html?os=${finalOsNum} ...`;
-+ const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe seu atendimento em tempo real pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?token=${trackingToken}\n\nQualquer dúvida, estou à disposição!`;
++ const msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe seu atendimento em tempo real pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?token=${trackingToken}\n\nQualquer dúvida, estou à disposição!`;
 ```
 
 ### 7.2. Adequação da Busca no Portal (`portal.html`)
@@ -748,7 +748,7 @@ async function handleSearch(query) {
 
 Com a execução deste laudo e a aplicação do script SQL `docs/ops/supabase_defense_v2.sql`:
 1. **O risco de vazamento em massa de dados de clientes e scraping de faturamento é REDUZIDO A ZERO (0%)**;
-2. **A integridade dos dados e o sigilo de margens comerciais da IFL Costa Tech ficam 100% blindados**;
+2. **A integridade dos dados e o sigilo de margens comerciais da IF Tech ficam 100% blindados**;
 3. **A empresa atinge conformidade rigorosa com a LGPD (Lei 13.709/2018)**;
 4. **O cliente continua desfrutando de uma experiência mágica e sem senhas ao clicar no link do WhatsApp**.
 

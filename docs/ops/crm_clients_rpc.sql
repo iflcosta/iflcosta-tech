@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — CRM ÚNICO & VISÃO 360° DE CLIENTES
+-- IF TECH — CRM ÚNICO & VISÃO 360° DE CLIENTES
 -- ==============================================================================
 
 CREATE OR REPLACE FUNCTION rpc_get_clients_overview()

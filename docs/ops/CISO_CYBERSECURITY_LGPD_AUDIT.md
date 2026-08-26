@@ -2,7 +2,7 @@
 ## Auditoria Técnica de Infraestrutura, Arquitetura de Defesa e Governança de Dados para MSP
 
 **Documento:** Parecer Técnico de Cibersegurança, DevSecOps e Conformidade com a Lei Geral de Proteção de Dados (Lei 13.709/2018)  
-**Entidade Auditada:** IFL Costa Tech (CNPJ/Operação: TI Gerenciada, Engenharia de Software e Bancada Especializada)  
+**Entidade Auditada:** IF Tech (CNPJ/Operação: TI Gerenciada, Engenharia de Software e Bancada Especializada)  
 **Perfil do Emissor:** Chief Information Security Officer (CISO) & Especialista Sênior em DevSecOps e LGPD  
 **Classificação do Documento:** Confidencial / Estratégico  
 **Versão:** 1.0 — Edição Definitiva de Operação e Blindagem  
@@ -12,13 +12,13 @@
 
 ## 📑 SUMÁRIO EXECUTIVO
 
-A **IFL Costa Tech** opera sob um modelo híbrido de alto valor que combina **Bancada de Hardware**, **Engenharia de Software** e **Provedor de Serviços Gerenciados (MSP - Managed Service Provider)**. A expansão da atuação MSP para clientes corporativos (PMEs, clínicas médicas, consultórios odontológicos e escritórios de contabilidade) eleva drasticamente a superfície de ataque e as responsabilidades jurídicas da empresa.
+A **IF Tech** opera sob um modelo híbrido de alto valor que combina **Bancada de Hardware**, **Engenharia de Software** e **Provedor de Serviços Gerenciados (MSP - Managed Service Provider)**. A expansão da atuação MSP para clientes corporativos (PMEs, clínicas médicas, consultórios odontológicos e escritórios de contabilidade) eleva drasticamente a superfície de ataque e as responsabilidades jurídicas da empresa.
 
 Um Provedor de Serviços de TI Gerenciada (MSP) é um dos **alvos mais cobiçados por agentes de ameaças cibernéticas (Ransomware as a Service - RaaS, APTs)** devido ao efeito multiplicador de um ataque de *Supply Chain*: ao comprometer o servidor RMM ou o Cofre de Senhas do MSP, invasores obtêm acesso administrativo irrestrito e simultâneo a todos os parques computacionais dos clientes finais (cenário análogo aos incidentes históricos *Kaseya VSA* e *SolarWinds*).
 
 Simultaneamente, o manuseio de dados de saúde (prontuários de clínicas sob o CFM) e dados fiscais/trabalhistas (escritórios contábeis) impõe a estrita aplicação da **LGPD (Lei Federal nº 13.709/2018)**, sob pena de multas da ANPD (de até 2% do faturamento limitada a R$ 50 milhões por infração), além de litígios civis e perda irreversível de reputação.
 
-Este documento estabelece o **Laudo Técnico Definitivo de Hardening, Arquitetura DevSecOps Zero Trust e Matriz de Governança LGPD**, estruturado para blindar a operação da IFL Costa Tech nos próximos 60 dias e habilitar a captação segura de clientes B2B de alto ticket.
+Este documento estabelece o **Laudo Técnico Definitivo de Hardening, Arquitetura DevSecOps Zero Trust e Matriz de Governança LGPD**, estruturado para blindar a operação da IF Tech nos próximos 60 dias e habilitar a captação segura de clientes B2B de alto ticket.
 
 ---
 
@@ -88,8 +88,8 @@ flowchart TB
 * **Análise de Riscos:** O cliente público padrão do RustDesk conecta-se a servidores de rendezvous públicos mundiais, o que cria riscos de espionagem, interceptação man-in-the-middle ou conexão não autorizada se o ID for descoberto por força bruta.
 * **Recomendações Mandatórias:**
   1. Subir servidor próprio composto pelos binários `hbbs` (Rendezvous Server) e `hbbr` (Relay Server) em VPS dedicada (Ubuntu 24.04 LTS Hardened).
-  2. **Geração de Chave Pública Criptográfica Obrigatória (`-k _` / `id_ed25519.pub`):** O servidor deve ser configurado com o parâmetro de chave mandatória. Conexões de clientes que não possuam a chave pública do servidor IFL Costa Tech são sumariamente rejeitadas.
-  3. **Custom Client Compilation (White Label IFL):** Compilar o executável do RustDesk contendo *hardcoded* o domínio do servidor relay próprio da IFL Costa Tech e a chave pública institucional, desabilitando a opção de o usuário final alterar as configurações de rede no cliente.
+  2. **Geração de Chave Pública Criptográfica Obrigatória (`-k _` / `id_ed25519.pub`):** O servidor deve ser configurado com o parâmetro de chave mandatória. Conexões de clientes que não possuam a chave pública do servidor IF Tech são sumariamente rejeitadas.
+  3. **Custom Client Compilation (White Label IFL):** Compilar o executável do RustDesk contendo *hardcoded* o domínio do servidor relay próprio da IF Tech e a chave pública institucional, desabilitando a opção de o usuário final alterar as configurações de rede no cliente.
   4. Criptografia de ponta a ponta garantida via algoritmo **NaCl (Curve25519, Salsa20 e Poly1305 / ChaCha20-Poly1305)**, impedindo qualquer decifração intermediária, mesmo que o pacote passe por provedores de trânsito.
 
 ---
@@ -159,7 +159,7 @@ sequenceDiagram
 * **Função na Stack:** Armazenamento seguro de credenciais administrativas de roteadores, switches, servidores, contas de domínio e documentação de rede dos clientes B2B.
 * **Veredito de Segurança:** **APROVADO COM REGRAS DE SEGREGACÃO MULTITENANT ESTREITAS**.
 * **Arquitetura de Isolamento:**
-  - Criação de uma **Organização Única (IFL Costa Tech)** com **Coleções (Collections)** isoladas para cada cliente PME (`Cliente_Clinica_Alfa`, `Cliente_Contabil_Beta`).
+  - Criação de uma **Organização Única (IF Tech)** com **Coleções (Collections)** isoladas para cada cliente PME (`Cliente_Clinica_Alfa`, `Cliente_Contabil_Beta`).
   - O acesso dos técnicos juniores é concedido exclusivamente à coleção do cliente em que estão prestando atendimento, com a política de "Apenas Visualizar Senha" (sem permissão para exportação do cofre).
   - Obrigatoriedade de **MFA com WebAuthn/FIDO2 ou TOTP** para login no cofre.
   - O banco de dados SQLite/PostgreSQL do Vaultwarden deve ser criptografado em repouso e exportado diariamente de forma cifrada para o storage Wasabi S3.
@@ -169,7 +169,7 @@ sequenceDiagram
 ### 1.7. Uptime Kuma (Monitoramento de Rede & Links de Internet)
 * **Função na Stack:** Monitoramento *heartbeat* 24/7 de links dedicados, IPs fixos de operadoras (Vivo Fibra, Claro, provedores locais), túneis VPN de clientes e disponibilidade de servidores internos.
 * **Veredito de Segurança:** **APROVADO**.
-* **Segurança:** O Uptime Kuma não executa comandos nem armazena credenciais nos clientes; faz apenas consultas de sondagem (Ping ICMP, HTTP Status, Port Probe). Alertas são encaminhados diretamente para o Webhook do ERP/WhatsApp da IFL Costa Tech.
+* **Segurança:** O Uptime Kuma não executa comandos nem armazena credenciais nos clientes; faz apenas consultas de sondagem (Ping ICMP, HTTP Status, Port Probe). Alertas são encaminhados diretamente para o Webhook do ERP/WhatsApp da IF Tech.
 
 ---
 
@@ -251,7 +251,7 @@ Um ataque de *Supply Chain* no MSP ocorre quando o invasor obtém acesso ao serv
    - Nenhuma edição de script direto na caixa de texto do painel web deve ser permitida. O script só é sincronizado com o TacticalRMM após aprovação de *Pull Request* e validação de linter de segurança (*PSScriptAnalyzer* / *Bandit*).
 
 3. **Assinatura de Código (*Code Signing*):**
-   - Os agentes de instalação e os scripts automatizados de manutenção devem ser assinados digitalmente com certificado de assinatura de código da IFL Costa Tech (*Authenticode Certificate* ou chave privada interna homologada nos certificados raiz das máquinas clientes).
+   - Os agentes de instalação e os scripts automatizados de manutenção devem ser assinados digitalmente com certificado de assinatura de código da IF Tech (*Authenticode Certificate* ou chave privada interna homologada nos certificados raiz das máquinas clientes).
    - Configuração de política de execução do PowerShell nas estações:
      ```powershell
      Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope LocalMachine -Force
@@ -270,7 +270,7 @@ Um ataque de *Supply Chain* no MSP ocorre quando o invasor obtém acesso ao serv
   - Para ambientes com Active Directory ou via automação do TacticalRMM, cada computador deve ter uma senha de administrador local gerada aleatoriamente com 24 caracteres alfanuméricos + símbolos, rotacionada a cada 30 dias e armazenada dinamicamente no cofre do cliente.
 * **Just-In-Time (JIT) Privileged Access:**
   - Os usuários comuns dos clientes (médicos, secretárias, contadores) operam no dia a dia como **Usuários Padrão (Sem privilégios de Administrador)**.
-  - Caso precisem instalar um software homologado, o técnico da IFL Costa Tech eleva temporariamente a sessão remotamente via RMM ou gera uma credencial com validade de 60 minutos que se auto-destrói.
+  - Caso precisem instalar um software homologado, o técnico da IF Tech eleva temporariamente a sessão remotamente via RMM ou gera uma credencial com validade de 60 minutos que se auto-destrói.
 
 ---
 
@@ -285,7 +285,7 @@ Na prestação de serviços de TI Gerenciada e Suporte Corporativo, a correta qu
 │                          PAPÉIS E RESPONSABILIDADES NA LGPD                            │
 ├─────────────────────────────────────────┬──────────────────────────────────────────────┤
 │ CONTROLADOR DOS DADOS                   │ OPERADOR DOS DADOS                           │
-│ (A Empresa Contratante / Cliente PME)   │ (IFL Costa Tech - Provedor MSP)              │
+│ (A Empresa Contratante / Cliente PME)   │ (IF Tech - Provedor MSP)              │
 ├─────────────────────────────────────────┼──────────────────────────────────────────────┤
 │ • Clínica Médica / Consultório          │ • Executa suporte técnico, backup e gestão   │
 │ • Escritório Contábil / Financeiro      │ • Trata dados em nome do Controlador         │
@@ -301,13 +301,13 @@ Na prestação de serviços de TI Gerenciada e Suporte Corporativo, a correta qu
 
 ### 3.2. Cláusulas Mandatórias do DPA (Data Processing Agreement / Acordo de Tratamento de Dados)
 
-O contrato de prestação de serviços da IFL Costa Tech deve conter um **Anexo Específico de DPA** firmado com cada cliente B2B. As cláusulas centrais redigidas sob a ótica de conformidade estrita são:
+O contrato de prestação de serviços da IF Tech deve conter um **Anexo Específico de DPA** firmado com cada cliente B2B. As cláusulas centrais redigidas sob a ótica de conformidade estrita são:
 
 ```markdown
 ### ANEXO TÉCNICO: ACORDO DE TRATAMENTO DE DADOS PESSOAIS (DPA)
 
 **1. OBJETO E ESCOPO DO TRATAMENTO**
-1.1. A CONTRATADA (IFL Costa Tech), na qualidade de OPERADORA, realizará o tratamento de dados pessoais contidos na infraestrutura de TI da CONTRATANTE (CONTROLADORA) exclusivamente para os fins de: (i) monitoramento preventivo de saúde de hardware; (ii) execução de cópias de segurança (backups); (iii) suporte remoto sob demanda; e (iv) manutenção de integridade e segurança cibernética.
+1.1. A CONTRATADA (IF Tech), na qualidade de OPERADORA, realizará o tratamento de dados pessoais contidos na infraestrutura de TI da CONTRATANTE (CONTROLADORA) exclusivamente para os fins de: (i) monitoramento preventivo de saúde de hardware; (ii) execução de cópias de segurança (backups); (iii) suporte remoto sob demanda; e (iv) manutenção de integridade e segurança cibernética.
 1.2. É vedado à OPERADORA utilizar, vender, alugar, compartilhar ou monetizar quaisquer dados pessoais de titulares a que tiver acesso em razão da prestação dos serviços.
 
 **2. MEDIDAS TÉCNICAS E DE SEGURANÇA DA INFORMAÇÃO**
@@ -453,7 +453,7 @@ stateDiagram-v2
 
 ## 4. 🚀 ROADMAP EXECUTIVO DE IMPLEMENTAÇÃO EM 60 DIAS
 
-O plano de ação para elevar a IFL Costa Tech ao mais alto patamar de segurança MSP e conformidade LGPD está estruturado em **4 Sprints Quinzenais**:
+O plano de ação para elevar a IF Tech ao mais alto patamar de segurança MSP e conformidade LGPD está estruturado em **4 Sprints Quinzenais**:
 
 ```mermaid
 gantt
@@ -510,7 +510,7 @@ gantt
 
 ## 5. 📊 SCORECARD DE PRONTIDÃO CIBERNÉTICA & COMPLIANCE
 
-| Domínio de Segurança | Estado Anterior (Típico em TI Tradicional) | Estado Alvo IFL Costa Tech (MSP Enterprise) | Grau de Proteção |
+| Domínio de Segurança | Estado Anterior (Típico em TI Tradicional) | Estado Alvo IF Tech (MSP Enterprise) | Grau de Proteção |
 | :--- | :--- | :--- | :---: |
 | **Exposição na Internet** | Portas 80/443 e RDP 3389 abertas | Zero Trust Tunnels + VPN Mesh NetBird + WAF Geo-IP | 🛡️ **99.9%** |
 | **Autenticação Administrativa** | Senhas estáticas sem MFA | 2FA Mandatório (TOTP / FIDO2 YubiKey) | 🔒 **100%** |
@@ -525,8 +525,8 @@ gantt
 
 ## 6. 🏆 CONCLUSÃO DO PARECER TÉCNICO
 
-A execução rigorosa deste **Laudo de Cibersegurança e Conformidade LGPD** posiciona a **IFL Costa Tech** em um patamar de elite técnica e governança operacional muito superior à média dos prestadores de serviços de informática do interior paulista.
+A execução rigorosa deste **Laudo de Cibersegurança e Conformidade LGPD** posiciona a **IF Tech** em um patamar de elite técnica e governança operacional muito superior à média dos prestadores de serviços de informática do interior paulista.
 
-Ao implementar **Zero Trust na borda**, **Backups Imutáveis contra Ransomware**, **Acesso Remoto Criptografado Próprio**, **SIEM/EDR Integrados** e **Blindagem Contratual LGPD com DPA**, a IFL Costa Tech protege integralmente seu próprio negócio contra ataques devastadores de *Supply Chain* e entrega a seus clientes PMEs, clínicas médicas e escritórios contábeis a tranquilidade de uma infraestrutura corporativa de classe mundial.
+Ao implementar **Zero Trust na borda**, **Backups Imutáveis contra Ransomware**, **Acesso Remoto Criptografado Próprio**, **SIEM/EDR Integrados** e **Blindagem Contratual LGPD com DPA**, a IF Tech protege integralmente seu próprio negócio contra ataques devastadores de *Supply Chain* e entrega a seus clientes PMEs, clínicas médicas e escritórios contábeis a tranquilidade de uma infraestrutura corporativa de classe mundial.
 
 **Parecer do CISO:** **HOMOLOGADO COM RECOMENDAÇÃO DE INÍCIO IMEDIATO DO SPRINT 1.**

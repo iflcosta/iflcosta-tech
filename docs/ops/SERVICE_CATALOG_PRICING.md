@@ -1,5 +1,5 @@
 # Catálogo de Serviços & Matriz de Precificação Interna
-**Empresa:** IFL Costa Tech  
+**Empresa:** IF Tech  
 **Praça Base:** Bragança Paulista - SP & Região  
 **Versão:** 1.0 (Lançamento Oficial)  
 **Objetivo:** Balizar a precificação de mão de obra, margens de peças, custos de repasse técnico e estruturar a receita recorrente (MRR).
@@ -10,7 +10,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                           IFL COSTA TECH                                │
+│                           IF TECH                                │
 ├─────────────────────────┬─────────────────────────┬─────────────────────┤
 │ 1. HARDWARE & BANCADA   │ 2. SOFTWARE & ENGENHARIA│ 3. TI GERENCIADA    │
 │ (Caixa Rápido / Avulso) │ (Alto Ticket / Projetos)│ (Recorrência / MRR) │
@@ -44,7 +44,7 @@
 - **Visão do Cliente (Discriminação Transparente & Comercial):**
   - O cliente **visualiza apenas o Valor de Venda** de cada item (sem saber o custo de compra nem o markup obtido).
   - **Mão de Obra do Serviço/Montagem:** Valor explícito do trabalho técnico (ex: R$ 285,00 ou R$ 415,00).
-  - **Otimização do Sistema, BIOS & Curva Térmica:** Listado explicitamente no orçamento como **R$ 0,00 (🎁 CORTESIA / BRINDE EXCLUSIVO IFL COSTA TECH)**.
+  - **Otimização do Sistema, BIOS & Curva Térmica:** Listado explicitamente no orçamento como **R$ 0,00 (🎁 CORTESIA / BRINDE EXCLUSIVO IF TECH)**.
 
 ---
 

@@ -1,5 +1,5 @@
 # LAUDO FINAL DE CERTIFICAÇÃO E AUDITORIA MESTRA — SPRINT 1
-## IFL Costa Tech // Engenharia de Software, Hardware de Alta Performance & Gestão de TI (MSP)
+## IF Tech // Engenharia de Software, Hardware de Alta Performance & Gestão de TI (MSP)
 
 ---
 
@@ -13,11 +13,11 @@
 
 ## 1. RESUMO EXECUTIVO & MATRIZ DE CONFORMIDADE
 
-A presente auditoria avaliou a completude arquitetural, integridade relacional, segurança cibernética (LGPD/OWASP) e ergonomia operacional da **Sprint 1** da **IFL Costa Tech**. Todos os componentes foram submetidos a testes estáticos e dinâmicos de fluxo ponta a ponta (End-to-End).
+A presente auditoria avaliou a completude arquitetural, integridade relacional, segurança cibernética (LGPD/OWASP) e ergonomia operacional da **Sprint 1** da **IF Tech**. Todos os componentes foram submetidos a testes estáticos e dinâmicos de fluxo ponta a ponta (End-to-End).
 
 ```mermaid
 graph LR
-    subgraph SPRINT1_PIPELINE["PIPELINE SPRINT 1 — IFL COSTA TECH"]
+    subgraph SPRINT1_PIPELINE["PIPELINE SPRINT 1 — IF TECH"]
         direction LR
         IN["Check-in 30s<br/>(admin.html)"] -->|Triagem R$ 0,00| RPC1["rpc_create_work_order_atomic"]
         RPC1 --> DB[("Supabase PostgreSQL<br/>ACID & RLS V2")]
@@ -89,7 +89,7 @@ O PostgREST (camada de API REST do Supabase) gera o erro `PGRST203 (Could not ch
 ```
 
 ### 2.3 Análise de Segurança RLS (Row Level Security) e Sigilo Comercial
-1. **Blindagem de Custo Real e Margens:** A tabela `work_order_items` possui as colunas `cost_price` e `margin_percentage`. A função pública `rpc_track_work_order(UUID)` projeta **estritamente** `id`, `item_type`, `description`, `quantity`, `unit_price` e `total_price`. O custo de compra de fornecedores e a margem de lucro da IFL Costa Tech jamais trafegam na rede para usuários anônimos.
+1. **Blindagem de Custo Real e Margens:** A tabela `work_order_items` possui as colunas `cost_price` e `margin_percentage`. A função pública `rpc_track_work_order(UUID)` projeta **estritamente** `id`, `item_type`, `description`, `quantity`, `unit_price` e `total_price`. O custo de compra de fornecedores e a margem de lucro da IF Tech jamais trafegam na rede para usuários anônimos.
 2. **Proteção Anti-Enumeração (IDOR):**
    - Acesso direto: Exige `public_tracking_token` (UUID v4 com entropia de 122 bits).
    - Acesso por número de OS: Exige a validação dos últimos 4 dígitos do WhatsApp do cliente cadastrado. Tentativas cegas de enumeração retornam erro genérico sem expor dados.
@@ -173,7 +173,7 @@ Para aplicar todas as definições e garantir 100% de conformidade no Supabase:
 
 ## 6. PARECER CONCLUSIVO DA ENGENHARIA
 
-A Sprint 1 da **IFL Costa Tech** atinge o padrão **Enterprise Grade**:
+A Sprint 1 da **IF Tech** atinge o padrão **Enterprise Grade**:
 - Arquitetura de microsserviços desacoplada via RPCs seguras no PostgreSQL;
 - UX Neobrutalista de altíssima conversão, com zero atrito para o cliente e agilidade de 30 segundos para o técnico;
 - Conformidade integral com LGPD e proteção irrestrita de dados financeiros sensíveis.

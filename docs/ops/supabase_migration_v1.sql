@@ -1,5 +1,5 @@
 -- ============================================================================
--- IFL COSTA TECH - SUPABASE MIGRATION V1.0 (REESTRUTURAÇÃO COMPLETA)
+-- IF TECH - SUPABASE MIGRATION V1.0 (REESTRUTURAÇÃO COMPLETA)
 -- Projeto: togrnwxazuweuihlaljo (iflcosta-tech)
 -- Executar no Supabase SQL Editor: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ============================================================================
@@ -335,7 +335,7 @@ CREATE TABLE financial_ledger (
 
 -- Técnico Líder IFL
 INSERT INTO technicians (name, email, whatsapp, role, commission_rate_labor, pix_key, pix_key_type)
-VALUES ('IFL Costa Tech - Lead Engineer', 'contato@iflcosta.tech', '5511919691542', 'Lead_Engineer', 100.00, '5511919691542', 'TELEFONE')
+VALUES ('IF Tech - Lead Engineer', 'contato@iflcosta.tech', '5511919691542', 'Lead_Engineer', 100.00, '5511919691542', 'TELEFONE')
 ON CONFLICT DO NOTHING;
 
 -- 6. HABILITAR ROW LEVEL SECURITY (RLS)

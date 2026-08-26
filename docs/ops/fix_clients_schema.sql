@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — FIX SCHEMA TABELA CLIENTS & CHECK-IN RÁPIDO (PRODUÇÃO)
+-- IF TECH — FIX SCHEMA TABELA CLIENTS & CHECK-IN RÁPIDO (PRODUÇÃO)
 -- Flexibiliza colunas cadastrais para permitir Check-in em 30 segundos
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================

@@ -1,5 +1,5 @@
 # DOCUMENTAÇÃO VIVA: ESPECIFICAÇÃO TÉCNICA
-**Projeto:** IFL Costa Tech
+**Projeto:** IF Tech
 **Última Atualização:** Pós-Pivô Neobrutalista
 
 ## 1. Identidade Visual (Design System)

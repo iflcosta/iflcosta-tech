@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — FIX DEFINITIVO PGRST203 (FUNCTION OVERLOADING RESOLVER)
+-- IF TECH — FIX DEFINITIVO PGRST203 (FUNCTION OVERLOADING RESOLVER)
 -- Remove todas as assinaturas duplicadas e recria as RPCs com assinatura única
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================

@@ -1,8 +1,8 @@
-# Parecer Técnico de Arquitetura & Validação do ERP — IFL Costa Tech
+# Parecer Técnico de Arquitetura & Validação do ERP — IF Tech
 
 **Documento:** Auditoria de Arquitetura de Software, Modelagem de Dados & Validação de Módulos  
 **Autor:** Arquiteto de Software & Especialista em ERP/CRM Híbrido  
-**Empresa:** IFL Costa Tech (Bragança Paulista & Remoto)  
+**Empresa:** IF Tech (Bragança Paulista & Remoto)  
 **Data da Auditoria:** 22 de Agosto de 2026  
 **Status:** Revisão Rigorosa Concluída — Recomendações Críticas Emitidas  
 
@@ -10,7 +10,7 @@
 
 ## 1. Sumário Executivo & Diagnóstico Geral
 
-A arquitetura proposta para o ERP da **IFL Costa Tech** apresenta uma concepção moderna e alinhada ao modelo de negócio híbrido da empresa, integrando com inteligência os três pilares operacionais:
+A arquitetura proposta para o ERP da **IF Tech** apresenta uma concepção moderna e alinhada ao modelo de negócio híbrido da empresa, integrando com inteligência os três pilares operacionais:
 1. **Hardware & Bancada Especializada** (Receita Transacional / Caixa Rápido);
 2. **Software & Engenharia Web** (Alto Ticket / Milestones 50-50);
 3. **TI Gerenciada / MSP** (Receita Recorrente Previsível / MRR por Estação).
@@ -78,7 +78,7 @@ graph TD
 
 #### Diagnóstico Atual vs Ajustes Necessários:
 1. **Separação Obrigatória de Faturas em Hardware (Sinal de Peça vs Saldo de Mão de Obra):**
-   - **Regra:** O caixa da IFL Costa Tech **nunca** financia peças de clientes.
+   - **Regra:** O caixa da IF Tech **nunca** financia peças de clientes.
    - **Mecanismo:** Ao aprovar um orçamento com peças, o sistema gera **duas faturas distintas** vinculadas à mesma OS:
      - `Fatura 1 (Bancada_Peca_Sinal)`: 100% do valor da peça. A OS fica com trava no status `Aguardando_Sinal_Peca`. Só transiciona para `Peca_Encomendada` após callback Pix de liquidação.
      - `Fatura 2 (Bancada_MaoDeObra_Saldo)`: Valor dos serviços e testes, com vencimento programado para o momento da entrega/retirada (`Pronto`).
@@ -182,7 +182,7 @@ graph TD
      - **Preventiva:** Pelo técnico durante visita mensal.
 2. **Controle Estrito de SLA (2h Remoto / 4h Presencial em Bragança):**
    - Metadados de SLA com cronômetro de atendimento: `sla_response_deadline` e `sla_resolution_deadline`.
-   - Disparo de aviso preventivo ao gestor da IFL Costa Tech quando um chamado atinge 70% do tempo limite de SLA sem primeiro contato.
+   - Disparo de aviso preventivo ao gestor da IF Tech quando um chamado atinge 70% do tempo limite de SLA sem primeiro contato.
 3. **Controle de Franquia de Visitas Preventivas:**
    - Tabela `msp_onsite_visits` registrando data, horário de check-in (geolocalização), técnico responsável, tarefas preventivas executadas (limpeza física, teste de nobreak, verificação de servidores) e assinatura do responsável na empresa.
    - Contador mensal `used_visits_current_month` reiniciado automaticamente a cada ciclo de faturamento.
@@ -222,7 +222,7 @@ Abaixo está o DDL de migração e consolidação, contendo todas as novas entid
 
 ```sql
 -- ============================================================================
--- EXTENSÃO DO SCHEMA ERP IFL COSTA TECH (MIGRAÇÃO & AJUSTES CRÍTICOS)
+-- EXTENSÃO DO SCHEMA ERP IF TECH (MIGRAÇÃO & AJUSTES CRÍTICOS)
 -- ============================================================================
 
 -- Novos Enums
@@ -485,7 +485,7 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     participant Agent as Agente RMM / Duplicati (Cliente)
-    participant ERP as Backend ERP IFL Costa
+    participant ERP as Backend ERP IF Tech
     participant Cron as Monitor 'Dead Man Snitch'
     participant Tech as Técnico Responsável
     participant Gestor as Gestor B2B / Cliente
@@ -517,6 +517,6 @@ sequenceDiagram
 2. **Resiliência do Fluxo de Caixa:**
    - Com as travas programáticas de **100% de sinal prévio para peças** e **50% de entrada para projetos de software**, o risco de inadimplência operacional é virtualmente zerado.
 3. **Escalabilidade da Operação MSP:**
-   - A introdução do submódulo de Service Desk (`msp_tickets`) e da rotina *Dead Man's Snitch* transforma a TI Gerenciada da IFL Costa Tech em um serviço de classe corporativa, justificando planos de até R$ 189,90 por servidor com suporte proativo.
+   - A introdução do submódulo de Service Desk (`msp_tickets`) e da rotina *Dead Man's Snitch* transforma a TI Gerenciada da IF Tech em um serviço de classe corporativa, justificando planos de até R$ 189,90 por servidor com suporte proativo.
 
 O sistema está **aprovado para execução e desenvolvimento**, devendo seguir a ordem de prioridades estabelecida nas fases de entrega.

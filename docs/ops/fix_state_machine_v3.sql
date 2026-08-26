@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — STATE MACHINE V3.0 DEFINITIVE PATCH (SUPABASE)
+-- IF TECH — STATE MACHINE V3.0 DEFINITIVE PATCH (SUPABASE)
 -- Resolve definitivamente o desacoplamento de Fila de Bancada e Sinal de Peças
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================

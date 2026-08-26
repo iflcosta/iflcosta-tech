@@ -1,17 +1,17 @@
 # 🏆 Relatório de Auditoria Comparativa & Benchmark de ERP
-## Cyber Tech (Cyber Informática) vs. IFL Costa Tech Ecosystem
+## Cyber Tech (Cyber Informática) vs. IF Tech Ecosystem
 
 **Data da Auditoria:** 23 de Fevereiro de 2026  
 **Auditor Responsável:** Principal Software & Business Benchmark Auditor  
 **Repositórios Auditados:**
 - **Cyber Tech:** `C:\Users\Iago\.gemini\antigravity\brain\62d15379-aa63-43a0-aae8-d577ac993643\scratch\cyber-tech`
-- **IFL Costa Tech:** `c:\tech-solutions-ifl`
+- **IF Tech:** `c:\tech-solutions-ifl`
 
 ---
 
 ## 📑 1. Sumário Executivo & Metodologia
 
-Esta auditoria técnica e de negócios realizou um escaneamento profundo linha por linha, schema por schema e funcionalidade por funcionalidade entre o **ERP da Cyber Informática** (desenvolvido para uma operação de balcão e bancada de informática com fluxo físico ativo) e o **IFL Costa Tech** (plataforma híbrida de engenharia de software, bancada de hardware de alta performance e TI gerenciada MSP B2B, desenhada para atendimento online e o futuro Hub Físico de 147m²).
+Esta auditoria técnica e de negócios realizou um escaneamento profundo linha por linha, schema por schema e funcionalidade por funcionalidade entre o **ERP da Cyber Informática** (desenvolvido para uma operação de balcão e bancada de informática com fluxo físico ativo) e o **IF Tech** (plataforma híbrida de engenharia de software, bancada de hardware de alta performance e TI gerenciada MSP B2B, desenhada para atendimento online e o futuro Hub Físico de 147m²).
 
 ```mermaid
 graph LR
@@ -24,7 +24,7 @@ graph LR
         CT6["Cyber IA (Gemini 1.5 Pro)"]
     end
 
-    subgraph IFL_COSTA["IFL COSTA TECH (Ecossistema 360° & Hub 147m²)"]
+    subgraph IFL_COSTA["IF TECH (Ecossistema 360° & Hub 147m²)"]
         IFL1["3 Motores: Hardware + Software 50/50 + MSP B2B"]
         IFL2["Portal do Cliente com Telemetria AIDA64/FurMark"]
         IFL3["Design System Neobrutalista"]
@@ -79,11 +79,11 @@ O Cyber Tech foi construído em **Next.js 16 (App Router) + React 19 + TypeScrip
 
 ---
 
-## ⚡ 3. Raio-X Detalhado: IFL Costa Tech
+## ⚡ 3. Raio-X Detalhado: IF Tech
 
-O ecossistema IFL Costa Tech foi concebido com uma **visão corporativa e técnica 360°**, integrando serviços de alto valor agregado e documentação de classe mundial.
+O ecossistema IF Tech foi concebido com uma **visão corporativa e técnica 360°**, integrando serviços de alto valor agregado e documentação de classe mundial.
 
-### 3.1 Pilares de Superioridade do IFL Costa Tech
+### 3.1 Pilares de Superioridade do IF Tech
 1. **CRM com 3 Motores de Faturamento Integrados:**
    - **Pilar 1: Hardware & Bancada:** Triagem rápida desacoplada (Check-in em 30s a R$ 0,00) de Break-Fix e orçamentação avançada.
    - **Pilar 2: Engenharia de Software (50/50 Milestones):** Projetos web com entrada de 50% e quitação de 50% na homologação, controle de timesheet (`project_timesheet_entries` a R$ 130/h) e métricas Lighthouse QA.
@@ -107,7 +107,7 @@ O ecossistema IFL Costa Tech foi concebido com uma **visão corporativa e técni
 
 A tabela abaixo cruza todos os recursos identificados em ambos os sistemas:
 
-| Módulo / Funcionalidade | Cyber Tech ERP | IFL Costa Tech | Status no IFL | Nível de Prioridade | Impacto no Hub 147m² / Bancada |
+| Módulo / Funcionalidade | Cyber Tech ERP | IF Tech | Status no IFL | Nível de Prioridade | Impacto no Hub 147m² / Bancada |
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Impressão Térmica ESC/POS (58mm/80mm)** | ✅ Sim (`print-agent` + `escpos.ts`) | ❌ Apenas Web / PDF | 🔴 **GAP CRÍTICO** | 🔥 P0 (Imediato) | **Essencial**: Imprime etiquetas de bancada e comprovantes em 1 segundo. |
 | **Etiqueta Adesiva para Chassi (MPT-II)** | ✅ Sim (Layout 58/62mm c/ Barcode) | ❌ Não | 🔴 **GAP CRÍTICO** | 🔥 P0 (Imediato) | **Essencial**: Identificação física do PC na prateleira da bancada. |
@@ -126,9 +126,9 @@ A tabela abaixo cruza todos os recursos identificados em ambos os sistemas:
 
 ---
 
-## 🗺️ 5. Roadmap de Adoção Técnica para o IFL Costa Tech
+## 🗺️ 5. Roadmap de Adoção Técnica para o IF Tech
 
-Para incorporar as melhores soluções operacionais do Cyber Tech ao ecossistema robusto do IFL Costa Tech, estruturamos o seguinte plano de execução por Sprints:
+Para incorporar as melhores soluções operacionais do Cyber Tech ao ecossistema robusto do IF Tech, estruturamos o seguinte plano de execução por Sprints:
 
 ```mermaid
 gantt
@@ -161,7 +161,7 @@ gantt
 ### 🚀 Detalhamento das Sprints
 
 ### 🟢 Sprint 2: Motor de Impressão Térmica ESC/POS, Etiquetas e Termos Físicos
-- **Objetivo:** Equipar a bancada do IFL Costa Tech com geração de etiquetas térmicas adesivas para colar nos gabinetes/notebooks e recibos rápidos de entrega via impressoras MPT-II (58mm) e 80mm.
+- **Objetivo:** Equipar a bancada do IF Tech com geração de etiquetas térmicas adesivas para colar nos gabinetes/notebooks e recibos rápidos de entrega via impressoras MPT-II (58mm) e 80mm.
 - **Entregáveis:**
   1. Portabilidade do `src/lib/escpos.ts` para um módulo utilitário JavaScript universal (`assets/js/escpos.js`).
   2. Implementação do `print-agent/` como serviço local Windows para o PC da bancada (ouvindo em `http://localhost:9100`).
@@ -171,9 +171,9 @@ gantt
 ---
 
 ### 🟢 Sprint 3: Gestão Cíclica de Pedidos de Peça & Alertas Antivazamento
-- **Objetivo:** Blindar o IFL Costa Tech contra prejuízos decorrentes de peças encomendadas a fornecedores que apresentaram defeito, não serviram ou foram canceladas pelo cliente.
+- **Objetivo:** Blindar o IF Tech contra prejuízos decorrentes de peças encomendadas a fornecedores que apresentaram defeito, não serviram ou foram canceladas pelo cliente.
 - **Entregáveis:**
-  1. Criação das tabelas `suppliers`, `part_orders` e `part_order_events` no Supabase do IFL Costa Tech.
+  1. Criação das tabelas `suppliers`, `part_orders` e `part_order_events` no Supabase do IF Tech.
   2. Implementação do pipeline cíclico de trocas com motivos padronizados de devolução.
   3. Criação da View e alerta no Cockpit Admin: `⚠️ Peça sinalizada para devolução há ≥ 5 dias sem confirmação`.
   4. Relatório consolidado no fechamento mensal: Total encomendado vs. Total aplicado vs. Total devolvido por fornecedor.
@@ -195,13 +195,13 @@ gantt
   1. Inclusão da etapa de NPS / Avaliação no `portal.html` após a mudança de status da OS para `Entregue`.
   2. Painel de moderação de depoimentos no Cockpit Admin com toggle para aprovação imediata.
   3. Exibição dos depoimentos reais aprovados na seção de prova social de `index.html`.
-  4. Implementação do widget de chat com IA (Google Gemini 1.5 Pro) alimentado com o catálogo de serviços e regras de negócio da IFL Costa Tech.
+  4. Implementação do widget de chat com IA (Google Gemini 1.5 Pro) alimentado com o catálogo de serviços e regras de negócio da IF Tech.
 
 ---
 
 ## 💻 6. Especificações Técnicas de Código para Portabilidade
 
-Abaixo estão os blocos de código-fonte prontos para serem adaptados e executados diretamente no ecossistema IFL Costa Tech.
+Abaixo estão os blocos de código-fonte prontos para serem adaptados e executados diretamente no ecossistema IF Tech.
 
 ### 6.1 Módulo Gerador de Comandos ESC/POS (`assets/js/escpos.js`)
 
@@ -293,7 +293,7 @@ export class EscPosBuilder {
 
 ```sql
 -- ============================================================================
--- MÓDULO DE PEDIDO DE PEÇAS & GESTÃO CÍCLICA DE FORNECEDORES (IFL COSTA TECH)
+-- MÓDULO DE PEDIDO DE PEÇAS & GESTÃO CÍCLICA DE FORNECEDORES (IF TECH)
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS public.suppliers (
@@ -369,11 +369,11 @@ CREATE POLICY "Authenticated users insert events" ON public.part_order_events FO
 
 ## 🎯 7. Conclusão & Próximos Passos Imediatos
 
-A combinação das **soluções ágeis de bancada e balcão físico do Cyber Tech** com a **visão corporativa, telemetria de engenharia e multi-motores do IFL Costa Tech** cria o ecossistema definitivo para a consolidação da marca em Bragança Paulista e a inauguração do Hub Físico de 147m².
+A combinação das **soluções ágeis de bancada e balcão físico do Cyber Tech** com a **visão corporativa, telemetria de engenharia e multi-motores do IF Tech** cria o ecossistema definitivo para a consolidação da marca em Bragança Paulista e a inauguração do Hub Físico de 147m².
 
 **Recomendação Imediata:**
 1. Iniciar a **Sprint 2** instalando o Agente de Impressão Local no PC da bancada física e integrando o `assets/js/escpos.js` no `admin.html`.
-2. Executar o DDL de Pedidos de Peça e Fornecedores no Supabase do IFL Costa Tech (`togrnwxazuweuihlaljo`).
+2. Executar o DDL de Pedidos de Peça e Fornecedores no Supabase do IF Tech (`togrnwxazuweuihlaljo`).
 3. Adicionar o botão de geração de etiquetas térmicas e termo de custódia diretamente no Cockpit Admin.
 
 ---

@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — BLINDAGEM DEFINITIVA DE BANCO DE DADOS & RLS V2.0 (PRODUÇÃO)
+-- IF TECH — BLINDAGEM DEFINITIVA DE BANCO DE DADOS & RLS V2.0 (PRODUÇÃO)
 -- Projeto Supabase: togrnwxazuweuihlaljo (iflcosta-tech)
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================
@@ -337,7 +337,7 @@ BEGIN
     ) VALUES (
         v_client_id,
         p_service_type,
-        COALESCE(NULLIF(TRIM(p_device_brand), ''), 'Custom Build IFL'),
+        COALESCE(NULLIF(TRIM(p_device_brand), ''), 'Custom Build IF Tech'),
         COALESCE(NULLIF(TRIM(p_device_model), ''), p_service_type::TEXT),
         COALESCE(NULLIF(TRIM(p_reported_defect), ''), 'Serviço solicitado: ' || p_service_type::TEXT),
         (COALESCE(p_pickup_fee, 0.00) > 0),

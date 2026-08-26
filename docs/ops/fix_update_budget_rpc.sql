@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — CORREÇÃO CRÍTICA: RPC UPDATE WORK ORDER BUDGET
+-- IF TECH — CORREÇÃO CRÍTICA: RPC UPDATE WORK ORDER BUDGET
 -- Corrige o erro 42804 (COALESCE types text and os_service_type_enum cannot be matched)
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================

@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — PATCH CONSOLIDADO MESTRE SPRINT 1 (PRODUÇÃO SUPABASE)
+-- IF TECH — PATCH CONSOLIDADO MESTRE SPRINT 1 (PRODUÇÃO SUPABASE)
 -- Projeto: togrnwxazuweuihlaljo (iflcosta-tech)
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================
@@ -687,7 +687,7 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, se
 
 
 -- ==============================================================================
--- IFL COSTA TECH — AVALIAÇÕES / NPS & FEEDBACK DO CLIENTE
+-- IF TECH — AVALIAÇÕES / NPS & FEEDBACK DO CLIENTE
 -- ==============================================================================
 ALTER TABLE work_orders 
     ADD COLUMN IF NOT EXISTS customer_rating INT,

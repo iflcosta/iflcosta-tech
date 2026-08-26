@@ -1,5 +1,5 @@
 # Relatório Oficial de Auditoria Técnica & Engenharia de Qualidade (Sprint 1)
-**Projeto:** IFL Costa Tech // Ecossistema Digital & ERP Unificado  
+**Projeto:** IF Tech // Ecossistema Digital & ERP Unificado  
 **Data da Auditoria:** 23 de Agosto de 2026  
 **Auditor Responsável:** Principal Software Engineer, CISO & Lead UX/QA Auditor  
 **Status da Sprint 1:** Homologado com Recomendações Críticas de Refinamento  
@@ -8,7 +8,7 @@
 
 ## 1. Sumário Executivo & Scorecard de Maturidade
 
-A Sprint 1 da **IFL Costa Tech** estabeleceu uma fundação sólida, visualmente impactante e alinhada à identidade Neobrutalista planejada para a marca em Bragança Paulista e região. O design de alta densidade de informação, a estrutura de proposta transparente para o cliente e a modelagem do banco de dados relacional no PostgreSQL (Supabase) demonstram excelente visão de produto.
+A Sprint 1 da **IF Tech** estabeleceu uma fundação sólida, visualmente impactante e alinhada à identidade Neobrutalista planejada para a marca em Bragança Paulista e região. O design de alta densidade de informação, a estrutura de proposta transparente para o cliente e a modelagem do banco de dados relacional no PostgreSQL (Supabase) demonstram excelente visão de produto.
 
 Contudo, esta auditoria técnica identificou **vulnerabilidades críticas de segurança (RLS permissivo e vetor de XSS)**, **inconsistências entre enums do banco e formulários do frontend**, **ausência de menu mobile funcional na landing page** e **falta de persistência real nas operações do assistente administrativo**.
 
@@ -48,7 +48,7 @@ Contudo, esta auditoria técnica identificou **vulnerabilidades críticas de seg
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    IFL COSTA TECH - DIAGNÓSTICO AUDIT 360°              │
+│                    IF TECH - DIAGNÓSTICO AUDIT 360°              │
 ├─────────────────────────┬─────────────────────────┬─────────────────────┤
 │ 1. USABILIDADE & UX     │ 2. CISO & CIBERSEGURANÇA│ 3. ARQUITETURA CORE │
 │ Score: 78/100           │ Score: 62/100           │ Score: 74/100       │
@@ -449,7 +449,7 @@ async function handleSaveOS(e) {
 
                     // Mensagem formatada com link real
                     const trackingLink = `https://iflcosta.tech/portal.html?token=${token}`;
-                    const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${osNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 ${trackingLink}\n\nQualquer dúvida, estou à disposição!`;
+                    const msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSua proposta técnica para a *OS #${osNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 ${trackingLink}\n\nQualquer dúvida, estou à disposição!`;
 
                     document.getElementById('whatsapp-msg-preview').textContent = msg;
                     document.getElementById('modal-wpp-link').href = `https://wa.me/${clientPhone}?text=${encodeURIComponent(msg)}`;
@@ -462,7 +462,7 @@ async function handleSaveOS(e) {
 
         // Fallback local caso offline
         const osNumFallback = document.getElementById('wizard-os-num').textContent.replace('#', '');
-        const msg = `Olá ${clientName}! 👋\nAqui é da *IFL Costa Tech*.\n\nSua proposta técnica para a *OS #${osNumFallback}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?os=${osNumFallback}\n\nQualquer dúvida, estou à disposição!`;
+        const msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSua proposta técnica para a *OS #${osNumFallback}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 https://iflcosta.tech/portal.html?os=${osNumFallback}\n\nQualquer dúvida, estou à disposição!`;
         document.getElementById('whatsapp-msg-preview').textContent = msg;
         document.getElementById('modal-wpp-link').href = `https://wa.me/${clientPhone}?text=${encodeURIComponent(msg)}`;
         document.getElementById('whatsapp-modal').classList.remove('hidden');
@@ -490,7 +490,7 @@ Adicionar o botão hambúrguer e drawer mobile no header de `index.html`:
         <div class="flex justify-between items-center h-20">
             <a href="#" class="flex items-center gap-2 group">
                 <div class="w-4 h-8 bg-brand group-hover:scale-110 transition-transform"></div>
-                <span class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">IFL Costa Tech</span>
+                <span class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">IF Tech</span>
             </a>
 
             <!-- Navegação Desktop -->
@@ -579,5 +579,5 @@ Correção da inicialização dos ícones Lucide no rodapé de `index.html`:
 - [x] **Relatório Técnico Oficial:** Documento arquivado em `docs/ops/SPRINT_1_CODE_AUDIT_REPORT.md` para balizar as sprints de automação de faturamento (Asaas) e autenticação de usuários na Sprint 2.
 
 ---
-*Relatório emitido pela Engenharia de Qualidade da IFL Costa Tech.*  
+*Relatório emitido pela Engenharia de Qualidade da IF Tech.*  
 *Aprovado para fechamento da Sprint 1.*

@@ -1,14 +1,14 @@
-# IFL Costa Tech — Relatório Executivo de Auditoria & Validação Full-Stack (Sprint 1)
+# IF Tech — Relatório Executivo de Auditoria & Validação Full-Stack (Sprint 1)
 **Documento Técnico Oficial de Engenharia de Confiabilidade (SRE) & QA**  
 **Data da Auditoria:** 23 de Agosto de 2026  
 **Status do Sistema:** AUDITADO, CORRIGIDO & HOMOLOGADO PARA PRODUÇÃO  
-**Classificação:** Confidencial / Operação Interna IFL Costa Tech  
+**Classificação:** Confidencial / Operação Interna IF Tech  
 
 ---
 
 ## 1. Sumário Executivo & Score de Confiabilidade
 
-Esta auditoria técnica realizou uma varredura profunda, minuciosa e implacável em 100% dos componentes de software, fluxos de negócio, regras tributário-comerciais, esquemas de banco de dados PostgreSQL e integrações de API da **Sprint 1** da plataforma **IFL Costa Tech**.
+Esta auditoria técnica realizou uma varredura profunda, minuciosa e implacável em 100% dos componentes de software, fluxos de negócio, regras tributário-comerciais, esquemas de banco de dados PostgreSQL e integrações de API da **Sprint 1** da plataforma **IF Tech**.
 
 ### Score de Confiabilidade & Maturidade Arquitetural
 | Dimensão Auditada | Score Inicial | Score Pós-Correção | Status |
@@ -182,4 +182,4 @@ Com as correções cirúrgicas implementadas em `admin.html`, `portal.html` e no
 2. **O Portal do Cliente é fluido e seguro**: Clientes acompanham em tempo real com ou sem token, sem exposição de dados sensíveis ou margens de lucro.
 3. **A estabilidade operacional é total**: Todos os erros de runtime JS (`partsTotal`), inconsistências de enum e violações de constraints PostgreSQL foram eliminados.
 
-O sistema da **Sprint 1 da IFL Costa Tech** está oficialmente **aprovado com louvor e pronto para operação em produção**.
+O sistema da **Sprint 1 da IF Tech** está oficialmente **aprovado com louvor e pronto para operação em produção**.

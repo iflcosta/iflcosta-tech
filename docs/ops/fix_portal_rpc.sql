@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — RPC DE BUSCA COM DUPLA CONFIRMAÇÃO (OS + WHATSAPP)
+-- IF TECH — RPC DE BUSCA COM DUPLA CONFIRMAÇÃO (OS + WHATSAPP)
 -- Executar no Supabase SQL Editor:
 -- https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================

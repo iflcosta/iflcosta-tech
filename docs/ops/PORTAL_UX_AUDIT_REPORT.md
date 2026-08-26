@@ -1,7 +1,7 @@
 # Relatório de Auditoria de UX/UI & Experiência do Cliente (CX)
 ## Tela de Rastreamento do Portal do Cliente (`portal.html`) // Caso OS #1053
 
-**Empresa:** IFL Costa Tech  
+**Empresa:** IF Tech  
 **Projeto:** Portal do Cliente & Central de Telemetria de Bancada  
 **Perfil Auditado:** Ordem de Serviço #1053 — Notebook Dell Inspiron de Carlos (Defeito: *"Não Liga"*)  
 **Etapa Operacional Atual:** `01. TRIAGEM`  
@@ -12,7 +12,7 @@
 
 ## 📑 Sumário Executivo & Diagnóstico Crítico de CX
 
-A experiência digital do cliente ao acompanhar uma Ordem de Serviço de manutenção de hardware de alto valor é o **"Momento da Verdade" (*Moment of Truth*)** da IFL Costa Tech. Quando um cliente entrega seu equipamento de trabalho ou estudo inoperante, seu estado emocional é de **alta ansiedade e vulnerabilidade**. 
+A experiência digital do cliente ao acompanhar uma Ordem de Serviço de manutenção de hardware de alto valor é o **"Momento da Verdade" (*Moment of Truth*)** da IF Tech. Quando um cliente entrega seu equipamento de trabalho ou estudo inoperante, seu estado emocional é de **alta ansiedade e vulnerabilidade**. 
 
 A tela do Portal do Cliente tem uma única missão primária: **transmitir segurança jurídica, rigor técnico inquestionável e transparência total**.
 
@@ -202,7 +202,7 @@ stateDiagram-v2
 |   +--------------------------+  +--------------------------+  +-------------------------------+   |
 |                                                                                                   |
 |   🔒 CUSTÓDIA JURÍDICA:                                                                           |
-|   Equipamento protegido na Bancada Técnica Central da IFL Costa Tech em Bragança Paulista.       |
+|   Equipamento protegido na Bancada Técnica Central da IF Tech em Bragança Paulista.       |
 |   Ambiente monitorado por CFTV 24h, aterramento ESD e bancadas antiestáticas.                     |
 |                                                                                                   |
 |   💡 Próximo Passo: Nossos técnicos realizarão testes eletrônicos na linha de alimentação e       |
@@ -355,7 +355,7 @@ function renderWorkOrderData(wo) {
                             <span class="w-3 h-3 bg-brand animate-pulse"></span>
                             <span class="font-mono text-xs font-bold text-brand uppercase tracking-widest">[ Certificado de Custódia & Entrada Digital ]</span>
                         </div>
-                        <span class="font-mono text-[11px] text-zinc-500">HASH: IFL-OS-${escapeHtml(osNum)}-${new Date().getFullYear()}</span>
+                        <span class="font-mono text-[11px] text-zinc-500">HASH: IF-OS-${escapeHtml(osNum)}-${new Date().getFullYear()}</span>
                     </div>
 
                     <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-2 tracking-tight">
@@ -539,7 +539,7 @@ function renderPhotoGallery(wo) {
 
 ## 🎯 Conclusão & Próximos Passos
 
-A implementação deste redesenho posiciona a IFL Costa Tech no patamar das maiores assistências especializadas globais (como Apple Genius Bar e Puget Systems), transformando a incerteza do cliente em admiração pelo rigor de engenharia.
+A implementação deste redesenho posiciona a IF Tech no patamar das maiores assistências especializadas globais (como Apple Genius Bar e Puget Systems), transformando a incerteza do cliente em admiração pelo rigor de engenharia.
 
 1. **Deploy Imediato:** Aplicar as correções no arquivo `portal.html`.
 2. **Validação de Testes:** Validar os atalhos de teste `#1053` / `#1050` (Triagem Carlos), `#1049` (Orçamento Upgrade) e `#1048` (Bancada Gamer).

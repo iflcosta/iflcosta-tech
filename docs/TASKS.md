@@ -1,5 +1,5 @@
 # CRONOGRAMA DE TAREFAS (SDD)
-**Projeto:** IFL Costa Tech
+**Projeto:** IF Tech
 
 - [x] **Fase 1:** Definição do Escopo e Documentação Viva
 - [x] **Fase 2:** Esqueleto HTML Semântico

@@ -1,8 +1,8 @@
-# Arquitetura do Sistema de Gestão Integrado (ERP / CRM) — IFL Costa Tech
+# Arquitetura do Sistema de Gestão Integrado (ERP / CRM) — IF Tech
 
 **Documento:** Especificação Técnica de Arquitetura & Engenharia de Dados  
 **Autor:** Especialista em Arquitetura de Software & ERP/CRM  
-**Empresa:** IFL Costa Tech (Bragança Paulista & Remoto)  
+**Empresa:** IF Tech (Bragança Paulista & Remoto)  
 **Versão:** 2.0 (Unificação dos 3 Pilares Operacionais)  
 **Status:** Aprovado para Implementação  
 
@@ -10,11 +10,11 @@
 
 ## 1. Visão Geral & Modelo de Negócio Híbrido
 
-A **IFL Costa Tech** atua sob um ecossistema operacional híbrido, onde um mesmo cliente (B2B ou B2C) transita entre três modelos econômicos complementares:
+A **IF Tech** atua sob um ecossistema operacional híbrido, onde um mesmo cliente (B2B ou B2C) transita entre três modelos econômicos complementares:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 IFL COSTA TECH ERP/CRM                                 │
+│                                 IF TECH ERP/CRM                                 │
 ├──────────────────────────┬───────────────────────────┬─────────────────────────────────┤
 │ 1. HARDWARE & BANCADA    │ 2. SOFTWARE & ENGENHARIA  │ 3. TI GERENCIADA (MSP)          │
 │ • Caixa rápido / avulso  │ • Alto Ticket / Projetos  │ • Recorrência previsível (MRR)  │
@@ -101,7 +101,7 @@ O sistema é concebido em uma arquitetura modular em camadas, desacoplada e orie
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 IFL COSTA TECH ERP CORE                                │
+│                                 IF TECH ERP CORE                                │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌──────────────────────────┐ │
 │ │  MÓDULO 1: CRM │ │  MÓDULO 2: OS  │ │  MÓDULO 3: DEV │ │  MÓDULO 4: MSP & RMM     │ │
@@ -621,7 +621,7 @@ O painel de gestão centraliza os indicadores de saúde financeira, fluxo de cai
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  IFL COSTA TECH // COCKPIT EXECUTIVO & OPERAÇÕES                                  [22/08/2026 18:00]   │
+│  IF TECH // COCKPIT EXECUTIVO & OPERAÇÕES                                  [22/08/2026 18:00]   │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │  [📊 KPIs CONSOLIDADOS]                                                                                │
 │  ┌──────────────────────┬──────────────────────┬──────────────────────┬──────────────────────────────┐ │
@@ -669,7 +669,7 @@ O cliente acessa uma URL segura no formato `https://app.iflcosta.tech/status/{ha
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  IFL COSTA TECH // CENTRAL DE ACOMPANHAMENTO TÉCNICO                             [ PROTOCOLO: #1038 ]  │
+│  IF TECH // CENTRAL DE ACOMPANHAMENTO TÉCNICO                             [ PROTOCOLO: #1038 ]  │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │  Cliente: Lucas Andrade | Equipamento: Desktop Custom Ryzen 7 5700X + RTX 4070                         │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -710,7 +710,7 @@ Para clientes corporativos (médicos, escritórios de contabilidade, pequenas in
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  IFL COSTA TECH // GESTÃO DE TI CORPORATIVA & MSP                      [ CONTRATO: MSP-CLINICA-BETA ]  │
+│  IF TECH // GESTÃO DE TI CORPORATIVA & MSP                      [ CONTRATO: MSP-CLINICA-BETA ]  │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │  Empresa: Clínica Médica São Francisco | Plano: MSP Profissional (8 Estações + 1 Servidor)            │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -751,13 +751,13 @@ O ERP dispara automaticamente mensagens via WhatsApp em momentos-chave da esteir
 | **Fechamento de Projeto SW** | *(Notificação Kickoff)* | `{nome}`, `{projeto_nome}`, `{link_staging}`, `{valor_sinal_50}` | Emissão de Fatura do Milestone 1 (50% Entrada). |
 | **Homologação Projeto SW** | *(Notificação Entrega)* | `{nome}`, `{lighthouse_score}`, `{link_producao}`, `{valor_saldo_50}` | Emissão de Fatura do Milestone 2 (50% Saldo). |
 | **Check-up PME Concluído** | `Template 5 (Proposta MSP)` | `{nome_gestor}`, `{empresa}`, `{qtd_estacoes}`, `{mrr_valor}` | Geração do rascunho de Contrato MSP com SLA. |
-| **Falha de Backup > 24h** | *(Alerta Interno SOC)* | Alerta para equipe IFL Costa: *"Estação X não executa backup há 24h."* | Abertura automática de Ticket de Suporte Preventivo. |
+| **Falha de Backup > 24h** | *(Alerta Interno SOC)* | Alerta para equipe IF Tech: *"Estação X não executa backup há 24h."* | Abertura automática de Ticket de Suporte Preventivo. |
 
 ---
 
 ## 7. Resumo e Próximos Passos de Implementação
 
-Com esta especificação, o ERP da IFL Costa Tech unifica a gestão financeira, operacional e técnica:
+Com esta especificação, o ERP da IF Tech unifica a gestão financeira, operacional e técnica:
 1. **Blindagem Jurídica e Financeira:** O caixa da empresa nunca financia peças de clientes (100% de sinal prévio) e projetos de software contam com 50% de trava de entrada.
 2. **Escalabilidade no MSP:** A cobrança por estação com criticidade híbrida permite precificar de consultórios com 2 computadores a empresas com dezenas de máquinas e servidores locais.
 3. **Eficiência Técnica:** Padronização dos testes de estresse (QA), redução de RMA para menos de 2% e automação total da régua de WhatsApp.

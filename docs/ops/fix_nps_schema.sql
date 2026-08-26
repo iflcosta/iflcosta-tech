@@ -1,6 +1,6 @@
 
 -- ==============================================================================
--- IFL COSTA TECH — AVALIAÇÕES / NPS & FEEDBACK DO CLIENTE
+-- IF TECH — AVALIAÇÕES / NPS & FEEDBACK DO CLIENTE
 -- ==============================================================================
 ALTER TABLE work_orders 
     ADD COLUMN IF NOT EXISTS customer_rating INT,

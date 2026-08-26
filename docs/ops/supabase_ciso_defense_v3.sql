@@ -1,5 +1,5 @@
 -- ==============================================================================
--- IFL COSTA TECH — CISO SUPABASE DEFENSE V3.0 (BLINDAGEM TOTAL PRODUÇÃO)
+-- IF TECH — CISO SUPABASE DEFENSE V3.0 (BLINDAGEM TOTAL PRODUÇÃO)
 -- Projeto Supabase: togrnwxazuweuihlaljo (iflcosta-tech)
 -- Executar em: https://supabase.com/dashboard/project/togrnwxazuweuihlaljo/sql/new
 -- ==============================================================================

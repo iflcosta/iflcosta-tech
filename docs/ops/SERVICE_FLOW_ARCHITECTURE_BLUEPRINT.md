@@ -1,5 +1,5 @@
 # Blueprint Arquitetural de Fluxos de Atendimento & Máquina de Estados da OS
-**Empresa:** IFL Costa Tech  
+**Empresa:** IF Tech  
 **Praça:** Bragança Paulista - SP & Região  
 **Versão:** 2.0 (Redesenho Operacional de Bancada & ERP)  
 **Status:** Arquitetura Aprovada para Implementação  
@@ -59,7 +59,7 @@ graph TD
 
 ## 🔄 3. Os 4 Casos de Uso Reais da Operação
 
-A arquitetura do ERP IFL Costa Tech suporta nativamente 4 modalidades distintas de atendimento:
+A arquitetura do ERP IF Tech suporta nativamente 4 modalidades distintas de atendimento:
 
 ### 3.1 Fluxo A: Entrada para Diagnóstico / Break-Fix (Aparelho com Defeito)
 *A modalidade mais frequente no dia a dia da assistência.*
@@ -417,7 +417,7 @@ Quando o cliente acessa o link nos primeiros minutos/horas após a entrega:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ IFL COSTA TECH // TELEMETRIA DE BANCADA                     OS #1052   │
+│ IF TECH // TELEMETRIA DE BANCADA                     OS #1052   │
 ├────────────────────────────────────────────────────────────────────────┤
 │ 🔍 STATUS ATUAL: EM DIAGNÓSTICO TÉCNICO CIRÚRGICO                      │
 │ Equipamento: Dell Inspiron 15 // Entrada: 23/08/2026 às 14:20          │
@@ -464,7 +464,7 @@ Assim que o técnico conclui a análise e lança os itens no Cockpit:
 
 | Gatilho / Evento | Template de Mensagem Disparado no WhatsApp |
 | :--- | :--- |
-| **01. Check-in de Entrada (Triagem)** | *“Olá {nome}! 👋 Seu {equipamento} deu entrada na bancada da IFL Costa Tech sob a **OS #{numero}**.<br><br>📸 Registramos as fotos de entrada e o checklist de custódia.<br>🔍 **Acompanhe o andamento da análise em tempo real pelo link:**<br>👉 https://iflcosta.tech/portal.html?token={token}”* |
+| **01. Check-in de Entrada (Triagem)** | *“Olá {nome}! 👋 Seu {equipamento} deu entrada na bancada da IF Tech sob a **OS #{numero}**.<br><br>📸 Registramos as fotos de entrada e o checklist de custódia.<br>🔍 **Acompanhe o andamento da análise em tempo real pelo link:**<br>👉 https://iflcosta.tech/portal.html?token={token}”* |
 | **02. Orçamento Concluído** | *“Olá {nome}! 🔬 O laudo técnico e orçamento da sua **OS #{numero}** estão prontos com a discriminação completa das peças e mão de obra.<br><br>📋 **Consulte e aprove pelo link:**<br>👉 https://iflcosta.tech/portal.html?token={token}”* |
 | **03. Confirmação de Sinal / Peça Comprada** | *“Pagamento do sinal confirmado com sucesso! 📦 Já efetuamos o pedido das suas peças com garantia oficial. Em breve seu equipamento entra em bancada.”* |
 | **04. Conclusão & QA Aprovado (Pronto)** | *“Boas notícias {nome}! 🎉 Seu {equipamento} passou por todos os testes de estresse térmico com 100% de estabilidade e já está **PRONTO PARA RETIRADA**!<br><br>Consulte seu laudo final no portal e combine a entrega: https://iflcosta.tech/portal.html?token={token}”* |
@@ -475,7 +475,7 @@ Assim que o técnico conclui a análise e lança os itens no Cockpit:
 
 Este blueprint arquitetural resolve em definitivo a dor levantada pelo gestor:
 1. **Zero fricção na entrada:** Check-in realizado em 30 segundos com R$ 0,00 e sem bloqueios de peças/valores.
-2. **Segurança de custódia:** Fotos e checklist integrados para resguardar a IFL Costa Tech contra avarias pré-existentes.
+2. **Segurança de custódia:** Fotos e checklist integrados para resguardar a IF Tech contra avarias pré-existentes.
 3. **Orçamento estruturado:** Cálculo automático de lucro real, margem e cortesias comerciais somente quando o diagnóstico estiver pronto.
 4. **Telemetria de ponta a ponta:** O cliente acompanha cada micro-etapa no Portal com transparência de nível industrial.
 
