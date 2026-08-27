@@ -85,17 +85,24 @@
                     <span class="font-mono text-[10px] sm:text-xs font-black text-black bg-brand px-2 py-0.5 uppercase tracking-widest">COCKPIT ADMIN // 360°</span>
                 </div>
                 
+                <!-- Barra de Scanner USB & Busca Rápida de OS (Ctrl+K) -->
+                <div class="hidden md:flex items-center flex-1 max-w-md mx-4 relative font-mono text-xs">
+                    <i data-lucide="scan-barcode" class="w-4 h-4 absolute left-3 top-2.5 text-brand animate-pulse"></i>
+                    <input type="text" id="global-scanner-input" onkeydown="handleScannerInputKeydown(event)" placeholder="Bipar QR Code / Buscar OS, Cliente ou S/N (Ctrl+K)..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-16 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand transition-colors">
+                    <kbd class="absolute right-2.5 top-2 text-[9px] bg-zinc-800 text-zinc-400 px-1.5 py-0.5 border border-zinc-700 font-mono">Ctrl+K</kbd>
+                </div>
+
                 <div class="flex items-center gap-2 sm:gap-3 font-mono text-xs">
-                    <div class="hidden lg:flex items-center gap-2 text-zinc-400">
+                    <div class="hidden xl:flex items-center gap-2 text-zinc-400">
                         <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-                        <span>SUPABASE CONECTADO</span>
+                        <span class="text-[11px]">SUPABASE LIVE</span>
                     </div>
                     <button onclick="openIntakeModal()" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
                         <i data-lucide="zap" class="w-4 h-4"></i>
                         <span class="hidden sm:inline">Check-in</span> Entrada (30s)
                     </button>
                     <a href="/status" target="_blank" class="hidden sm:flex px-3 py-2 sm:px-4 sm:py-2.5 bg-black border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1">
-                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal do Cliente
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal
                     </a>
                 </div>
             </div>
@@ -3307,6 +3314,143 @@ Ficamos no aguardo para iniciar a execução!`;
             document.getElementById('intake-client-phone').value = phone || '';
         }
 
+
+                // =====================================================================
+        // MOTOR DE SCANNER USB & BUSCA UNIVERSAL // IF TECH COCKPIT
+        // =====================================================================
+        let usbScannerBuffer = '';
+        let lastScanKeyTime = 0;
+
+        function showScanNotification(msg, type = 'success') {
+            const existing = document.getElementById('scan-toast-notification');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'scan-toast-notification';
+            toast.className = `fixed bottom-6 right-6 z-[999999] px-4 py-3 font-mono text-xs font-bold border-2 shadow-2xl flex items-center gap-2.5 transition-all duration-300 animate-bounce ${
+                type === 'success' 
+                    ? 'bg-black border-brand text-brand shadow-[0_0_25px_rgba(204,255,0,0.3)]' 
+                    : 'bg-black border-yellow-500 text-yellow-400 shadow-[0_0_25px_rgba(234,179,8,0.3)]'
+            }`;
+            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-triangle'}" class="w-4 h-4"></i> <span>${msg}</span>`;
+            document.body.appendChild(toast);
+            if (window.lucide) lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        async function handleUniversalBarcodeScan(rawInput) {
+            if (!rawInput) return;
+            let input = rawInput.trim();
+            if (!input) return;
+
+            console.log("⚡ [Scanner USB] Input detectado:", input);
+
+            // 1. Extração se for URL do Portal
+            if (input.includes('token=')) {
+                input = input.split('token=')[1].split('&')[0];
+            } else if (input.includes('os=')) {
+                input = input.split('os=')[1].split('&')[0];
+            }
+
+            const cleanQuery = input.replace(/^#/, '').replace(/^IF-OS-/i, '').replace(/-\d{4}$/, '').trim();
+
+            // 2. Busca nas OSs carregadas no Kanban
+            let found = currentWorkOrders.find(wo => {
+                if (!wo) return false;
+                const osNum = String(wo.os_number || '');
+                const osFmt = typeof formatOSNumber === 'function' ? formatOSNumber(wo.os_number) : osNum;
+                const token = String(wo.public_tracking_token || '');
+                const serial = String(wo.device_serial_number || '').toLowerCase();
+                const client = String(wo.client_name || (wo.clients ? wo.clients.name : '')).toLowerCase();
+                const phone = String(wo.client_whatsapp || '').replace(/\D/g, '');
+
+                return osNum === cleanQuery || 
+                       osFmt === cleanQuery || 
+                       token === input || 
+                       (cleanQuery.length >= 4 && serial.includes(cleanQuery.toLowerCase())) ||
+                       (input.length >= 3 && client.includes(input.toLowerCase())) ||
+                       (cleanQuery.length >= 8 && phone.includes(cleanQuery));
+            });
+
+            if (found) {
+                showScanNotification(`✓ [SCAN DETECTADO] OS #${formatOSNumber(found.os_number)} localizada com sucesso!`, 'success');
+                openOSDetailModal(found);
+                const scanInput = document.getElementById('global-scanner-input');
+                if (scanInput) scanInput.value = '';
+                return true;
+            }
+
+            // 3. Fallback: Consulta direta ao Supabase via RPC se não achou no array local
+            const client = getSupabase();
+            if (client) {
+                try {
+                    const { data: directWO, error } = await client
+                        .from('work_orders')
+                        .select('*, clients(*), work_order_items(*)')
+                        .or(`os_number.eq.${parseInt(cleanQuery) || 0},public_tracking_token.eq.${input},device_serial_number.ilike.%${cleanQuery}%`)
+                        .maybeSingle();
+
+                    if (!error && directWO) {
+                        showScanNotification(`✓ [BUSCA DIRETA] OS #${formatOSNumber(directWO.os_number)} encontrada no banco!`, 'success');
+                        openOSDetailModal(directWO);
+                        const scanInput = document.getElementById('global-scanner-input');
+                        if (scanInput) scanInput.value = '';
+                        return true;
+                    }
+                } catch (e) {
+                    console.warn("Erro na busca direta:", e);
+                }
+            }
+
+            showScanNotification(`⚠️ [SCAN NÃO LOCALIZADO] Nenhuma OS corresponde a: "${input.substring(0, 25)}"`, 'warning');
+            return false;
+        }
+
+        function handleScannerInputKeydown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleUniversalBarcodeScan(e.target.value);
+            }
+        }
+
+        // Listener Global para Teclado & Leitor USB de Código de Barras
+        window.addEventListener('keydown', (e) => {
+            // Atalho Ctrl+K / Cmd+K para focar na barra
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                const scanInput = document.getElementById('global-scanner-input');
+                if (scanInput) {
+                    scanInput.focus();
+                    scanInput.select();
+                }
+                return;
+            }
+
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            const isInsideInput = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+            const isInsideScannerInput = document.activeElement && document.activeElement.id === 'global-scanner-input';
+
+            const now = Date.now();
+            if (now - lastScanKeyTime > 90) {
+                usbScannerBuffer = '';
+            }
+            lastScanKeyTime = now;
+
+            if (e.key === 'Enter') {
+                if (usbScannerBuffer.length >= 3 && !isInsideInput) {
+                    e.preventDefault();
+                    const scanned = usbScannerBuffer;
+                    usbScannerBuffer = '';
+                    handleUniversalBarcodeScan(scanned);
+                }
+            } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                usbScannerBuffer += e.key;
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             if (window.lucide) lucide.createIcons();
