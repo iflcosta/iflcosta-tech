@@ -827,6 +827,29 @@
                     </div>
                 </div>
 
+                <!-- Card de Faturamento Asaas & Conciliação Pix/Cartão -->
+                <div id="detail-asaas-payment-card" class="bg-zinc-950 border border-zinc-800 p-4 font-mono text-xs space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-zinc-400 font-bold uppercase flex items-center gap-1.5">
+                            <i data-lucide="credit-card" class="w-4 h-4 text-brand"></i> Gateway Asaas (Faturamento):
+                        </span>
+                        <span id="detail-asaas-status-badge" class="px-2.5 py-1 text-[10px] font-black uppercase bg-zinc-900 border border-zinc-700 text-zinc-300">Carregando...</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-zinc-900">
+                        <div class="text-zinc-400 text-[11px]" id="detail-asaas-amount-info">
+                            Sinal Peças: <strong class="text-white" id="detail-asaas-parts-val">R$ 0,00</strong> • Total OS: <strong class="text-brand" id="detail-asaas-total-val">R$ 0,00</strong>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="copyAsaasPixForWhatsApp()" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-brand/40 text-brand text-[11px] font-bold uppercase flex items-center gap-1">
+                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Link Pix p/ WhatsApp
+                            </button>
+                            <button type="button" onclick="adminSimulateAsaasPayment()" class="px-2.5 py-1.5 bg-brand text-black hover:bg-white text-[11px] font-black uppercase flex items-center gap-1">
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i> Confirmar Pix (Teste)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Defeito Relatado & Checklist Visual em Boxes Neobrutalistas -->
                 <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3">
                     <div>
@@ -1878,6 +1901,89 @@ Qualquer dúvida, estou à disposição!
             setTimeout(() => { document.body.className = ''; }, 1000);
         }
 
+        
+        // =========================================================================
+        // AÇÕES DO GATEWAY ASAAS // COCKPIT ADMIN
+        // =========================================================================
+        function updateAsaasPaymentUI(wo) {
+            const badge = document.getElementById('detail-asaas-status-badge');
+            const partsVal = document.getElementById('detail-asaas-parts-val');
+            const totalVal = document.getElementById('detail-asaas-total-val');
+
+            const parts = parseFloat(wo.total_parts || 0);
+            const total = parseFloat(wo.total_amount || 0);
+            const hasParts = parts > 0;
+            const isPaid = wo.parts_deposit_paid || wo.payment_status === 'CONFIRMED' || wo.payment_status === 'RECEIVED';
+
+            if (partsVal) partsVal.textContent = 'R$ ' + parts.toFixed(2).replace('.', ',');
+            if (totalVal) totalVal.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+
+            if (badge) {
+                if (!hasParts) {
+                    badge.className = "px-2.5 py-1 text-[10px] font-black uppercase bg-zinc-900 border border-zinc-700 text-zinc-400";
+                    badge.textContent = "100% SERVIÇO (PAGAMENTO NA ENTREGA)";
+                } else if (isPaid) {
+                    badge.className = "px-2.5 py-1 text-[10px] font-black uppercase bg-brand/20 border border-brand text-brand";
+                    badge.textContent = "🟢 SINAL DE PEÇAS QUITADO VIA ASAAS ✓";
+                } else {
+                    badge.className = "px-2.5 py-1 text-[10px] font-black uppercase bg-yellow-400/20 border border-yellow-400 text-yellow-400 animate-pulse";
+                    badge.textContent = `🟡 AGUARDANDO SINAL (R$ ${parts.toFixed(2).replace('.', ',')})`;
+                }
+            }
+        }
+
+        function copyAsaasPixForWhatsApp() {
+            if (!selectedWorkOrder) return;
+            const wo = selectedWorkOrder;
+            const token = wo.public_tracking_token || wo.os_number;
+            const parts = parseFloat(wo.total_parts || 0);
+            const total = parseFloat(wo.total_amount || 0);
+            const payVal = parts > 0 ? parts : total;
+
+            const portalLink = `https://iflcosta.tech/status?token=${token}`;
+            const msg = `Olá, *${wo.client_name || 'Cliente'}*! Aqui é da *IF Tech*.
+
+Seu orçamento da *OS #${formatOSNumber(wo.os_number)}* está pronto! Acesse o link seguro abaixo para aprovar e realizar o pagamento do sinal de peças no Pix:
+
+👉 ${portalLink}
+
+Qualquer dúvida, estamos à disposição!`;
+
+            navigator.clipboard.writeText(msg).then(() => {
+                showScanNotification("✓ Mensagem com Link Pix copiada para o WhatsApp!", "success");
+            });
+        }
+
+        async function adminSimulateAsaasPayment() {
+            if (!selectedWorkOrder) return;
+            const wo = selectedWorkOrder;
+            const client = getSupabase();
+            const asaasId = wo.asaas_payment_id || `pay_mock_${wo.os_number}_${Date.now()}`;
+
+            showScanNotification(`Confirmando Pix da OS #${formatOSNumber(wo.os_number)} no Asaas...`, "success");
+
+            if (client) {
+                try {
+                    await client.rpc('rpc_confirm_asaas_payment', {
+                        p_asaas_payment_id: asaasId,
+                        p_paid_value: parseFloat(wo.total_parts || wo.total_amount || 0)
+                    });
+                } catch (e) {
+                    console.warn("RPC Confirm Fallback:", e);
+                }
+            }
+
+            wo.parts_deposit_paid = true;
+            wo.payment_status = 'CONFIRMED';
+            wo.status = (parseFloat(wo.total_parts || 0) > 0) ? 'Peca_Encomendada' : 'Aprovado_Fila_Bancada';
+
+            updateAsaasPaymentUI(wo);
+            document.getElementById('detail-status-badge').textContent = wo.status.replace(/_/g, ' ');
+            renderKanban(currentWorkOrders);
+            showScanNotification(`✓ Pagamento confirmado com sucesso! OS #${formatOSNumber(wo.os_number)} avançou no Kanban.`, "success");
+        }
+
+
         function openOSDetailModal(wo) {
             selectedWorkOrder = wo;
             document.getElementById('detail-os-num').textContent = '#' + (wo.os_number || '1050');
@@ -1886,6 +1992,7 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('detail-client-phone').textContent = wo.client_whatsapp || '(11) 91969-1542';
             document.getElementById('detail-status-badge').textContent = (wo.status || 'Triagem').replace(/_/g, ' ');
             document.getElementById('detail-total-amount').textContent = 'R$ ' + parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
+            updateAsaasPaymentUI(wo);
             // Parse do Defeito e Tags de Checklist Visual
             const rawDefect = wo.reported_defect || 'Defeito informado na recepção.';
             const defectMatch = rawDefect.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
