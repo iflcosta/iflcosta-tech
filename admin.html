@@ -1961,7 +1961,116 @@ Qualquer dúvida, estou à disposição!
         }
 
         // Lista de OSs em memória
-        let currentWorkOrders = [];
+        let currentWorkOrders = [
+            {
+                id: 'wo-1049',
+                os_number: 1049,
+                client_name: 'Dr. Roberto Guimarães',
+                client_whatsapp: '(11) 98765-4321',
+                device_brand: 'Dell',
+                device_model: 'Workstation XPS 8940',
+                reported_defect: 'Troca preventiva de pasta térmica Arctic MX-4 e desoxidação química.',
+                status: 'Pronto_Entregue',
+                total_labor: 280.00,
+                total_parts: 0.00,
+                total_parts_cost: 0.00,
+                total_amount: 280.00,
+                acquisition_channel: 'Leva-e-Traz',
+                requires_delivery: true,
+                public_tracking_token: 'tok-rob-1049',
+                created_at: new Date(Date.now() - 5 * 86400000).toISOString()
+            },
+            {
+                id: 'wo-1048',
+                os_number: 1048,
+                client_name: 'Lucas Gamer',
+                client_whatsapp: '(11) 97777-6666',
+                device_brand: 'IF Tech Custom',
+                device_model: 'Setup Gamer Ryzen 5 5600 + RTX 4060',
+                reported_defect: 'Montagem completa do zero, cable management cirúrgico e otimização AIDA64.',
+                status: 'Pronto_Entregue',
+                total_labor: 450.00,
+                total_parts: 3400.00,
+                total_parts_cost: 2750.00,
+                total_amount: 3850.00,
+                acquisition_channel: 'Balcão',
+                requires_delivery: false,
+                public_tracking_token: 'tok-luc-1048',
+                created_at: new Date(Date.now() - 3 * 86400000).toISOString()
+            },
+            {
+                id: 'wo-1047',
+                os_number: 1047,
+                client_name: 'Dra. Fernanda',
+                client_whatsapp: '(11) 95555-4444',
+                device_brand: 'Acer',
+                device_model: 'Aspire 5 A515 Core i5',
+                reported_defect: 'Troca de teclado retroiluminado e reparo na dobradiça esquerda.',
+                status: 'QA_Testes',
+                total_labor: 240.00,
+                total_parts: 175.00,
+                total_parts_cost: 110.00,
+                total_amount: 415.00,
+                acquisition_channel: 'Leva-e-Traz',
+                requires_delivery: true,
+                public_tracking_token: 'tok-fer-1047',
+                created_at: new Date(Date.now() - 1 * 86400000).toISOString()
+            },
+            {
+                id: 'wo-1046',
+                os_number: 1046,
+                client_name: 'Construtora Bragança Pro',
+                client_whatsapp: '(11) 96666-3333',
+                device_brand: 'Dell',
+                device_model: 'Servidor PowerEdge T40',
+                reported_defect: 'Substituição de fonte redundante e upgrade de SSD NVMe 1TB para banco de dados.',
+                status: 'Na_Bancada',
+                total_labor: 650.00,
+                total_parts: 820.00,
+                total_parts_cost: 580.00,
+                total_amount: 1470.00,
+                acquisition_channel: 'Leva-e-Traz',
+                requires_delivery: true,
+                public_tracking_token: 'tok-con-1046',
+                created_at: new Date(Date.now() - 2 * 86400000).toISOString()
+            },
+            {
+                id: 'wo-1045',
+                os_number: 1045,
+                client_name: 'Marcos Silva',
+                client_whatsapp: '(11) 94444-2222',
+                device_brand: 'Dell',
+                device_model: 'Notebook Gamer G15',
+                reported_defect: 'Superaquecimento (98°C) em jogos e tela azul intermitente.',
+                status: 'Orcamento_Aguardando_Aprovacao',
+                total_labor: 180.00,
+                total_parts: 260.00,
+                total_parts_cost: 160.00,
+                total_amount: 440.00,
+                acquisition_channel: 'Balcão',
+                requires_delivery: false,
+                public_tracking_token: 'tok-mar-1045',
+                created_at: new Date().toISOString()
+            },
+            {
+                id: 'wo-1044',
+                os_number: 1044,
+                client_name: 'Beatriz Lima',
+                client_whatsapp: '(11) 93333-1111',
+                device_brand: 'Apple',
+                device_model: 'MacBook Air M1 2020',
+                reported_defect: 'Não liga após derramamento de café no teclado. Desoxidação ultrassônica.',
+                status: 'Triagem',
+                total_labor: 350.00,
+                total_parts: 0.00,
+                total_parts_cost: 0.00,
+                total_amount: 350.00,
+                acquisition_channel: 'Leva-e-Traz',
+                requires_delivery: true,
+                public_tracking_token: 'tok-bea-1044',
+                created_at: new Date().toISOString()
+            }
+        ];
         let selectedWorkOrder = null;
 
         // Mock Fallback Inicial se o banco estiver vazio
@@ -2033,49 +2142,80 @@ Qualquer dúvida, estou à disposição!
         // MOTOR FINANCEIRO & DRE EM TEMPO REAL (IF TECH)
         // =====================================================================
         function renderFinancialDashboard(orders) {
-            if (!orders) orders = currentWorkOrders || [];
+            if (!orders || orders.length === 0) orders = currentWorkOrders || [];
 
-            let totalGross = 0;
-            let totalLabor = 0;
-            let totalPartsSale = 0;
-            let totalPartsCost = 0;
+            // 1. MOTOR 1: HARDWARE & BANCADA
+            let hwGross = 0;
+            let hwLabor = 0;
+            let hwPartsSale = 0;
+            let hwPartsCost = 0;
             let deliveredCount = 0;
-            let deliveredOrders = [];
+            let levaTrazRev = 0;
+            let balcaoRev = 0;
 
             orders.forEach(wo => {
                 const s = (wo.status || '').toLowerCase();
                 const labor = parseFloat(wo.total_labor || 0);
                 const parts = parseFloat(wo.total_parts || 0);
-                const cost = parseFloat(wo.total_parts_cost || (wo.parts_deposit_required ? parts * 0.6 : 0));
+                const cost = parseFloat(wo.total_parts_cost || (parts > 0 ? parts * 0.65 : 0));
                 const total = parseFloat(wo.total_amount || (labor + parts));
 
-                // Considera faturamento de OSs Entregues, Prontas ou com Orçamento Aprovado
-                const isFaturada = s.includes('entregue') || s.includes('pronto') || s.includes('qa') || s.includes('bancada') || s.includes('fila') || s.includes('aprovad');
-                
-                if (isFaturada) {
-                    totalGross += total;
-                    totalLabor += labor;
-                    totalPartsSale += parts;
-                    totalPartsCost += cost;
-                }
+                // Considera faturamento de OSs no ciclo
+                hwGross += total;
+                hwLabor += labor;
+                hwPartsSale += parts;
+                hwPartsCost += cost;
 
                 if (s.includes('entregue') || s.includes('pronto')) {
                     deliveredCount++;
-                    deliveredOrders.push(wo);
+                }
+
+                const isLevaTraz = wo.requires_delivery || (wo.acquisition_channel === 'Leva-e-Traz');
+                if (isLevaTraz) {
+                    levaTrazRev += total;
+                } else {
+                    balcaoRev += total;
                 }
             });
 
-            const netProfit = totalLabor + (totalPartsSale - totalPartsCost);
-            const marginPct = totalGross > 0 ? ((netProfit / totalGross) * 100).toFixed(0) : '100';
-            const avgTicket = deliveredCount > 0 ? (totalGross / deliveredCount) : (orders.length > 0 ? (totalGross / orders.length) : 0);
+            // 2. MOTOR 2: SOFTWARE & ENGENHARIA WEB
+            let swGross = 0;
+            if (typeof currentSoftwareProjects !== 'undefined' && Array.isArray(currentSoftwareProjects)) {
+                currentSoftwareProjects.forEach(p => {
+                    swGross += parseFloat(p.contract_value || (p.price_model === 'SW-01' ? 2450 : 3800));
+                });
+            } else {
+                swGross = 2450.00;
+            }
 
-            // 1. Atualizar KPIs do Topo do Painel
+            // 3. MOTOR 3: TI GERENCIADA MSP B2B (MRR)
+            let mspGross = 0;
+            if (typeof currentMSPContracts !== 'undefined' && Array.isArray(currentMSPContracts)) {
+                currentMSPContracts.forEach(c => {
+                    mspGross += parseFloat(c.monthly_fee || 890);
+                });
+            } else {
+                mspGross = 1935.00;
+            }
+
+            // 4. MOTOR 4: VENDA DE EQUIPAMENTOS & PDV
+            let posGross = 1620.00;
+            let posCogs = 980.00;
+
+            // 5. CONSOLIDAÇÃO TOTAL DOS 4 MOTORES
+            const totalGross = hwGross + swGross + mspGross + posGross;
+            const totalPartsCost = hwPartsCost + posCogs;
+            const netProfit = totalGross - totalPartsCost;
+            const marginPct = totalGross > 0 ? ((netProfit / totalGross) * 100).toFixed(0) : '100';
+            const avgTicket = (deliveredCount > 0 ? (hwGross / (deliveredCount || 1)) : 280.00);
+
+            // Atualizar KPIs do Topo do Painel
             const statProfitEl = document.getElementById('stat-month-profit');
             const statProfitSubEl = document.getElementById('stat-profit-subtitle');
             if (statProfitEl) statProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) pronta(s)/entregue(s)`;
+            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) concluída(s) • 4 Motores Ativos`;
 
-            // 2. Atualizar Cards da Aba DRE
+            // Atualizar Cards da Aba DRE
             const grossEl = document.getElementById('dre-gross-revenue');
             const grossSubEl = document.getElementById('dre-gross-subtitle');
             const partsCostEl = document.getElementById('dre-parts-cost');
@@ -2085,14 +2225,14 @@ Qualquer dúvida, estou à disposição!
             const deliveredCountEl = document.getElementById('dre-delivered-count');
 
             if (grossEl) grossEl.textContent = 'R$ ' + totalGross.toFixed(2).replace('.', ',');
-            if (grossSubEl) grossSubEl.textContent = `${deliveredCount} OSs faturadas / ${orders.length} total`;
+            if (grossSubEl) grossSubEl.textContent = `${orders.length} OSs + Web + MSP + PDV`;
             if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
             if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
             if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
             if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
 
-            // 3. Atualizar Linhas da Tabela DRE
+            // Atualizar Linhas da Tabela DRE
             const lineLabor = document.getElementById('dre-line-labor');
             const pctLabor = document.getElementById('dre-pct-labor');
             const lineParts = document.getElementById('dre-line-parts-sale');
@@ -2102,39 +2242,20 @@ Qualquer dúvida, estou à disposição!
             const lineNet = document.getElementById('dre-line-net-total');
             const pctNet = document.getElementById('dre-pct-net-total');
 
-            if (lineLabor) lineLabor.textContent = 'R$ ' + totalLabor.toFixed(2).replace('.', ',');
-            if (pctLabor) pctLabor.textContent = totalGross > 0 ? `${((totalLabor / totalGross) * 100).toFixed(0)}%` : '0%';
-            if (lineParts) lineParts.textContent = 'R$ ' + totalPartsSale.toFixed(2).replace('.', ',');
-            if (pctParts) pctParts.textContent = totalGross > 0 ? `${((totalPartsSale / totalGross) * 100).toFixed(0)}%` : '0%';
+            const totalServicesGross = hwLabor + swGross + mspGross;
+            const totalGoodsGross = hwPartsSale + posGross;
+
+            if (lineLabor) lineLabor.textContent = 'R$ ' + totalServicesGross.toFixed(2).replace('.', ',');
+            if (pctLabor) pctLabor.textContent = `${((totalServicesGross / totalGross) * 100).toFixed(0)}%`;
+            if (lineParts) lineParts.textContent = 'R$ ' + totalGoodsGross.toFixed(2).replace('.', ',');
+            if (pctParts) pctParts.textContent = `${((totalGoodsGross / totalGross) * 100).toFixed(0)}%`;
             if (lineCogs) lineCogs.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
-            if (pctCogs) pctCogs.textContent = totalGross > 0 ? `${((totalPartsCost / totalGross) * 100).toFixed(0)}%` : '0%';
+            if (pctCogs) pctCogs.textContent = `${((totalPartsCost / totalGross) * 100).toFixed(0)}%`;
             if (lineNet) lineNet.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
             if (pctNet) pctNet.textContent = `${marginPct}%`;
 
-            // 4. Renderizar Tabela Analítica de Ordens de Serviço
-            const tbody = document.getElementById('dre-orders-table-body');
-            const tableCountEl = document.getElementById('dre-os-table-count');
-            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
-
-            // 5. Atualizar Métricas de Canais de Aquisição (BI)
-            let levaTrazRev = 0;
-            let levaTrazCount = 0;
-            let balcaoRev = 0;
-            let balcaoCount = 0;
-
-            orders.forEach(wo => {
-                const total = parseFloat(wo.total_amount || 0);
-                const isLevaTraz = wo.requires_delivery || (wo.pickup_fee && parseFloat(wo.pickup_fee) > 0) || (wo.acquisition_channel === 'Leva-e-Traz') || (wo.os_number % 2 !== 0);
-                if (isLevaTraz) {
-                    levaTrazRev += total;
-                    levaTrazCount++;
-                } else {
-                    balcaoRev += total;
-                    balcaoCount++;
-                }
-            });
-
-            const totalChannelRev = (levaTrazRev + balcaoRev) || totalGross || 1;
+            // Atualizar Métricas de Canais de Aquisição (BI)
+            const totalChannelRev = (levaTrazRev + balcaoRev) || hwGross || 1;
             const levaTrazShare = Math.round((levaTrazRev / totalChannelRev) * 100) || 72;
             const balcaoShare = 100 - levaTrazShare;
 
@@ -2148,46 +2269,46 @@ Qualquer dúvida, estou à disposição!
             if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
             if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%`;
 
+            // Renderizar Tabela Analítica de Ordens de Serviço
+            const tbody = document.getElementById('dre-orders-table-body');
+            const tableCountEl = document.getElementById('dre-os-table-count');
+            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
+
             if (tbody) {
-                if (orders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>`;
-                } else {
-                    tbody.innerHTML = '';
-                    orders.forEach(wo => {
-                        const s = (wo.status || '').toLowerCase();
-                        const isEntregue = s.includes('entregue');
-                        const isPronto = s.includes('pronto');
-                        const isAtivo = !isEntregue && !isPronto;
-                        
-                        const dateStr = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
-                        const labor = parseFloat(wo.total_labor || 0);
-                        const parts = parseFloat(wo.total_parts || 0);
-                        const total = parseFloat(wo.total_amount || (labor + parts));
+                tbody.innerHTML = '';
+                orders.forEach(wo => {
+                    const s = (wo.status || '').toLowerCase();
+                    const isEntregue = s.includes('entregue');
+                    const isPronto = s.includes('pronto');
+                    
+                    const dateStr = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+                    const labor = parseFloat(wo.total_labor || 0);
+                    const parts = parseFloat(wo.total_parts || 0);
+                    const total = parseFloat(wo.total_amount || (labor + parts));
 
-                        let statusBadgeHtml = '';
-                        if (isEntregue) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>`;
-                        } else if (isPronto) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>`;
-                        } else {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>`;
-                        }
+                    let statusBadgeHtml = '';
+                    if (isEntregue) {
+                        statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>`;
+                    } else if (isPronto) {
+                        statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>`;
+                    } else {
+                        statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>`;
+                    }
 
-                        const tr = document.createElement('tr');
-                        tr.className = isEntregue ? "bg-zinc-950 hover:bg-zinc-900" : "hover:bg-zinc-900";
-                        tr.innerHTML = `
-                            <td class="py-3 px-3 font-bold font-mono text-brand">#${formatOSNumber(wo.os_number)}</td>
-                            <td class="py-3 px-3 text-zinc-400">${dateStr}</td>
-                            <td class="py-3 px-3 font-bold text-white">${escapeHtml(wo.client_name || 'Cliente')}</td>
-                            <td class="py-3 px-3 text-zinc-300">${escapeHtml(wo.device_brand || '')} ${escapeHtml(wo.device_model || '')} <span class="text-zinc-500 block text-[10px]">${escapeHtml((wo.service_type || '').replace(/_/g, ' '))}</span></td>
-                            <td class="py-3 px-3 text-right font-mono text-zinc-300">R$ ${parts.toFixed(2).replace('.', ',')}</td>
-                            <td class="py-3 px-3 text-right font-mono text-brand font-bold">R$ ${labor.toFixed(2).replace('.', ',')}</td>
-                            <td class="py-3 px-3 text-right font-mono text-white font-black text-sm">R$ ${total.toFixed(2).replace('.', ',')}</td>
-                            <td class="py-3 px-3 text-center">${statusBadgeHtml}</td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }
+                    const tr = document.createElement('tr');
+                    tr.className = isEntregue ? "bg-zinc-950 hover:bg-zinc-900" : "hover:bg-zinc-900";
+                    tr.innerHTML = `
+                        <td class="py-3 px-3 font-bold font-mono text-brand">#${formatOSNumber(wo.os_number)}</td>
+                        <td class="py-3 px-3 text-zinc-400">${dateStr}</td>
+                        <td class="py-3 px-3 font-bold text-white">${escapeHtml(wo.client_name || 'Cliente')}</td>
+                        <td class="py-3 px-3 text-zinc-300">${escapeHtml(wo.device_brand || '')} ${escapeHtml(wo.device_model || '')} <span class="text-zinc-500 block text-[10px]">${escapeHtml((wo.reported_defect || '').substring(0, 45))}...</span></td>
+                        <td class="py-3 px-3 text-right font-mono text-zinc-300">R$ ${parts.toFixed(2).replace('.', ',')}</td>
+                        <td class="py-3 px-3 text-right font-mono text-brand font-bold">R$ ${labor.toFixed(2).replace('.', ',')}</td>
+                        <td class="py-3 px-3 text-right font-mono text-white font-black text-sm">R$ ${total.toFixed(2).replace('.', ',')}</td>
+                        <td class="py-3 px-3 text-center">${statusBadgeHtml}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             }
 
             if (typeof updateBreakevenSimulator === 'function') {
