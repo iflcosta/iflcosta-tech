@@ -1642,7 +1642,270 @@
             handleSearch(osVal, phoneVal);
         }
 
-        // Função de Busca com Dupla Confirmação (OS + WhatsApp ou Token)
+        // =====================================================================
+        // SPRINT 4: RENDERIZADOR DO PORTAL DO CLIENTE DE SOFTWARE (50/50 & QA)
+        // =====================================================================
+        let currentLoadedSoftwareProject = null;
+
+        const defaultMockSoftwareProjects = [
+            {
+                id: "sw-mock-01",
+                project_code: "PRJ-2026-001",
+                client_name: "Imobiliária Vista Bragança",
+                client_whatsapp: "(11) 98765-4321",
+                title: "Landing Page de Alta Conversão + WhatsApp Engine",
+                service_code: "SW-01",
+                status: "Em_Desenvolvimento",
+                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
+                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
+                staging_url: "https://preview.iflcosta.tech/vista-braganca",
+                total_budget: 1800.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-09-05",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 99,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 96,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-vista-2026"
+            },
+            {
+                id: "sw-mock-02",
+                project_code: "PRJ-2026-002",
+                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
+                client_whatsapp: "(11) 91234-5678",
+                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
+                service_code: "SW-02",
+                status: "Homologacao_Cliente",
+                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
+                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
+                staging_url: "https://preview.iflcosta.tech/odonto-demo",
+                total_budget: 1200.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-08-30",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 100,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 98,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-odonto-2026"
+            }
+        ];
+
+        function renderSoftwareProjectData(proj) {
+            if (!proj) return;
+            currentLoadedSoftwareProject = proj;
+
+            document.getElementById('sw-card-code').textContent = proj.project_code || 'PRJ-2026-001';
+            document.getElementById('sw-card-title').textContent = proj.title || 'Projeto de Software';
+            
+            const clientName = proj.client?.name || proj.client_name || 'Cliente';
+            document.getElementById('sw-card-client').textContent = clientName;
+            document.getElementById('sw-card-service').textContent = proj.service_code || 'SW-01';
+            
+            if (proj.estimated_delivery_date) {
+                const d = new Date(proj.estimated_delivery_date);
+                document.getElementById('sw-card-delivery').textContent = 'Previsão de Entrega: ' + d.toLocaleDateString('pt-BR');
+            }
+
+            // Status Badge & Stepper
+            const status = proj.status || 'Briefing';
+            const badgeText = document.getElementById('sw-card-status-text');
+            if (badgeText) {
+                if (status === 'Briefing') badgeText.textContent = '01. BRIEFING & ESCOPO';
+                else if (status === 'Em_Desenvolvimento') badgeText.textContent = '02. EM DESENVOLVIMENTO';
+                else if (status === 'Em_QA') badgeText.textContent = '03. TESTES QA & LIGHTHOUSE';
+                else if (status === 'Homologacao_Cliente') badgeText.textContent = '04. HOMOLOGAÇÃO CLIENTE';
+                else if (status === 'Concluido') badgeText.textContent = '✓ 05. CONCLUÍDO & ENTREGUE';
+                else badgeText.textContent = status;
+            }
+
+            // Stepper Styling (5 steps)
+            const stepOrder = ['Briefing', 'Em_Desenvolvimento', 'Em_QA', 'Homologacao_Cliente', 'Concluido'];
+            const currentIdx = stepOrder.indexOf(status);
+
+            for (let i = 1; i <= 5; i++) {
+                const stepEl = document.getElementById(`sw-step-${i}`);
+                if (!stepEl) continue;
+                if (currentIdx >= (i - 1)) {
+                    stepEl.className = "border-2 border-brand bg-brand/10 p-3 transition-colors text-brand";
+                } else {
+                    stepEl.className = "border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors text-zinc-500";
+                }
+            }
+
+            // Scope
+            const scopeEl = document.getElementById('sw-card-scope');
+            if (scopeEl) {
+                scopeEl.textContent = proj.scope_description || 'Projeto de Engenharia de Software e Desenvolvimento Web sob demanda com arquitetura otimizada.';
+            }
+
+            // Budget & 50/50 Milestones
+            const total = parseFloat(proj.total_budget || 0);
+            const half = total / 2;
+            document.getElementById('sw-card-total-budget').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+            document.getElementById('sw-card-ms1-val').textContent = 'R$ ' + half.toFixed(2).replace('.', ',');
+            document.getElementById('sw-card-ms2-val').textContent = 'R$ ' + half.toFixed(2).replace('.', ',');
+
+            const isMs1Paid = !!proj.kickoff_deposit_paid;
+            const isMs2Paid = !!proj.final_delivery_paid || status === 'Concluido';
+
+            const ms1Badge = document.getElementById('sw-card-ms1-badge');
+            const ms1Btn = document.getElementById('sw-card-ms1-btn');
+            if (isMs1Paid) {
+                ms1Badge.className = "px-2 py-0.5 bg-brand text-black font-black text-[10px]";
+                ms1Badge.textContent = "PAGO (Pix)";
+                if (ms1Btn) ms1Btn.classList.add('hidden');
+            } else {
+                ms1Badge.className = "px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]";
+                ms1Badge.textContent = "PENDENTE";
+                if (ms1Btn) ms1Btn.classList.remove('hidden');
+            }
+
+            const ms2Badge = document.getElementById('sw-card-ms2-badge');
+            const ms2Btn = document.getElementById('sw-card-ms2-btn');
+            if (isMs2Paid) {
+                ms2Badge.className = "px-2 py-0.5 bg-brand text-black font-black text-[10px]";
+                ms2Badge.textContent = "QUITADO";
+                if (ms2Btn) ms2Btn.classList.add('hidden');
+            } else {
+                ms2Badge.className = "px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[10px]";
+                ms2Badge.textContent = "AGUARDANDO VALIDAÇÃO";
+                if (ms2Btn) ms2Btn.classList.remove('hidden');
+            }
+
+            // Lighthouse Scores
+            document.getElementById('sw-card-lh-perf').textContent = proj.lighthouse_performance_score || 99;
+            document.getElementById('sw-card-lh-seo').textContent = proj.lighthouse_seo_score || 100;
+            document.getElementById('sw-card-lh-bp').textContent = proj.lighthouse_best_practices_score || 100;
+            document.getElementById('sw-card-lh-acc').textContent = proj.lighthouse_accessibility_score || 96;
+
+            // Staging Link
+            const stagingUrl = proj.staging_url || 'https://preview.iflcosta.tech/demo';
+            const stagingTextEl = document.getElementById('sw-card-staging-url-text');
+            const stagingBtnEl = document.getElementById('sw-card-staging-btn');
+            if (stagingTextEl) stagingTextEl.textContent = stagingUrl.replace(/^https?:\/\//, '');
+            if (stagingBtnEl) stagingBtnEl.href = stagingUrl;
+
+            // Homologation Certificate & Button
+            const certBox = document.getElementById('sw-homologation-cert-box');
+            const certHash = document.getElementById('sw-cert-hash');
+            const homologateBtn = document.getElementById('sw-card-homologate-btn');
+
+            if (proj.homologation_hash || status === 'Concluido') {
+                if (certBox) certBox.classList.remove('hidden');
+                if (certHash) certHash.textContent = proj.homologation_hash || 'SHA-256-HOMOLOGATED-PROD-2026';
+                if (homologateBtn) homologateBtn.classList.add('hidden');
+            } else {
+                if (certBox) certBox.classList.add('hidden');
+                if (homologateBtn) homologateBtn.classList.remove('hidden');
+            }
+        }
+
+        function openHomologationModal() {
+            const modal = document.getElementById('homologation-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeHomologationModal() {
+            const modal = document.getElementById('homologation-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function confirmSoftwareHomologation() {
+            const name = document.getElementById('homologate-signer-name')?.value.trim();
+            const doc = document.getElementById('homologate-signer-doc')?.value.trim();
+            if (!name || !doc) {
+                alert("Por favor, preencha seu nome completo e CPF/CNPJ para assinar o termo digital.");
+                return;
+            }
+
+            if (!currentLoadedSoftwareProject) return;
+            const proj = currentLoadedSoftwareProject;
+            const client = getSupabase();
+            let hash = '';
+
+            if (client && proj.client_token) {
+                try {
+                    const { data, error } = await client.rpc('rpc_homologate_software_project', {
+                        p_client_token: proj.client_token,
+                        p_signer_name: name,
+                        p_signer_document: doc
+                    });
+                    if (!error && data && data.success) {
+                        hash = data.homologation_hash;
+                    }
+                } catch (e) {
+                    console.warn("Homologation RPC fallback:", e);
+                }
+            }
+
+            if (!hash) {
+                const msg = `${proj.project_code}|${Date.now()}|${name}|${doc}`;
+                const encoder = new TextEncoder();
+                const data = encoder.encode(msg);
+                try {
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                } catch (e) {
+                    hash = 'SHA-256-HOMOLOGATED-' + Date.now();
+                }
+            }
+
+            proj.status = 'Concluido';
+            proj.homologation_hash = hash;
+            proj.final_delivery_paid = true;
+            proj.qa_homologated_at = new Date().toISOString();
+
+            try {
+                const saved = localStorage.getItem('if_tech_software_projects');
+                if (saved) {
+                    let projects = JSON.parse(saved);
+                    const idx = projects.findIndex(p => p.id === proj.id || p.project_code === proj.project_code);
+                    if (idx >= 0) {
+                        projects[idx] = { ...projects[idx], status: 'Concluido', homologation_hash: hash, final_delivery_paid: true };
+                        localStorage.setItem('if_tech_software_projects', JSON.stringify(projects));
+                    }
+                }
+            } catch (e) {}
+
+            renderSoftwareProjectData(proj);
+            closeHomologationModal();
+            alert(`✅ Homologação Digital concluída com sucesso!\n\nHash SHA-256 de Autenticidade:\n${hash}\n\nO projeto está formalmente entregue com garantia de software CDC ativa.`);
+        }
+
+        function openSoftwareAsaasPaymentModal(step) {
+            if (!currentLoadedSoftwareProject) return;
+            const proj = currentLoadedSoftwareProject;
+            const half = (proj.total_budget || 0) / 2;
+            const isStep1 = (step === 1);
+
+            const mockWO = {
+                os_number: proj.project_code.replace(/\D/g, '') || '202601',
+                device_brand: "Software",
+                device_model: proj.title,
+                total_parts: half,
+                total_order: half,
+                pix_copy_paste: `00020101021226880014br.gov.bcb.pix2566pix.asaas.com/qr/stat/v2/sw_${proj.project_code}520400005303986540${half.toFixed(2)}5802BR5915IF TECH SOLUTIONS6016BRAGANCA PAULIST62070503***6304ABCD`
+            };
+
+            openAsaasPaymentModal(mockWO, true);
+            const titleEl = document.getElementById('pay-modal-title');
+            const labelEl = document.getElementById('pay-modal-desc-label');
+            if (titleEl) titleEl.textContent = isStep1 ? 'Sinal Kickoff 50% // Asaas Fintech' : 'Saldo Homologação 50% // Asaas Fintech';
+            if (labelEl) labelEl.textContent = isStep1 ? 'Sinal Obrigatório de Início:' : 'Quitação Final de Homologação:';
+        }
+
+        // Função de Busca com Dupla Confirmação (OS + WhatsApp, Token ou Projeto de Software)
         async function handleSearch(query, phone = '', isSilent = false) {
             if (!query) return;
             activeTrackingQuery = query.trim();
@@ -1652,22 +1915,60 @@
                 hideAllContainers();
                 loadingState.classList.remove("hidden");
             }
-            if (!query) return;
-            hideAllContainers();
-            loadingState.classList.remove("hidden");
 
             const cleanQuery = query.trim();
             const upperQuery = cleanQuery.toUpperCase();
 
-            // 1. Roteamento de Demonstração / Mock (Projetos SW / MSP)
-            if (upperQuery.includes("SW") || upperQuery.includes("PRJ") || upperQuery.includes("WEB")) {
-                setTimeout(() => {
+            // 1. VERIFICAÇÃO DE PROJETOS DE SOFTWARE (SPRINT 4)
+            const isSoftwareCode = upperQuery.includes("PRJ") || upperQuery.includes("SW-") || upperQuery.startsWith("SW");
+            if (isSoftwareCode || cleanQuery.startsWith("sw-tok-")) {
+                const client = getSupabase();
+                let foundProject = null;
+
+                if (client) {
+                    try {
+                        const { data, error } = await client.rpc('rpc_get_client_software_project_by_token', {
+                            p_token_or_code: cleanQuery
+                        });
+                        if (!error && data && data.found) {
+                            foundProject = data;
+                        }
+                    } catch (err) {
+                        console.warn("Falha busca Supabase software:", err);
+                    }
+                }
+
+                if (!foundProject) {
+                    try {
+                        const saved = localStorage.getItem('if_tech_software_projects');
+                        if (saved) {
+                            const projects = JSON.parse(saved);
+                            foundProject = projects.find(p => 
+                                p.project_code.toUpperCase() === upperQuery || 
+                                p.client_token === cleanQuery ||
+                                (p.id && p.id === cleanQuery)
+                            );
+                        }
+                    } catch (e) {}
+                }
+
+                if (!foundProject) {
+                    foundProject = defaultMockSoftwareProjects.find(p => 
+                        p.project_code.toUpperCase() === upperQuery || 
+                        p.client_token === cleanQuery ||
+                        (upperQuery.includes("01") && p.project_code.includes("001")) ||
+                        (upperQuery.includes("02") && p.project_code.includes("002"))
+                    ) || defaultMockSoftwareProjects[0];
+                }
+
+                if (foundProject) {
                     loadingState.classList.add("hidden");
+                    renderSoftwareProjectData(foundProject);
                     swContainer.classList.remove("hidden");
                     window.scrollTo({ top: swContainer.offsetTop - 100, behavior: 'smooth' });
                     if (window.lucide) lucide.createIcons();
-                }, 150);
-                return;
+                    return;
+                }
             }
 
             if (upperQuery.includes("MSP") || upperQuery.includes("EMPRESA") || upperQuery.includes("CLINICA")) {
@@ -1688,7 +1989,6 @@
             }
 
             // 2. BUSCA DIRETA POR TOKEN UUID (Magic Link do WhatsApp ou colar token no campo)
-            // Se tiver hífen ou mais de 20 caracteres, é um token UUID seguro (NÃO exige telefone)
             const isTokenFormat = cleanQuery.includes("-") || cleanQuery.length >= 25;
             if (isTokenFormat) {
                 try {
@@ -1772,11 +2072,10 @@
 
         // Verificação de Parâmetros na URL
         window.addEventListener("DOMContentLoaded", () => {
-
             if (window.lucide) lucide.createIcons();
 
             const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get("token") || urlParams.get("os") || urlParams.get("id");
+            const token = urlParams.get("token") || urlParams.get("prj") || urlParams.get("os") || urlParams.get("id");
             
             if (token) {
                 searchInput.value = token;

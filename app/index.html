@@ -4947,8 +4947,8 @@ Ficamos no aguardo para iniciar a execução!
 
         function copySoftwareMagicLink() {
             if (!activeSoftwareProject) return;
-            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}
-            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.
+            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
+            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
             
             navigator.clipboard.writeText(msg).then(() => {
                 alert("Magic Link de Software copiado para a Área de Transferência!");
@@ -4956,7 +4956,6 @@ Ficamos no aguardo para iniciar a execução!
                 prompt("Copie a mensagem de acompanhamento:", msg);
             });
         }
-
 
         window.addEventListener('DOMContentLoaded', () => {
             loadInventoryStorage();
@@ -4968,8 +4967,6 @@ Ficamos no aguardo para iniciar a execução!
             setupAdminRealtime();
             loadStandardBuildSlots();
         });
-        }
-    
     </script>
 
     <!-- ========================================================================= -->
