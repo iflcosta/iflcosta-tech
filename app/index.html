@@ -50,6 +50,24 @@
                 z-index: 999999 !important;
             }
 
+                        /* Modo 3: Cupom Térmico Não Fiscal do PDV (58mm / 80mm) */
+            body.print-mode-pos #thermal-pos-receipt,
+            body.print-mode-pos #thermal-pos-receipt * { 
+                visibility: visible !important; 
+            }
+            body.print-mode-pos #thermal-pos-receipt {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 76mm !important;
+                max-width: 80mm !important;
+                display: block !important;
+                font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+                padding: 3mm !important;
+                box-sizing: border-box !important;
+                z-index: 999999 !important;
+            }
+
             /* Modo 2: Recibo Térmico de Custódia do Cliente (58mm / 80mm) */
             body.print-mode-receipt #thermal-customer-receipt,
             body.print-mode-receipt #thermal-customer-receipt * { 
@@ -120,6 +138,10 @@
                 <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
                     <i data-lucide="wrench" class="w-4 h-4"></i>
                     Montagem de PCs (Custom Build)
+                </button>
+                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+                    <i data-lucide="package" class="w-4 h-4 text-brand"></i>
+                    Estoque & PDV
                 </button>
                 <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
                     <i data-lucide="users" class="w-4 h-4"></i>
@@ -791,6 +813,261 @@
             </div>
 
         </div>
+    
+            <!-- ============================================================= -->
+            <!-- 7. ABA: ESTOQUE INTELIGENTE & PDV CAIXA RÁPIDO (LOJA EXPRESS) -->
+            <!-- ============================================================= -->
+            <div id="tab-content-inventory" class="tab-content space-y-6 hidden">
+                
+                <!-- Sub-Navegação Interna do Estoque & PDV -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black border-2 border-zinc-800 p-4 font-mono text-xs">
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="switchInventorySubTab('pos')" id="inv-subtab-btn-pos" class="px-4 py-2.5 bg-brand text-black font-black uppercase tracking-wider flex items-center gap-2 transition-colors">
+                            <i data-lucide="zap" class="w-4 h-4"></i> ⚡ PDV Caixa Rápido (F2)
+                        </button>
+                        <button type="button" onclick="switchInventorySubTab('catalog')" id="inv-subtab-btn-catalog" class="px-4 py-2.5 bg-zinc-900 text-zinc-400 border border-zinc-700 hover:text-white flex items-center gap-2 transition-colors font-bold uppercase">
+                            <i data-lucide="list" class="w-4 h-4"></i> 📋 Catálogo & Saldo
+                        </button>
+                        <button type="button" onclick="switchInventorySubTab('kardex')" id="inv-subtab-btn-kardex" class="px-4 py-2.5 bg-zinc-900 text-zinc-400 border border-zinc-700 hover:text-white flex items-center gap-2 transition-colors font-bold uppercase">
+                            <i data-lucide="history" class="w-4 h-4"></i> 📜 Kardex & Consulta RMA
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button type="button" onclick="openNewProductModal()" class="w-full sm:w-auto px-4 py-2.5 bg-zinc-900 border border-brand/50 text-brand font-bold uppercase hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.2)]">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> + Cadastrar Produto / Entrada
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 1: ⚡ PDV CAIXA RÁPIDO (LOJA EXPRESS) -->
+                <div id="inv-subtab-pos" class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- Lado Esquerdo: Catálogo de Venda Rápida & Leitor (8 Colunas) -->
+                        <div class="lg:col-span-8 space-y-4">
+                            
+                            <!-- Barra de Scanner de Código de Barras do PDV -->
+                            <div class="bg-black border-2 border-brand p-4 shadow-[4px_4px_0px_0px_rgba(204,255,0,0.3)]">
+                                <div class="flex flex-col sm:flex-row gap-3 items-center">
+                                    <div class="relative flex-1 w-full font-mono">
+                                        <i data-lucide="scan-barcode" class="w-5 h-5 absolute left-3 top-3 text-brand animate-pulse"></i>
+                                        <input type="text" id="pos-barcode-input" onkeydown="handlePOSBarcodeKeydown(event)" placeholder="Bipar Código de Barras / EAN-13 / SKU ou digitar nome (F2)..." class="w-full bg-zinc-900 border border-zinc-700 pl-10 pr-4 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                    </div>
+                                    <button type="button" onclick="triggerPOSBarcodeSearch()" class="w-full sm:w-auto px-5 py-2.5 bg-brand text-black font-mono font-black text-xs uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5">
+                                        <i data-lucide="plus" class="w-4 h-4"></i> Adicionar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Filtros Rápidos de Categoria (Hot-Categories) -->
+                            <div class="flex overflow-x-auto gap-2 pb-1 no-scrollbar font-mono text-xs">
+                                <button type="button" onclick="filterPOSCategory('all')" class="pos-cat-btn px-3 py-1.5 bg-brand text-black font-bold uppercase whitespace-nowrap">Todos</button>
+                                <button type="button" onclick="filterPOSCategory('Carregadores')" class="pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white uppercase whitespace-nowrap">Carregadores 20W/30W</button>
+                                <button type="button" onclick="filterPOSCategory('Cabos')" class="pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white uppercase whitespace-nowrap">Cabos Reforçados</button>
+                                <button type="button" onclick="filterPOSCategory('Armazenamento')" class="pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white uppercase whitespace-nowrap">SSDs NVMe / SATA</button>
+                                <button type="button" onclick="filterPOSCategory('Memoria_RAM')" class="pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white uppercase whitespace-nowrap">Memórias RAM</button>
+                                <button type="button" onclick="filterPOSCategory('Termico')" class="pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white uppercase whitespace-nowrap">Pastas & Insumos</button>
+                                <button type="button" onclick="filterPOSCategory('Setups')" class="pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-brand/60 text-brand hover:bg-brand hover:text-black uppercase whitespace-nowrap">Setups Prontos (3)</button>
+                            </div>
+
+                            <!-- Grade de Produtos Rápidos (Hot-Tiles) -->
+                            <div id="pos-products-grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 font-mono">
+                                <!-- Injetado dinamicamente via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Lado Direito: Carrinho do Caixa & Fechamento de Venda (4 Colunas) -->
+                        <div class="lg:col-span-4 bg-black border-2 border-zinc-800 p-5 flex flex-col justify-between space-y-5 font-mono">
+                            <div>
+                                <div class="flex items-center justify-between border-b-2 border-zinc-800 pb-3 mb-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
+                                        <h4 class="font-black text-white text-sm uppercase">[ Carrinho // PDV #001 ]</h4>
+                                    </div>
+                                    <button type="button" onclick="clearPOSCart()" class="text-zinc-500 hover:text-red-400 text-xs uppercase flex items-center gap-1 font-bold">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Limpar
+                                    </button>
+                                </div>
+
+                                <!-- Lista de Itens no Carrinho -->
+                                <div id="pos-cart-items" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                                    <!-- Injetado dinamicamente -->
+                                    <div class="text-center py-10 text-zinc-600 text-xs">
+                                        <i data-lucide="shopping-bag" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                                        Carrinho vazio.<br>Bipe um produto ou clique nos cards.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Totais & Pagamento -->
+                            <div class="pt-4 border-t-2 border-zinc-800 space-y-3">
+                                
+                                <!-- Subtotal e Desconto -->
+                                <div class="space-y-1.5 text-xs text-zinc-400">
+                                    <div class="flex justify-between">
+                                        <span>Subtotal:</span>
+                                        <strong class="text-white" id="pos-subtotal-val">R$ 0,00</strong>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Desconto (R$):</span>
+                                        <input type="number" id="pos-discount-input" value="0.00" min="0" step="1.00" oninput="recalcPOSCartTotals()" class="w-20 bg-zinc-900 border border-zinc-700 px-2 py-0.5 text-right text-brand font-bold text-xs focus:outline-none">
+                                    </div>
+                                </div>
+
+                                <!-- TOTAL FINAL EM DESTAQUE -->
+                                <div class="bg-zinc-950 border-2 border-brand p-3.5 flex justify-between items-center">
+                                    <span class="text-xs font-bold text-zinc-300 uppercase">TOTAL A PAGAR:</span>
+                                    <strong class="text-2xl font-black text-brand" id="pos-total-val">R$ 0,00</strong>
+                                </div>
+
+                                <!-- Método de Pagamento -->
+                                <div class="space-y-1.5 text-xs">
+                                    <label class="block text-zinc-400 uppercase font-bold">Forma de Pagamento:</label>
+                                    <div class="grid grid-cols-3 gap-1.5">
+                                        <button type="button" onclick="setPOSPaymentMethod('Pix')" id="pos-pay-pix" class="pos-pay-btn py-2 bg-brand text-black font-bold uppercase text-[11px] border border-transparent">⚡ Pix</button>
+                                        <button type="button" onclick="setPOSPaymentMethod('Cartao_Credito')" id="pos-pay-card" class="pos-pay-btn py-2 bg-zinc-900 border border-zinc-700 text-zinc-400 font-bold uppercase text-[11px]">💳 Cartão</button>
+                                        <button type="button" onclick="setPOSPaymentMethod('Dinheiro')" id="pos-pay-cash" class="pos-pay-btn py-2 bg-zinc-900 border border-zinc-700 text-zinc-400 font-bold uppercase text-[11px]">💵 Dinheiro</button>
+                                    </div>
+                                </div>
+
+                                <!-- Campo de Troco Dinheiro (Condicional) -->
+                                <div id="pos-cash-change-box" class="hidden bg-zinc-900 border border-zinc-700 p-3 space-y-2 text-xs">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-zinc-400">Valor Recebido:</span>
+                                        <input type="number" id="pos-cash-received" placeholder="0,00" step="1.00" oninput="recalcPOSCashChange()" class="w-24 bg-black border border-zinc-600 px-2 py-1 text-right text-white font-bold focus:outline-none">
+                                    </div>
+                                    <div class="flex justify-between items-center pt-1 border-t border-zinc-800">
+                                        <span class="text-zinc-400 font-bold">TROCO A DEVOLVER:</span>
+                                        <strong class="text-brand font-black text-sm" id="pos-cash-change-val">R$ 0,00</strong>
+                                    </div>
+                                </div>
+
+                                <!-- Botão de Finalizar Venda (F8) -->
+                                <button type="button" onclick="processPOSCheckout()" id="btn-pos-checkout" class="w-full py-4 bg-brand text-black font-black uppercase text-sm tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)]">
+                                    <i data-lucide="check-circle" class="w-5 h-5"></i> FINALIZAR VENDA (F8)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 2: 📋 CATÁLOGO DE PRODUTOS & SALDO -->
+                <div id="inv-subtab-catalog" class="space-y-6 hidden">
+                    
+                    <!-- Métricas Rápidas do Inventário -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                        <div class="bg-black border-2 border-zinc-800 p-4">
+                            <span class="text-zinc-500 text-xs block mb-1">TOTAL ITENS EM ESTOQUE</span>
+                            <span class="text-2xl sm:text-3xl font-black text-white" id="inv-stat-total-items">38</span>
+                            <span class="text-[11px] text-zinc-500 block mt-1">Saldo Físico Geral</span>
+                        </div>
+                        <div class="bg-black border-2 border-zinc-800 p-4">
+                            <span class="text-zinc-500 text-xs block mb-1">VALOR TOTAL DE CUSTO</span>
+                            <span class="text-2xl sm:text-3xl font-black text-yellow-400" id="inv-stat-cost-val">R$ 2.830,00</span>
+                            <span class="text-[11px] text-zinc-500 block mt-1">Capital Imobilizado</span>
+                        </div>
+                        <div class="bg-black border-2 border-zinc-800 p-4">
+                            <span class="text-zinc-500 text-xs block mb-1">PROJEÇÃO DE VENDA</span>
+                            <span class="text-2xl sm:text-3xl font-black text-brand" id="inv-stat-sale-val">R$ 4.720,00</span>
+                            <span class="text-[11px] text-zinc-500 block mt-1">Lucro: +R$ 1.890,00</span>
+                        </div>
+                        <div class="bg-black border-2 border-zinc-800 p-4">
+                            <span class="text-zinc-500 text-xs block mb-1">ALERTAS DE REPOSIÇÃO</span>
+                            <span class="text-2xl sm:text-3xl font-black text-purple-400" id="inv-stat-alerts-count">0</span>
+                            <span class="text-[11px] text-zinc-500 block mt-1">Itens em Nível Crítico</span>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Produtos & Saldos -->
+                    <div class="bg-black border-2 border-zinc-800 p-5 space-y-4 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <h4 class="font-extrabold text-white text-base uppercase">[ Catálogo Geral de Mercadorias & Peças ]</h4>
+                            <div class="relative w-full sm:w-72">
+                                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-zinc-500"></i>
+                                <input type="text" id="inv-catalog-search" oninput="filterInventoryTable()" placeholder="Buscar SKU, nome, EAN..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-3 py-1.5 text-white text-xs focus:outline-none focus:border-brand">
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px]">
+                                        <th class="py-3 px-3">SKU / Código</th>
+                                        <th class="py-3 px-3">Produto / Especificação</th>
+                                        <th class="py-3 px-3">Categoria</th>
+                                        <th class="py-3 px-3 text-center">Físico</th>
+                                        <th class="py-3 px-3 text-center">Reservado</th>
+                                        <th class="py-3 px-3 text-center">Disponível</th>
+                                        <th class="py-3 px-3 text-right">Custo Unit.</th>
+                                        <th class="py-3 px-3 text-right">Preço Venda</th>
+                                        <th class="py-3 px-3 text-center">Status</th>
+                                        <th class="py-3 px-3 text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inv-catalog-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 3: 📜 KARDEX & CONSULTA RMA REVERSA -->
+                <div id="inv-subtab-kardex" class="space-y-6 hidden">
+                    
+                    <!-- Busca Reversa de RMA por Serial Number (S/N) -->
+                    <div class="bg-black border-2 border-brand/80 p-5 space-y-4 font-mono shadow-[4px_4px_0px_0px_rgba(204,255,0,0.25)]">
+                        <div class="flex items-center gap-2 border-b border-zinc-800 pb-3">
+                            <i data-lucide="shield-alert" class="w-5 h-5 text-brand"></i>
+                            <h4 class="font-extrabold text-white text-sm uppercase">Raio-X de Garantia Reversa // Consulta de RMA por Serial Number (S/N)</h4>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <div class="relative flex-1">
+                                <i data-lucide="barcode" class="w-4 h-4 absolute left-3 top-3 text-brand"></i>
+                                <input type="text" id="rma-sn-input" onkeydown="handleRMAKeydown(event)" placeholder="Bipar ou digitar Número de Série (S/N) do produto (ex: SN-KNG-99482)..." class="w-full bg-zinc-900 border border-zinc-700 pl-10 pr-4 py-2.5 text-white text-xs focus:outline-none focus:border-brand">
+                            </div>
+                            <button type="button" onclick="executeRMALookup()" class="px-6 py-2.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5">
+                                <i data-lucide="search" class="w-4 h-4"></i> Consultar Garantia
+                            </button>
+                        </div>
+
+                        <!-- Card de Resultado da Garantia RMA (Injetado via JS) -->
+                        <div id="rma-result-box" class="hidden bg-zinc-950 border border-zinc-800 p-4 space-y-3 text-xs">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Extrato do Kardex (Movimentações de Entrada e Saída) -->
+                    <div class="bg-black border-2 border-zinc-800 p-5 space-y-4 font-mono">
+                        <div class="flex items-center justify-between border-b-2 border-zinc-800 pb-3">
+                            <h4 class="font-extrabold text-white text-base uppercase">[ Livro de Movimentações Auditáveis (Kardex) ]</h4>
+                            <span class="text-xs text-zinc-500" id="kardex-count-label">Últimas movimentações</span>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px]">
+                                        <th class="py-3 px-3">Data / Hora</th>
+                                        <th class="py-3 px-3">Tipo Movimentação</th>
+                                        <th class="py-3 px-3">Produto / SKU</th>
+                                        <th class="py-3 px-3 text-center">Qtd</th>
+                                        <th class="py-3 px-3 text-right">Custo Total</th>
+                                        <th class="py-3 px-3">Documento Ref.</th>
+                                        <th class="py-3 px-3">Operador / Resp.</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="kardex-table-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
     </main>
 
     <!-- MODAL DE DETALHES & GESTÃO DA OS (AÇÕES DE BANCADA) -->
@@ -1380,6 +1657,7 @@ Qualquer dúvida, estou à disposição!
         }
 
         function switchTab(tabId) {
+            if (tabId === 'inventory') setTimeout(() => { renderPOSGrid(); renderInventoryCatalogTable(); }, 50);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('text-brand', 'border-brand', 'bg-brand/5');
@@ -3559,6 +3837,625 @@ Ficamos no aguardo para iniciar a execução!`;
             }
         });
 
+        
+        // =========================================================================
+        // MOTOR DE ESTOQUE INTELIGENTE & PDV CAIXA RÁPIDO // IF TECH
+        // =========================================================================
+        let currentInventoryProducts = [
+            { id: "p1", sku: "CHG-20W-USBC", name: "Carregador 20W USB-C Homologado", category: "Carregadores", brand: "Kaidi / Peining", cost_price: 25.00, selling_price: 60.00, current_stock: 6, reserved_stock: 0, min_stock: 2, ean: "789100020001" },
+            { id: "p2", sku: "CHG-30W-GAN", name: "Carregador 30W GaN Fast Charger", category: "Carregadores", brand: "Hrebos / Peining", cost_price: 35.00, selling_price: 85.00, current_stock: 4, reserved_stock: 0, min_stock: 2, ean: "789100030002" },
+            { id: "p3", sku: "CAB-LIGHTNING-PRO", name: "Cabo iPhone Lightning Reforçado 1.2m", category: "Cabos", brand: "Kaidi Pro", cost_price: 10.00, selling_price: 30.00, current_stock: 5, reserved_stock: 0, min_stock: 3, ean: "789200010003" },
+            { id: "p4", sku: "CAB-TYPEC-100W", name: "Cabo USB-C para USB-C 100W PD", category: "Cabos", brand: "Baseus / Kaidi", cost_price: 12.00, selling_price: 35.00, current_stock: 6, reserved_stock: 0, min_stock: 3, ean: "789200020004" },
+            { id: "p5", sku: "CAB-V8-REFORCADO", name: "Cabo Micro-USB (V8) Trançado 1m", category: "Cabos", brand: "Peining", cost_price: 8.00, selling_price: 25.00, current_stock: 4, reserved_stock: 0, min_stock: 2, ean: "789200030005" },
+            { id: "p6", sku: "SSD-NVME-512GB", name: "SSD Kingston NV2 512GB NVMe M.2 3500MB/s", category: "Armazenamento", brand: "Kingston", cost_price: 195.00, selling_price: 295.00, current_stock: 3, reserved_stock: 1, min_stock: 2, ean: "740617329858" },
+            { id: "p7", sku: "SSD-NVME-1TB", name: "SSD Kingston NV2 1TB NVMe M.2 3500MB/s", category: "Armazenamento", brand: "Kingston", cost_price: 340.00, selling_price: 490.00, current_stock: 2, reserved_stock: 0, min_stock: 1, ean: "740617329919" },
+            { id: "p8", sku: "SSD-SATA-480GB", name: "SSD Kingston A400 480GB SATA III 2.5 Pol", category: "Armazenamento", brand: "Kingston", cost_price: 155.00, selling_price: 250.00, current_stock: 4, reserved_stock: 1, min_stock: 2, ean: "740617277356" },
+            { id: "p9", sku: "RAM-DDR4-8GB-3200", name: "Memória RAM Kingston Fury Beast 8GB DDR4 3200MHz", category: "Memoria_RAM", brand: "Kingston", cost_price: 125.00, selling_price: 195.00, current_stock: 4, reserved_stock: 0, min_stock: 2, ean: "740617319989" },
+            { id: "p10", sku: "RAM-DDR4-16GB-3200", name: "Memória RAM Kingston Fury 16GB DDR4 3200MHz", category: "Memoria_RAM", brand: "Kingston", cost_price: 230.00, selling_price: 360.00, current_stock: 3, reserved_stock: 0, min_stock: 2, ean: "740617320015" },
+            { id: "p11", sku: "PASTA-ARCTIC-MX4-4G", name: "Pasta Térmica Arctic MX-4 4g Alto Rendimento", category: "Termico", brand: "Arctic", cost_price: 38.00, selling_price: 75.00, current_stock: 8, reserved_stock: 2, min_stock: 3, ean: "0872767009585" },
+            { id: "p12", sku: "SETUP-AMD-APU-5600G", name: "Combo Setup 1: Ryzen 5 5600G + MOBO A520M + 16GB RAM", category: "Setups", brand: "AMD / MSI", cost_price: 850.00, selling_price: 1350.00, current_stock: 1, reserved_stock: 0, min_stock: 1, ean: "IF-SETUP-AMD-01" },
+            { id: "p13", sku: "SETUP-INTEL-GPU-12400F", name: "Combo Setup 2: Core i5-12400F + H610M + RTX 3050 + 16GB", category: "Setups", brand: "Intel / ASUS", cost_price: 2150.00, selling_price: 3100.00, current_stock: 1, reserved_stock: 0, min_stock: 1, ean: "IF-SETUP-INTEL-02" },
+            { id: "p14", sku: "SETUP-GAMER-PRO-5600", name: "Combo Setup 3: Ryzen 5 5600 + B550M + RX 6600 8GB + 16GB", category: "Setups", brand: "AMD / MSI", cost_price: 2350.00, selling_price: 3450.00, current_stock: 1, reserved_stock: 0, min_stock: 1, ean: "IF-SETUP-GAMER-03" }
+        ];
+
+        let posCart = [];
+        let posActivePaymentMethod = 'Pix';
+        let posCategoryFilter = 'all';
+
+        let kardexMovements = [
+            { date: new Date().toISOString(), type: "Entrada_Nota_Fiscal", sku: "SSD-NVME-512GB", prodName: "SSD Kingston NV2 512GB", qty: 5, totalCost: 975.00, docRef: "NF-e #49102 (KaBuM!)", operator: "Gestor IF Tech" },
+            { date: new Date().toISOString(), type: "Entrada_Nota_Fiscal", sku: "CHG-20W-USBC", prodName: "Carregador 20W USB-C", qty: 6, totalCost: 150.00, docRef: "NF-e #11048 (Distribuidora SP)", operator: "Gestor IF Tech" },
+            { date: new Date().toISOString(), type: "Saida_Ordem_Servico", sku: "SSD-SATA-480GB", prodName: "SSD Kingston A400 480GB", qty: -1, totalCost: 155.00, docRef: "OS #1048 (Dell Inspiron)", operator: "Bancada Lab" }
+        ];
+
+        let mockSerialsDB = [
+            { sn: "SN-KNG-512-99482", sku: "SSD-NVME-512GB", prodName: "SSD Kingston NV2 512GB NVMe M.2", supplier: "KaBuM! Comércio Eletrônico S/A", invoice: "NF-e #49102-1", purchaseDate: "2025-10-15", warrantyMonths: 36, client: "Carlos Eduardo (OS #1042)", status: "Sold_OS" },
+            { sn: "SN-KNG-1TB-88102", sku: "SSD-NVME-1TB", prodName: "SSD Kingston NV2 1TB NVMe M.2", supplier: "All Nations Distribuição S/A", invoice: "NF-e #88192-2", purchaseDate: "2026-01-20", warrantyMonths: 36, client: "Lucas M. (Balcão PDV #0012)", status: "Sold_POS" }
+        ];
+
+        function switchInventorySubTab(sub) {
+            const posSec = document.getElementById('inv-subtab-pos');
+            const catSec = document.getElementById('inv-subtab-catalog');
+            const karSec = document.getElementById('inv-subtab-kardex');
+
+            const btnPos = document.getElementById('inv-subtab-btn-pos');
+            const btnCat = document.getElementById('inv-subtab-btn-catalog');
+            const btnKar = document.getElementById('inv-subtab-btn-kardex');
+
+            if (posSec) posSec.classList.add('hidden');
+            if (catSec) catSec.classList.add('hidden');
+            if (karSec) karSec.classList.add('hidden');
+
+            const resetClass = "px-4 py-2.5 bg-zinc-900 text-zinc-400 border border-zinc-700 hover:text-white flex items-center gap-2 transition-colors font-bold uppercase";
+            const activeClass = "px-4 py-2.5 bg-brand text-black font-black uppercase tracking-wider flex items-center gap-2 transition-colors shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]";
+
+            if (btnPos) btnPos.className = resetClass;
+            if (btnCat) btnCat.className = resetClass;
+            if (btnKar) btnKar.className = resetClass;
+
+            if (sub === 'pos') {
+                if (posSec) posSec.classList.remove('hidden');
+                if (btnPos) btnPos.className = activeClass;
+                renderPOSGrid();
+                setTimeout(() => document.getElementById('pos-barcode-input')?.focus(), 100);
+            } else if (sub === 'catalog') {
+                if (catSec) catSec.classList.remove('hidden');
+                if (btnCat) btnCat.className = activeClass;
+                renderInventoryCatalogTable();
+            } else if (sub === 'kardex') {
+                if (karSec) karSec.classList.remove('hidden');
+                if (btnKar) btnKar.className = activeClass;
+                renderKardexTable();
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // =========================================================================
+        // 1. FUNÇÕES DO PDV CAIXA RÁPIDO
+        // =========================================================================
+        function filterPOSCategory(cat) {
+            posCategoryFilter = cat;
+            document.querySelectorAll('.pos-cat-btn').forEach(btn => {
+                btn.className = "pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white uppercase whitespace-nowrap";
+            });
+            if (event && event.target) {
+                event.target.className = "pos-cat-btn px-3 py-1.5 bg-brand text-black font-bold uppercase whitespace-nowrap";
+            }
+            renderPOSGrid();
+        }
+
+        function renderPOSGrid() {
+            const grid = document.getElementById('pos-products-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const filtered = currentInventoryProducts.filter(p => {
+                if (posCategoryFilter === 'all') return true;
+                return p.category === posCategoryFilter;
+            });
+
+            filtered.forEach(prod => {
+                const available = prod.current_stock - prod.reserved_stock;
+                const isOutOfStock = available <= 0;
+
+                const card = document.createElement('div');
+                card.className = `bg-zinc-950 border-2 p-3.5 flex flex-col justify-between transition-all cursor-pointer select-none group ${
+                    isOutOfStock 
+                        ? 'border-zinc-800 opacity-50 cursor-not-allowed' 
+                        : 'border-zinc-800 hover:border-brand hover:shadow-[3px_3px_0px_0px_rgba(204,255,0,0.3)]'
+                }`;
+
+                card.onclick = () => {
+                    if (!isOutOfStock) addToPOSCart(prod);
+                };
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-1 mb-1.5">
+                            <span class="text-[10px] text-zinc-500 font-bold uppercase">${escapeHtml(prod.category)}</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.2 ${available <= prod.min_stock ? 'bg-yellow-950 text-yellow-400 border border-yellow-700' : 'bg-zinc-900 text-zinc-400'}">
+                                Qtd: ${available}
+                            </span>
+                        </div>
+                        <h5 class="text-xs font-bold text-white group-hover:text-brand line-clamp-2 leading-snug mb-2">${escapeHtml(prod.name)}</h5>
+                    </div>
+                    <div class="pt-2 border-t border-zinc-900 flex justify-between items-center">
+                        <span class="text-xs text-zinc-500 font-mono">${escapeHtml(prod.sku)}</span>
+                        <strong class="text-sm font-black text-brand">R$ ${prod.selling_price.toFixed(2).replace('.', ',')}</strong>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function addToPOSCart(prod) {
+            const existing = posCart.find(it => it.id === prod.id);
+            const available = prod.current_stock - prod.reserved_stock;
+
+            if (existing) {
+                if (existing.qty + 1 > available) {
+                    showScanNotification(`⚠️ Limite de estoque atingido para ${prod.name}!`, 'warning');
+                    return;
+                }
+                existing.qty++;
+            } else {
+                if (available <= 0) {
+                    showScanNotification(`⚠️ Produto sem estoque físico disponível!`, 'warning');
+                    return;
+                }
+                posCart.push({
+                    id: prod.id,
+                    sku: prod.sku,
+                    name: prod.name,
+                    price: prod.selling_price,
+                    cost: prod.cost_price,
+                    qty: 1
+                });
+            }
+
+            renderPOSCart();
+            showScanNotification(`+ ${prod.name} adicionado ao carrinho`, 'success');
+        }
+
+        function handlePOSBarcodeKeydown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                triggerPOSBarcodeSearch();
+            }
+        }
+
+        function triggerPOSBarcodeSearch() {
+            const input = document.getElementById('pos-barcode-input');
+            if (!input) return;
+            const query = input.value.trim().toLowerCase();
+            if (!query) return;
+
+            const found = currentInventoryProducts.find(p => 
+                p.sku.toLowerCase() === query || 
+                (p.ean && p.ean.toLowerCase() === query) ||
+                p.name.toLowerCase().includes(query)
+            );
+
+            if (found) {
+                addToPOSCart(found);
+                input.value = '';
+            } else {
+                showScanNotification(`⚠️ Código ou produto "${query}" não localizado no catálogo!`, 'warning');
+            }
+        }
+
+        function renderPOSCart() {
+            const container = document.getElementById('pos-cart-items');
+            if (!container) return;
+
+            if (posCart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-zinc-600 text-xs">
+                        <i data-lucide="shopping-bag" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                        Carrinho vazio.<br>Bipe um produto ou clique nos cards.
+                    </div>
+                `;
+                recalcPOSCartTotals();
+                if (window.lucide) lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = '';
+            posCart.forEach((it, idx) => {
+                const itemRow = document.createElement('div');
+                itemRow.className = "bg-zinc-950 border border-zinc-800 p-2.5 flex justify-between items-center gap-2 text-xs";
+                itemRow.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <h6 class="font-bold text-white truncate">${escapeHtml(it.name)}</h6>
+                        <span class="text-[10px] text-zinc-500">R$ ${it.price.toFixed(2).replace('.', ',')} un</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="changeCartQty(${idx}, -1)" class="w-6 h-6 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold flex items-center justify-center">-</button>
+                        <span class="font-bold text-brand px-1 text-xs">${it.qty}</span>
+                        <button type="button" onclick="changeCartQty(${idx}, 1)" class="w-6 h-6 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold flex items-center justify-center">+</button>
+                    </div>
+                    <div class="text-right font-bold text-white min-w-[65px]">
+                        R$ ${(it.price * it.qty).toFixed(2).replace('.', ',')}
+                    </div>
+                    <button type="button" onclick="removeCartItem(${idx})" class="text-zinc-600 hover:text-red-400 p-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                `;
+                container.appendChild(itemRow);
+            });
+
+            recalcPOSCartTotals();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function changeCartQty(idx, delta) {
+            if (!posCart[idx]) return;
+            const prod = currentInventoryProducts.find(p => p.id === posCart[idx].id);
+            const available = prod ? (prod.current_stock - prod.reserved_stock) : 99;
+
+            if (delta > 0 && posCart[idx].qty + 1 > available) {
+                showScanNotification(`⚠️ Limite de estoque atingido!`, 'warning');
+                return;
+            }
+
+            posCart[idx].qty += delta;
+            if (posCart[idx].qty <= 0) {
+                posCart.splice(idx, 1);
+            }
+            renderPOSCart();
+        }
+
+        function removeCartItem(idx) {
+            posCart.splice(idx, 1);
+            renderPOSCart();
+        }
+
+        function clearPOSCart() {
+            posCart = [];
+            renderPOSCart();
+        }
+
+        function setPOSPaymentMethod(method) {
+            posActivePaymentMethod = method;
+            const cashBox = document.getElementById('pos-cash-change-box');
+            document.querySelectorAll('.pos-pay-btn').forEach(btn => {
+                btn.className = "pos-pay-btn py-2 bg-zinc-900 border border-zinc-700 text-zinc-400 font-bold uppercase text-[11px]";
+            });
+
+            if (method === 'Pix') {
+                document.getElementById('pos-pay-pix').className = "pos-pay-btn py-2 bg-brand text-black font-bold uppercase text-[11px] border border-transparent";
+                if (cashBox) cashBox.classList.add('hidden');
+            } else if (method === 'Cartao_Credito') {
+                document.getElementById('pos-pay-card').className = "pos-pay-btn py-2 bg-brand text-black font-bold uppercase text-[11px] border border-transparent";
+                if (cashBox) cashBox.classList.add('hidden');
+            } else if (method === 'Dinheiro') {
+                document.getElementById('pos-pay-cash').className = "pos-pay-btn py-2 bg-brand text-black font-bold uppercase text-[11px] border border-transparent";
+                if (cashBox) cashBox.classList.remove('hidden');
+                setTimeout(() => document.getElementById('pos-cash-received')?.focus(), 100);
+            }
+        }
+
+        function recalcPOSCartTotals() {
+            let subtotal = 0;
+            posCart.forEach(it => subtotal += (it.price * it.qty));
+
+            const discount = parseFloat(document.getElementById('pos-discount-input')?.value || 0);
+            const total = Math.max(0, subtotal - discount);
+
+            const subEl = document.getElementById('pos-subtotal-val');
+            const totEl = document.getElementById('pos-total-val');
+
+            if (subEl) subEl.textContent = 'R$ ' + subtotal.toFixed(2).replace('.', ',');
+            if (totEl) totEl.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+
+            recalcPOSCashChange();
+        }
+
+        function recalcPOSCashChange() {
+            let subtotal = 0;
+            posCart.forEach(it => subtotal += (it.price * it.qty));
+            const discount = parseFloat(document.getElementById('pos-discount-input')?.value || 0);
+            const total = Math.max(0, subtotal - discount);
+
+            const received = parseFloat(document.getElementById('pos-cash-received')?.value || 0);
+            const change = Math.max(0, received - total);
+
+            const changeEl = document.getElementById('pos-cash-change-val');
+            if (changeEl) changeEl.textContent = 'R$ ' + change.toFixed(2).replace('.', ',');
+        }
+
+        function processPOSCheckout() {
+            if (posCart.length === 0) {
+                alert("O carrinho está vazio! Adicione itens antes de finalizar.");
+                return;
+            }
+
+            let subtotal = 0;
+            let totalCost = 0;
+            posCart.forEach(it => {
+                subtotal += (it.price * it.qty);
+                totalCost += (it.cost * it.qty);
+            });
+
+            const discount = parseFloat(document.getElementById('pos-discount-input')?.value || 0);
+            const total = Math.max(0, subtotal - discount);
+            const profit = total - totalCost;
+
+            const saleNumber = `PDV-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}`;
+
+            // 1. Dar baixa física no estoque local
+            posCart.forEach(cartItem => {
+                const prod = currentInventoryProducts.find(p => p.id === cartItem.id);
+                if (prod) {
+                    prod.current_stock -= cartItem.qty;
+                    // Gravar no Kardex
+                    kardexMovements.unshift({
+                        date: new Date().toISOString(),
+                        type: "Saida_PDV_Balcao",
+                        sku: prod.sku,
+                        prodName: prod.name,
+                        qty: -cartItem.qty,
+                        totalCost: prod.cost_price * cartItem.qty,
+                        docRef: `Cupom ${saleNumber}`,
+                        operator: "Balcão Loja"
+                    });
+                }
+            });
+
+            // 2. Preparar Cupom Térmico Não Fiscal
+            printThermalPOSReceipt({
+                saleNumber: saleNumber,
+                dateTime: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                client: "CONSUMIDOR FINAL",
+                items: [...posCart],
+                subtotal: subtotal,
+                discount: discount,
+                total: total,
+                method: posActivePaymentMethod
+            });
+
+            showScanNotification(`✓ Venda ${saleNumber} concluída com sucesso! Lucro: R$ ${profit.toFixed(2).replace('.', ',')}`, 'success');
+
+            // 3. Limpar carrinho e atualizar UI
+            posCart = [];
+            document.getElementById('pos-discount-input').value = '0.00';
+            if (document.getElementById('pos-cash-received')) document.getElementById('pos-cash-received').value = '';
+            renderPOSCart();
+            renderPOSGrid();
+        }
+
+        function printThermalPOSReceipt(data) {
+            document.getElementById('pos-rec-number').textContent = data.saleNumber;
+            document.getElementById('pos-rec-datetime').textContent = data.dateTime;
+            document.getElementById('pos-rec-client').textContent = data.client;
+            document.getElementById('pos-rec-subtotal').textContent = 'R$ ' + data.subtotal.toFixed(2).replace('.', ',');
+            document.getElementById('pos-rec-discount').textContent = 'R$ ' + data.discount.toFixed(2).replace('.', ',');
+            document.getElementById('pos-rec-total').textContent = 'R$ ' + data.total.toFixed(2).replace('.', ',');
+            document.getElementById('pos-rec-method').textContent = data.method.replace('_', ' ').toUpperCase();
+            document.getElementById('pos-rec-hash').textContent = `IF-${data.saleNumber}-${Date.now().toString().slice(-4)}`;
+
+            const tbody = document.getElementById('pos-rec-items-tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                data.items.forEach(it => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="py-0.5">${it.qty}x ${escapeHtml(it.name)}</td>
+                        <td class="text-right font-bold">R$ ${(it.price * it.qty).toFixed(2).replace('.', ',')}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            if (window.QRious) {
+                new QRious({
+                    element: document.getElementById('qr-pos-receipt-canvas'),
+                    value: `https://iflcosta.tech/status?pos=${data.saleNumber}`,
+                    size: 96,
+                    level: 'M'
+                });
+            }
+
+            document.body.className = 'print-mode-pos';
+            window.print();
+            setTimeout(() => { document.body.className = ''; }, 1000);
+        }
+
+        // =========================================================================
+        // 2. FUNÇÕES DO CATÁLOGO & SALDO DE ESTOQUE
+        // =========================================================================
+        function renderInventoryCatalogTable() {
+            const tbody = document.getElementById('inv-catalog-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let totalItems = 0;
+            let totalCostSum = 0;
+            let totalSaleSum = 0;
+            let alertsCount = 0;
+
+            const q = (document.getElementById('inv-catalog-search')?.value || '').toLowerCase().trim();
+
+            currentInventoryProducts.forEach(prod => {
+                const available = prod.current_stock - prod.reserved_stock;
+                totalItems += prod.current_stock;
+                totalCostSum += (prod.cost_price * prod.current_stock);
+                totalSaleSum += (prod.selling_price * prod.current_stock);
+
+                if (available <= prod.min_stock) alertsCount++;
+
+                if (q && !prod.name.toLowerCase().includes(q) && !prod.sku.toLowerCase().includes(q) && !prod.category.toLowerCase().includes(q)) {
+                    return;
+                }
+
+                let badgeHtml = '';
+                if (available <= 0) {
+                    badgeHtml = '<span class="px-2 py-0.5 bg-purple-950 border border-purple-600 text-purple-300 font-bold uppercase text-[10px]">🟣 Ruptura</span>';
+                } else if (available <= prod.min_stock) {
+                    badgeHtml = '<span class="px-2 py-0.5 bg-red-950 border border-red-600 text-red-300 font-bold uppercase text-[10px] animate-pulse">🔴 Crítico</span>';
+                } else if (available <= prod.min_stock + 2) {
+                    badgeHtml = '<span class="px-2 py-0.5 bg-yellow-950 border border-yellow-600 text-yellow-300 font-bold uppercase text-[10px]">🟡 Reposição</span>';
+                } else {
+                    badgeHtml = '<span class="px-2 py-0.5 bg-zinc-900 border border-brand/40 text-brand font-bold uppercase text-[10px]">🟢 Confortável</span>';
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-white">${escapeHtml(prod.sku)}</td>
+                    <td class="py-3 px-3">
+                        <strong class="text-white block">${escapeHtml(prod.name)}</strong>
+                        <span class="text-[10px] text-zinc-500">${escapeHtml(prod.brand)} • EAN: ${prod.ean || 'S/N'}</span>
+                    </td>
+                    <td class="py-3 px-3 text-zinc-400">${escapeHtml(prod.category)}</td>
+                    <td class="py-3 px-3 text-center font-bold text-white">${prod.current_stock}</td>
+                    <td class="py-3 px-3 text-center text-yellow-400 font-bold">${prod.reserved_stock}</td>
+                    <td class="py-3 px-3 text-center font-black text-brand">${available}</td>
+                    <td class="py-3 px-3 text-right text-zinc-400">R$ ${prod.cost_price.toFixed(2).replace('.', ',')}</td>
+                    <td class="py-3 px-3 text-right font-bold text-white">R$ ${prod.selling_price.toFixed(2).replace('.', ',')}</td>
+                    <td class="py-3 px-3 text-center">${badgeHtml}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="addToPOSCartFromCatalog('${prod.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-brand hover:text-black border border-zinc-700 text-zinc-300 font-bold uppercase text-[10px] transition-colors" title="Vender no PDV">
+                            + Venda
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('inv-stat-total-items').textContent = totalItems;
+            document.getElementById('inv-stat-cost-val').textContent = 'R$ ' + totalCostSum.toFixed(2).replace('.', ',');
+            document.getElementById('inv-stat-sale-val').textContent = 'R$ ' + totalSaleSum.toFixed(2).replace('.', ',');
+            document.getElementById('inv-stat-alerts-count').textContent = alertsCount;
+        }
+
+        function addToPOSCartFromCatalog(prodId) {
+            const prod = currentInventoryProducts.find(p => p.id === prodId);
+            if (prod) {
+                switchInventorySubTab('pos');
+                addToPOSCart(prod);
+            }
+        }
+
+        function filterInventoryTable() {
+            renderInventoryCatalogTable();
+        }
+
+        function openNewProductModal() {
+            const name = prompt("Nome do Produto / Peça:");
+            if (!name) return;
+            const sku = prompt("SKU (Código único):", `PROD-${Date.now().toString().slice(-4)}`);
+            const cost = parseFloat(prompt("Custo de Aquisição (R$):", "50.00")) || 0;
+            const price = parseFloat(prompt("Preço de Venda Sugerido (R$):", "95.00")) || 0;
+            const qty = parseInt(prompt("Quantidade em Estoque:", "5")) || 1;
+
+            currentInventoryProducts.push({
+                id: `prod_${Date.now()}`,
+                sku: sku.toUpperCase(),
+                name: name,
+                category: "Geral",
+                brand: "Distribuidor",
+                cost_price: cost,
+                selling_price: price,
+                current_stock: qty,
+                reserved_stock: 0,
+                min_stock: 2,
+                ean: ""
+            });
+
+            kardexMovements.unshift({
+                date: new Date().toISOString(),
+                type: "Entrada_Avulsa_Ajuste",
+                sku: sku.toUpperCase(),
+                prodName: name,
+                qty: qty,
+                totalCost: cost * qty,
+                docRef: "Entrada Manual",
+                operator: "Gestor IF Tech"
+            });
+
+            showScanNotification(`✓ Produto ${name} cadastrado com sucesso!`, 'success');
+            renderInventoryCatalogTable();
+            renderPOSGrid();
+        }
+
+        // =========================================================================
+        // 3. FUNÇÕES DO KARDEX & CONSULTA RMA
+        // =========================================================================
+        function renderKardexTable() {
+            const tbody = document.getElementById('kardex-table-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            kardexMovements.forEach(m => {
+                const tr = document.createElement('tr');
+                const isEntry = m.qty > 0;
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 text-zinc-400">${new Date(m.date).toLocaleDateString('pt-BR')} ${new Date(m.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td class="py-2.5 px-3">
+                        <span class="px-2 py-0.5 text-[10px] font-bold uppercase ${isEntry ? 'bg-brand/10 text-brand border border-brand/40' : 'bg-cyan-950 text-cyan-400 border border-cyan-700'}">
+                            ${m.type.replace(/_/g, ' ')}
+                        </span>
+                    </td>
+                    <td class="py-2.5 px-3">
+                        <strong class="text-white">${escapeHtml(m.prodName)}</strong>
+                        <span class="text-[10px] text-zinc-500 block">${escapeHtml(m.sku)}</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center font-black ${isEntry ? 'text-brand' : 'text-cyan-400'}">${isEntry ? '+' + m.qty : m.qty}</td>
+                    <td class="py-2.5 px-3 text-right font-bold text-zinc-300">R$ ${m.totalCost.toFixed(2).replace('.', ',')}</td>
+                    <td class="py-2.5 px-3 text-zinc-300">${escapeHtml(m.docRef)}</td>
+                    <td class="py-2.5 px-3 text-zinc-500">${escapeHtml(m.operator)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleRMAKeydown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                executeRMALookup();
+            }
+        }
+
+        function executeRMALookup() {
+            const input = document.getElementById('rma-sn-input');
+            const resultBox = document.getElementById('rma-result-box');
+            if (!input || !resultBox) return;
+
+            const snQuery = input.value.trim();
+            if (!snQuery) return;
+
+            const found = mockSerialsDB.find(s => s.sn.toLowerCase() === snQuery.toLowerCase() || s.sn.toLowerCase().includes(snQuery.toLowerCase()));
+
+            resultBox.classList.remove('hidden');
+
+            if (found) {
+                resultBox.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-zinc-800 pb-2 mb-2">
+                        <span class="font-bold text-brand uppercase flex items-center gap-1.5">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> Número de Série Localizado no Sistema
+                        </span>
+                        <span class="px-2 py-0.5 bg-brand text-black font-black uppercase text-[10px]">Garantia Fabricante Ativa</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                            <span class="text-zinc-500 uppercase block text-[10px]">Produto</span>
+                            <strong class="text-white">${escapeHtml(found.prodName)}</strong>
+                        </div>
+                        <div>
+                            <span class="text-zinc-500 uppercase block text-[10px]">Fornecedor Oficial</span>
+                            <strong class="text-brand">${escapeHtml(found.supplier)}</strong>
+                        </div>
+                        <div>
+                            <span class="text-zinc-500 uppercase block text-[10px]">Nota Fiscal de Compra</span>
+                            <strong class="text-white">${escapeHtml(found.invoice)}</strong>
+                        </div>
+                        <div>
+                            <span class="text-zinc-500 uppercase block text-[10px]">Data Compra / Garantia</span>
+                            <strong class="text-white">${found.purchaseDate} (${found.warrantyMonths} meses)</strong>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-zinc-900 flex justify-between items-center">
+                        <span class="text-zinc-400">Vinculado a: <strong class="text-white">${escapeHtml(found.client)}</strong></span>
+                        <button type="button" onclick="alert('Dossiê de RMA gerado com sucesso para envio ao fornecedor ' + found.supplier)" class="px-3 py-1 bg-zinc-900 border border-brand text-brand hover:bg-brand hover:text-black font-bold uppercase text-[10px] transition-colors">
+                            ⚡ Gerar Dossiê de Troca RMA
+                        </button>
+                    </div>
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <div class="text-center py-4 text-zinc-400">
+                        <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-400 mx-auto mb-1"></i>
+                        <p class="font-bold text-white">Nenhum registro encontrado para o Serial "${escapeHtml(snQuery)}"</p>
+                        <span class="text-[11px] text-zinc-500">Verifique se o número foi digitado corretamente ou se a peça é de terceiros.</span>
+                    </div>
+                `;
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+
         window.addEventListener('DOMContentLoaded', () => {
             if (window.lucide) lucide.createIcons();
             recalcTotals();
@@ -3664,6 +4561,75 @@ Ficamos no aguardo para iniciar a execução!`;
                     Assinatura do Responsável Técnico // IF Tech
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================================= -->
+    <!-- CUPOM TÉRMICO DE VENDA PDV (ESC/POS 58MM / 80MM)              -->
+    <!-- ============================================================= -->
+    <div id="thermal-pos-receipt" class="hidden print:block font-mono text-black text-[11px] leading-tight bg-white p-2">
+        <div class="text-center pb-2 mb-2 border-b border-dashed border-black">
+            <h2 class="font-black text-sm uppercase">IF TECH // SOLUÇÕES TECH</h2>
+            <p class="text-[9px]">ENGENHARIA DE HARDWARE & OPERAÇÕES TI</p>
+            <p class="text-[9px]">CNPJ: 00.000.000/0001-00 • BRAGANÇA PAULISTA-SP</p>
+            <p class="text-[9px]">WHATSAPP: (11) 91969-1542 • IFLCOSTA.TECH</p>
+        </div>
+
+        <div class="pb-1 mb-1 border-b border-dashed border-black text-[10px]">
+            <div class="flex justify-between">
+                <span>CUPOM NÃO FISCAL:</span>
+                <strong id="pos-rec-number">PDV-2026-0001</strong>
+            </div>
+            <div class="flex justify-between">
+                <span>DATA / HORA:</span>
+                <span id="pos-rec-datetime">26/08/2026 23:40</span>
+            </div>
+            <div class="flex justify-between">
+                <span>CLIENTE:</span>
+                <span id="pos-rec-client">CONSUMIDOR FINAL</span>
+            </div>
+        </div>
+
+        <div class="py-1 border-b border-dashed border-black">
+            <table class="w-full text-left text-[10px]">
+                <thead>
+                    <tr class="border-b border-black">
+                        <th>QTD ITEM</th>
+                        <th class="text-right">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody id="pos-rec-items-tbody">
+                    <!-- Itens do cupom -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="py-1 border-b border-dashed border-black text-[11px] space-y-0.5">
+            <div class="flex justify-between">
+                <span>SUBTOTAL:</span>
+                <span id="pos-rec-subtotal">R$ 0,00</span>
+            </div>
+            <div class="flex justify-between">
+                <span>DESCONTO:</span>
+                <span id="pos-rec-discount">R$ 0,00</span>
+            </div>
+            <div class="flex justify-between font-black text-xs pt-1 border-t border-dotted border-black">
+                <span>TOTAL PAGO:</span>
+                <span id="pos-rec-total">R$ 0,00</span>
+            </div>
+            <div class="flex justify-between text-[10px] text-zinc-700">
+                <span>FORMA PGTO:</span>
+                <span id="pos-rec-method">PIX</span>
+            </div>
+        </div>
+
+        <div class="text-center pt-2 space-y-1">
+            <p class="text-[8px] uppercase leading-tight font-bold">GARANTIA LEGAL CDC ART. 26: 90 DIAS<br>GUARDE ESTE COMPROVANTE PARA TROCAS</p>
+            <div class="flex justify-center my-1">
+                <canvas id="qr-pos-receipt-canvas" class="w-24 h-24 block mx-auto"></canvas>
+            </div>
+            <p class="text-[7px] text-zinc-600">HASH: <span id="pos-rec-hash">IF-PDV-2026-9948</span></p>
         </div>
     </div>
 
