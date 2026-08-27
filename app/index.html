@@ -127,7 +127,7 @@
                 <!-- Barra de Scanner USB & Busca Rápida de OS (/ ou Alt+K) -->
                 <div class="hidden md:flex items-center flex-1 max-w-md mx-4 relative font-mono text-xs">
                     <i data-lucide="scan-barcode" class="w-4 h-4 absolute left-3 top-2.5 text-brand animate-pulse"></i>
-                    <input type="text" id="global-scanner-input" onkeydown="handleScannerInputKeydown(event)" placeholder="Bipar QR Code / Buscar OS, Cliente ou S/N..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-24 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand transition-colors text-ellipsis">
+                    <input type="text" id="global-scanner-input" onkeydown="handleScannerInputKeydown(event)" placeholder="Buscar OS, Cliente ou S/N..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-24 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand transition-colors">
                     <div class="absolute right-2.5 top-2 flex items-center gap-1 text-[9px] font-mono select-none">
                         <kbd class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 border border-zinc-700">/</kbd>
                         <span class="text-zinc-500">ou</span>
@@ -2412,6 +2412,27 @@ Qualquer dúvida, estou à disposição!
             }
         });
 
+        
+        function resetAllSystemDataToCleanSlate() {
+            if (confirm("⚠️ ATENÇÃO: Deseja realmente zerar todos os dados locais e deixar o sistema 100% limpo para testes?")) {
+                localStorage.clear();
+                sessionStorage.clear();
+                currentWorkOrders = [];
+                currentClientsList = [];
+                currentSoftwareProjects = [];
+                currentMSPContracts = [];
+                currentMSPDevices = [];
+                currentMSPTickets = [];
+                renderKanbanBoard([]);
+                if (typeof renderClientsTable === 'function') renderClientsTable();
+                if (typeof renderSoftwareProjectsDashboard === 'function') renderSoftwareProjectsDashboard();
+                if (typeof renderMSPDashboard === 'function') renderMSPDashboard();
+                if (typeof renderFinancialDashboard === 'function') renderFinancialDashboard([]);
+                showToast("✓ Todos os dados locais foram zerados com sucesso!", "success");
+                setTimeout(() => window.location.reload(), 600);
+            }
+        }
+        
         function switchTab(tabId) {
             if (tabId === 'sniper') setTimeout(() => { if (typeof renderSniperDashboard === 'function') renderSniperDashboard(); }, 50);
             if (tabId === 'msp') setTimeout(() => { if (typeof renderMSPDashboard === 'function') renderMSPDashboard(); }, 50);
@@ -2440,116 +2461,7 @@ Qualquer dúvida, estou à disposição!
         }
 
         // Lista de OSs em memória
-        let currentWorkOrders = [
-            {
-                id: 'wo-1049',
-                os_number: 1049,
-                client_name: 'Dr. Roberto Guimarães',
-                client_whatsapp: '(11) 98765-4321',
-                device_brand: 'Dell',
-                device_model: 'Workstation XPS 8940',
-                reported_defect: 'Troca preventiva de pasta térmica Arctic MX-4 e desoxidação química.',
-                status: 'Pronto_Entregue',
-                total_labor: 280.00,
-                total_parts: 0.00,
-                total_parts_cost: 0.00,
-                total_amount: 280.00,
-                acquisition_channel: 'Leva-e-Traz',
-                requires_delivery: true,
-                public_tracking_token: 'tok-rob-1049',
-                created_at: new Date(Date.now() - 5 * 86400000).toISOString()
-            },
-            {
-                id: 'wo-1048',
-                os_number: 1048,
-                client_name: 'Lucas Gamer',
-                client_whatsapp: '(11) 97777-6666',
-                device_brand: 'IF Tech Custom',
-                device_model: 'Setup Gamer Ryzen 5 5600 + RTX 4060',
-                reported_defect: 'Montagem completa do zero, cable management cirúrgico e otimização AIDA64.',
-                status: 'Pronto_Entregue',
-                total_labor: 450.00,
-                total_parts: 3400.00,
-                total_parts_cost: 2750.00,
-                total_amount: 3850.00,
-                acquisition_channel: 'Balcão',
-                requires_delivery: false,
-                public_tracking_token: 'tok-luc-1048',
-                created_at: new Date(Date.now() - 3 * 86400000).toISOString()
-            },
-            {
-                id: 'wo-1047',
-                os_number: 1047,
-                client_name: 'Dra. Fernanda',
-                client_whatsapp: '(11) 95555-4444',
-                device_brand: 'Acer',
-                device_model: 'Aspire 5 A515 Core i5',
-                reported_defect: 'Troca de teclado retroiluminado e reparo na dobradiça esquerda.',
-                status: 'QA_Testes',
-                total_labor: 240.00,
-                total_parts: 175.00,
-                total_parts_cost: 110.00,
-                total_amount: 415.00,
-                acquisition_channel: 'Leva-e-Traz',
-                requires_delivery: true,
-                public_tracking_token: 'tok-fer-1047',
-                created_at: new Date(Date.now() - 1 * 86400000).toISOString()
-            },
-            {
-                id: 'wo-1046',
-                os_number: 1046,
-                client_name: 'Construtora Bragança Pro',
-                client_whatsapp: '(11) 96666-3333',
-                device_brand: 'Dell',
-                device_model: 'Servidor PowerEdge T40',
-                reported_defect: 'Substituição de fonte redundante e upgrade de SSD NVMe 1TB para banco de dados.',
-                status: 'Na_Bancada',
-                total_labor: 650.00,
-                total_parts: 820.00,
-                total_parts_cost: 580.00,
-                total_amount: 1470.00,
-                acquisition_channel: 'Leva-e-Traz',
-                requires_delivery: true,
-                public_tracking_token: 'tok-con-1046',
-                created_at: new Date(Date.now() - 2 * 86400000).toISOString()
-            },
-            {
-                id: 'wo-1045',
-                os_number: 1045,
-                client_name: 'Marcos Silva',
-                client_whatsapp: '(11) 94444-2222',
-                device_brand: 'Dell',
-                device_model: 'Notebook Gamer G15',
-                reported_defect: 'Superaquecimento (98°C) em jogos e tela azul intermitente.',
-                status: 'Orcamento_Aguardando_Aprovacao',
-                total_labor: 180.00,
-                total_parts: 260.00,
-                total_parts_cost: 160.00,
-                total_amount: 440.00,
-                acquisition_channel: 'Balcão',
-                requires_delivery: false,
-                public_tracking_token: 'tok-mar-1045',
-                created_at: new Date().toISOString()
-            },
-            {
-                id: 'wo-1044',
-                os_number: 1044,
-                client_name: 'Beatriz Lima',
-                client_whatsapp: '(11) 93333-1111',
-                device_brand: 'Apple',
-                device_model: 'MacBook Air M1 2020',
-                reported_defect: 'Não liga após derramamento de café no teclado. Desoxidação ultrassônica.',
-                status: 'Triagem',
-                total_labor: 350.00,
-                total_parts: 0.00,
-                total_parts_cost: 0.00,
-                total_amount: 350.00,
-                acquisition_channel: 'Leva-e-Traz',
-                requires_delivery: true,
-                public_tracking_token: 'tok-bea-1044',
-                created_at: new Date().toISOString()
-            }
-        ];
+        let currentWorkOrders = [];
         let selectedWorkOrder = null;
 
         // Mock Fallback Inicial se o banco estiver vazio
@@ -3886,60 +3798,7 @@ Qualquer dúvida, estou à disposição!
         // =====================================================================
         // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
         // =====================================================================
-        let currentSoftwareProjects = [
-            {
-                id: "sw-mock-01",
-                project_code: "PRJ-2026-001",
-                client_id: "c-01",
-                client_name: "Imobiliária Vista Bragança",
-                client_whatsapp: "(11) 98765-4321",
-                title: "Landing Page de Alta Conversão + WhatsApp Engine",
-                service_code: "SW-01",
-                status: "Em_Desenvolvimento",
-                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
-                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
-                staging_url: "https://preview.iflcosta.tech/vista-braganca",
-                total_budget: 1800.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-09-05",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 99,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 96,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-vista-2026"
-            },
-            {
-                id: "sw-mock-02",
-                project_code: "PRJ-2026-002",
-                client_id: "c-02",
-                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
-                client_whatsapp: "(11) 91234-5678",
-                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
-                service_code: "SW-02",
-                status: "Homologacao_Cliente",
-                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
-                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
-                staging_url: "https://preview.iflcosta.tech/odonto-demo",
-                total_budget: 1200.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-08-30",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 100,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 98,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-odonto-2026"
-            }
-        ];
+        let currentSoftwareProjects = [];
 
         let softwareTimesheetEntries = [
             { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
@@ -4359,122 +4218,11 @@ Qualquer dúvida, estou à disposição!
         // =====================================================================
         // SPRINT 5: MOTOR DE TI GERENCIADA (MSP B2B) & SERVICE DESK PROPRIETÁRIO
         // =====================================================================
-        let currentMSPContracts = [
-            {
-                id: "msp-c-01",
-                contract_code: "MSP-2026-001",
-                company_name: "Clínica Médica São Francisco",
-                company_cnpj: "12.345.678/0001-90",
-                contact_name: "Dr. Roberto Guimarães",
-                contact_whatsapp: "(11) 98765-4321",
-                contact_email: "roberto@clinicasaofrancisco.com.br",
-                plan_name: "Pro",
-                monthly_fee: 890.00,
-                workstations_included: 10,
-                servers_included: 1,
-                onsite_visits_included: 1,
-                sla_remote_hours: 2.0,
-                sla_onsite_hours: 4.0,
-                status: "Ativo",
-                client_token: "msp-tok-clinica-2026",
-                created_at: "2026-08-01T10:00:00Z"
-            },
-            {
-                id: "msp-c-02",
-                contract_code: "MSP-2026-002",
-                company_name: "Advocacia & Consultoria Silva",
-                company_cnpj: "98.765.432/0001-10",
-                contact_name: "Dra. Camila Silva",
-                contact_whatsapp: "(11) 91234-5678",
-                contact_email: "camila@silvaadv.com.br",
-                plan_name: "Essencial",
-                monthly_fee: 490.00,
-                workstations_included: 5,
-                servers_included: 0,
-                onsite_visits_included: 1,
-                sla_remote_hours: 2.0,
-                sla_onsite_hours: 4.0,
-                status: "Ativo",
-                client_token: "msp-tok-silva-2026",
-                created_at: "2026-08-15T14:30:00Z"
-            }
-        ];
+        let currentMSPContracts = [];
 
-        let currentMSPDevices = [
-            {
-                id: "dev-01",
-                contract_id: "msp-c-01",
-                company_name: "Clínica Médica São Francisco",
-                device_tag: "WS-REC-01",
-                hostname: "CLI-RECEP-01",
-                user_assigned: "Ana Clara (Recepção)",
-                department: "Recepção",
-                device_type: "Desktop",
-                os_version: "Windows 11 Pro",
-                specs: "Intel Core i5-12400 / 16GB RAM / SSD NVMe 512GB",
-                rustdesk_id: "982 341 812",
-                ip_internal: "192.168.1.105",
-                backup_status: "Protegido",
-                last_backup_at: "2026-08-27T02:00:00Z",
-                snitch_token: "snitch-rec-01"
-            },
-            {
-                id: "dev-02",
-                contract_id: "msp-c-01",
-                company_name: "Clínica Médica São Francisco",
-                device_tag: "SRV-PRONTO-01",
-                hostname: "CLI-SRV-DB",
-                user_assigned: "Servidor Banco de Dados",
-                department: "TI / Servidor",
-                device_type: "Servidor",
-                specs: "AMD Ryzen 7 5700X / 32GB RAM / 2x 1TB NVMe RAID 1",
-                rustdesk_id: "142 859 201",
-                ip_internal: "192.168.1.200",
-                backup_status: "Protegido",
-                last_backup_at: "2026-08-27T03:30:00Z",
-                snitch_token: "snitch-srv-01"
-            },
-            {
-                id: "dev-03",
-                contract_id: "msp-c-02",
-                company_name: "Advocacia & Consultoria Silva",
-                device_tag: "WS-ADV-CAMILA",
-                hostname: "SILVA-NOTE-01",
-                user_assigned: "Dra. Camila",
-                department: "Diretoria",
-                device_type: "Notebook",
-                specs: "Dell Latitude / Core i7 / 16GB / SSD 512GB",
-                rustdesk_id: "554 921 003",
-                ip_internal: "192.168.0.12",
-                backup_status: "Protegido",
-                last_backup_at: "2026-08-27T01:15:00Z",
-                snitch_token: "snitch-adv-01"
-            }
-        ];
+        let currentMSPDevices = [];
 
-        let currentMSPTickets = [
-            {
-                id: "tck-01",
-                ticket_number: "TCK-2026-0001",
-                contract_id: "msp-c-01",
-                company_name: "Clínica Médica São Francisco",
-                device_id: "dev-01",
-                device_tag: "WS-REC-01",
-                opened_by_name: "Ana Clara",
-                opened_by_whatsapp: "(11) 98765-4321",
-                title: "Impressora de Etiquetas Térmicas Não Imprime",
-                description: "Ao tentar emitir a guia da consulta, o sistema trava e a impressora térmica USB fica piscando em vermelho.",
-                category: "Suporte_Estacao",
-                severity: "P3_Media",
-                status: "Em_Atendimento",
-                sla_due_at: new Date(Date.now() + 65 * 60000).toISOString(),
-                created_at: new Date(Date.now() - 30 * 60000).toISOString(),
-                messages: [
-                    { sender_type: "Client", sender_name: "Ana Clara", message: "A impressora travou e não consigo chamar os pacientes da recepção.", time: "10:00" },
-                    { sender_type: "Technician", sender_name: "Engenharia de Redes & Suporte // IF Tech", message: "Olá Ana! Estamos conectando remotamente via RustDesk no seu computador WS-REC-01 para reiniciar o spooler de impressão.", time: "10:05" }
-                ]
-            }
-        ];
+        let currentMSPTickets = [];
 
         let activeMSPTicket = null;
 
@@ -5491,11 +5239,7 @@ IF Tech // Engenharia de Hardware`;
         // =====================================================================
         // CRM & CLIENTES
         // =====================================================================
-        let currentClientsList = [
-            { id: "cli-01", name: "Lucas Gamer", phone: "(11) 97777-6666", orders_count: 2, total_spent: 4200.00 },
-            { id: "cli-02", name: "Dr. Roberto Guimarães", phone: "(11) 98765-4321", orders_count: 5, total_spent: 8900.00 },
-            { id: "cli-03", name: "Dra. Fernanda", phone: "(11) 95555-4444", orders_count: 1, total_spent: 415.00 }
-        ];
+        let currentClientsList = [];
 
         function openNewClientModal() {
             document.getElementById('client-modal')?.classList.remove('hidden');
