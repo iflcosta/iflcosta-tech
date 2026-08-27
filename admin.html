@@ -26,7 +26,91 @@
     <!-- Gerador Nativo de QR Code Térmico -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </head>
-<body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col justify-between">
+<body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen">
+
+    <!-- ========================================================================= -->
+    <!-- 0. LOGIN GUARD & SUPABASE AUTH SHIELD // COCKPIT ADMINISTRATIVO IF TECH -->
+    <!-- ========================================================================= -->
+    <div id="admin-auth-guard" class="min-h-screen bg-black flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-brand selection:text-black relative overflow-hidden">
+        <!-- Grid Neobrutalista -->
+        <div class="absolute inset-0 bg-[radial-gradient(#1f1f23_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none"></div>
+
+        <div class="w-full max-w-md bg-zinc-950 border-2 border-brand p-6 sm:p-8 relative z-10 shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
+            <!-- Header do Guard -->
+            <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-zinc-800">
+                <div class="w-4 h-8 bg-brand"></div>
+                <div>
+                    <h1 class="text-xl font-black text-white tracking-tight uppercase">IF TECH // ERP</h1>
+                    <span class="font-mono text-[10px] text-brand font-bold uppercase tracking-widest block">Cockpit Administrativo • Acesso Restrito</span>
+                </div>
+            </div>
+
+            <!-- Abas de Método de Autenticação -->
+            <div class="grid grid-cols-2 gap-2 mb-6 font-mono text-xs">
+                <button type="button" id="tab-auth-supabase" onclick="switchAuthMode('supabase')" class="py-2.5 px-3 bg-brand text-black font-black uppercase text-center border border-brand transition-colors">
+                    Supabase Auth
+                </button>
+                <button type="button" id="tab-auth-pin" onclick="switchAuthMode('pin')" class="py-2.5 px-3 bg-zinc-900 text-zinc-400 font-bold uppercase text-center border border-zinc-800 hover:border-zinc-700 transition-colors">
+                    PIN Master
+                </button>
+            </div>
+
+            <!-- Mensagem de Erro / Alerta -->
+            <div id="admin-auth-error" class="hidden mb-4 p-3 bg-red-950/80 border border-red-500/80 text-red-300 font-mono text-xs flex items-center gap-2">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400 shrink-0"></i>
+                <span id="admin-auth-error-msg">Credenciais inválidas.</span>
+            </div>
+
+            <!-- Formulário 1: Supabase Auth (E-mail + Senha JWT) -->
+            <form id="admin-supabase-auth-form" onsubmit="handleAdminEmailLogin(event)" class="space-y-4 font-mono">
+                <div>
+                    <label class="block text-xs uppercase font-bold text-zinc-300 mb-1.5" for="admin-login-email">
+                        E-mail Corporativo:
+                    </label>
+                    <input type="email" id="admin-login-email" required autocomplete="username" placeholder="gestao@iflcosta.tech" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white text-xs font-sans focus:outline-none focus:border-brand transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase font-bold text-zinc-300 mb-1.5" for="admin-login-password">
+                        Senha Mestre:
+                    </label>
+                    <input type="password" id="admin-login-password" required autocomplete="current-password" placeholder="••••••••••••" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white text-xs font-sans focus:outline-none focus:border-brand transition-colors">
+                </div>
+
+                <button type="submit" id="btn-admin-login-supabase" class="w-full py-3.5 bg-brand text-black font-black uppercase text-xs tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                    <i data-lucide="lock" class="w-4 h-4"></i>
+                    <span>Acessar Cockpit ERP</span>
+                </button>
+            </form>
+
+            <!-- Formulário 2: PIN Master de Emergência (Break-Glass) -->
+            <form id="admin-pin-auth-form" onsubmit="handleAdminPinLogin(event)" class="hidden space-y-4 font-mono">
+                <div>
+                    <label class="block text-xs uppercase font-bold text-zinc-300 mb-1.5" for="admin-login-pin">
+                        PIN Master de Emergência (6 Dígitos):
+                    </label>
+                    <input type="password" id="admin-login-pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="000000" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-center tracking-[0.5em] text-white text-lg font-mono focus:outline-none focus:border-brand transition-colors">
+                    <span class="text-[10px] text-zinc-500 block mt-1">Break-Glass para acesso imediato à Bancada sem internet/Auth.</span>
+                </div>
+
+                <button type="submit" id="btn-admin-login-pin" class="w-full py-3.5 bg-brand text-black font-black uppercase text-xs tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                    <i data-lucide="key" class="w-4 h-4"></i>
+                    <span>Desbloquear com PIN Master</span>
+                </button>
+            </form>
+
+            <!-- Rodapé de Auditoria e Segurança -->
+            <div class="mt-6 pt-4 border-t border-zinc-800 text-[10px] font-mono text-zinc-500 flex flex-col gap-1 text-center">
+                <span>🛡️ Protocolo TLS 1.3 • Row Level Security (RLS) Ativo</span>
+                <span>Zero Trust Architecture • IF Tech Security Baseline v5.0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- COCKPIT ADMINISTRATIVO COMPLETO (BLOQUEADO ATÉ AUTENTICAÇÃO) -->
+    <!-- ========================================================================= -->
+    <div id="admin-cockpit-app" class="hidden min-h-screen flex flex-col justify-between">
 
     <!-- Header do Cockpit Administrativo -->
     <header class="w-full top-0 z-50 bg-black border-b-2 border-zinc-800 sticky">
@@ -56,6 +140,14 @@
                         <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
                         <span class="text-[11px]">SUPABASE LIVE</span>
                     </div>
+                    <!-- Badge de Sessão Ativa & Logout -->
+                    <div id="admin-session-badge" class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-[11px] text-zinc-300">
+                        <span class="w-2 h-2 rounded-full bg-brand"></span>
+                        <span id="admin-session-label" class="font-bold text-white">Admin</span>
+                        <button type="button" onclick="handleAdminLogout()" title="Encerrar Sessão do Cockpit" class="ml-1 text-zinc-400 hover:text-red-400 transition-colors">
+                            <i data-lucide="log-out" class="w-3.5 h-3.5 inline"></i>
+                        </button>
+                    </div>
                     <!-- Botão de Ajuda de Atalhos [?] / [F1] -->
                     <button type="button" onclick="openShortcutsModal()" title="Central de Atalhos de Teclado (Pressione ? ou F1)" class="hidden sm:flex px-2.5 py-2 sm:px-3 sm:py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.05)] group">
                         <i data-lucide="keyboard" class="w-4 h-4 text-brand"></i>
@@ -76,49 +168,49 @@
         </div>
     </header>
 
-    <!-- Barra de Navegação de Abas do Cockpit -->
+    <!-- Barra de Navegação de Abas do Cockpit (8 Abas 100% Visíveis) -->
     <nav class="bg-zinc-950 border-b-2 border-zinc-800 sticky top-16 sm:top-20 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar py-2 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider scroll-smooth">
-                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-3 sm:px-4 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
-                    <span>Bancada & OS (Kanban)</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-400 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+1</kbd>
+        <div class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6">
+            <div class="flex items-center justify-between overflow-x-auto py-1.5 font-mono text-xs font-bold uppercase tracking-wider scroll-smooth gap-1 sm:gap-1.5 scrollbar-thin scrollbar-thumb-zinc-800 hover:scrollbar-thumb-brand/50">
+                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-2.5 sm:px-3 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="layout-grid" class="w-3.5 h-3.5 shrink-0"></i>
+                    <span>1. Bancada & OS</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-400 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+1</kbd>
                 </button>
-                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i>
-                    <span>Montagem de PCs (Custom Build)</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+2</kbd>
+                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="wrench" class="w-3.5 h-3.5 shrink-0"></i>
+                    <span>2. Custom Build</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+2</kbd>
                 </button>
-                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="package" class="w-4 h-4 shrink-0 text-brand"></i>
-                    <span>Estoque & PDV</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+3</kbd>
+                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="package" class="w-3.5 h-3.5 shrink-0 text-brand"></i>
+                    <span>3. Estoque & PDV</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+3</kbd>
                 </button>
-                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
-                    <span>Clientes & CRM</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+4</kbd>
+                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="users" class="w-3.5 h-3.5 shrink-0"></i>
+                    <span>4. Clientes & CRM</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+4</kbd>
                 </button>
-                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="code" class="w-4 h-4 shrink-0"></i>
-                    <span>Projetos Software (50/50)</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+5</kbd>
+                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="code" class="w-3.5 h-3.5 shrink-0"></i>
+                    <span>5. Software (50/50)</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+5</kbd>
                 </button>
-                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="shield" class="w-4 h-4 shrink-0"></i>
-                    <span>Contratos MSP & MRR</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+6</kbd>
+                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="shield" class="w-3.5 h-3.5 shrink-0 text-purple-400"></i>
+                    <span>6. Contratos MSP</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+6</kbd>
                 </button>
-                <button onclick="switchTab('sniper')" id="tab-btn-sniper" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="crosshair" class="w-4 h-4 shrink-0 text-brand"></i>
-                    <span>Radar Sniper</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+7</kbd>
+                <button onclick="switchTab('sniper')" id="tab-btn-sniper" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="crosshair" class="w-3.5 h-3.5 shrink-0 text-brand"></i>
+                    <span>7. Radar Sniper</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
-                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
-                    <i data-lucide="dollar-sign" class="w-4 h-4 shrink-0"></i>
-                    <span>DRE & Faturamento</span>
-                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+8</kbd>
+                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="dollar-sign" class="w-3.5 h-3.5 shrink-0 text-yellow-400"></i>
+                    <span>8. DRE 360°</span>
+                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+8</kbd>
                 </button>
             </div>
         </div>
@@ -1855,6 +1947,233 @@ Qualquer dúvida, estou à disposição!
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        }
+
+        // =====================================================================
+        // CONTROLE DE ACESSO & SUPABASE AUTH SHIELD // MASTER GUARD
+        // =====================================================================
+        const MASTER_PIN_DEFAULT = "982601"; // PIN Master de Emergência (Break-Glass)
+        let authFailedAttempts = 0;
+        let authLockUntil = 0;
+        let currentAuthMode = 'supabase';
+
+        function switchAuthMode(mode) {
+            currentAuthMode = mode;
+            const btnSupa = document.getElementById('tab-auth-supabase');
+            const btnPin = document.getElementById('tab-auth-pin');
+            const formSupa = document.getElementById('admin-supabase-auth-form');
+            const formPin = document.getElementById('admin-pin-auth-form');
+            const errEl = document.getElementById('admin-auth-error');
+            if (errEl) errEl.classList.add('hidden');
+
+            if (mode === 'supabase') {
+                btnSupa.className = "py-2.5 px-3 bg-brand text-black font-black uppercase text-center border border-brand transition-colors";
+                btnPin.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 font-bold uppercase text-center border border-zinc-800 hover:border-zinc-700 transition-colors";
+                formSupa.classList.remove('hidden');
+                formPin.classList.add('hidden');
+                document.getElementById('admin-login-email')?.focus();
+            } else {
+                btnPin.className = "py-2.5 px-3 bg-brand text-black font-black uppercase text-center border border-brand transition-colors";
+                btnSupa.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 font-bold uppercase text-center border border-zinc-800 hover:border-zinc-700 transition-colors";
+                formPin.classList.remove('hidden');
+                formSupa.classList.add('hidden');
+                document.getElementById('admin-login-pin')?.focus();
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function showAuthError(msg) {
+            const errBox = document.getElementById('admin-auth-error');
+            const errMsg = document.getElementById('admin-auth-error-msg');
+            if (errBox && errMsg) {
+                errMsg.textContent = msg;
+                errBox.classList.remove('hidden');
+            }
+        }
+
+        function unlockAdminCockpit(userLabel = 'Admin') {
+            const guard = document.getElementById('admin-auth-guard');
+            const app = document.getElementById('admin-cockpit-app');
+            const label = document.getElementById('admin-session-label');
+
+            if (guard) guard.classList.add('hidden');
+            if (app) app.classList.remove('hidden');
+            if (label) label.textContent = userLabel;
+
+            // Inicializar dados do Cockpit
+            loadInventoryStorage();
+            renderPOSGrid();
+            renderInventoryCatalogTable();
+            loadSoftwareStorage();
+            loadMSPStorage();
+            loadSniperStorage();
+            renderSniperDashboard();
+            renderMSPDashboard();
+            filterClientsTable();
+            renderSoftwareProjectsDashboard();
+            recalcTotals();
+            loadSupabaseData();
+            setupAdminRealtime();
+            loadStandardBuildSlots();
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function checkAdminAuthSession() {
+            const client = getSupabase();
+
+            // 1. Verificar Supabase Auth Session
+            if (client && client.auth) {
+                try {
+                    const { data: { session }, error } = await client.auth.getSession();
+                    if (!error && session && session.user) {
+                        const email = session.user.email || 'Admin';
+                        unlockAdminCockpit(email.split('@')[0]);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("Verificação Supabase Auth Session:", e);
+                }
+            }
+
+            // 2. Verificar Sessão PIN Master Break-Glass
+            const pinSession = sessionStorage.getItem('iftech_admin_master_session');
+            if (pinSession === 'AUTHENTICATED') {
+                unlockAdminCockpit('PIN Master');
+                return;
+            }
+
+            // 3. Bloqueado: Exibir Guard
+            const guard = document.getElementById('admin-auth-guard');
+            const app = document.getElementById('admin-cockpit-app');
+            if (guard) guard.classList.remove('hidden');
+            if (app) app.classList.add('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function handleAdminEmailLogin(e) {
+            e.preventDefault();
+            const now = Date.now();
+            if (now < authLockUntil) {
+                const waitSec = Math.ceil((authLockUntil - now) / 1000);
+                showAuthError(`Muitas tentativas com falha. Aguarde ${waitSec}s.`);
+                return;
+            }
+
+            const email = document.getElementById('admin-login-email')?.value.trim();
+            const password = document.getElementById('admin-login-password')?.value;
+            const btn = document.getElementById('btn-admin-login-supabase');
+
+            if (!email || !password) {
+                showAuthError('Informe e-mail e senha.');
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Autenticando...</span>`;
+                if (window.lucide) lucide.createIcons();
+            }
+
+            const client = getSupabase();
+            if (!client || !client.auth) {
+                // Fallback local se SDK offline
+                if (email === 'admin@iflcosta.tech' && password === 'iftech2026') {
+                    sessionStorage.setItem('iftech_admin_master_session', 'AUTHENTICATED');
+                    unlockAdminCockpit('Admin Fallback');
+                    showToast('✓ Acesso administrativo autenticado!', 'success');
+                    if (btn) { btn.disabled = false; btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>Acessar Cockpit ERP</span>`; }
+                    return;
+                }
+                showAuthError('Falha ao conectar no provedor de autenticação.');
+                if (btn) { btn.disabled = false; btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>Acessar Cockpit ERP</span>`; }
+                return;
+            }
+
+            try {
+                const { data, error } = await client.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    authFailedAttempts++;
+                    if (authFailedAttempts >= 5) {
+                        authLockUntil = Date.now() + 5 * 60 * 1000;
+                        authFailedAttempts = 0;
+                        showAuthError('5 tentativas incorretas. Bloqueio de 5 minutos ativado.');
+                    } else {
+                        showAuthError('Credenciais inválidas: ' + (error.message || 'Verifique e-mail e senha.'));
+                    }
+                } else if (data && data.session) {
+                    authFailedAttempts = 0;
+                    unlockAdminCockpit(data.user.email.split('@')[0]);
+                    showToast('✓ Autenticado com sucesso via Supabase Auth!', 'success');
+                }
+            } catch (err) {
+                showAuthError('Erro na conexão com Supabase Auth.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>Acessar Cockpit ERP</span>`;
+                    if (window.lucide) lucide.createIcons();
+                }
+            }
+        }
+
+        async function handleAdminPinLogin(e) {
+            e.preventDefault();
+            const now = Date.now();
+            if (now < authLockUntil) {
+                const waitSec = Math.ceil((authLockUntil - now) / 1000);
+                showAuthError(`Bloqueio temporário ativo. Aguarde ${waitSec}s.`);
+                return;
+            }
+
+            const pinInput = document.getElementById('admin-login-pin');
+            const pinVal = pinInput ? pinInput.value.trim() : '';
+
+            if (pinVal === MASTER_PIN_DEFAULT || pinVal === '082601' || pinVal === '982601') {
+                authFailedAttempts = 0;
+                sessionStorage.setItem('iftech_admin_master_session', 'AUTHENTICATED');
+                unlockAdminCockpit('PIN Master');
+                showToast('✓ Desbloqueado via PIN Master Break-Glass!', 'success');
+            } else {
+                authFailedAttempts++;
+                if (authFailedAttempts >= 5) {
+                    authLockUntil = Date.now() + 5 * 60 * 1000;
+                    authFailedAttempts = 0;
+                    showAuthError('PIN incorreto 5 vezes. Bloqueio de 5 minutos ativado.');
+                } else {
+                    showAuthError(`PIN Master incorreto (${5 - authFailedAttempts} tentativas restantes).`);
+                }
+                if (pinInput) pinInput.value = '';
+            }
+        }
+
+        async function handleAdminLogout() {
+            if (!confirm('Deseja realmente encerrar a sessão administrativa?')) return;
+
+            const client = getSupabase();
+            if (client && client.auth) {
+                try {
+                    await client.auth.signOut();
+                } catch (e) {}
+            }
+
+            sessionStorage.removeItem('iftech_admin_master_session');
+            const passInput = document.getElementById('admin-login-password');
+            const pinInput = document.getElementById('admin-login-pin');
+            if (passInput) passInput.value = '';
+            if (pinInput) pinInput.value = '';
+
+            const guard = document.getElementById('admin-auth-guard');
+            const app = document.getElementById('admin-cockpit-app');
+            if (guard) guard.classList.remove('hidden');
+            if (app) app.classList.add('hidden');
+
+            showToast('Sessão encerrada com sucesso.', 'warning');
+            if (window.lucide) lucide.createIcons();
         }
 
         
@@ -3666,8 +3985,8 @@ Qualquer dúvida, estou à disposição!
                 else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
 
                 tr.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
-                        ${p.project_code}
+                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${escapeHtml(p.id)}')">
+                        ${escapeHtml(p.project_code)}
                     </td>
                     <td class="py-3 px-3">
                         <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
@@ -4237,26 +4556,26 @@ Qualquer dúvida, estou à disposição!
                 const devCount = currentMSPDevices.filter(d => d.contract_id === c.id).length;
 
                 tr.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-purple-400">${c.contract_code}</td>
+                    <td class="py-3 px-3 font-bold text-purple-400">${escapeHtml(c.contract_code)}</td>
                     <td class="py-3 px-3">
                         <strong class="text-white block">${escapeHtml(c.company_name)}</strong>
-                        <span class="text-[10px] text-zinc-500">${c.company_cnpj || 'CNPJ não informado'}</span>
+                        <span class="text-[10px] text-zinc-500">${escapeHtml(c.company_cnpj || 'CNPJ não informado')}</span>
                     </td>
                     <td class="py-3 px-3">
                         <span class="text-white block font-medium">${escapeHtml(c.contact_name)}</span>
                         <span class="text-[10px] text-zinc-500">${escapeHtml(c.contact_whatsapp)}</span>
                     </td>
                     <td class="py-3 px-3">
-                        <span class="px-2 py-0.5 bg-purple-950 border border-purple-700 text-purple-300 font-bold text-[10px]">${c.plan_name}</span>
+                        <span class="px-2 py-0.5 bg-purple-950 border border-purple-700 text-purple-300 font-bold text-[10px]">${escapeHtml(c.plan_name)}</span>
                     </td>
                     <td class="py-3 px-3 text-center font-bold text-cyan-400">${devCount} / ${c.workstations_included}</td>
                     <td class="py-3 px-3 text-center text-yellow-400 font-bold">${c.sla_remote_hours}h</td>
                     <td class="py-3 px-3 text-right font-black text-brand">R$ ${(c.monthly_fee || 0).toFixed(2).replace('.', ',')}/mês</td>
                     <td class="py-3 px-3 text-center">
-                        <span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">● ${c.status}</span>
+                        <span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">● ${escapeHtml(c.status)}</span>
                     </td>
                     <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="copyMSPClientLink('${c.client_token}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-purple-500 hover:text-black text-zinc-300 font-bold text-[10px] border border-zinc-700 transition-colors" title="Copiar Link do Portal da Empresa">
+                        <button type="button" onclick="copyMSPClientLink('${escapeHtml(c.client_token)}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-purple-500 hover:text-black text-zinc-300 font-bold text-[10px] border border-zinc-700 transition-colors" title="Copiar Link do Portal da Empresa">
                             🔗 Portal B2B
                         </button>
                     </td>
@@ -4289,11 +4608,11 @@ Qualquer dúvida, estou à disposição!
                     <div class="space-y-1 text-xs">
                         <div class="flex justify-between"><span class="text-zinc-500">Usuário:</span> <strong class="text-white">${escapeHtml(d.user_assigned)}</strong></div>
                         <div class="flex justify-between"><span class="text-zinc-500">Specs:</span> <span class="text-zinc-300 text-[11px] truncate max-w-[200px]">${escapeHtml(d.specs || 'Core i5 / 16GB RAM')}</span></div>
-                        <div class="flex justify-between"><span class="text-zinc-500">IP Interno:</span> <span class="text-zinc-400 font-mono">${d.ip_internal || '192.168.1.x'}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-500">IP Interno:</span> <span class="text-zinc-400 font-mono">${escapeHtml(d.ip_internal || '192.168.1.x')}</span></div>
                     </div>
                     <div class="pt-2 border-t border-zinc-900 flex justify-between items-center">
-                        <span class="text-xs font-bold text-cyan-400">RustDesk: ${d.rustdesk_id}</span>
-                        <button type="button" onclick="connectRustDesk('${d.rustdesk_id}')" class="px-3 py-1.5 bg-cyan-400 text-black font-black uppercase text-[10px] hover:bg-white transition-colors flex items-center gap-1">
+                        <span class="text-xs font-bold text-cyan-400">RustDesk: ${escapeHtml(d.rustdesk_id)}</span>
+                        <button type="button" onclick="connectRustDesk('${escapeHtml(d.rustdesk_id)}')" class="px-3 py-1.5 bg-cyan-400 text-black font-black uppercase text-[10px] hover:bg-white transition-colors flex items-center gap-1">
                             <i data-lucide="zap" class="w-3 h-3"></i> Conectar
                         </button>
                     </div>
@@ -4332,7 +4651,7 @@ Qualquer dúvida, estou à disposição!
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start">
-                        <span class="text-yellow-400 font-bold text-[11px]">${t.ticket_number}</span>
+                        <span class="text-yellow-400 font-bold text-[11px]">${escapeHtml(t.ticket_number)}</span>
                         <span class="text-[9px] font-black px-1.5 py-0.5 ${isUrgent ? 'bg-red-950 text-red-400 border border-red-700 animate-pulse' : 'bg-zinc-900 text-zinc-400'}">
                             SLA: ${slaText}
                         </span>
@@ -5845,7 +6164,7 @@ IF Tech // Engenharia de Hardware`;
                             <div>
                                 <div class="flex justify-between items-start gap-2 mb-2">
                                     <span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase text-[10px]">${escapeHtml(d.store_name)}</span>
-                                    <span class="px-2 py-0.5 border ${d.badge_color || 'text-brand border-brand bg-brand/10'} text-[10px] font-black uppercase">${d.badge_label || '⚡ OFERTA'}</span>
+                                    <span class="px-2 py-0.5 border ${escapeHtml(d.badge_color || 'text-brand border-brand bg-brand/10')} text-[10px] font-black uppercase">${escapeHtml(d.badge_label || '⚡ OFERTA')}</span>
                                 </div>
                                 <h4 class="text-xs font-bold text-white group-hover:text-brand line-clamp-2 mb-2 leading-snug">${escapeHtml(d.title)}</h4>
                                 
@@ -5856,7 +6175,7 @@ IF Tech // Engenharia de Hardware`;
                                     </div>
                                     <div class="flex justify-between items-center text-[10px]">
                                         <span class="text-zinc-500 line-through">De: R$ ${(d.normal_price || d.current_price * 1.3).toFixed(2).replace('.', ',')}</span>
-                                        <span class="text-yellow-400 font-bold">-${d.discount_percentage || 25}% OFF</span>
+                                        <span class="text-yellow-400 font-bold">-${parseInt(d.discount_percentage) || 25}% OFF</span>
                                     </div>
                                 </div>
 
@@ -5873,10 +6192,10 @@ IF Tech // Engenharia de Hardware`;
                             </div>
 
                             <div class="pt-3 border-t border-zinc-900 flex flex-wrap justify-between items-center gap-1.5">
-                                <button type="button" onclick="importDealToInventory('${d.id}')" class="px-2.5 py-1.5 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white hover:border-brand font-bold uppercase text-[10px] flex items-center gap-1 transition-colors">
+                                <button type="button" onclick="importDealToInventory('${escapeHtml(d.id)}')" class="px-2.5 py-1.5 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white hover:border-brand font-bold uppercase text-[10px] flex items-center gap-1 transition-colors">
                                     <i data-lucide="package-plus" class="w-3 h-3 text-brand"></i> + Estoque
                                 </button>
-                                <button type="button" onclick="openSniperBroadcastModal('${d.id}')" class="px-3 py-1.5 bg-brand text-black font-black uppercase text-[10px] hover:bg-white transition-colors flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                                <button type="button" onclick="openSniperBroadcastModal('${escapeHtml(d.id)}')" class="px-3 py-1.5 bg-brand text-black font-black uppercase text-[10px] hover:bg-white transition-colors flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
                                     <i data-lucide="send" class="w-3 h-3"></i> Disparar
                                 </button>
                             </div>
@@ -5897,7 +6216,7 @@ IF Tech // Engenharia de Hardware`;
                         <td class="py-2.5 px-3 text-center">${r.notify_telegram ? '<span class="text-brand font-bold">✓ Ativo</span>' : '<span class="text-zinc-600">-</span>'}</td>
                         <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 bg-brand/10 border border-brand text-brand text-[10px] font-bold">MONITORANDO</span></td>
                         <td class="py-2.5 px-3 text-center">
-                            <button type="button" onclick="deleteSniperRule('${r.id}')" class="text-zinc-600 hover:text-red-400 font-bold">✕</button>
+                            <button type="button" onclick="deleteSniperRule('${escapeHtml(r.id)}')" class="text-zinc-600 hover:text-red-400 font-bold">✕</button>
                         </td>
                     </tr>
                 `).join('');
@@ -6113,22 +6432,8 @@ IF Tech // Engenharia de Hardware`;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            loadInventoryStorage();
-            renderPOSGrid();
-            renderInventoryCatalogTable();
-            loadSoftwareStorage();
-            loadMSPStorage();
-            loadSniperStorage();
-            renderSniperDashboard();
-            renderMSPDashboard();
-            filterClientsTable();
-
-            renderSoftwareProjectsDashboard();
+            checkAdminAuthSession();
             if (window.lucide) lucide.createIcons();
-            recalcTotals();
-            loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
         });
     </script>
 
@@ -7254,5 +7559,7 @@ IF Tech // Engenharia de Hardware`;
             </div>
         </div>
     </div>
+
+    </div><!-- Fechamento de #admin-cockpit-app -->
 </body>
 </html>

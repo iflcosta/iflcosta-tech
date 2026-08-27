@@ -1913,6 +1913,28 @@
         // Função de Busca com Dupla Confirmação (OS + WhatsApp, Token ou Projeto de Software)
         async function handleSearch(query, phone = '', isSilent = false) {
             if (!query) return;
+
+            const now = Date.now();
+            if (now < searchCooldownUntil) {
+                const waitSeconds = Math.ceil((searchCooldownUntil - now) / 1000);
+                alert(`⚠️ Muitas consultas consecutivas. Aguarde ${waitSeconds} segundos para tentar novamente.`);
+                return;
+            }
+
+            // Monitoramento de frequência (Rate Limiting no Frontend)
+            if (now - lastSearchAttemptTime < 30000) {
+                searchAttempts++;
+                if (searchAttempts >= 6) {
+                    searchCooldownUntil = now + 15000;
+                    searchAttempts = 0;
+                    alert("⚠️ Limite temporário de segurança atingido. Aguarde 15 segundos antes de nova busca.");
+                    return;
+                }
+            } else {
+                searchAttempts = 1;
+            }
+            lastSearchAttemptTime = now;
+
             activeTrackingQuery = query.trim();
             activeTrackingPhone = phone ? phone.trim() : '';
 
@@ -2067,15 +2089,20 @@
             if (window.lucide) lucide.createIcons();
         }
 
+        // Controle de Rate Limiting e Anti-Hammering no Frontend do Portal
+        let searchAttempts = 0;
+        let lastSearchAttemptTime = 0;
+        let searchCooldownUntil = 0;
+
         // Submissão do Formulário com Validação de WhatsApp
         // =====================================================================
         // SPRINT 5 & CDC: FUNÇÕES DO PORTAL DO CLIENTE & TERMO DE GARANTIA
         // =====================================================================
         function downloadWarrantyPDF() {
-            const osNum = currentWorkOrder?.os_number || '082601';
-            const clientName = currentWorkOrder?.client_name || 'Cliente';
-            const device = (currentWorkOrder?.device_brand || 'Equipamento') + ' ' + (currentWorkOrder?.device_model || '');
-            const dateStr = new Date().toLocaleDateString('pt-BR');
+            const osNum = escapeHtml(currentWorkOrder?.os_number || '082601');
+            const clientName = escapeHtml(currentWorkOrder?.client_name || currentWorkOrder?.customer_name || 'Cliente');
+            const device = escapeHtml((currentWorkOrder?.device_brand || 'Equipamento') + ' ' + (currentWorkOrder?.device_model || ''));
+            const dateStr = escapeHtml(new Date().toLocaleDateString('pt-BR'));
 
             const printWindow = window.open('', '_blank', 'width=700,height=800');
             printWindow.document.write(`
