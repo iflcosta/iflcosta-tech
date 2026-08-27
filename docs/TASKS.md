@@ -1,44 +1,52 @@
-# CRONOGRAMA DE TAREFAS (SDD)
-**Projeto:** IF Tech
-
-- [x] **Fase 1:** Definição do Escopo e Documentação Viva
-- [x] **Fase 2:** Esqueleto HTML Semântico
-- [x] **Fase 3:** Estilização com TailwindCSS (Layout Inicial)
-- [x] **Fase 4:** Interações Básicas e Responsividade
-- [x] **Fase 5:** SEO e Acessibilidade (Versão Glassmorphism)
-- [x] **Fase 6:** PIVÔ DE DESIGN (Do Template Genérico para o Neobrutalismo)
-  - [x] Auditoria "Anti-IA" implacável.
-  - [x] Troca da paleta (Remoção do Slate/Cyan/Violet, adoção do Preto/Verde Fósforo).
-  - [x] Refatoração do Copywriting para tom "Especialista direto ao ponto".
-  - [x] Quebra de simetria nos pilares (Adição de 3 blocos em lista com bordas duras).
-- [x] **Fase 7:** Otimização Fina de Performance e Produção (Soft-Brutalism)
-  - [x] Remoção do Filtro SVG (resolução do lag de rolagem).
-  - [x] Suavização do Fundo (`#050505` para `#0a0a0c`).
-  - [x] Injeção de Meta Tags Open Graph para WhatsApp.
-  - [x] Criação de Favicon SVG nativo.
-  - [x] Atributo `defer` no carregamento de ícones.
-- [x] **Fase 8: Engenharia de Operações & Gestão (ERP)**
-  - [x] Criação da modelagem de banco de dados (`DATABASE_SCHEMA.md`).
-  - [x] Redação de Procedimentos Operacionais Padrão (`STANDARD_OPERATING_PROCEDURES.md`).
-  - [x] Criação de Templates de Comunicação padronizados (`COMMUNICATION_TEMPLATES.md`).
-- [x] **Fase 9: Lançamento Oficial & Ancoragem Local (Bragança Paulista)**
-  - [x] Configuração de todos os links de WhatsApp oficiais (`5511919691542`) com mensagens dinâmicas contextuais.
-  - [x] Posicionamento geolocalizado em Bragança Paulista & Região (Leva-e-Traz, SEO tags e Schema.org `LocalBusiness`).
-  - [x] Substituição de fotos genéricas por componentes Neobrutalistas proprietários (Terminal de Telemetria Híbrida e Laudo Comparativo Antes vs Depois).
-  - [x] Barra de Garantias com 4 cards robustos e ícones vetoriais SVG inline.
-  - [x] Calibração de viewport do Hero para zoom 100% (CTA 100% visível na primeira dobra sem scroll).
-  - [x] Compilação do Tailwind CSS standalone local (`style.min.css` com 18.7KB).
-  - [x] Deploy de produção ativo em [https://iflcosta.tech](https://iflcosta.tech).
-- [x] **Fase 10: Estruturação do Catálogo de Preços & Supabase Backend**
-  - [x] Criação da Matriz de Precificação Interna (`SERVICE_CATALOG_PRICING.md`): Mão de obra, margem de peças (15-40%) e modelo modular MSP por estação (Essential R$ 69,90 / Pro R$ 109,90 / Enterprise R$ 189,90).
-  - [x] Especificação da Arquitetura do ERP/CRM Unificado em 7 módulos (`ERP_ARCHITECTURE_SPECIFICATION.md`).
-  - [x] Reestruturação completa do banco Supabase (`togrnwxazuweuihlaljo`) com 10 tabelas relacionais + 2 buckets de Storage (`os-photos` e `technical-reports`).
+# CRONOGRAMA DE TAREFAS (SDD) & ROADMAP DE SPRINTS
+**Projeto:** IF Tech — https://iflcosta.tech
 
 ---
 
-## 🔮 PRÓXIMAS ETAPAS: DESENVOLVIMENTO DO ERP / PORTAL
+## 🏛️ ETAPAS CONCLUÍDAS (FASE DE ESTRUTURAÇÃO & SPRINT 1)
 
-- [ ] **Sprint 1 (Portal do Cliente):** Desenvolver a página de **Tracking Público de OS** (`/os/[token]` ou `consultar-os.html`) com visualização de fotos, laudo de estresse e Pix dinâmico.
-- [ ] **Sprint 2 (Painel do Gestor):** Desenvolver o **Cockpit Administrativo** (`admin.html`) para abertura rápida de OS, controle de peças e disparo de notificações de WhatsApp.
-- [ ] **Sprint 3 (Painel B2B MSP):** Interface de acompanhamento corporativo para os clientes de TI Gerenciada com status dos agentes e backups em nuvem.
+- [x] **Fase 1 a 7:** Branding Neobrutalista, Landing Page de Alta Conversão e SEO Local Bragança Paulista.
+- [x] **Fase 8 a 10:** Modelagem Relacional do Supabase, Catálogo de Preços e POPs de Atendimento.
+- [x] **Sprint 1 (Bancada, Kanban & Experiência do Cliente):**
+  - [x] Cockpit Administrativo 360° (`admin.html` / `app.html` / `iflcosta.tech/app`);
+  - [x] Portal de Acompanhamento do Cliente em Tempo Real (`portal.html` / `status.html`);
+  - [x] Kanban de 5 Colunas com Máquina de Estados Desacoplada (Triagem -> Orçamento -> Fila -> Bancada -> QA -> Pronto);
+  - [x] Impressão Térmica Dual (Etiqueta Adesiva de Bancada 58mm + Recibo de Custódia CDC 90D);
+  - [x] Motor Universal de Reconhecimento de Scanner USB de Código de Barras & QR Code com atalho `Ctrl+K`.
 
+---
+
+## 🔮 ROADMAP DE SPRINTS EXECUTIVAS
+
+- [ ] **Sprint 2: Motor Financeiro Asaas & Automações de Pagamento (CONTA/CNPJ DO IRMÃO)**
+  - [ ] Criação das tabelas e campos de faturamento Asaas no Supabase;
+  - [ ] Geração de Pix Dinâmico com QR Code automático e Copia-e-Cola no Portal do Cliente;
+  - [ ] Opção de Cartão de Crédito em até 12x com cálculo de parcelamento;
+  - [ ] Trava inteligente de sinal de 100% de peças com avanço automático de status após confirmação do webhook;
+  - [ ] Disparo automático de comprovante e recibo digital no WhatsApp.
+
+- [ ] **Sprint 3: Estoque Inteligente & PDV Caixa Rápido (Loja Express)**
+  - [ ] Implementação da aba `[ 📦 Estoque & PDV ]` no Cockpit Admin;
+  - [ ] Mecânica de Baixa Dupla (Consumo em OS na Bancada com S/N vs Venda Rápida de Balcão);
+  - [ ] Rastreamento de Garantia de Fornecedor (KaBuM/SND/All Nations) por Número de Série (S/N) e RMA em 1 clique;
+  - [ ] Emissão de Cupom Térmico Não Fiscal 58mm/80mm no PDV;
+  - [ ] Alertas visuais de Ponto de Reposição (Kanban de Compras: 🟢 Confortável, 🟡 Reposição, 🔴 Crítico, 🟣 Ruptura).
+
+- [ ] **Sprint 4: Portal B2B MSP & Gestão de Contratos de TI**
+  - [ ] Painel corporativo para clientes de TI Gerenciada com inventário de estações e servidores;
+  - [ ] Central de chamados e chamados com SLA 2h/4h;
+  - [ ] Monitoramento de rotinas de backup em nuvem (Regra 3-2-1) e telemetria de segurança.
+
+- [ ] **Sprint 5: DRE Executivo em Tempo Real & BI Analytics 360°**
+  - [ ] Apuração diária e mensal da DRE com Custo Fixo Real (R$ 1.300/mês);
+  - [ ] CMV real de peças somado à Mão de Obra e ao faturamento do PDV;
+  - [ ] Dashboard de Atribuição de Canais (Leva-e-Traz vs Balcão Presencial) e CAC/LTV.
+
+- [ ] **Sprint 6: 🤖 BOT DE IA SNIPER DE PROMOÇÕES NO WHATSAPP (HARDWARE & MOBILE)**
+  - [ ] **Motor de Ingestão de Ofertas:** Coleta e monitoramento contínuo de promoções relâmpago, cupons e quedas de preço (KaBuM, Terabyte, Pichau, Mercado Livre Full, AliExpress Remessa Conforme, Amazon, Pelando e canais de hardware);
+  - [ ] **Cérebro de IA (LLM Filter & Valuation Engine):**
+    - Compara o preço encontrado com a tabela de **"Preço Teto de Oportunidade"** da IF Tech (ex: Ryzen 5 5600G <= R$ 480, SSD NVMe 1TB <= R$ 260, RTX 4060 <= R$ 1.650, Arctic MX-4 <= R$ 35, Telas/Baterias);
+    - Avalia compatibilidade com a **Tríade de Setups da IF Tech** (AMD APU, Intel + GPU, AMD Gamer Pro) e itens curingas de bancada;
+    - Calcula na hora a **Margem Líquida Projetada** se a peça for aplicada em uma OS ou vendida em máquina montada;
+  - [ ] **Notificador Proativo no WhatsApp do Fundador:**
+    - Envio instantâneo de alerta formatado: *"🚨 [SNIPER IF TECH] SSD Kingston 1TB NVMe por R$ 249 na KaBuM com cupom! Margem projetada na Bancada: +R$ 230,00. Link direto: [URL]"*.
