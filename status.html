@@ -723,8 +723,13 @@
             }
         }
 
+        let currentWorkOrder = null;
+        let currentWorkOrderData = null;
+
         function renderWorkOrderData(wo) {
             if (!wo) return;
+            currentWorkOrder = wo;
+            currentWorkOrderData = wo;
 
             const osNum = wo.os_number || "1053";
             const brand = wo.device_brand || "Equipamento";

@@ -2458,6 +2458,53 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('count-pronto').textContent = cP;
         }
 
+        let mockSerialsDB = [
+            {
+                sn: "SN-NV2-9988210",
+                serial_number: "SN-NV2-9988210",
+                prodName: "SSD Kingston NV2 1TB M.2 NVMe PCIe 4.0",
+                sku: "SSD-NV2-1TB",
+                supplier: "Kabum / SND Distribuidora Oficial",
+                invoice: "NF-e 004.912.842 - Série 1",
+                purchaseDate: "12/03/2026",
+                warrantyMonths: 36,
+                client: "Dr. Roberto Guimarães (Workstation Dell)"
+            },
+            {
+                sn: "SN-CORSAIR-883912",
+                serial_number: "SN-CORSAIR-883912",
+                prodName: "Memória Corsair Vengeance 16GB (2x8GB) 3200MHz DDR4",
+                sku: "RAM-DDR4-16GB-3200",
+                supplier: "TerabyteShop / All Nations",
+                invoice: "NF-e 002.819.330 - Série 2",
+                purchaseDate: "20/04/2026",
+                warrantyMonths: 60,
+                client: "Lucas Gamer (Setup Gamer RTX 4060)"
+            },
+            {
+                sn: "SN-RTX4060-771920",
+                serial_number: "SN-RTX4060-771920",
+                prodName: "Placa de Vídeo RTX 4060 8GB GDDR6 Galax 1-Click OC",
+                sku: "GPU-RTX-4060-8GB",
+                supplier: "Pichau Informática / Galax Brasil",
+                invoice: "NF-e 009.120.441 - Série 1",
+                purchaseDate: "15/05/2026",
+                warrantyMonths: 36,
+                client: "Lucas Mendes (Setup Gamer Competitivo)"
+            },
+            {
+                sn: "SN-BASEUS-102938",
+                serial_number: "SN-BASEUS-102938",
+                prodName: "Carregador Turbo 20W USB-C Baseus Quick Charge",
+                sku: "CHG-20W-BAS",
+                supplier: "Baseus Brasil Oficial Importadora",
+                invoice: "NF-e 001.442.991 - Série 1",
+                purchaseDate: "10/06/2026",
+                warrantyMonths: 12,
+                client: "Dra. Fernanda (Consultório Médico)"
+            }
+        ];
+
         let currentInventoryProducts = [
             // 1. CARREGADORES
             {
@@ -4778,36 +4825,6 @@ Qualquer dúvida, estou à disposição!
             showToast('✓ Cliente ' + name + ' cadastrado com sucesso no CRM!', 'success');
         }
 
-        function openClientDetailModal(clientId) {
-            activeClientId = clientId;
-            const client = currentClientsList.find(c => c.id === clientId);
-            if (!client) return;
-
-            const modal = document.getElementById('client-detail-modal');
-            if (!modal) return;
-
-            document.getElementById('cdetail-name').textContent = client.name;
-            document.getElementById('cdetail-phone').textContent = client.phone;
-            document.getElementById('cdetail-ltv').textContent = 'R$ ' + (client.total_spent || 0).toFixed(2).replace('.', ',');
-            document.getElementById('cdetail-orders-count').textContent = (client.orders_count || 0) + ' OSs no Histórico';
-
-            const historyList = document.getElementById('cdetail-history-list');
-            if (historyList) {
-                historyList.innerHTML = `
-                    <div class="p-2.5 bg-zinc-900 border border-zinc-800 flex justify-between items-center text-xs">
-                        <div>
-                            <strong class="text-white font-bold block">Manutenção Especializada & Upgrade</strong>
-                            <span class="text-zinc-500 text-[10px]">OS Recente • Garantia CDC 90D Ativa</span>
-                        </div>
-                        <span class="text-brand font-mono font-bold">R$ ${(client.total_spent || 350).toFixed(2).replace('.', ',')}</span>
-                    </div>
-                `;
-            }
-
-            modal.classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
         function printThermalDeviceLabel(wo) {
             wo = wo || selectedWorkOrder || currentWorkOrders[0];
             if (!wo) return;
@@ -4836,212 +4853,7 @@ Qualquer dúvida, estou à disposição!
                         Rastreamento: iflcosta.tech/status<br/>
                         Bragança Paulista - SP
                     </div>
-                <!-- MODAL: NOVO CLIENTE CRM -->
-    <div id="client-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <h3 class="text-base font-black text-white uppercase flex items-center gap-2">
-                    <i data-lucide="user-plus" class="w-4 h-4 text-brand"></i> Cadastrar Novo Cliente
-                </h3>
-                <button type="button" onclick="closeClientModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <form id="new-client-form" onsubmit="handleSaveClient(event)" class="space-y-4">
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome Completo / Razão Social *</label>
-                    <input type="text" id="cli-name" required placeholder="Ex: Dr. Roberto Guimarães" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">WhatsApp / Telefone *</label>
-                        <input type="text" id="cli-phone" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">CPF / CNPJ</label>
-                        <input type="text" id="cli-doc" placeholder="000.000.000-00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Endereço / Condomínio (Leva-e-Traz)</label>
-                    <input type="text" id="cli-address" placeholder="Ex: Residencial Euroville, Casa 42" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closeClientModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Cliente</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: DETALHE DO CLIENTE CRM -->
-    <div id="client-detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-2xl p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <div>
-                    <span class="text-brand text-[10px] font-bold uppercase block">// CRM & HISTÓRICO LTV</span>
-                    <h3 class="text-base font-black text-white uppercase" id="cdetail-name">Dr. Roberto Guimarães</h3>
-                </div>
-                <button type="button" onclick="closeClientDetailModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-zinc-950 border border-zinc-800 mb-4">
-                <div>
-                    <span class="text-zinc-500 text-[10px] uppercase block">WhatsApp:</span>
-                    <strong class="text-white" id="cdetail-phone">(11) 98765-4321</strong>
-                </div>
-                <div>
-                    <span class="text-zinc-500 text-[10px] uppercase block">Total Gasto (LTV):</span>
-                    <strong class="text-brand" id="cdetail-ltv">R$ 8.900,00</strong>
-                </div>
-                <div>
-                    <span class="text-zinc-500 text-[10px] uppercase block">Ordens de Serviço:</span>
-                    <strong class="text-cyan-400" id="cdetail-orders-count">5 OSs Concluídas</strong>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <span class="text-zinc-400 font-bold uppercase text-[10px] block">Histórico de Máquinas & Serviços:</span>
-                <div id="cdetail-history-list" class="space-y-2 max-h-48 overflow-y-auto">
-                    <!-- Injetado dinamicamente -->
-                </div>
-            </div>
-            <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
-                <button type="button" onclick="quickNewOSForClient(activeClientId)" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors">
-                    + Abrir Nova OS para este Cliente
-                </button>
-                <button type="button" onclick="closeClientDetailModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Fechar</button>
-            </div>
-        </div>
-    </div>
-<!-- MODAL: NOVA REGRA DE PREÇO-ALVO SNIPER -->
-    <div id="new-sniper-rule-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <h3 class="text-base font-black text-white uppercase flex items-center gap-2">
-                    <i data-lucide="crosshair" class="w-4 h-4 text-brand"></i> Criar Regra de Alvo Sniper
-                </h3>
-                <button type="button" onclick="closeNewSniperRuleModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <form onsubmit="handleSaveSniperRule(event)" class="space-y-4">
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome da Regra *</label>
-                    <input type="text" id="srule-name" required placeholder="Ex: Alerta SSD 1TB NVMe Barato" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Categoria *</label>
-                        <select id="srule-category" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                            <option value="SSD">SSD NVMe / SATA</option>
-                            <option value="RAM">Memória RAM</option>
-                            <option value="GPU">Placa de Vídeo (GPU)</option>
-                            <option value="CPU">Processador (CPU)</option>
-                            <option value="Fonte">Fonte de Alimentação</option>
-                            <option value="Cooler">Water Cooler / Air Cooler</option>
-                            <option value="Placa_Mae">Placa-Mãe</option>
-                            <option value="Notebook">Notebook</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Preço Máximo de Compra (R$) *</label>
-                        <input type="number" step="0.01" id="srule-max-price" required placeholder="250.00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-brand font-bold text-xs focus:outline-none focus:border-brand">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Filtro de Palavras-Chave (Opcional):</label>
-                    <input type="text" id="srule-keywords" placeholder="Ex: Kingston, Corsair, 3200MHz, RTX 4060" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="p-3 bg-zinc-950 border border-zinc-800 space-y-2">
-                    <label class="flex items-center gap-2 text-zinc-300 cursor-pointer text-[11px]">
-                        <input type="checkbox" id="srule-notify-telegram" checked class="accent-brand">
-                        <span>Disparar Alerta Imediato no Bot do Telegram</span>
-                    </label>
-                    <label class="flex items-center gap-2 text-zinc-300 cursor-pointer text-[11px]">
-                        <input type="checkbox" id="srule-notify-whatsapp" class="accent-brand">
-                        <span>Notificar via Webhook de WhatsApp</span>
-                    </label>
-                </div>
-                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closeNewSniperRuleModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Regra</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: CONFIGURAÇÃO DE BOTS & AFILIADOS -->
-    <div id="sniper-config-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <div>
-                    <span class="text-brand text-[10px] font-bold uppercase block">// INTEGRAÇÕES & AFILIADOS</span>
-                    <h3 class="text-base font-black text-white uppercase">Configurar Telegram, WhatsApp & Tags</h3>
-                </div>
-                <button type="button" onclick="closeSniperConfigModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <form onsubmit="handleSaveSniperConfig(event)" class="space-y-4">
-                <div class="space-y-3 p-3 bg-zinc-950 border border-zinc-800">
-                    <span class="text-cyan-400 font-bold uppercase text-[10px] block">1. Bot do Telegram (@BotFather)</span>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Telegram Bot Token:</label>
-                        <input type="text" id="sconfig-telegram-token" placeholder="Ex: 123456789:ABCdefGhIJKlmNoPQRstuVWXyz" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Telegram Chat ID / Canal VIP:</label>
-                        <input type="text" id="sconfig-telegram-chat" placeholder="Ex: @iftech_ofertas ou -1001234567890" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                </div>
-
-                <div class="space-y-3 p-3 bg-zinc-950 border border-zinc-800">
-                    <span class="text-purple-400 font-bold uppercase text-[10px] block">2. Tags de Afiliados (Monetização da Comunidade)</span>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Amazon Associate Tag:</label>
-                            <input type="text" id="sconfig-tag-amazon" placeholder="iftech0b-20" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                        </div>
-                        <div>
-                            <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Mercado Livre Tag:</label>
-                            <input type="text" id="sconfig-tag-ml" placeholder="iftech_ml" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closeSniperConfigModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Configurações</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: PRÉ-VISUALIZAÇÃO & DISPARO DE OFERTA -->
-    <div id="sniper-broadcast-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <div>
-                    <span class="text-brand text-[10px] font-bold uppercase block">// DISPARO DE OPORTUNIDADE</span>
-                    <h3 class="text-base font-black text-white uppercase" id="sbroadcast-title">Disparar Alerta de Promoção</h3>
-                </div>
-                <button type="button" onclick="closeSniperBroadcastModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            
-            <div class="p-3 bg-zinc-950 border border-zinc-800 mb-4 space-y-2">
-                <span class="text-[10px] text-zinc-500 uppercase font-bold block">Mensagem Formatada (Telegram / WhatsApp):</span>
-                <pre id="sbroadcast-preview" class="bg-black p-3 text-xs text-zinc-300 font-mono whitespace-pre-wrap border border-zinc-900 max-h-52 overflow-y-auto leading-relaxed"></pre>
-            </div>
-
-            <div class="pt-3 border-t border-zinc-800 flex flex-wrap justify-between items-center gap-2">
-                <a id="sbroadcast-link" href="#" target="_blank" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white font-bold uppercase flex items-center gap-1.5">
-                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Abrir Loja
-                </a>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="copyBroadcastMessage()" class="px-4 py-2 bg-zinc-900 border border-brand text-brand hover:bg-brand hover:text-black font-bold uppercase transition-colors flex items-center gap-1.5">
-                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar WhatsApp
-                    </button>
-                    <button type="button" onclick="executeTelegramBroadcast()" class="px-4 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                        <i data-lucide="send" class="w-3.5 h-3.5"></i> 🚀 Disparar Telegram
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
+                </body>
                 </html>
             `);
             printWindow.document.close();
@@ -5085,212 +4897,7 @@ Qualquer dúvida, estou à disposição!
                     <div class="text-center" style="margin-top: 15px; border-top: 1px solid #000; padding-top: 4px;">
                         Assinatura do Cliente
                     </div>
-                <!-- MODAL: NOVO CLIENTE CRM -->
-    <div id="client-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <h3 class="text-base font-black text-white uppercase flex items-center gap-2">
-                    <i data-lucide="user-plus" class="w-4 h-4 text-brand"></i> Cadastrar Novo Cliente
-                </h3>
-                <button type="button" onclick="closeClientModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <form id="new-client-form" onsubmit="handleSaveClient(event)" class="space-y-4">
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome Completo / Razão Social *</label>
-                    <input type="text" id="cli-name" required placeholder="Ex: Dr. Roberto Guimarães" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">WhatsApp / Telefone *</label>
-                        <input type="text" id="cli-phone" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">CPF / CNPJ</label>
-                        <input type="text" id="cli-doc" placeholder="000.000.000-00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Endereço / Condomínio (Leva-e-Traz)</label>
-                    <input type="text" id="cli-address" placeholder="Ex: Residencial Euroville, Casa 42" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closeClientModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Cliente</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: DETALHE DO CLIENTE CRM -->
-    <div id="client-detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-2xl p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <div>
-                    <span class="text-brand text-[10px] font-bold uppercase block">// CRM & HISTÓRICO LTV</span>
-                    <h3 class="text-base font-black text-white uppercase" id="cdetail-name">Dr. Roberto Guimarães</h3>
-                </div>
-                <button type="button" onclick="closeClientDetailModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-zinc-950 border border-zinc-800 mb-4">
-                <div>
-                    <span class="text-zinc-500 text-[10px] uppercase block">WhatsApp:</span>
-                    <strong class="text-white" id="cdetail-phone">(11) 98765-4321</strong>
-                </div>
-                <div>
-                    <span class="text-zinc-500 text-[10px] uppercase block">Total Gasto (LTV):</span>
-                    <strong class="text-brand" id="cdetail-ltv">R$ 8.900,00</strong>
-                </div>
-                <div>
-                    <span class="text-zinc-500 text-[10px] uppercase block">Ordens de Serviço:</span>
-                    <strong class="text-cyan-400" id="cdetail-orders-count">5 OSs Concluídas</strong>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <span class="text-zinc-400 font-bold uppercase text-[10px] block">Histórico de Máquinas & Serviços:</span>
-                <div id="cdetail-history-list" class="space-y-2 max-h-48 overflow-y-auto">
-                    <!-- Injetado dinamicamente -->
-                </div>
-            </div>
-            <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
-                <button type="button" onclick="quickNewOSForClient(activeClientId)" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors">
-                    + Abrir Nova OS para este Cliente
-                </button>
-                <button type="button" onclick="closeClientDetailModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Fechar</button>
-            </div>
-        </div>
-    </div>
-<!-- MODAL: NOVA REGRA DE PREÇO-ALVO SNIPER -->
-    <div id="new-sniper-rule-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <h3 class="text-base font-black text-white uppercase flex items-center gap-2">
-                    <i data-lucide="crosshair" class="w-4 h-4 text-brand"></i> Criar Regra de Alvo Sniper
-                </h3>
-                <button type="button" onclick="closeNewSniperRuleModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <form onsubmit="handleSaveSniperRule(event)" class="space-y-4">
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome da Regra *</label>
-                    <input type="text" id="srule-name" required placeholder="Ex: Alerta SSD 1TB NVMe Barato" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Categoria *</label>
-                        <select id="srule-category" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                            <option value="SSD">SSD NVMe / SATA</option>
-                            <option value="RAM">Memória RAM</option>
-                            <option value="GPU">Placa de Vídeo (GPU)</option>
-                            <option value="CPU">Processador (CPU)</option>
-                            <option value="Fonte">Fonte de Alimentação</option>
-                            <option value="Cooler">Water Cooler / Air Cooler</option>
-                            <option value="Placa_Mae">Placa-Mãe</option>
-                            <option value="Notebook">Notebook</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Preço Máximo de Compra (R$) *</label>
-                        <input type="number" step="0.01" id="srule-max-price" required placeholder="250.00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-brand font-bold text-xs focus:outline-none focus:border-brand">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Filtro de Palavras-Chave (Opcional):</label>
-                    <input type="text" id="srule-keywords" placeholder="Ex: Kingston, Corsair, 3200MHz, RTX 4060" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                </div>
-                <div class="p-3 bg-zinc-950 border border-zinc-800 space-y-2">
-                    <label class="flex items-center gap-2 text-zinc-300 cursor-pointer text-[11px]">
-                        <input type="checkbox" id="srule-notify-telegram" checked class="accent-brand">
-                        <span>Disparar Alerta Imediato no Bot do Telegram</span>
-                    </label>
-                    <label class="flex items-center gap-2 text-zinc-300 cursor-pointer text-[11px]">
-                        <input type="checkbox" id="srule-notify-whatsapp" class="accent-brand">
-                        <span>Notificar via Webhook de WhatsApp</span>
-                    </label>
-                </div>
-                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closeNewSniperRuleModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Regra</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: CONFIGURAÇÃO DE BOTS & AFILIADOS -->
-    <div id="sniper-config-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <div>
-                    <span class="text-brand text-[10px] font-bold uppercase block">// INTEGRAÇÕES & AFILIADOS</span>
-                    <h3 class="text-base font-black text-white uppercase">Configurar Telegram, WhatsApp & Tags</h3>
-                </div>
-                <button type="button" onclick="closeSniperConfigModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <form onsubmit="handleSaveSniperConfig(event)" class="space-y-4">
-                <div class="space-y-3 p-3 bg-zinc-950 border border-zinc-800">
-                    <span class="text-cyan-400 font-bold uppercase text-[10px] block">1. Bot do Telegram (@BotFather)</span>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Telegram Bot Token:</label>
-                        <input type="text" id="sconfig-telegram-token" placeholder="Ex: 123456789:ABCdefGhIJKlmNoPQRstuVWXyz" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                    <div>
-                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Telegram Chat ID / Canal VIP:</label>
-                        <input type="text" id="sconfig-telegram-chat" placeholder="Ex: @iftech_ofertas ou -1001234567890" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                    </div>
-                </div>
-
-                <div class="space-y-3 p-3 bg-zinc-950 border border-zinc-800">
-                    <span class="text-purple-400 font-bold uppercase text-[10px] block">2. Tags de Afiliados (Monetização da Comunidade)</span>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Amazon Associate Tag:</label>
-                            <input type="text" id="sconfig-tag-amazon" placeholder="iftech0b-20" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                        </div>
-                        <div>
-                            <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Mercado Livre Tag:</label>
-                            <input type="text" id="sconfig-tag-ml" placeholder="iftech_ml" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closeSniperConfigModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Configurações</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: PRÉ-VISUALIZAÇÃO & DISPARO DE OFERTA -->
-    <div id="sniper-broadcast-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <div>
-                    <span class="text-brand text-[10px] font-bold uppercase block">// DISPARO DE OPORTUNIDADE</span>
-                    <h3 class="text-base font-black text-white uppercase" id="sbroadcast-title">Disparar Alerta de Promoção</h3>
-                </div>
-                <button type="button" onclick="closeSniperBroadcastModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            
-            <div class="p-3 bg-zinc-950 border border-zinc-800 mb-4 space-y-2">
-                <span class="text-[10px] text-zinc-500 uppercase font-bold block">Mensagem Formatada (Telegram / WhatsApp):</span>
-                <pre id="sbroadcast-preview" class="bg-black p-3 text-xs text-zinc-300 font-mono whitespace-pre-wrap border border-zinc-900 max-h-52 overflow-y-auto leading-relaxed"></pre>
-            </div>
-
-            <div class="pt-3 border-t border-zinc-800 flex flex-wrap justify-between items-center gap-2">
-                <a id="sbroadcast-link" href="#" target="_blank" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white font-bold uppercase flex items-center gap-1.5">
-                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Abrir Loja
-                </a>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="copyBroadcastMessage()" class="px-4 py-2 bg-zinc-900 border border-brand text-brand hover:bg-brand hover:text-black font-bold uppercase transition-colors flex items-center gap-1.5">
-                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar WhatsApp
-                    </button>
-                    <button type="button" onclick="executeTelegramBroadcast()" class="px-4 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                        <i data-lucide="send" class="w-3.5 h-3.5"></i> 🚀 Disparar Telegram
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
+                </body>
                 </html>
             `);
             printWindow.document.close();
@@ -5357,34 +4964,62 @@ IF Tech // Engenharia de Hardware`;
             const modal = document.getElementById('client-detail-modal');
             if (!modal) return;
 
+            // Coletar OSs ativas e históricas deste cliente
+            const activeOrders = (currentWorkOrders || []).filter(o => 
+                (o.client_name && o.client_name.toLowerCase().includes(client.name.toLowerCase().split(' ')[0])) ||
+                (o.client_whatsapp && client.phone && o.client_whatsapp.replace(/\D/g, '') === client.phone.replace(/\D/g, ''))
+            );
+
+            let mockHistory = [];
+            if (client.id === 'cli-02' || client.name.includes('Roberto')) {
+                mockHistory = [
+                    { os: '1041', title: 'Workstation Dell XPS - Troca de Pasta Térmica Arctic MX-4 & Desoxidação', date: 'Há 5 dias', value: 280.00, status: 'Pronto / Entregue' },
+                    { os: '1032', title: 'Upgrade SSD Kingston 1TB NVMe + Clonagem Windows 11 Pro', date: 'Há 3 semanas', value: 650.00, status: 'Pronto / Entregue' },
+                    { os: '1015', title: 'Montagem Setup Alta Performance para Consultório Médico', date: 'Há 2 meses', value: 6200.00, status: 'Pronto / Entregue' },
+                    { os: '0988', title: 'Infraestrutura de Rede Gigabit & Backup Local UrBackup', date: 'Há 4 meses', value: 1200.00, status: 'Pronto / Entregue' },
+                    { os: '0942', title: 'Substituição de Fonte 650W 80 Plus Bronze + Cable Management', date: 'Há 6 meses', value: 570.00, status: 'Pronto / Entregue' }
+                ];
+            } else if (client.id === 'cli-01' || client.name.includes('Lucas')) {
+                mockHistory = [
+                    { os: '1039', title: 'Setup Gamer RTX 4060 - Montagem Completa e Otimização AIDA64', date: 'Há 12 dias', value: 3850.00, status: 'Pronto / Entregue' },
+                    { os: '1010', title: 'Upgrade Memória RAM Corsair 16GB 3200MHz DDR4', date: 'Há 2 meses', value: 350.00, status: 'Pronto / Entregue' }
+                ];
+            } else {
+                mockHistory = [
+                    { os: '1043', title: 'Notebook Acer Aspire 5 - Reparo de Carcaça e Troca de Teclado', date: 'Há 8 dias', value: 415.00, status: 'Pronto / Entregue' }
+                ];
+            }
+
+            const liveHistory = activeOrders.map(o => ({
+                os: formatOSNumber(o.os_number),
+                title: `${o.device_brand || 'Hardware'} ${o.device_model || ''} - ${o.reported_defect || 'Serviço de Bancada'}`,
+                date: new Date(o.created_at || Date.now()).toLocaleDateString('pt-BR'),
+                value: parseFloat(o.total_amount || 0),
+                status: (o.status || 'Em Execução').replace(/_/g, ' ')
+            }));
+
+            // Evitar duplicatas por número de OS
+            const seenOS = new Set();
+            const combinedHistory = [];
+            [...liveHistory, ...mockHistory].forEach(item => {
+                const num = String(item.os);
+                if (!seenOS.has(num)) {
+                    seenOS.add(num);
+                    combinedHistory.push(item);
+                }
+            });
+
+            const totalOrders = Math.max(client.orders_count || 0, combinedHistory.length);
+            const totalLTV = combinedHistory.reduce((acc, h) => acc + (parseFloat(h.value) || 0), 0) || client.total_spent || 0;
+
             document.getElementById('cdetail-name').textContent = client.name;
             document.getElementById('cdetail-phone').textContent = client.phone;
-            document.getElementById('cdetail-ltv').textContent = 'R$ ' + (client.total_spent || 0).toFixed(2).replace('.', ',');
-            document.getElementById('cdetail-orders-count').textContent = (client.orders_count || 0) + ' OSs Concluídas';
+            document.getElementById('cdetail-ltv').textContent = 'R$ ' + totalLTV.toFixed(2).replace('.', ',');
+            document.getElementById('cdetail-orders-count').textContent = totalOrders + ' OSs no Histórico';
 
             const historyList = document.getElementById('cdetail-history-list');
             if (historyList) {
-                let mockHistory = [];
-                if (client.id === 'cli-02' || client.name.includes('Roberto')) {
-                    mockHistory = [
-                        { os: '1041', title: 'Workstation Dell XPS - Troca de Pasta Térmica Arctic MX-4 & Desoxidação', date: 'Há 5 dias', value: 280.00, status: 'Pronto / Entregue' },
-                        { os: '1032', title: 'Upgrade SSD Kingston 1TB NVMe + Clonagem Windows 11 Pro', date: 'Há 3 semanas', value: 650.00, status: 'Pronto / Entregue' },
-                        { os: '1015', title: 'Montagem Setup Alta Performance para Consultório Médico', date: 'Há 2 meses', value: 6200.00, status: 'Pronto / Entregue' },
-                        { os: '0988', title: 'Infraestrutura de Rede Gigabit & Backup Local UrBackup', date: 'Há 4 meses', value: 1200.00, status: 'Pronto / Entregue' },
-                        { os: '0942', title: 'Substituição de Fonte 650W 80 Plus Bronze + Cable Management', date: 'Há 6 meses', value: 570.00, status: 'Pronto / Entregue' }
-                    ];
-                } else if (client.id === 'cli-01' || client.name.includes('Lucas')) {
-                    mockHistory = [
-                        { os: '1039', title: 'Setup Gamer RTX 4060 - Montagem Completa e Otimização AIDA64', date: 'Há 12 dias', value: 3850.00, status: 'Pronto / Entregue' },
-                        { os: '1010', title: 'Upgrade Memória RAM Corsair 16GB 3200MHz DDR4', date: 'Há 2 meses', value: 350.00, status: 'Pronto / Entregue' }
-                    ];
-                } else {
-                    mockHistory = [
-                        { os: '1043', title: 'Notebook Acer Aspire 5 - Reparo de Carcaça e Troca de Teclado', date: 'Há 8 dias', value: 415.00, status: 'Pronto / Entregue' }
-                    ];
-                }
-
-                historyList.innerHTML = mockHistory.map(h => `
+                historyList.innerHTML = combinedHistory.map(h => `
                     <div class="p-3 bg-zinc-900 border border-zinc-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
                         <div>
                             <div class="flex items-center gap-2 mb-0.5">
@@ -5394,7 +5029,7 @@ IF Tech // Engenharia de Hardware`;
                             <span class="text-zinc-500 text-[10px]">${h.date} • ${h.status} • Garantia CDC 90D</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <span class="text-brand font-mono font-bold text-sm">R$ ${h.value.toFixed(2).replace('.', ',')}</span>
+                            <span class="text-brand font-mono font-bold text-sm">R$ ${(parseFloat(h.value) || 0).toFixed(2).replace('.', ',')}</span>
                             <button type="button" onclick="printThermalCustomerReceipt()" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold uppercase">Recibo</button>
                         </div>
                     </div>
@@ -5410,14 +5045,39 @@ IF Tech // Engenharia de Hardware`;
         }
 
         function quickNewOSForClient(clientId) {
+            closeClientDetailModal();
+            const client = currentClientsList.find(c => c.id === clientId);
             openIntakeModal();
+            if (client) {
+                const nameInput = document.getElementById('intake-client-name') || document.getElementById('client-name');
+                const phoneInput = document.getElementById('intake-client-phone') || document.getElementById('client-phone');
+                if (nameInput) nameInput.value = client.name;
+                if (phoneInput) phoneInput.value = client.phone;
+            }
         }
 
         function renderClientsTable() {
             filterClientsTable();
         }
 
-        function loadStandardBuildSlots() {}
+        function getPartTypeFromLabel(name) {
+            const n = (name || '').toLowerCase();
+            if (n.includes('processador') || n.includes('ryzen') || n.includes('core i') || n.includes('intel') || n.includes('amd')) return 'CPU';
+            if (n.includes('water cooler') || n.includes('cooler') || n.includes('fan')) return 'Cooler';
+            if (n.includes('placa-mãe') || n.includes('placa mãe') || n.includes('b550') || n.includes('b650') || n.includes('x670') || n.includes('h610') || n.includes('h81') || n.includes('a520') || n.includes('b450')) return 'Placa-Mãe';
+            if (n.includes('memória') || n.includes('ram') || n.includes('ddr4') || n.includes('ddr5')) return 'RAM';
+            if (n.includes('ssd') || n.includes('nvme') || n.includes('armazenamento') || n.includes('sata')) return 'SSD';
+            if (n.includes('placa de vídeo') || n.includes('rtx') || n.includes('gtx') || n.includes('radeon') || n.includes('gpu')) return 'GPU';
+            if (n.includes('fonte') || n.includes('80 plus') || n.includes('modular') || n.includes('w')) return 'Fonte';
+            if (n.includes('gabinete') || n.includes('tower') || n.includes('aquário') || n.includes('vidro')) return 'Gabinete';
+            return 'Hardware';
+        }
+
+        function loadStandardBuildSlots() {
+            const select = document.getElementById('build-profile-select');
+            const defaultVal = select ? select.value : 'GAMER_MID';
+            handleBuildProfileChange(defaultVal);
+        }
         function setupAdminRealtime() {}
         function loadSupabaseData() {}
         function closeModal() { closeAllModals(); }
@@ -5601,17 +5261,33 @@ IF Tech // Engenharia de Hardware`;
                 profile.parts.forEach(p => {
                     const tr = document.createElement('tr');
                     tr.className = 'part-row border-b border-zinc-900';
+                    const partType = p.type || getPartTypeFromLabel(p.name);
+                    const rowProfit = (p.price - p.cost);
                     tr.innerHTML = `
-                        <td class="py-2 px-2"><input type="text" name="part_name[]" value="${p.name}" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs"></td>
-                        <td class="py-2 px-2"><input type="number" step="0.01" name="part_cost[]" value="${p.cost.toFixed(2)}" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs part-cost"></td>
-                        <td class="py-2 px-2"><input type="number" step="0.01" name="part_price[]" value="${p.price.toFixed(2)}" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs part-price"></td>
-                        <td class="py-2 px-2 text-center"><button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-400 font-bold">✕</button></td>
+                        <td class="py-2 px-2 w-28">
+                            <input type="text" name="part_type[]" value="${partType}" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-zinc-400 font-mono text-xs uppercase" placeholder="Tipo">
+                        </td>
+                        <td class="py-2 px-2">
+                            <input type="text" name="part_name[]" value="${p.name}" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs font-mono" placeholder="Especificação do Componente">
+                        </td>
+                        <td class="py-2 px-2 w-28">
+                            <input type="number" step="0.01" name="part_cost[]" value="${p.cost.toFixed(2)}" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs font-mono part-cost">
+                        </td>
+                        <td class="py-2 px-2 w-28">
+                            <input type="number" step="0.01" name="part_price[]" value="${p.price.toFixed(2)}" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs font-mono part-price">
+                        </td>
+                        <td class="py-2 px-2 w-24 text-right font-mono text-xs font-bold ${rowProfit >= 0 ? 'text-brand' : 'text-red-400'} part-profit">
+                            R$ ${(rowProfit >= 0 ? '+' : '')}${rowProfit.toFixed(2).replace('.', ',')}
+                        </td>
+                        <td class="py-2 px-2 w-10 text-center">
+                            <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-400 font-bold transition-colors">✕</button>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
             }
             recalcTotals();
-            showToast(`✓ Perfil "${profile.name}" carregado!`, 'success');
+            showToast(`✓ Perfil "${profile.name}" carregado com sucesso!`, 'success');
         }
 
         function addPartRow() {
@@ -5620,10 +5296,24 @@ IF Tech // Engenharia de Hardware`;
             const tr = document.createElement('tr');
             tr.className = 'part-row border-b border-zinc-900';
             tr.innerHTML = `
-                <td class="py-2 px-2"><input type="text" name="part_name[]" placeholder="Descrição do componente" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs"></td>
-                <td class="py-2 px-2"><input type="number" step="0.01" name="part_cost[]" placeholder="0.00" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs part-cost"></td>
-                <td class="py-2 px-2"><input type="number" step="0.01" name="part_price[]" placeholder="0.00" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs part-price"></td>
-                <td class="py-2 px-2 text-center"><button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-400 font-bold">✕</button></td>
+                <td class="py-2 px-2 w-28">
+                    <input type="text" name="part_type[]" value="Hardware" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-zinc-400 font-mono text-xs uppercase" placeholder="Tipo">
+                </td>
+                <td class="py-2 px-2">
+                    <input type="text" name="part_name[]" placeholder="Marca, Modelo & Especificação" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs font-mono">
+                </td>
+                <td class="py-2 px-2 w-28">
+                    <input type="number" step="0.01" name="part_cost[]" placeholder="0.00" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs font-mono part-cost">
+                </td>
+                <td class="py-2 px-2 w-28">
+                    <input type="number" step="0.01" name="part_price[]" placeholder="0.00" oninput="recalcTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs font-mono part-price">
+                </td>
+                <td class="py-2 px-2 w-24 text-right font-mono text-xs font-bold text-brand part-profit">
+                    R$ 0,00
+                </td>
+                <td class="py-2 px-2 w-10 text-center">
+                    <button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-400 font-bold transition-colors">✕</button>
+                </td>
             `;
             tbody.appendChild(tr);
         }
@@ -5641,10 +5331,17 @@ IF Tech // Engenharia de Hardware`;
             let totalSale = 0;
 
             document.querySelectorAll('.part-row').forEach(row => {
-                const cost = parseFloat(row.querySelector('.part-cost')?.value || 0);
-                const sale = parseFloat(row.querySelector('.part-price')?.value || 0);
+                const cost = parseFloat(row.querySelector('.part-cost')?.value || 0) || 0;
+                const sale = parseFloat(row.querySelector('.part-price')?.value || 0) || 0;
+                const profit = sale - cost;
                 totalCost += cost;
                 totalSale += sale;
+
+                const profitEl = row.querySelector('.part-profit');
+                if (profitEl) {
+                    profitEl.textContent = 'R$ ' + (profit >= 0 ? '+' : '') + profit.toFixed(2).replace('.', ',');
+                    profitEl.className = `py-2 px-2 w-24 text-right font-mono text-xs font-bold ${profit >= 0 ? 'text-brand' : 'text-red-400'} part-profit`;
+                }
             });
 
             const laborInput = document.getElementById('labor-price');
