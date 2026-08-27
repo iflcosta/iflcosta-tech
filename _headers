@@ -1,0 +1,9 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://togrnwxazuweuihlaljo.supabase.co wss://togrnwxazuweuihlaljo.supabase.co https://api.telegram.org https://api.asaas.com https://sandbox.asaas.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me;
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self)
+  X-XSS-Protection: 1; mode=block
+  X-DNS-Prefetch-Control: on
