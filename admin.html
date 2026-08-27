@@ -368,6 +368,7 @@
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-1.5">Perfil do Setup Gamer / Pro *</label>
                                 <select id="build-profile-select" onchange="handleBuildProfileChange(this.value)" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-brand">
+                                    <option value="" selected>-- Selecione um Perfil para Carregar ou Monte Livre --</option>
                                     <option value="GAMER_MID">🎮 Setup Gamer 1080p / 1440p High (Ryzen 5 + RTX 4060 8GB)</option>
                                     <option value="GAMER_HIGH">🔥 Setup Gamer Competitivo / Streaming 1440p (Ryzen 7 + RTX 4070 Super)</option>
                                     <option value="GAMER_ULTRA">👑 Setup Gamer Entusiasta 4K Ultra AM5 (Ryzen 7 7800X3D + RTX 4080 Super)</option>
@@ -2014,7 +2015,7 @@ Qualquer dúvida, estou à disposição!
             recalcTotals();
             loadSupabaseData();
             setupAdminRealtime();
-            loadStandardBuildSlots();
+            // Setup Custom Build inicia limpo
 
             if (window.lucide) lucide.createIcons();
         }
