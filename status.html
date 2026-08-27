@@ -2263,5 +2263,48 @@
         </div>
     </div>
     
+
+    <!-- Modal: Abrir Chamado no Portal do Cliente -->
+    <div id="portal-new-ticket-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
+        <div class="bg-black border-2 border-yellow-400 w-full max-w-lg shadow-[8px_8px_0px_0px_rgba(234,179,8,0.5)] my-8 overflow-hidden">
+            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-6 bg-yellow-400"></div>
+                    <div>
+                        <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest block">SUPORTE TÉCNICO DEDICADO</span>
+                        <h3 class="text-lg font-black text-white uppercase">Abrir Chamado em 10s</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closePortalNewTicketModal()" class="text-zinc-500 hover:text-white p-1 text-xl">✕</button>
+            </div>
+
+            <form id="portal-new-ticket-form" onsubmit="handlePortalSaveTicket(event)" class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block text-zinc-400 uppercase font-bold mb-1">Qual computador está com problema?*</label>
+                    <select id="portal-ticket-device-select" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-cyan-400 font-bold focus:outline-none focus:border-yellow-400">
+                        <!-- Injetado dinamicamente -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-zinc-400 uppercase font-bold mb-1">Seu Nome:*</label>
+                    <input type="text" id="portal-ticket-name" required placeholder="Ex: Roberto / Camila" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                </div>
+                <div>
+                    <label class="block text-zinc-400 uppercase font-bold mb-1">Seu WhatsApp (para acompanhar):*</label>
+                    <input type="text" id="portal-ticket-whatsapp" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                </div>
+                <div>
+                    <label class="block text-zinc-400 uppercase font-bold mb-1">Descreva o que está acontecendo:*</label>
+                    <textarea id="portal-ticket-desc" rows="3" required placeholder="Ex: Não consigo acessar a pasta de rede / O computador travou com tela azul..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-yellow-400"></textarea>
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closePortalNewTicketModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-yellow-400 text-black font-black uppercase hover:bg-white transition-colors">Enviar Chamado</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>

@@ -492,45 +492,243 @@
             <!-- ============================================================= -->
             <!-- 4. ABA: CONTRATOS DE TI GERENCIADA (MSP & MRR)                 -->
             <!-- ============================================================= -->
+            <!-- ============================================================= -->
+            <!-- 4. ABA: CONTRATOS DE TI GERENCIADA, ITAM & SERVICE DESK (MSP)  -->
+            <!-- ============================================================= -->
             <div id="tab-content-msp" class="tab-content hidden space-y-6">
-                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 font-mono">
-                    <div class="flex justify-between items-center pb-4 border-b border-zinc-800 mb-6">
-                        <div>
-                            <span class="text-purple-400 text-xs font-bold uppercase block mb-1">[ Pilar 3 • TI Gerenciada & Contratos B2B ]</span>
-                            <h3 class="text-xl sm:text-2xl font-extrabold text-white">Carteira de Empresas & MRR</h3>
-                        </div>
-                        <button class="px-3 py-1.5 bg-purple-950/60 border border-purple-500 text-purple-400 text-xs font-bold uppercase hover:bg-purple-400 hover:text-black transition-colors">
-                            + Novo Contrato MSP
-                        </button>
+                <!-- Header & KPIs Executivos MSP -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-purple-500 transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">CONTRATOS ATIVOS</div>
+                        <div class="text-xl sm:text-2xl font-black text-white" id="msp-stat-contracts-count">0</div>
+                        <div class="text-[10px] text-purple-400 mt-1">PMEs em Bragança & Região</div>
                     </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-brand transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">RECEITA RECORRENTE (MRR)</div>
+                        <div class="text-xl sm:text-2xl font-black text-brand" id="msp-stat-total-mrr">R$ 0,00</div>
+                        <div class="text-[10px] text-zinc-400 mt-1" id="msp-stat-mrr-arr">ARR: R$ 0,00/ano</div>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-cyan-400 transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">PARQUE DE ATIVOS (ITAM)</div>
+                        <div class="text-xl sm:text-2xl font-black text-cyan-400" id="msp-stat-devices-count">0</div>
+                        <div class="text-[10px] text-zinc-400 mt-1">Estações & Servidores RustDesk</div>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-yellow-400 transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">SLA GLOBAL // SERVICE DESK</div>
+                        <div class="text-xl sm:text-2xl font-black text-yellow-400" id="msp-stat-sla-pct">100%</div>
+                        <div class="text-[10px] text-zinc-400 mt-1" id="msp-stat-active-tickets">0 chamados abertos</div>
+                    </div>
+                </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-zinc-800 text-zinc-400">
-                                    <th class="py-2.5 px-3">Contrato</th>
-                                    <th class="py-2.5 px-3">Empresa Cliente</th>
-                                    <th class="py-2.5 px-3">Plano</th>
-                                    <th class="py-2.5 px-3">Estações</th>
-                                    <th class="py-2.5 px-3">Backup 3-2-1</th>
-                                    <th class="py-2.5 px-3 text-right">MRR Mensal</th>
-                                    <th class="py-2.5 px-3 text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-zinc-900 text-zinc-300">
-                                <tr>
-                                    <td class="py-3 px-3 font-bold text-purple-400">MSP-2026-004</td>
-                                    <td class="py-3 px-3 text-white font-bold">Clínica Médica São Francisco</td>
-                                    <td class="py-3 px-3"><span class="text-purple-400 font-bold">Professional</span></td>
-                                    <td class="py-3 px-3">10 PCs + 1 Server</td>
-                                    <td class="py-3 px-3 text-brand">● Wasabi OK (04:00 AM)</td>
-                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 1.099,00/mês</td>
-                                    <td class="py-3 px-3 text-center">
-                                        <a href="https://wa.me/5511919691542" target="_blank" class="text-brand hover:underline">RustDesk</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Sub-navegação interna MSP -->
+                <div class="flex flex-wrap gap-2 border-b border-zinc-800 pb-2">
+                    <button type="button" onclick="switchMSPSubTab('contracts')" id="msp-subtab-btn-contracts" class="msp-subtab-btn px-4 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-mono text-xs font-bold uppercase transition-all">
+                        💼 Contratos & MRR
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('devices')" id="msp-subtab-btn-devices" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all">
+                        🖥️ Inventário ITAM (RustDesk)
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('tickets')" id="msp-subtab-btn-tickets" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5">
+                        🎫 Service Desk (SLA 2h) <span id="msp-badge-open-tickets" class="px-1.5 py-0.2 bg-yellow-400 text-black text-[10px] font-black rounded-full hidden">0</span>
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('visits')" id="msp-subtab-btn-visits" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all">
+                        🚗 Visitas Presenciais & GPS
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('snitch')" id="msp-subtab-btn-snitch" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5">
+                        🛡️ Dead Man's Snitch (Backup 3-2-1)
+                    </button>
+                </div>
+
+                <!-- SUB-ABA 1: CONTRATOS & CARTEIRA B2B -->
+                <div id="msp-subtab-content-contracts" class="msp-subtab-content space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-purple-400 text-xs font-bold uppercase block mb-1">[ Pilar 3 • Gestão de Contratos Recorrentes ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Carteira de Empresas Gerenciadas</h3>
+                            </div>
+                            <button type="button" onclick="openNewMSPContractModal()" class="px-4 py-2 bg-purple-500 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(168,85,247,0.4)]">
+                                <i data-lucide="plus" class="w-4 h-4"></i> + Novo Contrato MSP
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950/80">
+                                        <th class="py-3 px-3">Código</th>
+                                        <th class="py-3 px-3">Empresa Cliente</th>
+                                        <th class="py-3 px-3">Contato / WhatsApp</th>
+                                        <th class="py-3 px-3">Plano MSP</th>
+                                        <th class="py-3 px-3 text-center">Ativos</th>
+                                        <th class="py-3 px-3 text-center">SLA Remoto</th>
+                                        <th class="py-3 px-3 text-right">MRR Mensal</th>
+                                        <th class="py-3 px-3 text-center">Status</th>
+                                        <th class="py-3 px-3 text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="msp-contracts-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 2: INVENTÁRIO ITAM (ATIVOS & RUSTDESK) -->
+                <div id="msp-subtab-content-devices" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-cyan-400 text-xs font-bold uppercase block mb-1">[ ITAM • Inventário de Hardware & Telemetria ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Estações, Servidores & Acesso RustDesk</h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="msp-device-search" onkeyup="filterMSPDevices()" placeholder="Buscar por tag, hostname, usuário..." class="bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-400">
+                                <button type="button" onclick="openNewMSPDeviceModal()" class="px-4 py-2 bg-cyan-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)]">
+                                    <i data-lucide="plus" class="w-4 h-4"></i> + Cadastrar Ativo
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="msp-devices-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 3: SERVICE DESK & INCIDENTES (ITIL V4) -->
+                <div id="msp-subtab-content-tickets" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-yellow-400 text-xs font-bold uppercase block mb-1">[ Service Desk • Gestão de Incidentes & SLA ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Fila de Chamados & Cronômetro de Resposta</h3>
+                            </div>
+                            <button type="button" onclick="openNewMSPTicketModal()" class="px-4 py-2 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(234,179,8,0.4)]">
+                                <i data-lucide="plus" class="w-4 h-4"></i> + Abrir Chamado
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                            <!-- Coluna 1: Aberto / Triagem -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-yellow-400 flex items-center gap-1.5">● ABERTOS (SLA ATIVO)</span>
+                                    <span id="msp-col-count-aberto" class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-700 text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-aberto" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+
+                            <!-- Coluna 2: Em Atendimento Remoto -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-cyan-400 flex items-center gap-1.5">⚡ EM ATENDIMENTO</span>
+                                    <span id="msp-col-count-em-atendimento" class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-700 text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-em-atendimento" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+
+                            <!-- Coluna 3: Encaminhado Bancada -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-purple-400 flex items-center gap-1.5">🛠️ BANCADA DE HARDWARE</span>
+                                    <span id="msp-col-count-bancada" class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-700 text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-bancada" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+
+                            <!-- Coluna 4: Resolvido / Fechado -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-brand flex items-center gap-1.5">✓ RESOLVIDOS (CSAT)</span>
+                                    <span id="msp-col-count-resolvido" class="px-2 py-0.5 bg-brand/20 text-brand border border-brand text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-resolvido" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 4: VISITAS PRESENCIAIS & GPS -->
+                <div id="msp-subtab-content-visits" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-brand text-xs font-bold uppercase block mb-1">[ Atendimento On-Site • Checklist Preventivo & GPS ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Relatórios de Visitas & Assinatura Digital</h3>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950/80">
+                                        <th class="py-3 px-3">Código</th>
+                                        <th class="py-3 px-3">Empresa</th>
+                                        <th class="py-3 px-3">Tipo de Visita</th>
+                                        <th class="py-3 px-3">Data / Período</th>
+                                        <th class="py-3 px-3">Responsável</th>
+                                        <th class="py-3 px-3 text-center">Check-in GPS</th>
+                                        <th class="py-3 px-3 text-center">Assinatura</th>
+                                        <th class="py-3 px-3 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="msp-visits-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 5: TELEMETRIA & DEAD MAN'S SNITCH -->
+                <div id="msp-subtab-content-snitch" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-zinc-800">
+                            <div>
+                                <span class="text-red-400 text-xs font-bold uppercase block mb-1">[ Telemetria Proativa • Dead Man's Snitch ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Vigilância de Backup 3-2-1 & Integridade de Servidores</h3>
+                            </div>
+                            <span class="px-3 py-1 bg-brand/10 border border-brand text-brand text-xs font-bold uppercase flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span> Heartbeat 24/7 Ativo
+                            </span>
+                        </div>
+
+                        <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3 text-xs">
+                            <h4 class="font-bold text-white uppercase text-sm flex items-center gap-2">
+                                <i data-lucide="terminal" class="w-4 h-4 text-brand"></i> Como Configurar o Dead Man's Snitch no UrBackup / Script PowerShell:
+                            </h4>
+                            <p class="text-zinc-400">Insira o comando cURL ou Invoke-RestMethod ao final do script de backup da máquina cliente. Se o ping não for recebido em 24h, o IF Tech Core abre chamado P1 Crítico automaticamente.</p>
+                            <div class="bg-black p-3 border border-zinc-800 text-brand font-mono text-[11px] overflow-x-auto select-all">
+                                curl -X POST https://iflcosta.tech/api/snitch -H "Content-Type: application/json" -d '{"token": "SNITCH_TOKEN_DO_DEVICE", "status": "SUCCESS", "bytes": 14200000000}'
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950/80">
+                                        <th class="py-3 px-3">Empresa</th>
+                                        <th class="py-3 px-3">Dispositivo / Tag</th>
+                                        <th class="py-3 px-3">Último Backup (Snitch)</th>
+                                        <th class="py-3 px-3 text-center">Status Proteção</th>
+                                        <th class="py-3 px-3 text-center">Ações / Teste</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="msp-snitch-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1622,6 +1820,7 @@ Qualquer dúvida, estou à disposição!
 
         function switchTab(tabId) {
             if (tabId === 'inventory') setTimeout(() => { renderPOSGrid(); renderInventoryCatalogTable(); }, 50);
+            if (tabId === 'msp') setTimeout(() => { renderMSPDashboard(); }, 50);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('text-brand', 'border-brand', 'bg-brand/5');
@@ -3099,9 +3298,711 @@ Qualquer dúvida, estou à disposição!
             });
         }
 
+        
+        // =====================================================================
+        // SPRINT 5: MOTOR DE TI GERENCIADA (MSP B2B) & SERVICE DESK PROPRIETÁRIO
+        // =====================================================================
+        let currentMSPContracts = [
+            {
+                id: "msp-c-01",
+                contract_code: "MSP-2026-001",
+                company_name: "Clínica Médica São Francisco",
+                company_cnpj: "12.345.678/0001-90",
+                contact_name: "Dr. Roberto Guimarães",
+                contact_whatsapp: "(11) 98765-4321",
+                contact_email: "roberto@clinicasaofrancisco.com.br",
+                plan_name: "Pro",
+                monthly_fee: 890.00,
+                workstations_included: 10,
+                servers_included: 1,
+                onsite_visits_included: 1,
+                sla_remote_hours: 2.0,
+                sla_onsite_hours: 4.0,
+                status: "Ativo",
+                client_token: "msp-tok-clinica-2026",
+                created_at: "2026-08-01T10:00:00Z"
+            },
+            {
+                id: "msp-c-02",
+                contract_code: "MSP-2026-002",
+                company_name: "Advocacia & Consultoria Silva",
+                company_cnpj: "98.765.432/0001-10",
+                contact_name: "Dra. Camila Silva",
+                contact_whatsapp: "(11) 91234-5678",
+                contact_email: "camila@silvaadv.com.br",
+                plan_name: "Essencial",
+                monthly_fee: 490.00,
+                workstations_included: 5,
+                servers_included: 0,
+                onsite_visits_included: 1,
+                sla_remote_hours: 2.0,
+                sla_onsite_hours: 4.0,
+                status: "Ativo",
+                client_token: "msp-tok-silva-2026",
+                created_at: "2026-08-15T14:30:00Z"
+            }
+        ];
+
+        let currentMSPDevices = [
+            {
+                id: "dev-01",
+                contract_id: "msp-c-01",
+                company_name: "Clínica Médica São Francisco",
+                device_tag: "WS-REC-01",
+                hostname: "CLI-RECEP-01",
+                user_assigned: "Ana Clara (Recepção)",
+                department: "Recepção",
+                device_type: "Desktop",
+                os_version: "Windows 11 Pro",
+                specs: "Intel Core i5-12400 / 16GB RAM / SSD NVMe 512GB",
+                rustdesk_id: "982 341 812",
+                ip_internal: "192.168.1.105",
+                backup_status: "Protegido",
+                last_backup_at: "2026-08-27T02:00:00Z",
+                snitch_token: "snitch-rec-01"
+            },
+            {
+                id: "dev-02",
+                contract_id: "msp-c-01",
+                company_name: "Clínica Médica São Francisco",
+                device_tag: "SRV-PRONTO-01",
+                hostname: "CLI-SRV-DB",
+                user_assigned: "Servidor Banco de Dados",
+                department: "TI / Servidor",
+                device_type: "Servidor",
+                specs: "AMD Ryzen 7 5700X / 32GB RAM / 2x 1TB NVMe RAID 1",
+                rustdesk_id: "142 859 201",
+                ip_internal: "192.168.1.200",
+                backup_status: "Protegido",
+                last_backup_at: "2026-08-27T03:30:00Z",
+                snitch_token: "snitch-srv-01"
+            },
+            {
+                id: "dev-03",
+                contract_id: "msp-c-02",
+                company_name: "Advocacia & Consultoria Silva",
+                device_tag: "WS-ADV-CAMILA",
+                hostname: "SILVA-NOTE-01",
+                user_assigned: "Dra. Camila",
+                department: "Diretoria",
+                device_type: "Notebook",
+                specs: "Dell Latitude / Core i7 / 16GB / SSD 512GB",
+                rustdesk_id: "554 921 003",
+                ip_internal: "192.168.0.12",
+                backup_status: "Protegido",
+                last_backup_at: "2026-08-27T01:15:00Z",
+                snitch_token: "snitch-adv-01"
+            }
+        ];
+
+        let currentMSPTickets = [
+            {
+                id: "tck-01",
+                ticket_number: "TCK-2026-0001",
+                contract_id: "msp-c-01",
+                company_name: "Clínica Médica São Francisco",
+                device_id: "dev-01",
+                device_tag: "WS-REC-01",
+                opened_by_name: "Ana Clara",
+                opened_by_whatsapp: "(11) 98765-4321",
+                title: "Impressora de Etiquetas Térmicas Não Imprime",
+                description: "Ao tentar emitir a guia da consulta, o sistema trava e a impressora térmica USB fica piscando em vermelho.",
+                category: "Suporte_Estacao",
+                severity: "P3_Media",
+                status: "Em_Atendimento",
+                sla_due_at: new Date(Date.now() + 65 * 60000).toISOString(),
+                created_at: new Date(Date.now() - 30 * 60000).toISOString(),
+                messages: [
+                    { sender_type: "Client", sender_name: "Ana Clara", message: "A impressora travou e não consigo chamar os pacientes da recepção.", time: "10:00" },
+                    { sender_type: "Technician", sender_name: "Engenharia de Redes & Suporte // IF Tech", message: "Olá Ana! Estamos conectando remotamente via RustDesk no seu computador WS-REC-01 para reiniciar o spooler de impressão.", time: "10:05" }
+                ]
+            }
+        ];
+
+        let activeMSPTicket = null;
+
+        function loadMSPStorage() {
+            try {
+                const savedC = localStorage.getItem('if_tech_msp_contracts');
+                if (savedC) {
+                    const pC = JSON.parse(savedC);
+                    if (Array.isArray(pC) && pC.length > 0) currentMSPContracts = pC;
+                }
+                const savedD = localStorage.getItem('if_tech_msp_devices');
+                if (savedD) {
+                    const pD = JSON.parse(savedD);
+                    if (Array.isArray(pD) && pD.length > 0) currentMSPDevices = pD;
+                }
+                const savedT = localStorage.getItem('if_tech_msp_tickets');
+                if (savedT) {
+                    const pT = JSON.parse(savedT);
+                    if (Array.isArray(pT) && pT.length > 0) currentMSPTickets = pT;
+                }
+            } catch (e) {
+                console.warn("Erro ao carregar storage MSP:", e);
+            }
+        }
+
+        function saveMSPStorage() {
+            try {
+                localStorage.setItem('if_tech_msp_contracts', JSON.stringify(currentMSPContracts));
+                localStorage.setItem('if_tech_msp_devices', JSON.stringify(currentMSPDevices));
+                localStorage.setItem('if_tech_msp_tickets', JSON.stringify(currentMSPTickets));
+            } catch (e) {
+                console.warn("Erro ao salvar storage MSP:", e);
+            }
+        }
+
+        function switchMSPSubTab(subTabId) {
+            document.querySelectorAll('.msp-subtab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.msp-subtab-btn').forEach(btn => {
+                btn.className = "msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all";
+            });
+
+            const target = document.getElementById('msp-subtab-content-' + subTabId);
+            const targetBtn = document.getElementById('msp-subtab-btn-' + subTabId);
+
+            if (target) target.classList.remove('hidden');
+            if (targetBtn) {
+                if (subTabId === 'contracts') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-mono text-xs font-bold uppercase transition-all";
+                else if (subTabId === 'devices') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-mono text-xs font-bold uppercase transition-all";
+                else if (subTabId === 'tickets') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-yellow-950/80 border border-yellow-400 text-yellow-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
+                else targetBtn.className = "msp-subtab-btn px-4 py-2 bg-brand/20 border border-brand text-brand font-mono text-xs font-bold uppercase transition-all";
+            }
+
+            renderMSPDashboard();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function renderMSPDashboard() {
+            renderMSPContractsTable();
+            renderMSPDevicesGrid();
+            renderMSPTicketsKanban();
+            renderMSPVisitsTable();
+            renderMSPSnitchTable();
+
+            // KPIs
+            const totalMRR = currentMSPContracts.reduce((sum, c) => sum + (c.status === 'Ativo' ? (c.monthly_fee || 0) : 0), 0);
+            const totalARR = totalMRR * 12;
+            const openTickets = currentMSPTickets.filter(t => t.status === 'Aberto' || t.status === 'Em_Atendimento').length;
+
+            const cCountEl = document.getElementById('msp-stat-contracts-count');
+            if (cCountEl) cCountEl.textContent = currentMSPContracts.filter(c => c.status === 'Ativo').length;
+            const mrrEl = document.getElementById('msp-stat-total-mrr');
+            if (mrrEl) mrrEl.textContent = 'R$ ' + totalMRR.toFixed(2).replace('.', ',');
+            const arrEl = document.getElementById('msp-stat-mrr-arr');
+            if (arrEl) arrEl.textContent = `ARR: R$ ${totalARR.toFixed(2).replace('.', ',')}/ano`;
+            const devEl = document.getElementById('msp-stat-devices-count');
+            if (devEl) devEl.textContent = currentMSPDevices.length;
+            const tckEl = document.getElementById('msp-stat-active-tickets');
+            if (tckEl) tckEl.textContent = `${openTickets} chamados ativos`;
+
+            const badgeTickets = document.getElementById('msp-badge-open-tickets');
+            if (badgeTickets) {
+                if (openTickets > 0) {
+                    badgeTickets.textContent = openTickets;
+                    badgeTickets.classList.remove('hidden');
+                } else {
+                    badgeTickets.classList.add('hidden');
+                }
+            }
+        }
+
+        function renderMSPContractsTable() {
+            const tbody = document.getElementById('msp-contracts-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            currentMSPContracts.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
+                const devCount = currentMSPDevices.filter(d => d.contract_id === c.id).length;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-purple-400">${c.contract_code}</td>
+                    <td class="py-3 px-3">
+                        <strong class="text-white block">${escapeHtml(c.company_name)}</strong>
+                        <span class="text-[10px] text-zinc-500">${c.company_cnpj || 'CNPJ não informado'}</span>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="text-white block font-medium">${escapeHtml(c.contact_name)}</span>
+                        <span class="text-[10px] text-zinc-500">${escapeHtml(c.contact_whatsapp)}</span>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="px-2 py-0.5 bg-purple-950 border border-purple-700 text-purple-300 font-bold text-[10px]">${c.plan_name}</span>
+                    </td>
+                    <td class="py-3 px-3 text-center font-bold text-cyan-400">${devCount} / ${c.workstations_included}</td>
+                    <td class="py-3 px-3 text-center text-yellow-400 font-bold">${c.sla_remote_hours}h</td>
+                    <td class="py-3 px-3 text-right font-black text-brand">R$ ${(c.monthly_fee || 0).toFixed(2).replace('.', ',')}/mês</td>
+                    <td class="py-3 px-3 text-center">
+                        <span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">● ${c.status}</span>
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="copyMSPClientLink('${c.client_token}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-purple-500 hover:text-black text-zinc-300 font-bold text-[10px] border border-zinc-700 transition-colors" title="Copiar Link do Portal da Empresa">
+                            🔗 Portal B2B
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderMSPDevicesGrid() {
+            const grid = document.getElementById('msp-devices-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const q = (document.getElementById('msp-device-search')?.value || '').toLowerCase().trim();
+            const list = currentMSPDevices.filter(d => !q || d.device_tag.toLowerCase().includes(q) || d.hostname.toLowerCase().includes(q) || d.user_assigned.toLowerCase().includes(q) || d.company_name.toLowerCase().includes(q));
+
+            list.forEach(d => {
+                const card = document.createElement('div');
+                card.className = "bg-zinc-950 border-2 border-zinc-800 hover:border-cyan-400 p-4 space-y-3 transition-all group font-mono";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start pb-2 border-b border-zinc-900">
+                        <div>
+                            <span class="text-[10px] text-zinc-500 uppercase block font-bold">${escapeHtml(d.company_name)}</span>
+                            <h4 class="text-sm font-black text-white group-hover:text-cyan-400 flex items-center gap-1.5">
+                                <i data-lucide="monitor" class="w-4 h-4 text-cyan-400"></i> ${escapeHtml(d.device_tag)}
+                            </h4>
+                        </div>
+                        <span class="px-2 py-0.5 bg-brand/10 border border-brand/40 text-brand text-[9px] font-bold">🟢 Backup 3-2-1 OK</span>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <div class="flex justify-between"><span class="text-zinc-500">Usuário:</span> <strong class="text-white">${escapeHtml(d.user_assigned)}</strong></div>
+                        <div class="flex justify-between"><span class="text-zinc-500">Specs:</span> <span class="text-zinc-300 text-[11px] truncate max-w-[200px]">${escapeHtml(d.specs || 'Core i5 / 16GB RAM')}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-500">IP Interno:</span> <span class="text-zinc-400 font-mono">${d.ip_internal || '192.168.1.x'}</span></div>
+                    </div>
+                    <div class="pt-2 border-t border-zinc-900 flex justify-between items-center">
+                        <span class="text-xs font-bold text-cyan-400">RustDesk: ${d.rustdesk_id}</span>
+                        <button type="button" onclick="connectRustDesk('${d.rustdesk_id}')" class="px-3 py-1.5 bg-cyan-400 text-black font-black uppercase text-[10px] hover:bg-white transition-colors flex items-center gap-1">
+                            <i data-lucide="zap" class="w-3 h-3"></i> Conectar
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function filterMSPDevices() {
+            renderMSPDevicesGrid();
+        }
+
+        function renderMSPTicketsKanban() {
+            const colAberto = document.getElementById('msp-tickets-col-aberto');
+            const colAtendimento = document.getElementById('msp-tickets-col-em-atendimento');
+            const colBancada = document.getElementById('msp-tickets-col-bancada');
+            const colResolvido = document.getElementById('msp-tickets-col-resolvido');
+
+            if (!colAberto) return;
+            colAberto.innerHTML = '';
+            colAtendimento.innerHTML = '';
+            colBancada.innerHTML = '';
+            colResolvido.innerHTML = '';
+
+            let cAb = 0, cAt = 0, cBa = 0, cRe = 0;
+
+            currentMSPTickets.forEach(t => {
+                const card = document.createElement('div');
+                card.className = "bg-black border border-zinc-800 hover:border-yellow-400 p-3 space-y-2 cursor-pointer transition-all shadow-sm font-mono text-xs";
+                card.onclick = () => openMSPTicketDetail(t.id);
+
+                const slaMinLeft = Math.max(0, Math.round((new Date(t.sla_due_at) - new Date()) / 60000));
+                const slaText = slaMinLeft > 60 ? `${Math.floor(slaMinLeft/60)}h ${slaMinLeft%60}m` : `${slaMinLeft} min`;
+                const isUrgent = slaMinLeft <= 30;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-yellow-400 font-bold text-[11px]">${t.ticket_number}</span>
+                        <span class="text-[9px] font-black px-1.5 py-0.5 ${isUrgent ? 'bg-red-950 text-red-400 border border-red-700 animate-pulse' : 'bg-zinc-900 text-zinc-400'}">
+                            SLA: ${slaText}
+                        </span>
+                    </div>
+                    <h5 class="text-white font-bold font-sans text-xs line-clamp-2 leading-tight">${escapeHtml(t.title)}</h5>
+                    <div class="flex justify-between items-center text-[10px] text-zinc-500 pt-1 border-t border-zinc-900">
+                        <span class="text-cyan-400">${escapeHtml(t.device_tag || 'Estação')}</span>
+                        <span class="text-zinc-400">${escapeHtml(t.opened_by_name)}</span>
+                    </div>
+                `;
+
+                if (t.status === 'Aberto') {
+                    cAb++;
+                    colAberto.appendChild(card);
+                } else if (t.status === 'Em_Atendimento') {
+                    cAt++;
+                    colAtendimento.appendChild(card);
+                } else if (t.status === 'Encaminhado_Bancada') {
+                    cBa++;
+                    colBancada.appendChild(card);
+                } else {
+                    cRe++;
+                    colResolvido.appendChild(card);
+                }
+            });
+
+            document.getElementById('msp-col-count-aberto').textContent = cAb;
+            document.getElementById('msp-col-count-em-atendimento').textContent = cAt;
+            document.getElementById('msp-col-count-bancada').textContent = cBa;
+            document.getElementById('msp-col-count-resolvido').textContent = cRe;
+        }
+
+        function renderMSPVisitsTable() {
+            const tbody = document.getElementById('msp-visits-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = `
+                <tr class="hover:bg-zinc-900/60 transition-colors border-b border-zinc-900">
+                    <td class="py-3 px-3 font-bold text-brand">VIS-2026-001</td>
+                    <td class="py-3 px-3 text-white font-bold">Clínica Médica São Francisco</td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 bg-brand/10 border border-brand/40 text-brand text-[10px] font-bold">Preventiva Mensal</span></td>
+                    <td class="py-3 px-3 text-zinc-300">20/08/2026 (Manhã)</td>
+                    <td class="py-3 px-3 text-zinc-400">Responsável Técnico // IF Tech</td>
+                    <td class="py-3 px-3 text-center text-brand font-bold">✓ GPS Confirmado (-22.9519, -46.5412)</td>
+                    <td class="py-3 px-3 text-center text-white">✓ Assinado (Dr. Roberto)</td>
+                    <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold text-[10px]">Concluída</span></td>
+                </tr>
+            `;
+        }
+
+        function renderMSPSnitchTable() {
+            const tbody = document.getElementById('msp-snitch-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            currentMSPDevices.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 text-white font-bold">${escapeHtml(d.company_name)}</td>
+                    <td class="py-3 px-3 font-mono text-cyan-400 font-bold">${escapeHtml(d.device_tag)} (${d.user_assigned})</td>
+                    <td class="py-3 px-3 text-zinc-300">${new Date(d.last_backup_at || Date.now()).toLocaleDateString('pt-BR')} às ${new Date(d.last_backup_at || Date.now()).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</td>
+                    <td class="py-3 px-3 text-center">
+                        <span class="px-2 py-0.5 bg-brand/10 border border-brand text-brand font-bold text-[10px]">🟢 100% Protegido</span>
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="simulateSnitchPing('${d.device_tag}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-brand hover:text-black text-zinc-300 font-bold text-[10px] border border-zinc-700 transition-colors">
+                            Simular Ping UrBackup
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function simulateSnitchPing(tag) {
+            showScanNotification(`✓ Ping Dead Man's Snitch recebido com sucesso de ${tag}!`, 'success');
+        }
+
+        function connectRustDesk(rustdeskId) {
+            const cleanId = (rustdeskId || '').replace(/\s+/g, '');
+            showScanNotification(`Iniciando sessão remota RustDesk: ${cleanId}...`, 'success');
+            window.location.href = `rustdesk://${cleanId}`;
+        }
+
+        function copyMSPClientLink(token) {
+            const url = `https://iflcosta.tech/status?token=${token}`;
+            navigator.clipboard.writeText(url).then(() => {
+                showScanNotification("✓ Link do Portal B2B da Empresa copiado!", "success");
+            });
+        }
+
+        // Modais de Gestão MSP
+        function openNewMSPContractModal() {
+            document.getElementById('new-msp-contract-modal').classList.remove('hidden');
+        }
+        function closeNewMSPContractModal() {
+            document.getElementById('new-msp-contract-modal').classList.add('hidden');
+        }
+
+        function applyMSPPlanPreset() {
+            const plan = document.getElementById('msp-form-plan').value;
+            const feeInput = document.getElementById('msp-form-fee');
+            const wsInput = document.getElementById('msp-form-workstations');
+            if (plan === 'Essencial') { feeInput.value = "490.00"; wsInput.value = 5; }
+            else if (plan === 'Pro') { feeInput.value = "890.00"; wsInput.value = 10; }
+            else if (plan === 'Enterprise') { feeInput.value = "1490.00"; wsInput.value = 25; }
+        }
+
+        async function handleSaveNewMSPContract(e) {
+            e.preventDefault();
+            const name = document.getElementById('msp-form-company-name').value.trim();
+            const cnpj = document.getElementById('msp-form-cnpj').value.trim();
+            const plan = document.getElementById('msp-form-plan').value;
+            const contact = document.getElementById('msp-form-contact-name').value.trim();
+            const wpp = document.getElementById('msp-form-contact-whatsapp').value.trim();
+            const fee = parseFloat(document.getElementById('msp-form-fee').value) || 890.00;
+            const ws = parseInt(document.getElementById('msp-form-workstations').value) || 10;
+
+            const seq = currentMSPContracts.length + 1;
+            const code = `MSP-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
+            const token = `msp-tok-${Date.now()}`;
+
+            const newC = {
+                id: `msp-c-${Date.now()}`,
+                contract_code: code,
+                company_name: name,
+                company_cnpj: cnpj,
+                contact_name: contact,
+                contact_whatsapp: wpp,
+                plan_name: plan,
+                monthly_fee: fee,
+                workstations_included: ws,
+                servers_included: 1,
+                onsite_visits_included: 1,
+                sla_remote_hours: 2.0,
+                sla_onsite_hours: 4.0,
+                status: "Ativo",
+                client_token: token,
+                created_at: new Date().toISOString()
+            };
+
+            currentMSPContracts.unshift(newC);
+            saveMSPStorage();
+            closeNewMSPContractModal();
+            renderMSPDashboard();
+            showScanNotification(`✓ Contrato ${code} (${name}) ativado com sucesso!`, 'success');
+        }
+
+        function openNewMSPDeviceModal() {
+            const select = document.getElementById('msp-device-form-contract');
+            if (select) {
+                select.innerHTML = currentMSPContracts.map(c => `<option value="${c.id}">${escapeHtml(c.company_name)} (${c.contract_code})</option>`).join('');
+            }
+            document.getElementById('new-msp-device-modal').classList.remove('hidden');
+        }
+        function closeNewMSPDeviceModal() {
+            document.getElementById('new-msp-device-modal').classList.add('hidden');
+        }
+
+        function handleSaveNewMSPDevice(e) {
+            e.preventDefault();
+            const contractId = document.getElementById('msp-device-form-contract').value;
+            const contract = currentMSPContracts.find(c => c.id === contractId);
+            const tag = document.getElementById('msp-device-form-tag').value.trim().toUpperCase();
+            const user = document.getElementById('msp-device-form-user').value.trim();
+            const type = document.getElementById('msp-device-form-type').value;
+            const rId = document.getElementById('msp-device-form-rustdesk').value.trim();
+            const specs = document.getElementById('msp-device-form-specs').value.trim();
+
+            const newD = {
+                id: `dev-${Date.now()}`,
+                contract_id: contractId,
+                company_name: contract ? contract.company_name : "Empresa",
+                device_tag: tag,
+                hostname: tag.replace(/-/g, '_'),
+                user_assigned: user,
+                department: "Geral",
+                device_type: type,
+                specs: specs || "Core i5 / 16GB RAM / SSD 512GB",
+                rustdesk_id: rId,
+                ip_internal: "192.168.1.100",
+                backup_status: "Protegido",
+                last_backup_at: new Date().toISOString(),
+                snitch_token: `snitch-${Date.now()}`
+            };
+
+            currentMSPDevices.unshift(newD);
+            saveMSPStorage();
+            closeNewMSPDeviceModal();
+            renderMSPDashboard();
+            showScanNotification(`✓ Ativo ${tag} cadastrado com RustDesk ID ${rId}!`, 'success');
+        }
+
+        function openNewMSPTicketModal() {
+            const selectC = document.getElementById('msp-ticket-form-contract');
+            if (selectC) {
+                selectC.innerHTML = currentMSPContracts.map(c => `<option value="${c.id}">${escapeHtml(c.company_name)} (${c.contract_code})</option>`).join('');
+                populateMSPDevicesForTicket();
+            }
+            document.getElementById('new-msp-ticket-modal').classList.remove('hidden');
+        }
+        function closeNewMSPTicketModal() {
+            document.getElementById('new-msp-ticket-modal').classList.add('hidden');
+        }
+
+        function populateMSPDevicesForTicket() {
+            const cId = document.getElementById('msp-ticket-form-contract')?.value;
+            const selectD = document.getElementById('msp-ticket-form-device');
+            if (!selectD) return;
+            const devs = currentMSPDevices.filter(d => d.contract_id === cId);
+            selectD.innerHTML = '<option value="">Geral / Sem estação específica</option>' + devs.map(d => `<option value="${d.id}">${escapeHtml(d.device_tag)} — ${escapeHtml(d.user_assigned)}</option>`).join('');
+        }
+
+        function handleSaveNewMSPTicket(e) {
+            e.preventDefault();
+            const cId = document.getElementById('msp-ticket-form-contract').value;
+            const contract = currentMSPContracts.find(c => c.id === cId);
+            const devId = document.getElementById('msp-ticket-form-device').value;
+            const dev = currentMSPDevices.find(d => d.id === devId);
+            const requester = document.getElementById('msp-ticket-form-name').value.trim();
+            const wpp = document.getElementById('msp-ticket-form-whatsapp').value.trim();
+            const severity = document.getElementById('msp-ticket-form-severity').value;
+            const title = document.getElementById('msp-ticket-form-title').value.trim();
+            const desc = document.getElementById('msp-ticket-form-desc').value.trim();
+
+            let slaHours = 2.0;
+            if (severity === 'P1_Critica') slaHours = 0.5;
+            else if (severity === 'P2_Alta') slaHours = 1.0;
+            else if (severity === 'P4_Baixa') slaHours = 4.0;
+
+            const seq = currentMSPTickets.length + 1;
+            const num = `TCK-${new Date().getFullYear()}-${String(seq).padStart(4, '0')}`;
+
+            const newT = {
+                id: `tck-${Date.now()}`,
+                ticket_number: num,
+                contract_id: cId,
+                company_name: contract ? contract.company_name : "Empresa",
+                device_id: devId || null,
+                device_tag: dev ? dev.device_tag : "Suporte Geral",
+                opened_by_name: requester,
+                opened_by_whatsapp: wpp,
+                title: title,
+                description: desc,
+                category: "Suporte_Estacao",
+                severity: severity,
+                status: "Aberto",
+                sla_due_at: new Date(Date.now() + slaHours * 3600000).toISOString(),
+                created_at: new Date().toISOString(),
+                messages: [
+                    { sender_type: "Client", sender_name: requester, message: desc, time: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) }
+                ]
+            };
+
+            currentMSPTickets.unshift(newT);
+            saveMSPStorage();
+            closeNewMSPTicketModal();
+            renderMSPDashboard();
+            showScanNotification(`✓ Chamado ${num} aberto com SLA de ${slaHours}h!`, 'success');
+        }
+
+        function openMSPTicketDetail(ticketId) {
+            const t = currentMSPTickets.find(x => x.id === ticketId);
+            if (!t) return;
+            activeMSPTicket = t;
+
+            document.getElementById('msp-tdetail-code').textContent = t.ticket_number;
+            document.getElementById('msp-tdetail-title').textContent = t.title;
+            document.getElementById('msp-tdetail-company').textContent = t.company_name;
+            document.getElementById('msp-tdetail-requester').textContent = `${t.opened_by_name} • ${t.opened_by_whatsapp}`;
+            document.getElementById('msp-tdetail-device').textContent = t.device_tag;
+
+            const dev = currentMSPDevices.find(d => d.id === t.device_id);
+            const remoteContainer = document.getElementById('msp-tdetail-remote-btn-container');
+            if (remoteContainer) {
+                if (dev && dev.rustdesk_id) {
+                    remoteContainer.innerHTML = `<button type="button" onclick="connectRustDesk('${dev.rustdesk_id}')" class="px-2.5 py-1 bg-cyan-400 text-black font-black uppercase text-[10px] hover:bg-white flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> RustDesk: ${dev.rustdesk_id}</button>`;
+                } else {
+                    remoteContainer.innerHTML = `<span class="text-zinc-600 text-[10px]">Sem RustDesk vinculado</span>`;
+                }
+            }
+
+            const slaMinLeft = Math.max(0, Math.round((new Date(t.sla_due_at) - new Date()) / 60000));
+            document.getElementById('msp-tdetail-sla-timer').textContent = slaMinLeft > 60 ? `${Math.floor(slaMinLeft/60)}h ${slaMinLeft%60}m restantes` : `${slaMinLeft} min restantes`;
+            document.getElementById('msp-tdetail-severity-badge').textContent = t.severity.replace(/_/g, ' ');
+
+            renderMSPTicketMessages(t);
+
+            document.getElementById('msp-ticket-detail-modal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeMSPTicketDetail() {
+            document.getElementById('msp-ticket-detail-modal').classList.add('hidden');
+            activeMSPTicket = null;
+        }
+
+        function renderMSPTicketMessages(t) {
+            const container = document.getElementById('msp-tdetail-messages');
+            if (!container) return;
+            container.innerHTML = (t.messages || []).map(m => {
+                const isTech = m.sender_type === 'Technician';
+                return `
+                    <div class="p-2.5 ${isTech ? 'bg-purple-950/40 border-l-2 border-purple-500' : 'bg-zinc-900 border-l-2 border-yellow-400'}">
+                        <div class="flex justify-between items-center text-[10px] text-zinc-400 mb-1 font-mono">
+                            <strong class="${isTech ? 'text-purple-300' : 'text-yellow-400'}">${escapeHtml(m.sender_name)}</strong>
+                            <span>${m.time || ''}</span>
+                        </div>
+                        <p class="text-zinc-200">${escapeHtml(m.message)}</p>
+                    </div>
+                `;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleSendTicketMessage() {
+            if (!activeMSPTicket) return;
+            const input = document.getElementById('msp-tdetail-msg-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            if (!activeMSPTicket.messages) activeMSPTicket.messages = [];
+            activeMSPTicket.messages.push({
+                sender_type: "Technician",
+                sender_name: "Engenharia de Redes & Suporte // IF Tech",
+                message: msg,
+                time: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})
+            });
+
+            if (activeMSPTicket.status === 'Aberto') {
+                activeMSPTicket.status = 'Em_Atendimento';
+            }
+
+            input.value = '';
+            saveMSPStorage();
+            renderMSPTicketMessages(activeMSPTicket);
+            renderMSPDashboard();
+            showScanNotification("✓ Resposta enviada ao chamado com sucesso!", "success");
+        }
+
+        function advanceCurrentTicketStatus(newStatus) {
+            if (!activeMSPTicket) return;
+            activeMSPTicket.status = newStatus;
+            saveMSPStorage();
+            closeMSPTicketDetail();
+            renderMSPDashboard();
+            showScanNotification(`✓ Chamado atualizado para "${newStatus}"!`, "success");
+        }
+
+        function convertCurrentTicketToBenchOS() {
+            if (!activeMSPTicket) return;
+            const t = activeMSPTicket;
+            
+            // Criar uma OS física de bancada vinculada ao chamado
+            const osNum = Math.floor(1050 + Math.random() * 900);
+            const token = `tok-b2b-${Date.now()}`;
+            
+            const newCardObj = {
+                id: token,
+                os_number: osNum,
+                public_tracking_token: token,
+                status: 'Triagem',
+                device_brand: 'Estação Corporativa B2B',
+                device_model: t.device_tag,
+                reported_defect: `[Origem Chamado ${t.ticket_number}] ${t.title}: ${t.description}`,
+                client_name: `${t.company_name} (${t.opened_by_name})`,
+                client_whatsapp: t.opened_by_whatsapp,
+                total_amount: 0.00,
+                created_at: new Date().toISOString()
+            };
+
+            currentWorkOrders = [newCardObj, ...currentWorkOrders];
+            t.status = 'Encaminhado_Bancada';
+            
+            saveMSPStorage();
+            closeMSPTicketDetail();
+            renderMSPDashboard();
+            renderKanbanBoard(currentWorkOrders);
+            
+            showScanNotification(`⚡ Chamado ${t.ticket_number} transferido com sucesso para a OS #${osNum} na Bancada!`, 'success');
+        }
+
+
         window.addEventListener('DOMContentLoaded', () => {
             loadInventoryStorage();
             loadSoftwareStorage();
+            loadMSPStorage();
+            renderMSPDashboard();
             renderSoftwareProjectsDashboard();
             if (window.lucide) lucide.createIcons();
             recalcTotals();
@@ -3581,5 +4482,255 @@ Qualquer dúvida, estou à disposição!
         </div>
     </div>
     
+
+    <!-- ============================================================= -->
+    <!-- MODAIS DA SPRINT 5: MSP B2B & SERVICE DESK PROPRIETÁRIO      -->
+    <!-- ============================================================= -->
+
+    <!-- 1. Modal: Novo Contrato MSP -->
+    <div id="new-msp-contract-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
+        <div class="bg-black border-2 border-purple-500 w-full max-w-xl shadow-[8px_8px_0px_0px_rgba(168,85,247,0.5)] my-8 overflow-hidden">
+            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-6 bg-purple-500"></div>
+                    <div>
+                        <span class="text-[10px] font-bold text-purple-400 uppercase tracking-widest block">TI GERENCIADA B2B</span>
+                        <h3 class="text-lg font-black text-white uppercase">Novo Contrato Corporativo</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeNewMSPContractModal()" class="text-zinc-500 hover:text-white p-1 text-xl">✕</button>
+            </div>
+
+            <form id="new-msp-contract-form" onsubmit="handleSaveNewMSPContract(event)" class="p-6 space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Razão Social / Nome da Empresa:*</label>
+                        <input type="text" id="msp-form-company-name" required placeholder="Ex: Clínica São Francisco / Advocacia Silva" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">CNPJ (Opcional):</label>
+                        <input type="text" id="msp-form-cnpj" placeholder="00.000.000/0001-00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Plano MSP:*</label>
+                        <select id="msp-form-plan" onchange="applyMSPPlanPreset()" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-purple-400 font-bold focus:outline-none focus:border-purple-500">
+                            <option value="Essencial">Essencial (Até 5 PCs) — R$ 490/mês</option>
+                            <option value="Pro" selected>Pro (Até 10 PCs + 1 Servidor) — R$ 890/mês</option>
+                            <option value="Enterprise">Enterprise (Até 25 PCs + 2 Servidores) — R$ 1.490/mês</option>
+                            <option value="Custom">Customizado / Sob Medida</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Nome do Gestor / Contato:*</label>
+                        <input type="text" id="msp-form-contact-name" required placeholder="Ex: Dr. Roberto / Camila" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">WhatsApp do Gestor:*</label>
+                        <input type="text" id="msp-form-contact-whatsapp" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Mensalidade (MRR R$):*</label>
+                        <input type="number" step="0.01" id="msp-form-fee" required value="890.00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-brand font-bold focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Estações Inclusas:*</label>
+                        <input type="number" id="msp-form-workstations" required value="10" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closeNewMSPContractModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-purple-500 text-black font-black uppercase hover:bg-white transition-colors">Ativar Contrato</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Modal: Novo Ativo ITAM (Hardware) -->
+    <div id="new-msp-device-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
+        <div class="bg-black border-2 border-cyan-400 w-full max-w-xl shadow-[8px_8px_0px_0px_rgba(6,182,212,0.5)] my-8 overflow-hidden">
+            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-6 bg-cyan-400"></div>
+                    <div>
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block">ITAM & RUSTDESK</span>
+                        <h3 class="text-lg font-black text-white uppercase">Cadastrar Ativo de Hardware</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeNewMSPDeviceModal()" class="text-zinc-500 hover:text-white p-1 text-xl">✕</button>
+            </div>
+
+            <form id="new-msp-device-form" onsubmit="handleSaveNewMSPDevice(event)" class="p-6 space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Empresa Contratante:*</label>
+                        <select id="msp-device-form-contract" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-bold focus:outline-none focus:border-cyan-400">
+                            <!-- Injetado dinamicamente -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Tag / Identificador Único:*</label>
+                        <input type="text" id="msp-device-form-tag" required placeholder="Ex: WS-FIN-01 / SRV-01" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-brand font-bold uppercase focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Usuário / Colaborador:*</label>
+                        <input type="text" id="msp-device-form-user" required placeholder="Ex: Lucas (Financeiro)" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Tipo de Dispositivo:*</label>
+                        <select id="msp-device-form-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+                            <option value="Desktop">Desktop / Estação</option>
+                            <option value="Notebook">Notebook</option>
+                            <option value="Servidor">Servidor Local</option>
+                            <option value="Firewall">Roteador / Firewall</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">ID RustDesk (Acesso Remoto):*</label>
+                        <input type="text" id="msp-device-form-rustdesk" required placeholder="Ex: 982 341 812" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-cyan-400 font-bold focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Configuração de Hardware (CPU, RAM, SSD):</label>
+                        <input type="text" id="msp-device-form-specs" placeholder="Ex: Core i5-12400 / 16GB RAM / SSD NVMe 512GB (Saúde 100%)" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closeNewMSPDeviceModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-cyan-400 text-black font-black uppercase hover:bg-white transition-colors">Salvar Ativo ITAM</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Modal: Novo Chamado Service Desk -->
+    <div id="new-msp-ticket-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
+        <div class="bg-black border-2 border-yellow-400 w-full max-w-xl shadow-[8px_8px_0px_0px_rgba(234,179,8,0.5)] my-8 overflow-hidden">
+            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-6 bg-yellow-400"></div>
+                    <div>
+                        <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest block">ITIL INCIDENT MANAGEMENT</span>
+                        <h3 class="text-lg font-black text-white uppercase">Abrir Chamado / Incidente</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeNewMSPTicketModal()" class="text-zinc-500 hover:text-white p-1 text-xl">✕</button>
+            </div>
+
+            <form id="new-msp-ticket-form" onsubmit="handleSaveNewMSPTicket(event)" class="p-6 space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Empresa Contratante:*</label>
+                        <select id="msp-ticket-form-contract" onchange="populateMSPDevicesForTicket()" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-bold focus:outline-none focus:border-yellow-400">
+                            <!-- Injetado dinamicamente -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Estação / Ativo Afetado:*</label>
+                        <select id="msp-ticket-form-device" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-cyan-400 font-bold focus:outline-none focus:border-yellow-400">
+                            <option value="">Geral / Sem estação específica</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Nome do Solicitante:*</label>
+                        <input type="text" id="msp-ticket-form-name" required placeholder="Ex: Roberto Oliveira" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">WhatsApp para Notificação:*</label>
+                        <input type="text" id="msp-ticket-form-whatsapp" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Severidade / SLA:*</label>
+                        <select id="msp-ticket-form-severity" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-bold focus:outline-none focus:border-yellow-400">
+                            <option value="P1_Critica">🔴 P1 - Crítica (Servidor parado / Backup corrompido / SLA 30 min)</option>
+                            <option value="P2_Alta">🟠 P2 - Alta (Estação Financeiro/Diretoria travada / SLA 1 hora)</option>
+                            <option value="P3_Media" selected>🟡 P3 - Média (Lentidão / Impressora / Dúvida / SLA 2 horas)</option>
+                            <option value="P4_Baixa">🟢 P4 - Baixa (Solicitação de novo software / SLA 4 horas)</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Título do Chamado:*</label>
+                        <input type="text" id="msp-ticket-form-title" required placeholder="Ex: Computador não conecta no banco de dados" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-yellow-400">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Descrição Detalhada do Problema:*</label>
+                        <textarea id="msp-ticket-form-desc" rows="3" required placeholder="Descreva os sintomas, mensagens de erro exibidas..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-yellow-400"></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closeNewMSPTicketModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-yellow-400 text-black font-black uppercase hover:bg-white transition-colors">Iniciar Atendimento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. Modal: Detalhes do Chamado Service Desk (Chat & SLA) -->
+    <div id="msp-ticket-detail-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
+        <div class="bg-black border-2 border-yellow-400 w-full max-w-3xl shadow-[8px_8px_0px_0px_rgba(234,179,8,0.5)] my-8 overflow-hidden">
+            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-6 bg-yellow-400"></div>
+                    <div>
+                        <span id="msp-tdetail-code" class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest block">TCK-2026-0001</span>
+                        <h3 id="msp-tdetail-title" class="text-lg font-black text-white uppercase">Título do Chamado</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeMSPTicketDetail()" class="text-zinc-500 hover:text-white p-1 text-xl">✕</button>
+            </div>
+
+            <div class="p-6 space-y-4 text-xs">
+                <!-- Barra de Status e Cronômetro SLA -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-zinc-950 p-3 border border-zinc-800">
+                    <div>
+                        <span class="text-zinc-500 uppercase text-[10px] block">Empresa & Solicitante</span>
+                        <strong id="msp-tdetail-company" class="text-white">Empresa</strong>
+                        <span id="msp-tdetail-requester" class="text-zinc-400 block text-[11px]">Solicitante</span>
+                    </div>
+                    <div>
+                        <span class="text-zinc-500 uppercase text-[10px] block">Estação & Acesso Remoto</span>
+                        <strong id="msp-tdetail-device" class="text-cyan-400">WS-FIN-01</strong>
+                        <div id="msp-tdetail-remote-btn-container" class="mt-1">
+                            <!-- Botão RustDesk injetado -->
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-zinc-500 uppercase text-[10px] block">Cronômetro SLA Regressivo</span>
+                        <strong id="msp-tdetail-sla-timer" class="text-brand text-sm font-black animate-pulse">01h 45m restantes</strong>
+                        <span id="msp-tdetail-severity-badge" class="text-zinc-400 block text-[10px]">P3 - Média</span>
+                    </div>
+                </div>
+
+                <!-- Chat de Mensagens do Chamado -->
+                <div class="border border-zinc-800 bg-zinc-950 p-4 space-y-3">
+                    <span class="text-zinc-400 uppercase text-[10px] font-bold block border-b border-zinc-800 pb-1">Linha do Tempo & Mensagens com o Cliente:</span>
+                    <div id="msp-tdetail-messages" class="space-y-2.5 max-h-56 overflow-y-auto p-1 font-sans text-xs">
+                        <!-- Mensagens injetadas -->
+                    </div>
+
+                    <div class="flex gap-2 pt-2 border-t border-zinc-900 font-mono">
+                        <input type="text" id="msp-tdetail-msg-input" placeholder="Escreva uma resposta técnica ou nota de atendimento..." class="flex-1 bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
+                        <button type="button" onclick="handleSendTicketMessage()" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors">Enviar</button>
+                    </div>
+                </div>
+
+                <!-- Ações do Técnico -->
+                <div class="pt-3 border-t border-zinc-800 flex flex-wrap justify-between items-center gap-2">
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="convertCurrentTicketToBenchOS()" class="px-3 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-bold uppercase hover:bg-purple-500 hover:text-black transition-colors flex items-center gap-1.5 text-xs">
+                            <i data-lucide="wrench" class="w-3.5 h-3.5"></i> ⚡ Gerar OS de Bancada
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="advanceCurrentTicketStatus('Resolvido')" class="px-4 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center gap-1.5 text-xs">
+                            <i data-lucide="check-check" class="w-4 h-4"></i> Marcar Chamado Resolvido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
