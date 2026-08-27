@@ -1544,11 +1544,11 @@ Qualquer dúvida, estou à disposição!
             const accentClass = isSuccess ? 'text-brand' : (isWarning ? 'text-yellow-400' : 'text-red-500');
             const icon = isSuccess ? '✓' : (isWarning ? '⚠️' : '✕');
 
-            toast.className = `pointer-events-auto bg-black border-2 ${borderClass} p-3.5 font-mono text-xs font-bold shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0
+            toast.className = `pointer-events-auto bg-black border-2 ${borderClass} p-3.5 font-mono text-xs font-bold shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0`;
             toast.innerHTML = `
                 <span class="${accentClass} font-black text-sm">${icon}</span>
                 <span class="leading-tight">${escapeHtml(message)}</span>
-            
+            `;
 
             container.appendChild(toast);
             requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
@@ -1757,7 +1757,7 @@ Qualquer dúvida, estou à disposição!
             const statProfitEl = document.getElementById('stat-month-profit');
             const statProfitSubEl = document.getElementById('stat-profit-subtitle');
             if (statProfitEl) statProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) pronta(s)/entregue(s)
+            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) pronta(s)/entregue(s)`;
 
             // 2. Atualizar Cards da Aba DRE
             const grossEl = document.getElementById('dre-gross-revenue');
@@ -1769,12 +1769,12 @@ Qualquer dúvida, estou à disposição!
             const deliveredCountEl = document.getElementById('dre-delivered-count');
 
             if (grossEl) grossEl.textContent = 'R$ ' + totalGross.toFixed(2).replace('.', ',');
-            if (grossSubEl) grossSubEl.textContent = `${deliveredCount} OSs faturadas / ${orders.length} total
+            if (grossSubEl) grossSubEl.textContent = `${deliveredCount} OSs faturadas / ${orders.length} total`;
             if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%
+            if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
             if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
-            if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)
+            if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
 
             // 3. Atualizar Linhas da Tabela DRE
             const lineLabor = document.getElementById('dre-line-labor');
@@ -1793,12 +1793,12 @@ Qualquer dúvida, estou à disposição!
             if (lineCogs) lineCogs.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
             if (pctCogs) pctCogs.textContent = totalGross > 0 ? `${((totalPartsCost / totalGross) * 100).toFixed(0)}%` : '0%';
             if (lineNet) lineNet.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (pctNet) pctNet.textContent = `${marginPct}%
+            if (pctNet) pctNet.textContent = `${marginPct}%`;
 
             // 4. Renderizar Tabela Analítica de Ordens de Serviço
             const tbody = document.getElementById('dre-orders-table-body');
             const tableCountEl = document.getElementById('dre-os-table-count');
-            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)
+            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
 
             // 5. Atualizar Métricas de Canais de Aquisição (BI)
             let levaTrazRev = 0;
@@ -1827,14 +1827,14 @@ Qualquer dúvida, estou à disposição!
             const shareBalcaoEl = document.getElementById('bi-share-balcao');
             const barBalcaoEl = document.getElementById('bi-bar-balcao');
 
-            if (shareLevaEl) shareLevaEl.textContent = `${levaTrazShare}% (R$ ${levaTrazRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})
-            if (barLevaEl) barLevaEl.style.width = `${levaTrazShare}%
-            if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})
-            if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%
+            if (shareLevaEl) shareLevaEl.textContent = `${levaTrazShare}% (R$ ${levaTrazRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
+            if (barLevaEl) barLevaEl.style.width = `${levaTrazShare}%`;
+            if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
+            if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%`;
 
             if (tbody) {
                 if (orders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>
+                    tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>`;
                 } else {
                     tbody.innerHTML = '';
                     orders.forEach(wo => {
@@ -1850,11 +1850,11 @@ Qualquer dúvida, estou à disposição!
 
                         let statusBadgeHtml = '';
                         if (isEntregue) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>`;
                         } else if (isPronto) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>`;
                         } else {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>`;
                         }
 
                         const tr = document.createElement('tr');
@@ -1868,7 +1868,7 @@ Qualquer dúvida, estou à disposição!
                             <td class="py-3 px-3 text-right font-mono text-brand font-bold">R$ ${labor.toFixed(2).replace('.', ',')}</td>
                             <td class="py-3 px-3 text-right font-mono text-white font-black text-sm">R$ ${total.toFixed(2).replace('.', ',')}</td>
                             <td class="py-3 px-3 text-center">${statusBadgeHtml}</td>
-                        
+                        `;
                         tbody.appendChild(tr);
                     });
                 }
@@ -1898,17 +1898,17 @@ Qualquer dúvida, estou à disposição!
             // Margem média de M.O. Líquida por OS calibrada: R$ 237,50
             const osNeeded = (cost / 237.5).toFixed(1);
             const osPerWeek = (osNeeded / 4.33).toFixed(1);
-            if (breakevenOsEl) breakevenOsEl.textContent = `${osNeeded.replace('.', ',')} OSs / mês
-            if (breakevenOsSubEl) breakevenOsSubEl.textContent = `~${osPerWeek.replace('.', ',')} OSs por semana para zero a zero
+            if (breakevenOsEl) breakevenOsEl.textContent = `${osNeeded.replace('.', ',')} OSs / mês`;
+            if (breakevenOsSubEl) breakevenOsSubEl.textContent = `~${osPerWeek.replace('.', ',')} OSs por semana para zero a zero`;
 
             // Margem média de contrato MSP PME (5 PCs): R$ 475,00 líquidos
             const mspNeeded = (cost / 475).toFixed(1);
             const pcsNeeded = Math.ceil(cost / 95);
-            if (breakevenMspEl) breakevenMspEl.textContent = `${mspNeeded.replace('.', ',')} Contratos
-            if (breakevenMspSubEl) breakevenMspSubEl.textContent = `${pcsNeeded} estações gerenciadas cobrem 100% do ponto
+            if (breakevenMspEl) breakevenMspEl.textContent = `${mspNeeded.replace('.', ',')} Contratos`;
+            if (breakevenMspSubEl) breakevenMspSubEl.textContent = `${pcsNeeded} estações gerenciadas cobrem 100% do ponto`;
         }
 
-        function renderKanbanBoard(orders) {
+                function renderKanbanBoard(orders) {
             const colTriagem = document.getElementById('col-triagem');
             const colOrcamento = document.getElementById('col-orcamento');
             const colBancada = document.getElementById('col-bancada');
@@ -1936,66 +1936,39 @@ Qualquer dúvida, estou à disposição!
                     card.className += " border-2 border-brand hover:bg-zinc-800";
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-brand font-bold">#${formatOSNumber(wo.os_number)}</span>
-                            <span class="text-[10px] text-zinc-500">Recente</span>
+                            <span class="text-brand font-black">#${wo.os_number || '1050'}</span>
+                            <span class="text-[10px] text-zinc-500">${new Date(wo.created_at || Date.now()).toLocaleDateString('pt-BR')}</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
-                        <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Defeito informado pelo cliente.')}</p>
+                        <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Em análise na bancada.')}</p>
                         <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
-                            <span class="text-zinc-400">${escapeHtml(wo.client_name || 'Cliente')}</span>
+                            <span class="text-zinc-400 font-bold">${escapeHtml(wo.client_name || 'Cliente')}</span>
                             <span class="text-brand font-bold animate-pulse">Diagnóstico</span>
                         </div>
-                    
+                    `;
                     colTriagem.appendChild(card);
                 } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
                     cO++;
-                    const totalParts = parseFloat(wo.total_parts || 0);
-                    const hasParts = totalParts > 0;
-                    const isEncomendada = s.includes('encomendada') || (hasParts && wo.parts_deposit_paid && !s.includes('diagnostico') && !s.includes('sinal'));
-                    const isSinalPendente = hasParts && !isEncomendada && s.includes('sinal');
-                    const isApprovedClient = s.includes('fila') || s.includes('aprovad');
-                    
-                    let badgeLabel = '📋 2A. Aguardando Aprovação';
-                    let badgeColor = 'text-yellow-400 font-bold';
-                    let categoryTag = hasParts ? 'Peças + M.O.' : 'Serviço Puro';
-
-                    if (isApprovedClient) {
-                        card.className += " border-2 border-brand bg-zinc-900/90 shadow-[0_0_12px_rgba(204,255,0,0.15)]";
-                        badgeLabel = '🚀 2B. Aprovado (Na Fila)';
-                        badgeColor = 'text-brand font-black animate-pulse';
-                    } else if (isEncomendada) {
-                        card.className += " border-2 border-cyan-500 bg-zinc-900/80";
-                        badgeLabel = '📦 2B. Peça em Trânsito';
-                        badgeColor = 'text-cyan-300 font-black';
-                    } else if (isSinalPendente) {
-                        card.className += " border-2 border-yellow-500 bg-zinc-950";
-                        badgeLabel = '💳 2B. Sinal Pendente';
-                        badgeColor = 'text-yellow-300 font-black';
-                    } else {
-                        card.className += " border-2 border-yellow-700/70 hover:border-yellow-400 bg-zinc-950";
-                        badgeLabel = '⏳ 2A. Proposta Enviada';
-                        badgeColor = 'text-yellow-400 font-bold';
-                    }
-
+                    card.className += " border-yellow-800/80 hover:border-yellow-400";
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-white font-bold font-mono">#${formatOSNumber(wo.os_number)}</span>
-                            <span class="text-[10px] text-zinc-400 font-mono px-1.5 py-0.5 bg-zinc-900 border border-zinc-800">${categoryTag}</span>
+                            <span class="text-yellow-400 font-bold">#${wo.os_number || '1049'}</span>
+                            <span class="text-[10px] text-zinc-500">Proposta</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Orçamento gerado.')}</p>
-                        <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px] font-mono">
-                            <span class="text-zinc-300">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
-                            <span class="${badgeColor}">${badgeLabel}</span>
+                        <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
+                            <span class="text-zinc-400">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
+                            <span class="text-yellow-400 font-bold">Aguardando</span>
                         </div>
-                    
+                    `;
                     colOrcamento.appendChild(card);
-                } else if (s.includes('bancada') || s.includes('execucao') || s.includes('montagem')) {
+                } else if (s.includes('bancada')) {
                     cB++;
                     card.className += " border-cyan-800/80 hover:border-cyan-400";
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-cyan-400 font-bold">#${formatOSNumber(wo.os_number)}</span>
+                            <span class="text-cyan-400 font-bold">#${wo.os_number || '1048'}</span>
                             <span class="text-[10px] text-brand">Sinal OK</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
@@ -2004,14 +1977,14 @@ Qualquer dúvida, estou à disposição!
                             <span class="text-zinc-400">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
                             <span class="text-cyan-400 font-bold">Na Bancada</span>
                         </div>
-                    
+                    `;
                     colBancada.appendChild(card);
-                } else if (s.includes('qa') || s.includes('teste') || s.includes('estresse')) {
+                } else if (s.includes('qa') || s.includes('teste')) {
                     cQ++;
                     card.className += " border-brand hover:bg-zinc-800";
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-brand font-bold">#${formatOSNumber(wo.os_number)}</span>
+                            <span class="text-brand font-bold">#${wo.os_number || '1047'}</span>
                             <span class="text-[10px] text-brand animate-pulse">Rodando QA</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
@@ -2020,24 +1993,23 @@ Qualquer dúvida, estou à disposição!
                             <span class="text-brand font-bold">AIDA64 / FurMark</span>
                             <span class="text-white">Estável</span>
                         </div>
-                    
+                    `;
                     colQA.appendChild(card);
                 } else {
                     cP++;
                     card.className += " border-zinc-600 hover:border-brand";
-                    const isEntregue = s.includes('entregue');
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-1.5">
-                            <span class="text-white font-bold">#${formatOSNumber(wo.os_number)}</span>
-                            <span class="text-[10px] ${isEntregue ? 'text-zinc-400' : 'text-brand'}">${isEntregue ? 'Entregue' : 'Pronto'}</span>
+                            <span class="text-white font-bold">#${wo.os_number || '1046'}</span>
+                            <span class="text-[10px] text-brand">Pronto</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Pronto para retirada.')}</p>
                         <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
                             <span class="text-zinc-400">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
-                            <span class="text-brand font-bold">${isEntregue ? '✓ Quitado' : 'Garantia 90D'}</span>
+                            <span class="text-brand font-bold">Garantia 90D</span>
                         </div>
-                    
+                    `;
                     colPronto.appendChild(card);
                 }
             });
@@ -2049,1879 +2021,24 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('count-pronto').textContent = cP;
         }
 
-        
-        // Helper de formatação de telefone com máscara (11) 91969-1542
-        function formatPhoneBR(phone) {
-            if (!phone) return '-';
-            const clean = phone.replace(/\D/g, '');
-            if (clean.length === 11) {
-                return `(${clean.substring(0, 2)}) ${clean.substring(2, 7)}-${clean.substring(7)}
-            } else if (clean.length === 10) {
-                return `(${clean.substring(0, 2)}) ${clean.substring(2, 6)}-${clean.substring(6)}
-            }
-            return phone;
-        }
-
-        // =====================================================================
-        // 1. IMPRESSÃO: ETIQUETA ADESIVA DE BANCADA (TÉCNICO / FÍSICA)
-        // =====================================================================
-        function printThermalDeviceLabel() {
-            if (!selectedWorkOrder) return;
-            const wo = selectedWorkOrder;
-
-            document.getElementById('lbl-os-number').textContent = '#' + formatOSNumber(wo.os_number);
-            document.getElementById('lbl-date').textContent = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
-            document.getElementById('lbl-client-name').textContent = wo.client_name || (wo.clients ? wo.clients.name : 'Cliente');
-            document.getElementById('lbl-client-phone').textContent = formatPhoneBR(wo.client_whatsapp);
-            document.getElementById('lbl-device').textContent = (wo.device_brand || 'Equipamento') + ' ' + (wo.device_model || '');
-            document.getElementById('lbl-serial').textContent = wo.device_serial_number || 'Não informado';
-            document.getElementById('lbl-pin').textContent = wo.device_access_pin || 'Sem senha';
-            
-            const rawDef = wo.reported_defect || 'Entrada em triagem';
-            const cleanDef = rawDef.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
-            document.getElementById('lbl-defect').textContent = cleanDef.substring(0, 75) + (cleanDef.length > 75 ? '...' : '');
-
-            // Gerar QR Code do Técnico (Abre OS no Cockpit)
-            if (window.QRious) {
-                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}
-                new QRious({
-                    element: document.getElementById('qr-label-canvas'),
-                    value: qrUrl,
-                    size: 90,
-                    level: 'M'
-                });
-            }
-
-            document.body.className = 'print-mode-label';
-            window.print();
-            setTimeout(() => { document.body.className = ''; }, 1000);
-        }
-
-        // =====================================================================
-        // 2. IMPRESSÃO: RECIBO TÉRMICO DE CUSTÓDIA DO CLIENTE (CDC ART. 26)
-        // =====================================================================
-        function printThermalCustomerReceipt() {
-            if (!selectedWorkOrder) return;
-            const wo = selectedWorkOrder;
-
-            const now = wo.created_at ? new Date(wo.created_at) : new Date();
-            const dateStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-            document.getElementById('rec-os-number').textContent = '#' + formatOSNumber(wo.os_number);
-            document.getElementById('rec-date-time').textContent = dateStr;
-            document.getElementById('rec-client-name').textContent = wo.client_name || (wo.clients ? wo.clients.name : 'Cliente');
-            document.getElementById('rec-client-phone').textContent = formatPhoneBR(wo.client_whatsapp);
-            document.getElementById('rec-device').textContent = (wo.device_brand || 'Equipamento') + ' ' + (wo.device_model || '');
-            document.getElementById('rec-serial').textContent = wo.device_serial_number || 'Não informado';
-            
-            // Extrair Acessórios e Checklist
-            const rawDef = wo.reported_defect || 'Defeito informado na recepção.';
-            let acessorios = 'Equipamento avulso (sem acessórios)';
-            const acMatch = rawDef.match(/\[Acessórios:\s*([^\]]+)\]/i);
-            if (acMatch && acMatch[1]) acessorios = acMatch[1].trim();
-            document.getElementById('rec-accessories').textContent = acessorios;
-
-            const cleanDef = rawDef.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
-            document.getElementById('rec-defect').textContent = cleanDef || 'Avaliação técnica preliminar';
-
-            const hashStr = `IF-OS-${formatOSNumber(wo.os_number)}-${now.getFullYear()}
-            document.getElementById('rec-hash').textContent = hashStr;
-
-            // Gerar QR Code do Cliente (Abre Portal sem senha)
-            if (window.QRious) {
-                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}
-                new QRious({
-                    element: document.getElementById('qr-receipt-canvas'),
-                    value: qrUrl,
-                    size: 130,
-                    level: 'M'
-                });
-            }
-
-            document.body.className = 'print-mode-receipt';
-            window.print();
-            setTimeout(() => { document.body.className = ''; }, 1000);
-        }
-
-        
-        // =========================================================================
-        // AÇÕES DO GATEWAY ASAAS // COCKPIT ADMIN
-        // =========================================================================
-        function updateAsaasPaymentUI(wo) {
-            const badge = document.getElementById('detail-asaas-status-badge');
-            const partsVal = document.getElementById('detail-asaas-parts-val');
-            const totalVal = document.getElementById('detail-asaas-total-val');
-
-            const parts = parseFloat(wo.total_parts || 0);
-            const total = parseFloat(wo.total_amount || 0);
-            const hasParts = parts > 0;
-            const isPaid = wo.parts_deposit_paid || wo.payment_status === 'CONFIRMED' || wo.payment_status === 'RECEIVED';
-
-            if (partsVal) partsVal.textContent = 'R$ ' + parts.toFixed(2).replace('.', ',');
-            if (totalVal) totalVal.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
-
-            if (badge) {
-                if (!hasParts) {
-                    badge.className = "px-2.5 py-1 text-[10px] font-black uppercase bg-zinc-900 border border-zinc-700 text-zinc-400";
-                    badge.textContent = "100% SERVIÇO (PAGAMENTO NA ENTREGA)";
-                } else if (isPaid) {
-                    badge.className = "px-2.5 py-1 text-[10px] font-black uppercase bg-brand/20 border border-brand text-brand";
-                    badge.textContent = "🟢 SINAL DE PEÇAS QUITADO VIA ASAAS ✓";
-                } else {
-                    badge.className = "px-2.5 py-1 text-[10px] font-black uppercase bg-yellow-400/20 border border-yellow-400 text-yellow-400 animate-pulse";
-                    badge.textContent = `🟡 AGUARDANDO SINAL (R$ ${parts.toFixed(2).replace('.', ',')})
-                }
-            }
-        }
-
-        function copyAsaasPixForWhatsApp() {
-            if (!selectedWorkOrder) return;
-            const wo = selectedWorkOrder;
-            const token = wo.public_tracking_token || wo.os_number;
-            const parts = parseFloat(wo.total_parts || 0);
-            const total = parseFloat(wo.total_amount || 0);
-            const payVal = parts > 0 ? parts : total;
-
-            const portalLink = `https://iflcosta.tech/status?token=${token}
-            const msg = `Olá, *${wo.client_name || 'Cliente'}*! Aqui é da *IF Tech*.
-
-Seu orçamento da *OS #${formatOSNumber(wo.os_number)}* está pronto! Acesse o link seguro abaixo para aprovar e realizar o pagamento do sinal de peças no Pix:
-
-👉 ${portalLink}
-
-Qualquer dúvida, estamos à disposição!
-
-            navigator.clipboard.writeText(msg).then(() => {
-                showScanNotification("✓ Mensagem com Link Pix copiada para o WhatsApp!", "success");
-            });
-        }
-
-        async function adminSimulateAsaasPayment() {
-            if (!selectedWorkOrder) return;
-            const wo = selectedWorkOrder;
-            const client = getSupabase();
-            const asaasId = wo.asaas_payment_id || `pay_mock_${wo.os_number}_${Date.now()}
-
-            showScanNotification(`Confirmando Pix da OS #${formatOSNumber(wo.os_number)} no Asaas...`, "success");
-
-            if (client) {
-                try {
-                    await client.rpc('rpc_confirm_asaas_payment', {
-                        p_asaas_payment_id: asaasId,
-                        p_paid_value: parseFloat(wo.total_parts || wo.total_amount || 0)
-                    });
-                } catch (e) {
-                    console.warn("RPC Confirm Fallback:", e);
-                }
-            }
-
-            wo.parts_deposit_paid = true;
-            wo.payment_status = 'CONFIRMED';
-            wo.status = (parseFloat(wo.total_parts || 0) > 0) ? 'Peca_Encomendada' : 'Aprovado_Fila_Bancada';
-
-            updateAsaasPaymentUI(wo);
-            document.getElementById('detail-status-badge').textContent = wo.status.replace(/_/g, ' ');
-            renderKanban(currentWorkOrders);
-            showScanNotification(`✓ Pagamento confirmado com sucesso! OS #${formatOSNumber(wo.os_number)} avançou no Kanban.`, "success");
-        }
-
-
-        function openOSDetailModal(wo) {
-            selectedWorkOrder = wo;
-            document.getElementById('detail-os-num').textContent = '#' + (wo.os_number || '1050');
-            document.getElementById('detail-device-title').textContent = (wo.device_brand || 'Equipamento') + ' ' + (wo.device_model || '');
-            document.getElementById('detail-client-name').textContent = wo.client_name || (wo.clients ? wo.clients.name : 'Cliente');
-            document.getElementById('detail-client-phone').textContent = wo.client_whatsapp || '(11) 91969-1542';
-            document.getElementById('detail-status-badge').textContent = (wo.status || 'Triagem').replace(/_/g, ' ');
-            document.getElementById('detail-total-amount').textContent = 'R$ ' + parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
-            updateAsaasPaymentUI(wo);
-            // Parse do Defeito e Tags de Checklist Visual
-            const rawDefect = wo.reported_defect || 'Defeito informado na recepção.';
-            const defectMatch = rawDefect.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
-            document.getElementById('detail-defect-text').textContent = defectMatch || rawDefect;
-
-            const checklistBoxesContainer = document.getElementById('detail-checklist-boxes');
-            const checklistWrapper = document.getElementById('detail-checklist-wrapper');
-            if (checklistBoxesContainer) {
-                checklistBoxesContainer.innerHTML = '';
-                let hasTags = false;
-
-                const chkMatch = rawDefect.match(/\[Checklist:\s*([^\]]+)\]/i);
-                if (chkMatch && chkMatch[1]) {
-                    const items = chkMatch[1].split(',').map(s => s.trim()).filter(Boolean);
-                    items.forEach(item => {
-                        hasTags = true;
-                        const isWarning = item.toLowerCase().includes('risco') || item.toLowerCase().includes('queda') || item.toLowerCase().includes('quebrado') || item.toLowerCase().includes('líquido') || item.toLowerCase().includes('parafuso');
-                        const badge = document.createElement('span');
-                        badge.className = isWarning 
-                            ? "px-2.5 py-1 bg-yellow-950/40 border border-yellow-600/70 text-yellow-300 text-[11px] font-mono flex items-center gap-1"
-                            : "px-2.5 py-1 bg-zinc-900 border border-brand/60 text-brand text-[11px] font-mono flex items-center gap-1";
-                        badge.innerHTML = isWarning ? `⚠️ ${escapeHtml(item)}` : `✓ ${escapeHtml(item)}
-                        checklistBoxesContainer.appendChild(badge);
-                    });
-                }
-
-                const accMatch = rawDefect.match(/\[Acessórios:\s*([^\]]+)\]/i);
-                if (accMatch && accMatch[1] && !accMatch[1].toLowerCase().includes('nenhum')) {
-                    hasTags = true;
-                    const badge = document.createElement('span');
-                    badge.className = "px-2.5 py-1 bg-zinc-900 border border-cyan-500/60 text-cyan-300 text-[11px] font-mono flex items-center gap-1";
-                    badge.innerHTML = `🔌 Acessórios: ${escapeHtml(accMatch[1])}
-                    checklistBoxesContainer.appendChild(badge);
-                }
-
-                const avMatch = rawDefect.match(/\[Avarias:\s*([^\]]+)\]/i);
-                if (avMatch && avMatch[1] && !avMatch[1].toLowerCase().includes('nenhum')) {
-                    hasTags = true;
-                    const badge = document.createElement('span');
-                    badge.className = "px-2.5 py-1 bg-zinc-900 border border-red-500/60 text-red-300 text-[11px] font-mono flex items-center gap-1";
-                    badge.innerHTML = `🔍 Avarias: ${escapeHtml(avMatch[1])}
-                    checklistBoxesContainer.appendChild(badge);
-                }
-
-                if (!hasTags) {
-                    if (checklistWrapper) checklistWrapper.classList.add('hidden');
-                } else {
-                    if (checklistWrapper) checklistWrapper.classList.remove('hidden');
-                }
-            }
-
-            const statusSelect = document.getElementById('detail-status-select');
-            if (statusSelect) {
-                const s = wo.status || 'Triagem';
-                for (let i = 0; i < statusSelect.options.length; i++) {
-                    if (statusSelect.options[i].value.toLowerCase() === s.toLowerCase() || s.toLowerCase().includes(statusSelect.options[i].value.toLowerCase())) {
-                        statusSelect.selectedIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            // Injeta Botões de Ação Contextuais com base no status da OS
-            renderDetailActionButtons(wo);
-
-            const tokenParam = wo.public_tracking_token ? `token=${wo.public_tracking_token}` : `os=${wo.os_number}
-            document.getElementById('detail-portal-link').href = `/status?${tokenParam}
-
-            document.getElementById('os-detail-modal').classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function renderDetailActionButtons(wo) {
-            const container = document.getElementById('detail-action-buttons');
-            if (!container) return;
-            container.innerHTML = '';
-
-            const s = (wo.status || 'Triagem').toLowerCase();
-            const totalParts = parseFloat(wo.total_parts || 0);
-            const hasParts = totalParts > 0;
-
-            if (s.includes('triagem')) {
-                container.innerHTML = `
-                    <button onclick="actionBudgetFromOS()" class="px-3 py-2.5 bg-yellow-950/60 border border-yellow-500 text-yellow-400 font-bold uppercase hover:bg-yellow-500 hover:text-black transition-colors flex items-center justify-center gap-1.5">
-                        <i data-lucide="calculator" class="w-4 h-4"></i> Elaborar Orçamento
-                    </button>
-                    <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-2.5 bg-cyan-950/60 border border-cyan-500 text-cyan-400 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5">
-                        <i data-lucide="play" class="w-4 h-4"></i> Iniciar Bancada Direto
-                    </button>
-                
-            } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
-                const isApprovedClient = s.includes('fila') || s.includes('aprovad');
-                const isEncomendada = s.includes('encomendada') || (hasParts && wo.parts_deposit_paid && !s.includes('diagnostico') && !s.includes('sinal'));
-                
-                if (!hasParts) {
-                    // Sem peças: 100% Mão de Obra / Serviços
-                    if (isApprovedClient) {
-                        container.innerHTML = `
-                            <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] text-sm">
-                                <i data-lucide="wrench" class="w-5 h-5"></i> 🛠️ Puxar da Fila & Iniciar Execução na Bancada
-                            </button>
-                            <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
-                            </button>
-                        
-                    } else {
-                        container.innerHTML = `
-                            <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-4 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                                <i data-lucide="check-check" class="w-4 h-4"></i> ✅ Marcar Aprovado pelo Cliente
-                            </button>
-                            <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-3 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="play" class="w-4 h-4"></i> Iniciar Direto na Bancada
-                            </button>
-                            <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
-                            </button>
-                        
-                    }
-                } else {
-                    // Com Peças Sob Encomenda
-                    if (isEncomendada) {
-                        container.innerHTML = `
-                            <button onclick="advanceOSStatus('Na_Bancada')" class="sm:col-span-2 px-4 py-3.5 bg-cyan-500 text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.4)] text-sm">
-                                <i data-lucide="package-check" class="w-5 h-5"></i> 📦 Peças Recebidas no Hub • Iniciar Bancada
-                            </button>
-                            <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-3 py-2 bg-zinc-900 border border-brand/60 text-brand font-bold uppercase hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-1.5 text-xs">
-                                <i data-lucide="clock" class="w-3.5 h-3.5"></i> Mover p/ Fila de Espera
-                            </button>
-                            <button onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar Orçamento
-                            </button>
-                        
-                    } else {
-                        container.innerHTML = `
-                            <button onclick="advanceOSStatus('Peca_Encomendada')" class="px-3 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)] text-xs">
-                                <i data-lucide="check-check" class="w-4 h-4"></i> 💰 Confirmar Sinal Pago (Pix/Balcão)
-                            </button>
-                            <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-3 py-3 bg-zinc-900 border-2 border-brand text-brand font-black uppercase hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-1.5 text-xs">
-                                <i data-lucide="box" class="w-4 h-4"></i> 📦 Peça em Estoque / Fora ➔ Fila
-                            </button>
-                            <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-2 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5 text-xs">
-                                <i data-lucide="play" class="w-3.5 h-3.5"></i> Iniciar Bancada Agora
-                            </button>
-                            <button onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
-                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar Orçamento
-                            </button>
-                        
-                    }
-                }
-            } else if (s.includes('bancada')) {
-                container.innerHTML = `
-                    <button onclick="advanceOSStatus('Teste_Estresse_QA')" class="sm:col-span-2 px-4 py-3 bg-brand/15 border-2 border-brand text-brand font-black uppercase hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                        <i data-lucide="flame" class="w-4 h-4 animate-pulse"></i> Montagem Concluída • Iniciar Testes QA (FurMark / AIDA64)
-                    </button>
-                
-            } else if (s.includes('qa') || s.includes('teste')) {
-                container.innerHTML = `
-                    <button onclick="advanceOSStatus('Pronto')" class="px-3 py-2.5 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
-                        <i data-lucide="check-check" class="w-4 h-4"></i> QA Aprovado • Marcar Pronto
-                    </button>
-                    <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-2.5 bg-zinc-900 border border-red-700 text-red-400 font-bold uppercase hover:bg-red-900 hover:text-white transition-colors flex items-center justify-center gap-1.5">
-                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reabrir Bancada (Reprovar QA)
-                    </button>
-                
-            } else if (s.includes('pronto')) {
-                container.innerHTML = `
-                    <button onclick="advanceOSStatus('Entregue')" class="sm:col-span-2 px-4 py-3 bg-white text-black font-black uppercase hover:bg-brand transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)]">
-                        <i data-lucide="package-check" class="w-4 h-4"></i> Entregar ao Cliente & Quitar Saldo Final
-                    </button>
-                
-            } else if (s.includes('entregue')) {
-                container.innerHTML = `
-                    <div class="sm:col-span-2 text-center py-2.5 bg-brand/10 border border-brand text-brand font-bold uppercase text-xs">
-                        ✓ OS Entregue e Concluída com Garantia CDC de 90 Dias
-                    </div>
-                
-            }
-        }
-
-        async function advanceOSStatus(newStatus) {
-            if (!selectedWorkOrder) return;
-            const osNum = selectedWorkOrder.os_number;
-
-            // Atualização no Supabase via RPC
-            const client = getSupabase();
-            if (client) {
-                try {
-                    const { data, error } = await client.rpc('rpc_advance_work_order_status', {
-                        p_os_number: osNum,
-                        p_new_status: newStatus
-                    });
-                    if (error) {
-                        console.warn("Aviso ao avançar status no Supabase:", error);
-                    }
-                } catch (e) {
-                    console.warn("Exceção ao avançar status:", e);
-                }
-            }
-
-            // Atualização Reativa Imediata em Memória e LocalStorage
-            selectedWorkOrder.status = newStatus;
-            currentWorkOrders = currentWorkOrders.map(o => {
-                if (o.os_number === osNum) {
-                    return { ...o, status: newStatus };
-                }
-                return o;
-            });
-
-            try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
-            renderKanbanBoard(currentWorkOrders);
-            renderFinancialDashboard(currentWorkOrders);
-
-            // Atualiza o modal aberto
-            document.getElementById('detail-status-badge').textContent = newStatus.replace(/_/g, ' ');
-            renderDetailActionButtons(selectedWorkOrder);
-            if (window.lucide) lucide.createIcons();
-
-            loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-        }
-
-        function handleManualStatusChange(newStatus) {
-            advanceOSStatus(newStatus);
-        }
-
-        function sendWhatsAppStatusUpdate() {
-            if (!selectedWorkOrder) return;
-            const wo = selectedWorkOrder;
-            const phone = wo.client_whatsapp ? wo.client_whatsapp.replace(/\D/g, '') : '5511919691542';
-            const cleanPhone = phone.startsWith('55') ? phone : `55${phone}
-            const tokenParam = wo.public_tracking_token ? `token=${wo.public_tracking_token}` : `os=${wo.os_number}
-            
-            const eWave = String.fromCodePoint(0x1F44B);
-            const eDoc = String.fromCodePoint(0x1F4CB);
-            const eHand = String.fromCodePoint(0x1F449);
-            const statusName = (wo.status || 'Triagem').replace(/_/g, ' ');
-
-            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IF Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/status?${tokenParam}\n\nQualquer dúvida, estamos à disposição!
-            
-            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function closeOSDetailModal() {
-            document.getElementById('os-detail-modal').classList.add('hidden');
-        }
-
-        let editingWorkOrder = null;
-
-        // =========================================================================
-        // MODAL DEDICADO DE ORÇAMENTO & LAUDO TÉCNICO DE OS
-        // =========================================================================
-        let budgetModalOS = null;
-
-        function actionBudgetFromOS() {
-            if (!selectedWorkOrder) return;
-            budgetModalOS = selectedWorkOrder;
-            closeOSDetailModal();
-
-            const titleEl = document.getElementById('budget-modal-title');
-            const clientInfoEl = document.getElementById('budget-modal-client-info');
-            const defectEl = document.getElementById('budget-modal-defect-text');
-            const sTypeEl = document.getElementById('budget-modal-service-type');
-            const diagEl = document.getElementById('budget-modal-diagnosis');
-            const laborEl = document.getElementById('budget-modal-labor');
-            const tbody = document.getElementById('budget-modal-parts-tbody');
-
-            if (titleEl) titleEl.textContent = `Orçamento da OS #${budgetModalOS.os_number} — ${budgetModalOS.device_brand || ''} ${budgetModalOS.device_model || ''}
-            if (clientInfoEl) clientInfoEl.textContent = `Cliente: ${budgetModalOS.client_name || 'Cliente'} • WhatsApp: ${budgetModalOS.client_whatsapp || '-'}
-            if (defectEl) defectEl.textContent = budgetModalOS.reported_defect || 'Defeito informado pelo cliente na recepção da bancada.';
-            if (sTypeEl) sTypeEl.value = budgetModalOS.service_type || 'Hardware_Reparo';
-            if (diagEl) diagEl.value = budgetModalOS.technical_diagnosis || '';
-            if (laborEl) laborEl.value = parseFloat(budgetModalOS.total_labor || 0).toFixed(2);
-            
-            if (tbody) tbody.innerHTML = '';
-            
-            // Se já tiver itens cadastrados na OS, carrega
-            if (budgetModalOS.items && budgetModalOS.items.length > 0) {
-                budgetModalOS.items.forEach(item => {
-                    if (item.item_type !== 'Labor') {
-                        addModalBudgetPartRow(item.item_type, item.description, item.cost_price, item.unit_price);
-                    }
-                });
-            }
-
-            recalcModalBudgetTotals();
-            document.getElementById('budget-modal').classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function closeBudgetModal() {
-            document.getElementById('budget-modal').classList.add('hidden');
-        }
-
-        function injectModalDiagnosisPreset(type) {
-            const diagEl = document.getElementById('budget-modal-diagnosis');
-            const laborEl = document.getElementById('budget-modal-labor');
-            const serviceTypeEl = document.getElementById('budget-modal-service-type');
-
-            if (type === 'curto_19v') {
-                diagEl.value = "Identificado curto-circuito no circuito de alimentação primária (Linha de 19V / VIN). Realizada desoxidação química preventiva, substituição do MOSFET comutador de entrada de alta frequência e aplicação de pasta térmica de alta condutividade Arctic MX-4 na CPU/GPU.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "280.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
-            } else if (type === 'limpeza_mx4') {
-                diagEl.value = "Superaquecimento e estrangulamento térmico (thermal throttling). Realizada desmontagem completa, descarbonização ultrassônica da colmeia de dissipação, substituição de thermal pads e aplicação de pasta térmica Thermal Grizzly Hydronaut/Arctic MX-4.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "220.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Limpeza_Preventiva";
-            } else if (type === 'upgrade_nvme') {
-                diagEl.value = "Substituição/Instalação de unidade de armazenamento de alta velocidade SSD NVMe M.2 Gen4 com clonagem bit-a-bit de integridade do sistema operacional e alinhamento de partições para máxima performance.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "140.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Upgrade";
-            } else if (type === 'tela_lcd') {
-                diagEl.value = "Display LCD com avaria mecânica/linhas de sinal. Realizada a substituição por novo painel original IPS com calibração de torque e alívio de pressão das dobradiças metálicas para evitar rachaduras de carcaça.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "160.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Troca_Tela_Teclado";
-            } else if (type === 'desoxidacao') {
-                diagEl.value = "Oxidação por umidade detectada na placa-mãe. Realizado banho químico em cuba ultrassônica com álcool isopropílico 99.8%, secagem em estufa térmica controlada e ressolda SMD dos pontos afetados com fluxo no-clean.";
-                if (laborEl && (!laborEl.value || laborEl.value === '0.00')) laborEl.value = "260.00";
-                if (serviceTypeEl) serviceTypeEl.value = "Hardware_Reparo";
-            }
-            recalcModalBudgetTotals();
-        }
-
-        function addModalBudgetPartRow(type = 'Componente', desc = '', cost = 0, price = 0) {
-            const tbody = document.getElementById('budget-modal-parts-tbody');
-            if (!tbody) return;
-
-            const tr = document.createElement('tr');
-            tr.className = 'hover:bg-zinc-900/60 transition-colors';
-            tr.innerHTML = `
-                <td class="py-2 px-2 w-28">
-                    <input type="text" value="${type}" class="modal-part-type w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white font-mono text-xs focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2 px-2">
-                    <input type="text" value="${desc}" placeholder="Ex: MOSFET Canal N 30V / SSD NVMe 1TB" class="modal-part-desc w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2 px-2">
-                    <input type="number" step="0.01" value="${parseFloat(cost).toFixed(2)}" oninput="recalcModalBudgetTotals()" class="modal-part-cost w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2 px-2">
-                    <input type="number" step="0.01" value="${parseFloat(price).toFixed(2)}" oninput="recalcModalBudgetTotals()" class="modal-part-price w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2 px-2 text-right font-mono font-bold text-zinc-400 modal-part-profit">
-                    R$ 0,00
-                </td>
-                <td class="py-2 px-2 text-center">
-                    <button type="button" onclick="this.closest('tr').remove(); recalcModalBudgetTotals();" class="text-zinc-600 hover:text-red-400 p-1">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
-                </td>
-            
-            tbody.appendChild(tr);
-            recalcModalBudgetTotals();
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function recalcModalBudgetTotals() {
-            let partsCostTotal = 0;
-            let partsPriceTotal = 0;
-
-            const rows = document.querySelectorAll('#budget-modal-parts-tbody tr');
-            rows.forEach(tr => {
-                const cost = parseFloat(tr.querySelector('.modal-part-cost')?.value) || 0;
-                const price = parseFloat(tr.querySelector('.modal-part-price')?.value) || 0;
-                const profit = price - cost;
-
-                partsCostTotal += cost;
-                partsPriceTotal += price;
-
-                const profitEl = tr.querySelector('.modal-part-profit');
-                if (profitEl) {
-                    profitEl.textContent = 'R$ ' + profit.toFixed(2).replace('.', ',');
-                    profitEl.className = profit >= 0 ? 'py-2 px-2 text-right font-mono font-bold text-brand modal-part-profit' : 'py-2 px-2 text-right font-mono font-bold text-red-400 modal-part-profit';
-                }
-            });
-
-            const laborPrice = parseFloat(document.getElementById('budget-modal-labor')?.value) || 0;
-            const grandTotal = partsPriceTotal + laborPrice;
-            const netProfit = (partsPriceTotal - partsCostTotal) + laborPrice;
-
-            document.getElementById('budget-modal-parts-total').textContent = 'R$ ' + partsPriceTotal.toFixed(2).replace('.', ',');
-            document.getElementById('budget-modal-labor-total').textContent = 'R$ ' + laborPrice.toFixed(2).replace('.', ',');
-            document.getElementById('budget-modal-grand-total').textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
-            document.getElementById('budget-modal-net-profit').textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-        }
-
-        async function handleSaveBudgetFromModal(e) {
-            e.preventDefault();
-            if (!budgetModalOS) return;
-
-            const btn = document.getElementById('btn-save-budget-modal');
-            btn.disabled = true;
-            btn.innerHTML = `<span class="animate-pulse flex items-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando Orçamento...</span>
-            if (window.lucide) lucide.createIcons();
-
-            const serviceType = document.getElementById('budget-modal-service-type').value;
-            const diagnosis = document.getElementById('budget-modal-diagnosis').value.trim() || `Laudo técnico da OS #${budgetModalOS.os_number}
-            const laborPrice = parseFloat(document.getElementById('budget-modal-labor').value) || 0;
-
-            const items = [];
-            const rows = document.querySelectorAll('#budget-modal-parts-tbody tr');
-            rows.forEach(tr => {
-                const itemType = tr.querySelector('.modal-part-type')?.value.trim() || 'Part';
-                const desc = tr.querySelector('.modal-part-desc')?.value.trim() || 'Componente';
-                const cost = parseFloat(tr.querySelector('.modal-part-cost')?.value) || 0;
-                const price = parseFloat(tr.querySelector('.modal-part-price')?.value) || 0;
-
-                if (desc) {
-                    items.push({
-                        item_type: 'Part',
-                        description: desc,
-                        cost_price: cost,
-                        unit_price: price,
-                        quantity: 1
-                    });
-                }
-            });
-
-            if (laborPrice > 0) {
-                items.push({
-                    item_type: 'Labor',
-                    description: `Mão de Obra Especializada // ${serviceType.replace(/_/g, ' ')}`,
-                    cost_price: 0.00,
-                    unit_price: laborPrice,
-                    quantity: 1
-                });
-            }
-
-            const client = getSupabase();
-            let trackingToken = budgetModalOS.public_tracking_token;
-
-            if (client) {
-                try {
-                    const { data, error } = await client.rpc('rpc_update_work_order_budget', {
-                        p_os_number: parseInt(budgetModalOS.os_number),
-                        p_service_type: serviceType,
-                        p_diagnosis: diagnosis,
-                        p_items: items
-                    });
-
-                    if (error) {
-                        alert("Erro ao atualizar orçamento: " + error.message);
-                        btn.disabled = false;
-                        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp
-                        return;
-                    }
-
-                    if (data && data.public_tracking_token) {
-                        trackingToken = data.public_tracking_token;
-                    }
-                } catch (err) {
-                    console.error("Exceção ao salvar orçamento:", err);
-                }
-            }
-
-            closeBudgetModal();
-            loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-
-            // Mensagem de Orçamento Pronto para WhatsApp
-            const partsPriceTotal = parseFloat(document.getElementById('budget-modal-parts-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
-            const grandTotal = parseFloat(document.getElementById('budget-modal-grand-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
-            const clientPhone = (budgetModalOS.client_whatsapp || '').replace(/\D/g, '');
-            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${budgetModalOS.os_number}
-
-            const msg = `*Olá ${budgetModalOS.client_name || 'Cliente'}!*
-Aqui é da *IF Tech*.
-
-Concluímos o diagnóstico e elaboração do orçamento da sua *OS #${budgetModalOS.os_number} (${budgetModalOS.device_brand || ''} ${budgetModalOS.device_model || ''})*.
-
-*Laudo Técnico:* ${diagnosis}
-*Valor Total:* R$ ${grandTotal.toFixed(2).replace('.', ',')}${partsPriceTotal > 0 ? ` (Sinal de Peças: R$ ${partsPriceTotal.toFixed(2).replace('.', ',')})` : ''}
-
-> *Acesse o laudo e aprove o orçamento pelo link:* 
-https://iflcosta.tech/status?${linkParam}
-
-Ficamos no aguardo para iniciar a execução!
-
-            document.getElementById('whatsapp-msg-preview').textContent = msg;
-            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}
-            document.getElementById('whatsapp-modal').classList.remove('hidden');
-
-            btn.disabled = false;
-            btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp
-            if (window.lucide) lucide.createIcons();
-        }
-
-
-        function openNewOSModal() {
-            editingWorkOrder = null;
-            switchTab('new-os');
-            const wizardTitle = document.getElementById('wizard-header-title');
-            if (wizardTitle) wizardTitle.textContent = 'Novo Orçamento & Ordem de Serviço';
-            document.getElementById('wizard-os-num').textContent = '#Nova OS';
-            document.getElementById('client-name').value = '';
-            document.getElementById('client-phone').value = '';
-            const tbody = document.getElementById('parts-table-body');
-            if (tbody) tbody.innerHTML = '';
-            document.getElementById('labor-price').value = '0.00';
-            recalcTotals();
-        }
-
-        function openIntakeModal() {
-            document.getElementById('intake-modal').classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function closeIntakeModal() {
-            document.getElementById('intake-modal').classList.add('hidden');
-        }
-
-        async function handleSaveIntake(e) {
-            e.preventDefault();
-            const form = e.target;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Registrando Entrada...</span>
-            if (window.lucide) lucide.createIcons();
-
-            const clientName = document.getElementById('intake-client-name').value.trim();
-            const rawPhone = document.getElementById('intake-client-phone').value.replace(/\D/g, '');
-            const clientPhone = (rawPhone.length >= 12 && rawPhone.startsWith('55')) ? rawPhone.substring(2) : rawPhone;
-            const deviceType = document.getElementById('intake-device-type').value;
-            const deviceModel = document.getElementById('intake-device-model').value.trim();
-            const defect = document.getElementById('intake-defect').value.trim();
-            const checklistItems = [];
-            if (document.getElementById('chk-liga')?.checked) checklistItems.push('Liga');
-            if (document.getElementById('chk-display')?.checked) checklistItems.push('Display/Tela OK');
-            if (document.getElementById('chk-carrega')?.checked) checklistItems.push('Carregador Incluso');
-            if (document.getElementById('chk-cabo')?.checked) checklistItems.push('Cabo de Força');
-            if (document.getElementById('chk-riscos')?.checked) checklistItems.push('Marcas/Riscos');
-            if (document.getElementById('chk-queda')?.checked) checklistItems.push('Queda/Quebrado');
-            if (document.getElementById('chk-molhou')?.checked) checklistItems.push('Contato c/ Líquido');
-            if (document.getElementById('chk-parafusos')?.checked) checklistItems.push('Sem Parafusos');
-
-            const accessories = document.getElementById('intake-accessories').value.trim();
-            const visualNotes = document.getElementById('intake-visual-condition').value.trim();
-
-            let finalOsNum = "1001";
-            let trackingToken = null;
-
-            const client = getSupabase();
-            if (client) {
-                try {
-                    const checklistStr = checklistItems.length > 0 ? `[Checklist: ${checklistItems.join(', ')}]` : '';
-                    const accStr = accessories ? `[Acessórios: ${accessories}]` : '';
-                    const avariasStr = visualNotes ? `[Avarias: ${visualNotes}]` : '';
-                    const fullDefect = `${defect} ${checklistStr} ${accStr} ${avariasStr}`.replace(/\s+/g, ' ').trim();
-                    const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
-                        p_client_name: clientName,
-                        p_client_whatsapp: clientPhone || '11999999999',
-                        p_service_type: document.getElementById('intake-service-type') ? document.getElementById('intake-service-type').value : 'Hardware_Reparo',
-                        p_device_brand: deviceType,
-                        p_device_model: deviceModel,
-                        p_reported_defect: fullDefect,
-                        p_pickup_fee: 0.00,
-                        p_items: [] // Entrada em Triagem sem peças iniciais
-                    });
-
-                    if (error) {
-                        console.error("Erro na RPC:", error);
-                        alert("Erro ao registrar entrada: " + error.message);
-                    } else if (data && data.success) {
-                        finalOsNum = data.os_number;
-                        trackingToken = data.public_tracking_token || data.tracking_token;
-                    }
-                } catch (err) {
-                    console.error("Exceção ao registrar intake:", err);
-                }
-            }
-
-            closeIntakeModal();
-            form.reset();
-
-            // Mensagem de Comprovante de Custódia para WhatsApp (Formatação Nativa WhatsApp)
-            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}
-            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada especializada para diagnóstico técnico (OS #${finalOsNum}).\n\n> *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estamos à disposição!
-
-            document.getElementById('whatsapp-msg-preview').textContent = msg;
-            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}
-            
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Confirmar Entrada & Gerar Comprovante
-            if (window.lucide) lucide.createIcons();
-
-            document.getElementById('whatsapp-modal').classList.remove('hidden');
-
-            // Atualização Reativa Imediata no Kanban
-            const newCardObj = {
-                id: (trackingToken || Math.random().toString()),
-                os_number: parseInt(finalOsNum),
-                public_tracking_token: trackingToken,
-                status: 'Triagem',
-                device_brand: deviceType,
-                device_model: deviceModel,
-                reported_defect: defect,
-                client_name: clientName,
-                client_whatsapp: clientPhone,
-                total_amount: 0.00,
-                created_at: new Date().toISOString()
-            };
-
-            currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
-            try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
-            renderKanbanBoard(currentWorkOrders);
-            renderFinancialDashboard(currentWorkOrders);
-            document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
-            loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-        }
-
-        function handleServiceTypeChange(type) {
-            const laborInput = document.getElementById('labor-price');
-            if (type === 'Limpeza_Preventiva') {
-                if (parseFloat(laborInput.value) === 0) laborInput.value = "119.00";
-            } else if (type === 'Software_Formatacao') {
-                if (parseFloat(laborInput.value) === 0) laborInput.value = "140.00";
-            } else if (type === 'Montagem_PC') {
-                if (parseFloat(laborInput.value) === 0) laborInput.value = "285.00";
-            }
-            recalcTotals();
-        }
-
-        // =========================================================================
-        // SETUP BUILDER // CATÁLOGO DE PERFIS E COMPONENTES DINÂMICOS
-        // =========================================================================
-        const buildProfiles = {
-            'GAMER_MID': {
-                name: '🎮 Setup Gamer 1080p / 1440p High (Ryzen 5 + RTX 4060 8GB)',
-                labor: 285.00,
-                diagnosis: 'Montagem gamer de alta eficiência com calibração de fluxo de ar de pressão positiva, otimização de latência de memória XMP/EXPO e testes de estresse FurMark/AIDA64 15min.',
-                parts: [
-                    { type: "Processador", desc: "AMD Ryzen 5 5600 (6 Cores / 12 Threads, 4.4GHz Turbo)", cost: 680.00, price: 799.00 },
-                    { type: "Placa-Mãe", desc: "ASUS Prime B550M-A / ASRock B550M Phantom Gaming 4", cost: 520.00, price: 630.00 },
-                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4 CL16", cost: 230.00, price: 290.00 },
-                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4060 8GB GDDR6 (DLSS 3 / Ray Tracing)", cost: 1850.00, price: 2190.00 },
-                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 1TB Kingston NV2 PCIe 4.0 (3500MB/s)", cost: 320.00, price: 399.00 },
-                    { type: "Fonte PSU", desc: "MSI MAG A650BN 650W 80 Plus Bronze PFC Ativo", cost: 260.00, price: 320.00 },
-                    { type: "Gabinete & Fans", desc: "Montech Air 903 Base Black (3x Fans 140mm High Airflow)", cost: 290.00, price: 360.00 },
-                    { type: "Refrigeração", desc: "Air Cooler DeepCool AG400 ARGB 120mm", cost: 120.00, price: 159.00 }
-                ]
-            },
-            'GAMER_HIGH': {
-                name: '🔥 Setup Gamer Competitivo / Streaming 1440p (Ryzen 7 + RTX 4070 Super)',
-                labor: 350.00,
-                diagnosis: 'Montagem de alta performance com cable management cirúrgico, refrigeração líquida balanceada e calibração de curvas de ventoinha para máxima silenciosidade e estabilidade.',
-                parts: [
-                    { type: "Processador", desc: "AMD Ryzen 7 5700X3D (8 Cores / 16 Threads, 3D V-Cache Gamer)", cost: 1250.00, price: 1450.00 },
-                    { type: "Placa-Mãe", desc: "ASUS TUF Gaming B550M-Plus Wi-Fi II DDR4", cost: 790.00, price: 920.00 },
-                    { type: "Memória RAM", desc: "32GB (2x16GB) Corsair Vengeance RGB Pro 3600MHz DDR4", cost: 480.00, price: 590.00 },
-                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4070 Super 12GB GDDR6X", cost: 3890.00, price: 4390.00 },
-                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 2TB Kingston KC3000 PCIe 4.0 (7000MB/s)", cost: 680.00, price: 820.00 },
-                    { type: "Fonte PSU", desc: "Corsair RM750e 750W 80 Plus Gold Full Modular ATX 3.0", cost: 580.00, price: 690.00 },
-                    { type: "Gabinete & Fans", desc: "Lian Li Lancool 216 RGB Black (2x 160mm + 1x 140mm Fans)", cost: 550.00, price: 680.00 },
-                    { type: "Refrigeração", desc: "Water Cooler DeepCool LE520 240mm ARGB", cost: 320.00, price: 399.00 }
-                ]
-            },
-            'GAMER_ULTRA': {
-                name: '👑 Setup Gamer Entusiasta 4K Ultra AM5 (Ryzen 7 7800X3D + RTX 4080 Super)',
-                labor: 415.00,
-                diagnosis: 'Montagem entusiasta de ponta AM5 com DDR5 de 6000MHz low latency, water cooler 360mm de alto fluxo térmico e bancada de validação com 3DMark TimeSpy.',
-                parts: [
-                    { type: "Processador", desc: "AMD Ryzen 7 7800X3D (8 Cores / 16 Threads, AM5 Melhor CPU Gamer)", cost: 2650.00, price: 2990.00 },
-                    { type: "Placa-Mãe", desc: "ASUS ROG Strix B650E-F Gaming Wi-Fi DDR5", cost: 1750.00, price: 2050.00 },
-                    { type: "Memória RAM", desc: "32GB (2x16GB) G.Skill Trident Z5 Neo 6000MHz CL30 DDR5 AMD EXPO", cost: 790.00, price: 950.00 },
-                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4080 Super 16GB GDDR6X", cost: 6790.00, price: 7490.00 },
-                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 2TB Samsung 990 Pro PCIe 4.0 (7450MB/s)", cost: 980.00, price: 1190.00 },
-                    { type: "Fonte PSU", desc: "Corsair RM850x 850W 80 Plus Gold Full Modular ATX 3.0", cost: 790.00, price: 920.00 },
-                    { type: "Gabinete & Fans", desc: "NZXT H9 Flow Dual Chamber + Kit 6x Fans PWM 120mm", cost: 980.00, price: 1190.00 },
-                    { type: "Refrigeração", desc: "Water Cooler Lian Li Galahad II Trinity 360mm ARGB", cost: 780.00, price: 920.00 }
-                ]
-            },
-            'WORKSTATION': {
-                name: '🧠 Workstation Edição 4K / IA & Render 3D (Ryzen 9 7950X + RTX 4090 + 64GB)',
-                labor: 450.00,
-                diagnosis: 'Estação de trabalho profissional calibrada para estabilidade contínua sob carga pesada 24/7 (Blender/Premiere/PyTorch), com curva acústica otimizada e telemetria de VRM.',
-                parts: [
-                    { type: "Processador", desc: "AMD Ryzen 9 7950X (16 Cores / 32 Threads, 5.7GHz AM5)", cost: 3450.00, price: 3890.00 },
-                    { type: "Placa-Mãe", desc: "ASUS ProArt X670E-Creator Wi-Fi DDR5 (Dual Thunderbolt 4 / 10GbE)", cost: 3200.00, price: 3650.00 },
-                    { type: "Memória RAM", desc: "64GB (2x32GB) Corsair Vengeance DDR5 5600MHz CL36", cost: 1350.00, price: 1590.00 },
-                    { type: "Placa de Vídeo", desc: "NVIDIA GeForce RTX 4090 24GB GDDR6X (CUDA / Tensor Cores IA)", cost: 12900.00, price: 13900.00 },
-                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 4TB Samsung 990 Pro PCIe 4.0 c/ Dissipador", cost: 1950.00, price: 2350.00 },
-                    { type: "Fonte PSU", desc: "Seasonic Focus GX-1200 1200W 80 Plus Platinum ATX 3.0", cost: 1450.00, price: 1690.00 },
-                    { type: "Gabinete & Fans", desc: "Fractal Design Meshify 2 XL Black Solid (E-ATX Workstation)", cost: 1290.00, price: 1490.00 },
-                    { type: "Refrigeração", desc: "Water Cooler Arctic Liquid Freezer III 420mm", cost: 890.00, price: 1050.00 }
-                ]
-            },
-            'GAMER_ENTRY': {
-                name: '⚡ Setup Gamer Entrada / eSports (Core i3-12100F + RX 6600 8GB + 16GB)',
-                labor: 250.00,
-                diagnosis: 'Montagem de alta relação custo-benefício para jogos competitivos (CS2, Valorant, Fortnite) em 1080p com temperaturas controladas e fonte de energia certificada.',
-                parts: [
-                    { type: "Processador", desc: "Intel Core i3-12100F (4 Cores / 8 Threads, 4.3GHz Turbo LGA1700)", cost: 490.00, price: 590.00 },
-                    { type: "Placa-Mãe", desc: "ASRock H610M-HVS / Gigabyte H610M K DDR4", cost: 390.00, price: 470.00 },
-                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4", cost: 230.00, price: 290.00 },
-                    { type: "Placa de Vídeo", desc: "AMD Radeon RX 6600 8GB GDDR6 (Excelente Custo-Benefício 1080p)", cost: 1250.00, price: 1450.00 },
-                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 512GB Kingston NV2 PCIe 4.0 (3500MB/s)", cost: 190.00, price: 240.00 },
-                    { type: "Fonte PSU", desc: "SilverStone 500W 80 Plus Bronze PFC Ativo", cost: 190.00, price: 240.00 },
-                    { type: "Gabinete & Fans", desc: "Gabinete Gamer M-ATX Frente Mesh c/ 3x Fans 120mm", cost: 180.00, price: 230.00 },
-                    { type: "Refrigeração", desc: "Cooler Box Intel Original / DeepCool Gammaxx AG300", cost: 60.00, price: 85.00 }
-                ]
-            },
-                        'OFFICE_RYZEN3': {
-                name: '💼 Setup Escritório Ágil AM4 (Ryzen 3 3200G/4300G + 16GB + NVMe)',
-                labor: 160.00,
-                diagnosis: 'Computador de escritório moderno e ágil para emissão de notas, planilhas, sistemas de gestão ERP e navegação fluida com inicialização em menos de 10s.',
-                parts: [
-                    { type: "Processador", desc: "AMD Ryzen 3 3200G / 4300G (4 Cores / 8 Threads, 4.0GHz c/ Vega Graphics)", cost: 390.00, price: 490.00 },
-                    { type: "Placa-Mãe", desc: "ASUS Prime A320M-K / Gigabyte A520M K V2 DDR4", cost: 320.00, price: 390.00 },
-                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4", cost: 230.00, price: 290.00 },
-                    { type: "Placa de Vídeo", desc: "Gráficos Integrados Radeon Vega Graphics (HDMI + VGA)", cost: 0.00, price: 0.00 },
-                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 500GB Kingston NV2 PCIe 4.0 (3500MB/s)", cost: 190.00, price: 240.00 },
-                    { type: "Fonte PSU", desc: "Fonte 400W / 500W 80 Plus Bronze PFC Ativo Bivolt", cost: 160.00, price: 210.00 },
-                    { type: "Gabinete & Fans", desc: "Gabinete Micro-ATX Minimalista Compacto c/ 1x Fan 120mm", cost: 130.00, price: 170.00 },
-                    { type: "Refrigeração", desc: "Cooler Box AMD Wraith Stealth Original", cost: 0.00, price: 0.00 }
-                ]
-            },
-            'OFFICE_INTEL_BUDGET': {
-                name: '💼 Setup Escritório Econômico / PDV (Core i5-4690 + 16GB + SSD)',
-                labor: 140.00,
-                diagnosis: 'Computador econômico de alta durabilidade para balcão, caixa/PDV e escritório padrão com SSD rápido e 16GB de memória RAM para zero travamentos.',
-                parts: [
-                    { type: "Processador", desc: "Intel Core i5-4690 / i5-4590 (4 Cores / 4 Threads, 3.9GHz Turbo c/ Intel HD 4600)", cost: 160.00, price: 240.00 },
-                    { type: "Placa-Mãe", desc: "Placa-Mãe Intel H81M LGA 1150 DDR3 (HDMI + VGA + USB 3.0)", cost: 210.00, price: 280.00 },
-                    { type: "Memória RAM", desc: "16GB (2x8GB) DDR3 1600MHz Kingston / HyperX", cost: 120.00, price: 170.00 },
-                    { type: "Placa de Vídeo", desc: "Gráficos Integrados Intel HD Graphics 4600 (HDMI + VGA)", cost: 0.00, price: 0.00 },
-                    { type: "SSD / Armaz.", desc: "SSD SATA III 480GB Kingston / Crucial (500MB/s Leitura)", cost: 130.00, price: 180.00 },
-                    { type: "Fonte PSU", desc: "Fonte 400W Bivolt Silenciosa c/ Cooler 120mm", cost: 110.00, price: 150.00 },
-                    { type: "Gabinete & Fans", desc: "Gabinete Micro-ATX Slim/Mini Escritório Preto", cost: 95.00, price: 135.00 },
-                    { type: "Refrigeração", desc: "Cooler Box Intel LGA 1150 Original c/ Base de Cobre", cost: 25.00, price: 40.00 }
-                ]
-            },
-            'OFFICE_PRO': {
-                name: '💼 Setup Escritório & Home Office Ultra-Rápido (Ryzen 5 5600G + NVMe)',
-                labor: 190.00,
-                diagnosis: 'Computador corporativo de alta confiabilidade para multitarefas pesadas, planilhas complexas e navegação rápida com inicialização em menos de 10 segundos.',
-                parts: [
-                    { type: "Processador", desc: "AMD Ryzen 5 5600G (6 Cores / 12 Threads c/ Vídeo Integrado Vega 7)", cost: 750.00, price: 890.00 },
-                    { type: "Placa-Mãe", desc: "ASUS Prime A520M-E / Gigabyte A520M K V2", cost: 380.00, price: 460.00 },
-                    { type: "Memória RAM", desc: "16GB (2x8GB) Kingston Fury Beast 3200MHz DDR4", cost: 230.00, price: 290.00 },
-                    { type: "Placa de Vídeo", desc: "Gráficos Integrados Radeon Vega 7 (Suporta até 3 Telas)", cost: 0.00, price: 0.00 },
-                    { type: "SSD / Armaz.", desc: "SSD NVMe M.2 500GB Kingston NV2 (3500MB/s)", cost: 190.00, price: 240.00 },
-                    { type: "Fonte PSU", desc: "SilverStone 500W 80 Plus Bronze PFC Ativo", cost: 190.00, price: 240.00 },
-                    { type: "Gabinete & Fans", desc: "Gabinete Micro-ATX Minimalista Compacto c/ 1x Fan 120mm", cost: 150.00, price: 199.00 },
-                    { type: "Refrigeração", desc: "Cooler Box AMD Wraith Stealth Original", cost: 0.00, price: 0.00 }
-                ]
-            },
-            'CUSTOM_BLANK': {
-                name: '✏️ Setup Personalizado (Slots em Branco para Cotação Livre)',
-                labor: 285.00,
-                diagnosis: 'Montagem customizada de precisão conforme especificação técnica personalizada pelo cliente com testes de estabilidade em bancada.',
-                parts: [
-                    { type: "Processador", desc: "", cost: 0.00, price: 0.00 },
-                    { type: "Placa-Mãe", desc: "", cost: 0.00, price: 0.00 },
-                    { type: "Memória RAM", desc: "", cost: 0.00, price: 0.00 },
-                    { type: "Placa de Vídeo", desc: "", cost: 0.00, price: 0.00 },
-                    { type: "SSD / Armaz.", desc: "", cost: 0.00, price: 0.00 },
-                    { type: "Fonte PSU", desc: "", cost: 0.00, price: 0.00 },
-                    { type: "Gabinete & Fans", desc: "", cost: 0.00, price: 0.00 },
-                    { type: "Refrigeração", desc: "", cost: 0.00, price: 0.00 }
-                ]
-            }
-        };
-
-        function handleBuildProfileChange(val) {
-            const profile = buildProfiles[val] || buildProfiles['GAMER_MID'];
-            const tbody = document.getElementById('parts-table-body');
-            const laborEl = document.getElementById('labor-price');
-            const diagEl = document.getElementById('technical-diagnosis');
-
-            if (laborEl) laborEl.value = profile.labor.toFixed(2);
-            if (diagEl && profile.diagnosis) diagEl.value = profile.diagnosis;
-
-            if (tbody && profile.parts) {
-                tbody.innerHTML = '';
-                profile.parts.forEach(part => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'part-row hover:bg-zinc-900/60 transition-colors';
-                    tr.innerHTML = `
-                        <td class="py-2.5 px-2 font-bold text-white whitespace-nowrap">
-                            <span class="part-type-text">${part.type}</span>
-                            <input type="hidden" class="part-type" value="${part.type}">
-                        </td>
-                        <td class="py-2.5 px-2">
-                            <input type="text" value="${escapeHtml(part.desc)}" placeholder="Marca, modelo e especificação..." class="part-desc part-name w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
-                        </td>
-                        <td class="py-2.5 px-2">
-                            <input type="number" step="0.01" value="${part.cost.toFixed(2)}" oninput="recalcTotals()" class="part-cost w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
-                        </td>
-                        <td class="py-2.5 px-2">
-                            <input type="number" step="0.01" value="${part.price.toFixed(2)}" oninput="recalcTotals()" class="part-price part-sale w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
-                        </td>
-                        <td class="py-2.5 px-2 text-right font-mono font-bold text-zinc-400 part-profit">
-                            R$ ${(part.price - part.cost).toFixed(2).replace('.', ',')}
-                        </td>
-                        <td class="py-2.5 px-2 text-center">
-                            <button type="button" onclick="this.closest('tr').remove(); recalcTotals();" class="text-zinc-600 hover:text-red-400 p-1">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            </button>
-                        </td>
-                    
-                    tbody.appendChild(tr);
-                });
-            }
-
-            recalcTotals();
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function loadStandardBuildSlots() {
-            const select = document.getElementById('build-profile-select');
-            const val = select ? select.value : 'GAMER_MID';
-            handleBuildProfileChange(val);
-        }
-
-        function addPartRow() {
-            const tbody = document.getElementById('parts-table-body');
-            if (!tbody) return;
-            const tr = document.createElement('tr');
-            tr.className = 'part-row hover:bg-zinc-900/60 transition-colors';
-            tr.innerHTML = `
-                <td class="py-2.5 px-2">
-                    <input type="text" placeholder="Ex: Fans / Cabos" class="part-type w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-mono text-xs focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2.5 px-2">
-                    <input type="text" placeholder="Marca, Modelo & Specs" class="part-desc part-name w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-white font-sans text-xs focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2.5 px-2">
-                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-cost w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-zinc-400 font-mono text-xs focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2.5 px-2">
-                    <input type="number" step="0.01" value="0.00" oninput="recalcTotals()" class="part-price part-sale w-full bg-zinc-900 border border-zinc-700 px-2.5 py-1 text-brand font-mono text-xs font-bold focus:outline-none focus:border-brand">
-                </td>
-                <td class="py-2.5 px-2 text-right font-mono font-bold text-zinc-400 part-profit">
-                    R$ 0,00
-                </td>
-                <td class="py-2.5 px-2 text-center">
-                    <button type="button" onclick="this.closest('tr').remove(); recalcTotals();" class="text-zinc-600 hover:text-red-400 p-1">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
-                </td>
-            
-            tbody.appendChild(tr);
-            recalcTotals();
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function removePartRow(btn) {
-            const row = btn.closest('tr');
-            if (row) {
-                row.remove();
-                recalcTotals();
-            }
-        }
-
-        function recalcTotals() {
-            let totalCost = 0;
-            let totalSale = 0;
-
-            document.querySelectorAll('.part-row').forEach(row => {
-                const costEl = row.querySelector('.part-cost');
-                const saleEl = row.querySelector('.part-price') || row.querySelector('.part-sale');
-                const cost = parseFloat(costEl ? costEl.value : 0) || 0;
-                const sale = parseFloat(saleEl ? saleEl.value : 0) || 0;
-                const profit = sale - cost;
-
-                const profitEl = row.querySelector('.part-profit');
-                if (profitEl) profitEl.textContent = 'R$ ' + profit.toFixed(2).replace('.', ',');
-                totalCost += cost;
-                totalSale += sale;
-            });
-
-            const laborPrice = parseFloat(document.getElementById('labor-price') ? document.getElementById('labor-price').value : 0) || 0;
-            const grandTotal = totalSale + laborPrice;
-            const partsProfit = totalSale - totalCost;
-            const netProfit = partsProfit + laborPrice;
-
-            const partsTotalEl = document.getElementById('calc-parts-total');
-            const laborTotalEl = document.getElementById('calc-labor-total');
-            const grandTotalEl = document.getElementById('calc-grand-total');
-            const netProfitEl = document.getElementById('calc-net-profit');
-
-            if (partsTotalEl) partsTotalEl.textContent = 'R$ ' + totalSale.toFixed(2).replace('.', ',');
-            if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + laborPrice.toFixed(2).replace('.', ',');
-            if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
-            if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            
-            const breakdownEl = document.getElementById('calc-profit-breakdown');
-            if (breakdownEl) {
-                breakdownEl.textContent = `Peças: R$ ${partsProfit.toFixed(2).replace('.', ',')} + M.O: R$ ${laborPrice.toFixed(2).replace('.', ',')}
-            }
-        }
-
-        // Limpeza de cache local ao inicializar
-        try {
-            localStorage.removeItem('ifl_work_orders');
-        } catch (e) {}
-        currentWorkOrders = [];
-
-        
-        // =====================================================================
-        // MOTOR DE REALTIME AUTO-SYNC DO KANBAN & COCKPIT // IF TECH
-        // =====================================================================
-        let adminRealtimeChannel = null;
-
-        function setupAdminRealtime() {
-            const client = getSupabase();
-            if (!client || adminRealtimeChannel) return;
-
-            try {
-                adminRealtimeChannel = client.channel('admin-kanban-sync')
-                    .on('postgres_changes', {
-                        event: '*',
-                        schema: 'public',
-                        table: 'work_orders'
-                    }, (payload) => {
-                        console.log("⚡ [Admin Realtime] Mudança detectada na tabela work_orders!", payload);
-                        loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-                    })
-                    .on('postgres_changes', {
-                        event: '*',
-                        schema: 'public',
-                        table: 'work_order_items'
-                    }, () => {
-                        loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-                    })
-                    .subscribe();
-            } catch (err) {
-                console.warn("Aviso ao ativar Realtime do Admin:", err);
-            }
-        }
-
-        // Heartbeat de Sincronização do Cockpit a cada 10 segundos
-        setInterval(() => {
-            if (document.visibilityState === 'visible') {
-                loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-            }
-        }, 10000);
-
-        window.addEventListener('focus', () => {
-            loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-        });
-
-        async function loadSupabaseData() {
-            renderKanbanBoard(currentWorkOrders);
-            renderFinancialDashboard(currentWorkOrders);
-            const client = getSupabase();
-            if (!client) return;
-
-            try {
-                // 1. Carrega Métricas do Dashboard
-                const { data: metrics } = await client.rpc('rpc_get_admin_dashboard_metrics');
-                if (metrics) {
-                    if (metrics.active_os !== undefined) document.getElementById('stat-active-os').textContent = metrics.active_os;
-                    if (metrics.parts_to_buy !== undefined) document.getElementById('stat-parts-to-buy').textContent = metrics.parts_to_buy;
-                    if (metrics.msp_mrr !== undefined) document.getElementById('stat-mrr').textContent = 'R$ ' + parseFloat(metrics.msp_mrr).toFixed(0);
-                    if (metrics.month_profit !== undefined) document.getElementById('stat-month-profit').textContent = 'R$ ' + parseFloat(metrics.month_profit).toFixed(0);
-                }
-
-                // 2. Carrega Ordens Reais para o Kanban via RPC
-                const { data: realOrders, error: orderErr } = await client.rpc('rpc_get_kanban_work_orders');
-                if (!orderErr && realOrders && Array.isArray(realOrders) && realOrders.length > 0) {
-                    currentWorkOrders = realOrders;
-                    try { localStorage.setItem('ifl_work_orders', JSON.stringify(realOrders)); } catch (e) {}
-                    renderKanbanBoard(realOrders);
-                    renderFinancialDashboard(realOrders);
-                }
-            } catch (err) {
-                console.warn("Aviso ao carregar dados do Supabase:", err);
-            }
-        }
-
-        async function handleSaveOS(e) {
-            e.preventDefault();
-            const saveBtn = e.target.querySelector('button[type="submit"]');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando com Segurança...</span>
-            if (window.lucide) lucide.createIcons();
-
-            const clientName = document.getElementById('client-name').value.trim();
-            const rawPhone = document.getElementById('client-phone').value.replace(/\D/g, '');
-            const clientPhone = (rawPhone.length >= 12 && rawPhone.startsWith('55')) ? rawPhone.substring(2) : rawPhone;
-            const serviceType = document.getElementById('service-type').value;
-            const technicalDiagnosis = document.getElementById('technical-diagnosis') ? document.getElementById('technical-diagnosis').value.trim() : `Laudo técnico para ${serviceType.replace(/_/g, ' ')}
-            const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
-
-            // Coleta Peças e calcula total de venda das peças
-            let partsSaleTotal = 0;
-            const items = [];
-            document.querySelectorAll('.part-row').forEach(row => {
-                const type = row.querySelector('.part-type').value.trim() || 'Componente';
-                const name = row.querySelector('.part-name').value.trim() || 'Peça';
-                const cost = parseFloat(row.querySelector('.part-cost').value) || 0;
-                const sale = parseFloat(row.querySelector('.part-sale').value) || 0;
-                partsSaleTotal += sale;
-                items.push({
-                    item_type: 'Part',
-                    description: `${type}: ${name}`,
-                    cost_price: cost,
-                    unit_price: sale,
-                    quantity: 1
-                });
-            });
-
-            // Adiciona mão de obra aos itens da RPC
-            if (laborPrice > 0) {
-                items.push({
-                    item_type: 'Labor',
-                    description: `Mão de Obra do Serviço (${serviceType.replace(/_/g, ' ')})`,
-                    cost_price: 90.00,
-                    unit_price: laborPrice,
-                    quantity: 1
-                });
-            }
-
-            let finalOsNum = editingWorkOrder ? editingWorkOrder.os_number : "1001";
-            let trackingToken = editingWorkOrder ? editingWorkOrder.public_tracking_token : null;
-            let targetStatus = partsSaleTotal > 0 ? 'Aguardando_Sinal_Peca' : (items.length > 0 ? 'Diagnostico_Concluido' : 'Triagem');
-
-            const client = getSupabase();
-            if (client) {
-                try {
-                    if (editingWorkOrder) {
-                        // ATUALIZAÇÃO DA OS EXISTENTE (MOMENTO 2)
-                        const { data, error } = await client.rpc('rpc_update_work_order_budget', {
-                            p_os_number: parseInt(editingWorkOrder.os_number),
-                            p_service_type: serviceType,
-                            p_diagnosis: technicalDiagnosis,
-                            p_items: items
-                        });
-
-                        if (error) {
-                            console.warn("RPC update fallback:", error);
-                        } else if (data && data.success) {
-                            finalOsNum = data.os_number;
-                            trackingToken = data.public_tracking_token;
-                            targetStatus = data.status || targetStatus;
-                        }
-                    } else {
-                        // CRIAÇÃO DE NOVA OS DIRETA
-                        const { data, error } = await client.rpc('rpc_create_work_order_atomic', {
-                            p_client_name: clientName,
-                            p_client_whatsapp: clientPhone || '11999999999',
-                            p_service_type: serviceType,
-                            p_device_brand: 'Custom Build IF Tech',
-                            p_device_model: serviceType.replace(/_/g, ' '),
-                            p_reported_defect: technicalDiagnosis || `Serviço solicitado: ${serviceType.replace(/_/g, ' ')} para ${clientName}`,
-                            p_pickup_fee: 0.00,
-                            p_items: items
-                        });
-
-                        if (error) {
-                            console.error("Erro na RPC do Supabase:", error);
-                            alert("Erro ao gravar OS no Supabase: " + error.message);
-                        } else if (data && data.success) {
-                            finalOsNum = data.os_number;
-                            trackingToken = data.public_tracking_token || data.tracking_token;
-                        }
-                    }
-                } catch (err) {
-                    console.error("Exceção ao chamar RPC:", err);
-                }
-            }
-
-            // Gera link mágico seguro com token UUID (Formatação Nativa WhatsApp)
-            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}
-            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n> *Acompanhe e aprove seu orçamento pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estou à disposição!
-
-            document.getElementById('whatsapp-msg-preview').textContent = msg;
-            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}
-            
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Salvar OS & Gerar Mensagem WhatsApp
-            if (window.lucide) lucide.createIcons();
-
-            // Alterna a visualização para o Kanban imediatamente
-            switchTab('kanban');
-            document.getElementById('whatsapp-modal').classList.remove('hidden');
-
-            // Atualização Reativa Imediata no Kanban
-            const newCardObj = {
-                id: (trackingToken || Math.random().toString()),
-                os_number: parseInt(finalOsNum),
-                public_tracking_token: trackingToken,
-                status: targetStatus,
-                device_brand: 'Custom Build IF Tech',
-                device_model: serviceType.replace(/_/g, ' '),
-                reported_defect: `Serviço solicitado: ${serviceType.replace(/_/g, ' ')}`,
-                client_name: clientName,
-                client_whatsapp: clientPhone,
-                total_amount: (partsSaleTotal + laborPrice),
-                created_at: new Date().toISOString()
-            };
-
-            currentWorkOrders = [newCardObj, ...currentWorkOrders.filter(o => o.os_number !== newCardObj.os_number)];
-            try { localStorage.setItem('ifl_work_orders', JSON.stringify(currentWorkOrders)); } catch (e) {}
-            renderKanbanBoard(currentWorkOrders);
-            renderFinancialDashboard(currentWorkOrders);
-            document.getElementById('stat-active-os').textContent = currentWorkOrders.length;
-            loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-        }
-
-        function closeModal() {
-            document.getElementById('whatsapp-modal').classList.add('hidden');
-        }
-
-        function copyWppText() {
-            const text = document.getElementById('whatsapp-msg-preview').textContent;
-            navigator.clipboard.writeText(text);
-            const copyBtn = event.target.closest('button');
-            const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = `✓ Copiado!
-            setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
-        }
-
-                // =========================================================================
-        // CRM ÚNICO & GESTÃO DE CLIENTES 360°
-        // =========================================================================
-        let crmClientsList = [];
-        let selectedClientForOS = null;
-
-        async function loadClients() {
-            const client = getSupabase();
-            if (!client) return;
-
-            try {
-                const { data, error } = await client.rpc('rpc_get_clients_overview');
-                if (error) {
-                    console.warn("Erro ao buscar clientes via RPC:", error);
-                    // Fallback para query direta na tabela clients
-                    const { data: directData, error: dirErr } = await client
-                        .from('clients')
-                        .select('*, work_orders(id, os_number, service_type, device_brand, device_model, status, total_order, total_parts, total_labor, pickup_fee, created_at)')
-                        .order('created_at', { ascending: false });
-                    
-                    if (!dirErr && directData) {
-                        crmClientsList = directData.map(c => {
-                            const orders = c.work_orders || [];
-                            const totalSpent = orders.reduce((sum, o) => sum + (parseFloat(o.total_order || (parseFloat(o.total_parts || 0) + parseFloat(o.total_labor || 0) + parseFloat(o.pickup_fee || 0))) || 0), 0);
-                            return {
-                                id: c.id,
-                                name: c.name,
-                                whatsapp: c.whatsapp,
-                                type: c.type || 'B2C',
-                                status: c.status || 'Ativo',
-                                email: c.email,
-                                document: c.document,
-                                street: c.street,
-                                neighborhood: c.neighborhood,
-                                city: c.city || 'Bragança Paulista',
-                                notes: c.notes,
-                                created_at: c.created_at,
-                                total_orders: orders.length,
-                                total_spent: totalSpent,
-                                orders: orders
-                            };
-                        });
-                    }
-                } else if (data) {
-                    crmClientsList = data;
-                }
-
-                renderClientsMetrics();
-                filterClientsTable();
-            } catch (err) {
-                console.error("Exceção ao carregar CRM:", err);
-            }
-        }
-
-        function renderClientsMetrics() {
-            const total = crmClientsList.length;
-            const b2c = crmClientsList.filter(c => (c.type || '').toUpperCase() === 'B2C').length;
-            const b2b = crmClientsList.filter(c => (c.type || '').toUpperCase() === 'B2B').length;
-            const totalLtv = crmClientsList.reduce((sum, c) => sum + (parseFloat(c.total_spent) || 0), 0);
-
-            const totEl = document.getElementById('crm-total-clients');
-            const b2cEl = document.getElementById('crm-total-b2c');
-            const b2bEl = document.getElementById('crm-total-b2b');
-            const ltvEl = document.getElementById('crm-total-ltv');
-
-            if (totEl) totEl.textContent = total;
-            if (b2cEl) b2cEl.textContent = b2c;
-            if (b2bEl) b2bEl.textContent = b2b;
-            if (ltvEl) ltvEl.textContent = "R$ " + totalLtv.toFixed(2).replace('.', ',');
-        }
-
-        function filterClientsTable() {
-            const query = (document.getElementById('crm-search-input')?.value || '').toLowerCase().trim();
-            const filterType = document.getElementById('crm-filter-type')?.value || 'ALL';
-
-            const filtered = crmClientsList.filter(c => {
-                const matchesQuery = !query || 
-                    (c.name || '').toLowerCase().includes(query) || 
-                    (c.whatsapp || '').includes(query) ||
-                    (c.city || '').toLowerCase().includes(query) ||
-                    (c.neighborhood || '').toLowerCase().includes(query);
-                
-                const matchesType = filterType === 'ALL' || (c.type || 'B2C').toUpperCase() === filterType.toUpperCase();
-
-                return matchesQuery && matchesType;
-            });
-
-            renderClientsTable(filtered);
-        }
-
-        function renderClientsTable(list) {
-            const tbody = document.getElementById('crm-clients-tbody');
-            if (!tbody) return;
-
-            if (list.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="py-8 text-center text-zinc-500 font-mono text-xs">
-                            Nenhum cliente localizado no CRM.
-                        </td>
-                    </tr>
-                
-                return;
-            }
-
-            tbody.innerHTML = list.map(c => {
-                const isB2B = (c.type || '').toUpperCase() === 'B2B';
-                const typeBadge = isB2B 
-                    ? `<span class="px-2 py-0.5 bg-purple-950/80 border border-purple-500 text-purple-400 text-[10px] font-bold">B2B • EMPRESA</span>`
-                    : `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-cyan-400 text-[10px] font-bold">B2C • GAMER</span>
-                
-                const ltvVal = parseFloat(c.total_spent || 0);
-                const ltvText = ltvVal > 0 ? `R$ ${ltvVal.toFixed(2).replace('.', ',')}` : `<span class="text-zinc-600">R$ 0,00</span>
-                const locationText = c.neighborhood ? `${escapeHtml(c.neighborhood)}, ${escapeHtml(c.city || 'Bragança')}` : (c.city || 'Bragança Paulista');
-                const cleanPhone = (c.whatsapp || '').replace(/\D/g, '');
-
-                return `
-                    <tr class="hover:bg-zinc-950/80 transition-colors">
-                        <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2.5">
-                            <div class="w-7 h-7 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-brand text-xs font-black">
-                                ${(c.name || 'C').charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                                <span>${escapeHtml(c.name || 'Cliente')}</span>
-                                ${c.document ? `<span class="text-[10px] text-zinc-500 block font-normal">Doc: ${escapeHtml(c.document)}</span>` : ''}
-                            </div>
-                        </td>
-                        <td class="py-3.5 px-3">${typeBadge}</td>
-                        <td class="py-3.5 px-3 font-mono">
-                            <a href="https://wa.me/55${cleanPhone}" target="_blank" class="text-zinc-300 hover:text-brand flex items-center gap-1.5">
-                                <i data-lucide="message-circle" class="w-3.5 h-3.5 text-brand"></i>
-                                ${escapeHtml(c.whatsapp || '-')}
-                            </a>
-                        </td>
-                        <td class="py-3.5 px-3 text-zinc-400">${locationText}</td>
-                        <td class="py-3.5 px-3 text-center">
-                            <span class="px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-white font-bold text-xs">${c.total_orders || 0}</span>
-                        </td>
-                        <td class="py-3.5 px-3 text-right font-bold text-brand">${ltvText}</td>
-                        <td class="py-3.5 px-4 text-center">
-                            <div class="flex items-center justify-center gap-1.5">
-                                <button onclick="openClientDetailModal('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand text-white hover:text-brand text-[11px] font-bold flex items-center gap-1 transition-colors">
-                                    <i data-lucide="eye" class="w-3 h-3"></i> Perfil 360°
-                                </button>
-                                <button onclick="quickNewOSForClient('${escapeHtml(c.name)}', '${escapeHtml(c.whatsapp)}')" class="px-2.5 py-1 bg-brand text-black hover:bg-white text-[11px] font-black uppercase flex items-center gap-1 transition-colors">
-                                    <i data-lucide="plus" class="w-3 h-3"></i> OS
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                
-            }).join('');
-
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function openNewClientModal() {
-            document.getElementById('modal-client-id').value = '';
-            document.getElementById('modal-client-name').value = '';
-            document.getElementById('modal-client-whatsapp').value = '';
-            document.getElementById('modal-client-type').value = 'B2C';
-            document.getElementById('modal-client-doc').value = '';
-            document.getElementById('modal-client-email').value = '';
-            document.getElementById('modal-client-street').value = '';
-            document.getElementById('modal-client-neighborhood').value = '';
-            document.getElementById('modal-client-notes').value = '';
-            document.getElementById('client-modal-title').textContent = 'Cadastrar Novo Cliente no CRM';
-            document.getElementById('client-modal').classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function closeClientModal() {
-            document.getElementById('client-modal').classList.add('hidden');
-        }
-
-        async function handleSaveClient(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-save-client');
-            btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Salvando...
-
-            const client = getSupabase();
-            const clientId = document.getElementById('modal-client-id').value;
-            const name = document.getElementById('modal-client-name').value.trim();
-            const rawPhone = document.getElementById('modal-client-whatsapp').value.replace(/\D/g, '');
-            const whatsapp = (rawPhone.length >= 12 && rawPhone.startsWith('55')) ? rawPhone.substring(2) : rawPhone;
-            const type = document.getElementById('modal-client-type').value;
-            const doc = document.getElementById('modal-client-doc').value.trim() || null;
-            const email = document.getElementById('modal-client-email').value.trim() || null;
-            const street = document.getElementById('modal-client-street').value.trim() || null;
-            const neighborhood = document.getElementById('modal-client-neighborhood').value.trim() || null;
-            const notes = document.getElementById('modal-client-notes').value.trim() || null;
-
-            const payload = {
-                name: name,
-                whatsapp: whatsapp || '11999999999',
-                type: type,
-                document: doc,
-                email: email,
-                street: street,
-                neighborhood: neighborhood,
-                notes: notes,
-                city: 'Bragança Paulista',
-                status: 'Ativo'
-            };
-
-            try {
-                if (clientId) {
-                    await client.from('clients').update(payload).eq('id', clientId);
-                } else {
-                    await client.from('clients').insert(payload);
-                }
-                closeClientModal();
-                await loadClients();
-            } catch (err) {
-                alert('Erro ao salvar cliente: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Salvar Cliente
-                if (window.lucide) lucide.createIcons();
-            }
-        }
-
-        async function openClientDetailModal(clientId) {
-            const clientObj = crmClientsList.find(c => c.id === clientId);
-            if (!clientObj) return;
-
-            document.getElementById('cdetail-name').textContent = clientObj.name || 'Cliente';
-            document.getElementById('cdetail-phone').textContent = clientObj.whatsapp || '-';
-            document.getElementById('cdetail-address').textContent = clientObj.neighborhood ? `${clientObj.neighborhood}, ${clientObj.city || 'Bragança'}` : (clientObj.city || 'Bragança Paulista');
-            document.getElementById('cdetail-orders-count').textContent = clientObj.total_orders || '0';
-            
-            const ltv = parseFloat(clientObj.total_spent || 0);
-            document.getElementById('cdetail-ltv').textContent = "R$ " + ltv.toFixed(2).replace('.', ',');
-
-            const isB2B = (clientObj.type || '').toUpperCase() === 'B2B';
-            document.getElementById('cdetail-type-badge').textContent = `${isB2B ? 'B2B • EMPRESA' : 'B2C • CONSUMIDOR'} • Cadastrado em ${new Date(clientObj.created_at || Date.now()).toLocaleDateString('pt-BR')}
-
-            const cleanPhone = (clientObj.whatsapp || '').replace(/\D/g, '');
-            document.getElementById('cdetail-whatsapp-btn').href = `https://wa.me/55${cleanPhone}
-
-            selectedClientForOS = clientObj;
-
-            // Carrega ordens de serviço do cliente
-            const client = getSupabase();
-            const tbody = document.getElementById('cdetail-orders-tbody');
-            tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Buscando histórico...</td></tr>
-
-            try {
-                const { data: orders, error } = await client
-                    .from('work_orders')
-                    .select('*')
-                    .eq('client_id', clientId)
-                    .order('created_at', { ascending: false });
-
-                if (!error && orders && orders.length > 0) {
-                    tbody.innerHTML = orders.map(o => {
-                        const total = parseFloat(o.total_order || (parseFloat(o.total_parts || 0) + parseFloat(o.total_labor || 0) + parseFloat(o.pickup_fee || 0))) || 0;
-                        return `
-                            <tr class="hover:bg-zinc-950">
-                                <td class="py-2.5 px-3 font-bold text-brand">#${o.os_number}</td>
-                                <td class="py-2.5 px-3 text-white">${escapeHtml(o.device_brand || '')} ${escapeHtml(o.device_model || '')}</td>
-                                <td class="py-2.5 px-3">
-                                    <span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 text-[10px] font-bold uppercase">${escapeHtml(o.status || 'Triagem')}</span>
-                                </td>
-                                <td class="py-2.5 px-3 text-right font-bold text-white">R$ ${total.toFixed(2).replace('.', ',')}</td>
-                                <td class="py-2.5 px-3 text-center">
-                                    <button onclick="closeClientDetailModal(); openOSModal(${o.os_number})" class="px-2 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand text-zinc-300 hover:text-brand text-[10px] font-bold uppercase">
-                                        Abrir OS
-                                    </button>
-                                </td>
-                            </tr>
-                        
-                    }).join('');
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada para este cliente.</td></tr>
-                }
-            } catch (e) {
-                console.warn(e);
-            }
-
-            document.getElementById('client-detail-modal').classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function closeClientDetailModal() {
-            document.getElementById('client-detail-modal').classList.add('hidden');
-        }
-
-        function openNewOSForClient() {
-            if (!selectedClientForOS) return;
-            closeClientDetailModal();
-            quickNewOSForClient(selectedClientForOS.name, selectedClientForOS.whatsapp);
-        }
-
-        function quickNewOSForClient(name, phone) {
-            openIntakeModal();
-            document.getElementById('intake-client-name').value = name || '';
-            document.getElementById('intake-client-phone').value = phone || '';
-        }
-
-
-                // =====================================================================
-        // MOTOR DE SCANNER USB & BUSCA UNIVERSAL // IF TECH COCKPIT
-        // =====================================================================
-        let usbScannerBuffer = '';
-        let lastScanKeyTime = 0;
-
-        function showScanNotification(msg, type = 'success') {
-            const existing = document.getElementById('scan-toast-notification');
-            if (existing) existing.remove();
-
-            const toast = document.createElement('div');
-            toast.id = 'scan-toast-notification';
-            toast.className = `fixed bottom-6 right-6 z-[999999] px-4 py-3 font-mono text-xs font-bold border-2 shadow-2xl flex items-center gap-2.5 transition-all duration-300 animate-bounce ${
-                type === 'success' 
-                    ? 'bg-black border-brand text-brand shadow-[0_0_25px_rgba(204,255,0,0.3)]' 
-                    : 'bg-black border-yellow-500 text-yellow-400 shadow-[0_0_25px_rgba(234,179,8,0.3)]'
-            }
-            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-triangle'}" class="w-4 h-4"></i> <span>${msg}</span>
-            document.body.appendChild(toast);
-            if (window.lucide) lucide.createIcons();
-
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        async function handleUniversalBarcodeScan(rawInput) {
-            if (!rawInput) return;
-            let input = rawInput.trim();
-            if (!input) return;
-
-            console.log("⚡ [Scanner USB] Input detectado:", input);
-
-            // 1. Extração se for URL do Portal
-            if (input.includes('token=')) {
-                input = input.split('token=')[1].split('&')[0];
-            } else if (input.includes('os=')) {
-                input = input.split('os=')[1].split('&')[0];
-            }
-
-            const cleanQuery = input.replace(/^#/, '').replace(/^IF-OS-/i, '').replace(/-\d{4}$/, '').trim();
-
-            // 2. Busca nas OSs carregadas no Kanban
-            let found = currentWorkOrders.find(wo => {
-                if (!wo) return false;
-                const osNum = String(wo.os_number || '');
-                const osFmt = typeof formatOSNumber === 'function' ? formatOSNumber(wo.os_number) : osNum;
-                const token = String(wo.public_tracking_token || '');
-                const serial = String(wo.device_serial_number || '').toLowerCase();
-                const client = String(wo.client_name || (wo.clients ? wo.clients.name : '')).toLowerCase();
-                const phone = String(wo.client_whatsapp || '').replace(/\D/g, '');
-
-                return osNum === cleanQuery || 
-                       osFmt === cleanQuery || 
-                       token === input || 
-                       (cleanQuery.length >= 4 && serial.includes(cleanQuery.toLowerCase())) ||
-                       (input.length >= 3 && client.includes(input.toLowerCase())) ||
-                       (cleanQuery.length >= 8 && phone.includes(cleanQuery));
-            });
-
-            if (found) {
-                showScanNotification(`✓ [SCAN DETECTADO] OS #${formatOSNumber(found.os_number)} localizada com sucesso!`, 'success');
-                openOSDetailModal(found);
-                const scanInput = document.getElementById('global-scanner-input');
-                if (scanInput) scanInput.value = '';
-                return true;
-            }
-
-            // 3. Fallback: Consulta direta ao Supabase via RPC se não achou no array local
-            const client = getSupabase();
-            if (client) {
-                try {
-                    const { data: directWO, error } = await client
-                        .from('work_orders')
-                        .select('*, clients(*), work_order_items(*)')
-                        .or(`os_number.eq.${parseInt(cleanQuery) || 0},public_tracking_token.eq.${input},device_serial_number.ilike.%${cleanQuery}%`)
-                        .maybeSingle();
-
-                    if (!error && directWO) {
-                        showScanNotification(`✓ [BUSCA DIRETA] OS #${formatOSNumber(directWO.os_number)} encontrada no banco!`, 'success');
-                        openOSDetailModal(directWO);
-                        const scanInput = document.getElementById('global-scanner-input');
-                        if (scanInput) scanInput.value = '';
-                        return true;
-                    }
-                } catch (e) {
-                    console.warn("Erro na busca direta:", e);
-                }
-            }
-
-            showScanNotification(`⚠️ [SCAN NÃO LOCALIZADO] Nenhuma OS corresponde a: "${input.substring(0, 25)}"`, 'warning');
-            return false;
-        }
-
-        function handleScannerInputKeydown(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleUniversalBarcodeScan(e.target.value);
-            }
-        }
-
-        // Listener Global para Teclado & Leitor USB de Código de Barras
-        window.addEventListener('keydown', (e) => {
-            // Atalho F2: Acessar PDV Caixa Rápido e focar no leitor de código de barras
-            if (e.key === 'F2') {
-                e.preventDefault();
-                switchTab('inventory');
-                switchInventorySubTab('pos');
-                setTimeout(() => {
-                    const posInput = document.getElementById('pos-barcode-input');
-                    if (posInput) {
-                        posInput.focus();
-                        posInput.select();
-                    }
-                }, 80);
-                return;
-            }
-
-            // Atalho F8: Finalizar Venda do PDV Caixa Rápido
-            if (e.key === 'F8') {
-                e.preventDefault();
-                const posSubTab = document.getElementById('inv-subtab-pos');
-                if (posSubTab && !posSubTab.classList.contains('hidden')) {
-                    processPOSCheckout();
-                }
-                return;
-            }
-
-            // Atalho Ctrl+K / Cmd+K para focar na barra
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault();
-                const scanInput = document.getElementById('global-scanner-input');
-                if (scanInput) {
-                    scanInput.focus();
-                    scanInput.select();
-                }
-                return;
-            }
-
-            const activeTag = document.activeElement ? document.activeElement.tagName : '';
-            const isInsideInput = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
-            const isInsideScannerInput = document.activeElement && document.activeElement.id === 'global-scanner-input';
-
-            const now = Date.now();
-            if (now - lastScanKeyTime > 90) {
-                usbScannerBuffer = '';
-            }
-            lastScanKeyTime = now;
-
-            if (e.key === 'Enter') {
-                if (usbScannerBuffer.length >= 3 && !isInsideInput) {
-                    e.preventDefault();
-                    const scanned = usbScannerBuffer;
-                    usbScannerBuffer = '';
-                    handleUniversalBarcodeScan(scanned);
-                }
-            } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-                usbScannerBuffer += e.key;
-            }
-        });
-
-        
-        // =========================================================================
-        // MOTOR DE ESTOQUE INTELIGENTE & PDV CAIXA RÁPIDO // IF TECH
-        // =========================================================================
-        let currentInventoryProducts = [
-            { id: "p1", sku: "CHG-20W-USBC", name: "Carregador 20W USB-C Homologado", category: "Carregadores", brand: "Kaidi / Peining", cost_price: 25.00, selling_price: 60.00, current_stock: 6, reserved_stock: 0, min_stock: 2, ean: "789100020001" },
-            { id: "p2", sku: "CHG-30W-GAN", name: "Carregador 30W GaN Fast Charger", category: "Carregadores", brand: "Hrebos / Peining", cost_price: 35.00, selling_price: 85.00, current_stock: 4, reserved_stock: 0, min_stock: 2, ean: "789100030002" },
-            { id: "p3", sku: "CAB-LIGHTNING-PRO", name: "Cabo iPhone Lightning Reforçado 1.2m", category: "Cabos", brand: "Kaidi Pro", cost_price: 10.00, selling_price: 30.00, current_stock: 5, reserved_stock: 0, min_stock: 3, ean: "789200010003" },
-            { id: "p4", sku: "CAB-TYPEC-100W", name: "Cabo USB-C para USB-C 100W PD", category: "Cabos", brand: "Baseus / Kaidi", cost_price: 12.00, selling_price: 35.00, current_stock: 6, reserved_stock: 0, min_stock: 3, ean: "789200020004" },
-            { id: "p5", sku: "CAB-V8-REFORCADO", name: "Cabo Micro-USB (V8) Trançado 1m", category: "Cabos", brand: "Peining", cost_price: 8.00, selling_price: 25.00, current_stock: 4, reserved_stock: 0, min_stock: 2, ean: "789200030005" },
-            { id: "p6", sku: "SSD-NVME-512GB", name: "SSD Kingston NV2 512GB NVMe M.2 3500MB/s", category: "Armazenamento", brand: "Kingston", cost_price: 195.00, selling_price: 295.00, current_stock: 3, reserved_stock: 1, min_stock: 2, ean: "740617329858" },
-            { id: "p7", sku: "SSD-NVME-1TB", name: "SSD Kingston NV2 1TB NVMe M.2 3500MB/s", category: "Armazenamento", brand: "Kingston", cost_price: 340.00, selling_price: 490.00, current_stock: 2, reserved_stock: 0, min_stock: 1, ean: "740617329919" },
-            { id: "p8", sku: "SSD-SATA-480GB", name: "SSD Kingston A400 480GB SATA III 2.5 Pol", category: "Armazenamento", brand: "Kingston", cost_price: 155.00, selling_price: 250.00, current_stock: 4, reserved_stock: 1, min_stock: 2, ean: "740617277356" },
-            { id: "p9", sku: "RAM-DDR4-8GB-3200", name: "Memória RAM Kingston Fury Beast 8GB DDR4 3200MHz", category: "Memoria_RAM", brand: "Kingston", cost_price: 125.00, selling_price: 195.00, current_stock: 4, reserved_stock: 0, min_stock: 2, ean: "740617319989" },
-            { id: "p10", sku: "RAM-DDR4-16GB-3200", name: "Memória RAM Kingston Fury 16GB DDR4 3200MHz", category: "Memoria_RAM", brand: "Kingston", cost_price: 230.00, selling_price: 360.00, current_stock: 3, reserved_stock: 0, min_stock: 2, ean: "740617320015" },
-            { id: "p11", sku: "PASTA-ARCTIC-MX4-4G", name: "Pasta Térmica Arctic MX-4 4g Alto Rendimento", category: "Termico", brand: "Arctic", cost_price: 38.00, selling_price: 75.00, current_stock: 8, reserved_stock: 2, min_stock: 3, ean: "0872767009585" },
-            { id: "p12", sku: "SETUP-AMD-APU-5600G", name: "Combo Setup 1: Ryzen 5 5600G + MOBO A520M + 16GB RAM", category: "Setups", brand: "AMD / MSI", cost_price: 850.00, selling_price: 1350.00, current_stock: 1, reserved_stock: 0, min_stock: 1, ean: "IF-SETUP-AMD-01" },
-            { id: "p13", sku: "SETUP-INTEL-GPU-12400F", name: "Combo Setup 2: Core i5-12400F + H610M + RTX 3050 + 16GB", category: "Setups", brand: "Intel / ASUS", cost_price: 2150.00, selling_price: 3100.00, current_stock: 1, reserved_stock: 0, min_stock: 1, ean: "IF-SETUP-INTEL-02" },
-            { id: "p14", sku: "SETUP-GAMER-PRO-5600", name: "Combo Setup 3: Ryzen 5 5600 + B550M + RX 6600 8GB + 16GB", category: "Setups", brand: "AMD / MSI", cost_price: 2350.00, selling_price: 3450.00, current_stock: 1, reserved_stock: 0, min_stock: 1, ean: "IF-SETUP-GAMER-03" }
-        ];
-
-        let posCart = [];
-        let posActivePaymentMethod = 'Pix';
-        let posCategoryFilter = 'all';
-
-        let kardexMovements = [
-            { date: new Date().toISOString(), type: "Entrada_Nota_Fiscal", sku: "SSD-NVME-512GB", prodName: "SSD Kingston NV2 512GB", qty: 5, totalCost: 975.00, docRef: "NF-e #49102 (KaBuM!)", operator: "Gestor IF Tech" },
-            { date: new Date().toISOString(), type: "Entrada_Nota_Fiscal", sku: "CHG-20W-USBC", prodName: "Carregador 20W USB-C", qty: 6, totalCost: 150.00, docRef: "NF-e #11048 (Distribuidora SP)", operator: "Gestor IF Tech" },
-            { date: new Date().toISOString(), type: "Saida_Ordem_Servico", sku: "SSD-SATA-480GB", prodName: "SSD Kingston A400 480GB", qty: -1, totalCost: 155.00, docRef: "OS #1048 (Dell Inspiron)", operator: "Bancada Lab" }
-        ];
-
-        let mockSerialsDB = [
-            { sn: "SN-KNG-512-99482", sku: "SSD-NVME-512GB", prodName: "SSD Kingston NV2 512GB NVMe M.2", supplier: "KaBuM! Comércio Eletrônico S/A", invoice: "NF-e #49102-1", purchaseDate: "2025-10-15", warrantyMonths: 36, client: "Carlos Eduardo (OS #1042)", status: "Sold_OS" },
-            { sn: "SN-KNG-1TB-88102", sku: "SSD-NVME-1TB", prodName: "SSD Kingston NV2 1TB NVMe M.2", supplier: "All Nations Distribuição S/A", invoice: "NF-e #88192-2", purchaseDate: "2026-01-20", warrantyMonths: 36, client: "Lucas M. (Balcão PDV #0012)", status: "Sold_POS" }
-        ];
-
-        function switchInventorySubTab(sub) {
-            const posSec = document.getElementById('inv-subtab-pos');
-            const catSec = document.getElementById('inv-subtab-catalog');
-            const karSec = document.getElementById('inv-subtab-kardex');
-
-            const btnPos = document.getElementById('inv-subtab-btn-pos');
-            const btnCat = document.getElementById('inv-subtab-btn-catalog');
-            const btnKar = document.getElementById('inv-subtab-btn-kardex');
-
-            if (posSec) posSec.classList.add('hidden');
-            if (catSec) catSec.classList.add('hidden');
-            if (karSec) karSec.classList.add('hidden');
-
-            const resetClass = "px-4 py-2.5 bg-zinc-900 text-zinc-400 border border-zinc-700 hover:text-white flex items-center gap-2 transition-colors font-bold uppercase";
-            const activeClass = "px-4 py-2.5 bg-brand text-black font-black uppercase tracking-wider flex items-center gap-2 transition-colors shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]";
-
-            if (btnPos) btnPos.className = resetClass;
-            if (btnCat) btnCat.className = resetClass;
-            if (btnKar) btnKar.className = resetClass;
-
-            if (sub === 'pos') {
-                if (posSec) posSec.classList.remove('hidden');
-                if (btnPos) btnPos.className = activeClass;
-                renderPOSGrid();
-                setTimeout(() => document.getElementById('pos-barcode-input')?.focus(), 100);
-            } else if (sub === 'catalog') {
-                if (catSec) catSec.classList.remove('hidden');
-                if (btnCat) btnCat.className = activeClass;
-                renderInventoryCatalogTable();
-            } else if (sub === 'kardex') {
-                if (karSec) karSec.classList.remove('hidden');
-                if (btnKar) btnKar.className = activeClass;
-                renderKardexTable();
-            }
-            if (window.lucide) lucide.createIcons();
-        }
-
-        // =========================================================================
-        // 1. FUNÇÕES DO PDV CAIXA RÁPIDO
-        // =========================================================================
-        function filterPOSCategory(cat) {
-            posCategoryFilter = cat;
-            document.querySelectorAll('.pos-cat-btn').forEach(btn => {
-                btn.className = "pos-cat-btn px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white uppercase whitespace-nowrap";
-            });
-            if (event && event.target) {
-                event.target.className = "pos-cat-btn px-3 py-1.5 bg-brand text-black font-bold uppercase whitespace-nowrap";
-            }
-            renderPOSGrid();
-        }
-
         function renderPOSGrid() {
             const grid = document.getElementById('pos-products-grid');
             if (!grid) return;
             grid.innerHTML = '';
 
+            const q = (document.getElementById('pos-search-input')?.value || '').toLowerCase().trim();
+            const cat = posActiveCategory;
+
             const filtered = currentInventoryProducts.filter(p => {
-                if (posCategoryFilter === 'all') return true;
-                return p.category === posCategoryFilter;
+                const matchCat = cat === 'ALL' || p.category === cat;
+                const matchQuery = !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || (p.ean && p.ean.toLowerCase().includes(q));
+                return matchCat && matchQuery;
             });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-8 text-zinc-600 text-xs">Nenhum produto encontrado.</div>';
+                return;
+            }
 
             filtered.forEach(prod => {
                 const available = prod.current_stock - prod.reserved_stock;
@@ -3932,7 +2049,7 @@ Ficamos no aguardo para iniciar a execução!
                     isOutOfStock 
                         ? 'border-zinc-800 opacity-50 cursor-not-allowed' 
                         : 'border-zinc-800 hover:border-brand hover:shadow-[3px_3px_0px_0px_rgba(204,255,0,0.3)]'
-                }
+                }`;
 
                 card.onclick = () => {
                     if (!isOutOfStock) addToPOSCart(prod);
@@ -3952,7 +2069,7 @@ Ficamos no aguardo para iniciar a execução!
                         <span class="text-xs text-zinc-500 font-mono">${escapeHtml(prod.sku)}</span>
                         <strong class="text-sm font-black text-brand">R$ ${prod.selling_price.toFixed(2).replace('.', ',')}</strong>
                     </div>
-                
+                `;
                 grid.appendChild(card);
             });
             if (window.lucide) lucide.createIcons();
@@ -4024,7 +2141,7 @@ Ficamos no aguardo para iniciar a execução!
                         <i data-lucide="shopping-bag" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
                         Carrinho vazio.<br>Bipe um produto ou clique nos cards.
                     </div>
-                
+                `;
                 recalcPOSCartTotals();
                 if (window.lucide) lucide.createIcons();
                 return;
@@ -4050,7 +2167,7 @@ Ficamos no aguardo para iniciar a execução!
                     <button type="button" onclick="removeCartItem(${idx})" class="text-zinc-600 hover:text-red-400 p-1">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
-                
+                `;
                 container.appendChild(itemRow);
             });
 
@@ -4151,7 +2268,7 @@ Ficamos no aguardo para iniciar a execução!
             const total = Math.max(0, subtotal - discount);
             const profit = total - totalCost;
 
-            const saleNumber = `PDV-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}
+            const saleNumber = `PDV-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}`;
 
             // 1. Dar baixa física no estoque local
             posCart.forEach(cartItem => {
@@ -4203,7 +2320,7 @@ Ficamos no aguardo para iniciar a execução!
             document.getElementById('pos-rec-discount').textContent = 'R$ ' + data.discount.toFixed(2).replace('.', ',');
             document.getElementById('pos-rec-total').textContent = 'R$ ' + data.total.toFixed(2).replace('.', ',');
             document.getElementById('pos-rec-method').textContent = data.method.replace('_', ' ').toUpperCase();
-            document.getElementById('pos-rec-hash').textContent = `IF-${data.saleNumber}-${Date.now().toString().slice(-4)}
+            document.getElementById('pos-rec-hash').textContent = `IF-${data.saleNumber}-${Date.now().toString().slice(-4)}`;
 
             const tbody = document.getElementById('pos-rec-items-tbody');
             if (tbody) {
@@ -4213,8 +2330,8 @@ Ficamos no aguardo para iniciar a execução!
                     tr.innerHTML = `
                         <td class="py-0.5">${it.qty}x ${escapeHtml(it.name)}</td>
                         <td class="text-right font-bold">R$ ${(it.price * it.qty).toFixed(2).replace('.', ',')}</td>
-                    
-                    tbody.appendChild(tr);
+                        `;
+                        tbody.appendChild(tr);
                 });
             }
 
@@ -4290,8 +2407,8 @@ Ficamos no aguardo para iniciar a execução!
                             + Venda
                         </button>
                     </td>
-                
-                tbody.appendChild(tr);
+                        `;
+                        tbody.appendChild(tr);
             });
 
             document.getElementById('inv-stat-total-items').textContent = totalItems;
@@ -4347,7 +2464,7 @@ Ficamos no aguardo para iniciar a execução!
             const modal = document.getElementById('new-product-modal');
             if (!modal) return;
             document.getElementById('new-product-form')?.reset();
-            document.getElementById('inp-prod-sku').value = `PROD-${Date.now().toString().slice(-4)}
+            document.getElementById('inp-prod-sku').value = `PROD-${Date.now().toString().slice(-4)}`;
             modal.classList.remove('hidden');
             setTimeout(() => document.getElementById('inp-prod-name')?.focus(), 100);
             if (window.lucide) lucide.createIcons();
@@ -4438,8 +2555,8 @@ Ficamos no aguardo para iniciar a execução!
                     <td class="py-2.5 px-3 text-right font-bold text-zinc-300">R$ ${m.totalCost.toFixed(2).replace('.', ',')}</td>
                     <td class="py-2.5 px-3 text-zinc-300">${escapeHtml(m.docRef)}</td>
                     <td class="py-2.5 px-3 text-zinc-500">${escapeHtml(m.operator)}</td>
-                
-                tbody.appendChild(tr);
+                        `;
+                        tbody.appendChild(tr);
             });
         }
 
@@ -4494,7 +2611,7 @@ Ficamos no aguardo para iniciar a execução!
                             ⚡ Gerar Dossiê de Troca RMA
                         </button>
                     </div>
-                
+                `;
             } else {
                 resultBox.innerHTML = `
                     <div class="text-center py-4 text-zinc-400">
@@ -4502,7 +2619,7 @@ Ficamos no aguardo para iniciar a execução!
                         <p class="font-bold text-white">Nenhum registro encontrado para o Serial "${escapeHtml(snQuery)}"</p>
                         <span class="text-[11px] text-zinc-500">Verifique se o número foi digitado corretamente ou se a peça é de terceiros.</span>
                     </div>
-                
+                `;
             }
             if (window.lucide) lucide.createIcons();
         }
@@ -4628,7 +2745,7 @@ Ficamos no aguardo para iniciar a execução!
                 else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
                 else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
                 else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
-                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>
+                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
 
                 tr.innerHTML = `
                     <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
@@ -4666,8 +2783,8 @@ Ficamos no aguardo para iniciar a execução!
                             Gerenciar
                         </button>
                     </td>
-                
-                tbody.appendChild(tr);
+                        `;
+                        tbody.appendChild(tr);
             });
 
             // Recalcular Timesheet
@@ -4683,10 +2800,10 @@ Ficamos no aguardo para iniciar a execução!
             document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
             document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
             const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
-            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas
+            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
 
             document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h
+            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
 
             if (window.lucide) lucide.createIcons();
         }
@@ -4751,8 +2868,8 @@ Ficamos no aguardo para iniciar a execução!
             const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
 
             const seq = currentSoftwareProjects.length + 1;
-            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}
-            const token = `sw-tok-${Date.now()}
+            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
+            const token = `sw-tok-${Date.now()}`;
 
             const newProj = {
                 id: `sw-${Date.now()}`,
@@ -4818,7 +2935,7 @@ Ficamos no aguardo para iniciar a execução!
             document.getElementById('sw-detail-client').textContent = proj.client_name;
             document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
             document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
-            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}
+            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
             
             const statusSelect = document.getElementById('sw-detail-status-select');
             if (statusSelect) statusSelect.value = proj.status;
@@ -4860,7 +2977,7 @@ Ficamos no aguardo para iniciar a execução!
                             ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
                         </button>
                     </div>
-                
+                `;
             }
 
             renderProjectTimesheet(proj.id);
@@ -4939,11 +3056,11 @@ Ficamos no aguardo para iniciar a execução!
                     <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
                     <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
                     <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
-                
-                tbody.appendChild(tr);
+                        `;
+                        tbody.appendChild(tr);
             });
 
-            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})
+            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
         }
 
         function handleAddTimesheetEntry() {
