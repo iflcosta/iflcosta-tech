@@ -1937,6 +1937,7 @@ Qualquer dúvida, estou à disposição!
             if (tabId === 'sniper') setTimeout(() => { renderSniperDashboard(); }, 50);
             if (tabId === 'msp') setTimeout(() => { renderMSPDashboard(); }, 50);
             if (tabId === 'inventory') setTimeout(() => { renderPOSGrid(); renderInventoryCatalogTable(); }, 50);
+            if (tabId === 'inventory') setTimeout(() => { renderPOSGrid(); renderInventoryCatalogTable(); }, 50);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('text-brand', 'border-brand', 'bg-brand/5');
@@ -2336,6 +2337,225 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('count-pronto').textContent = cP;
         }
 
+        let currentInventoryProducts = [
+            // 1. CARREGADORES
+            {
+                id: 'prod-01',
+                sku: 'CHG-20W-BAS',
+                barcode: '7891000100011',
+                ean: '7891000100011',
+                name: 'Carregador Turbo 20W USB-C Baseus Quick Charge',
+                brand: 'Baseus',
+                category: 'Carregadores',
+                cost_price: 28.00,
+                selling_price: 65.00,
+                current_stock: 8,
+                min_stock: 3,
+                reserved_stock: 0,
+                location: 'Prateleira A1'
+            },
+            {
+                id: 'prod-02',
+                sku: 'CHG-33W-GAN',
+                barcode: '7891000100028',
+                ean: '7891000100028',
+                name: 'Carregador 33W GaN Duo Fast Charge (USB-C + USB-A)',
+                brand: 'UGreen',
+                category: 'Carregadores',
+                cost_price: 42.00,
+                selling_price: 95.00,
+                current_stock: 5,
+                min_stock: 2,
+                reserved_stock: 0,
+                location: 'Prateleira A1'
+            },
+            // 2. CABOS
+            {
+                id: 'prod-03',
+                sku: 'CAB-USBC-100W',
+                barcode: '7891000200018',
+                ean: '7891000200018',
+                name: 'Cabo USB-C x USB-C Nylon Trançado 100W 1.8m',
+                brand: 'UGreen',
+                category: 'Cabos',
+                cost_price: 18.00,
+                selling_price: 45.00,
+                current_stock: 14,
+                min_stock: 5,
+                reserved_stock: 1,
+                location: 'Prateleira A2'
+            },
+            {
+                id: 'prod-04',
+                sku: 'CAB-HDMI-8K',
+                barcode: '7891000200025',
+                ean: '7891000200025',
+                name: 'Cabo HDMI 2.1 Ultra High Speed 8K 60Hz 2m Blindado',
+                brand: 'Baseus',
+                category: 'Cabos',
+                cost_price: 22.00,
+                selling_price: 55.00,
+                current_stock: 9,
+                min_stock: 3,
+                reserved_stock: 0,
+                location: 'Prateleira A2'
+            },
+            // 3. ARMAZENAMENTO (SSDs)
+            {
+                id: 'prod-05',
+                sku: 'SSD-NV2-1TB',
+                barcode: '7891000300015',
+                ean: '7891000300015',
+                name: 'SSD Kingston NV2 1TB M.2 NVMe 2280 PCIe 4.0 (3500MB/s)',
+                brand: 'Kingston',
+                category: 'Armazenamento',
+                cost_price: 249.90,
+                selling_price: 390.00,
+                current_stock: 6,
+                min_stock: 3,
+                reserved_stock: 1,
+                location: 'Gaveta B1'
+            },
+            {
+                id: 'prod-06',
+                sku: 'SSD-NV2-512GB',
+                barcode: '7891000300022',
+                ean: '7891000300022',
+                name: 'SSD Kingston NV2 512GB M.2 NVMe 2280 PCIe 4.0',
+                brand: 'Kingston',
+                category: 'Armazenamento',
+                cost_price: 165.00,
+                selling_price: 270.00,
+                current_stock: 4,
+                min_stock: 2,
+                reserved_stock: 0,
+                location: 'Gaveta B1'
+            },
+            {
+                id: 'prod-07',
+                sku: 'SSD-A400-480GB',
+                barcode: '7891000300039',
+                ean: '7891000300039',
+                name: 'SSD Kingston A400 480GB SATA III 2.5 polegadas',
+                brand: 'Kingston',
+                category: 'Armazenamento',
+                cost_price: 145.00,
+                selling_price: 240.00,
+                current_stock: 7,
+                min_stock: 3,
+                reserved_stock: 0,
+                location: 'Gaveta B1'
+            },
+            // 4. MEMÓRIA RAM
+            {
+                id: 'prod-08',
+                sku: 'RAM-DDR4-16GB-3200',
+                barcode: '7891000400012',
+                ean: '7891000400012',
+                name: 'Memória Corsair Vengeance 16GB (2x8GB) 3200MHz DDR4',
+                brand: 'Corsair',
+                category: 'Memoria_RAM',
+                cost_price: 189.90,
+                selling_price: 290.00,
+                current_stock: 5,
+                min_stock: 2,
+                reserved_stock: 0,
+                location: 'Gaveta B2'
+            },
+            {
+                id: 'prod-09',
+                sku: 'RAM-DDR4-8GB-NOTE',
+                barcode: '7891000400029',
+                ean: '7891000400029',
+                name: 'Memória Notebook Kingston 8GB DDR4 3200MHz SODIMM',
+                brand: 'Kingston',
+                category: 'Memoria_RAM',
+                cost_price: 110.00,
+                selling_price: 190.00,
+                current_stock: 4,
+                min_stock: 2,
+                reserved_stock: 0,
+                location: 'Gaveta B2'
+            },
+            // 5. PASTAS & INSUMOS TÉRMICOS
+            {
+                id: 'prod-10',
+                sku: 'TER-MX4-4G',
+                barcode: '7891000500019',
+                ean: '7891000500019',
+                name: 'Pasta Térmica Arctic MX-4 4g Alto Desempenho Não Condutiva',
+                brand: 'Arctic',
+                category: 'Termico',
+                cost_price: 32.00,
+                selling_price: 75.00,
+                current_stock: 9,
+                min_stock: 4,
+                reserved_stock: 0,
+                location: 'Prateleira C1'
+            },
+            {
+                id: 'prod-11',
+                sku: 'TER-HYDRONAUT-1G',
+                barcode: '7891000500026',
+                ean: '7891000500026',
+                name: 'Pasta Térmica Thermal Grizzly Hydronaut 1g Entusiasta',
+                brand: 'Thermal Grizzly',
+                category: 'Termico',
+                cost_price: 45.00,
+                selling_price: 95.00,
+                current_stock: 3,
+                min_stock: 2,
+                reserved_stock: 0,
+                location: 'Prateleira C1'
+            },
+            // 6. SETUPS PRONTOS & MÁQUINAS COMPLETAS (VITRINE)
+            {
+                id: 'prod-12',
+                sku: 'SET-GAMER-4060',
+                barcode: '7891000600016',
+                ean: '7891000600016',
+                name: 'Setup Gamer IF Tech 1080p Ultra (Ryzen 5 5600 + RTX 4060 + 16GB + 1TB NVMe)',
+                brand: 'IF Tech Custom',
+                category: 'Setups',
+                cost_price: 3780.00,
+                selling_price: 4890.00,
+                current_stock: 1,
+                min_stock: 1,
+                reserved_stock: 0,
+                location: 'Vitrine 01'
+            },
+            {
+                id: 'prod-13',
+                sku: 'SET-OFFICE-ECONOMY',
+                barcode: '7891000600023',
+                ean: '7891000600023',
+                name: 'Setup Escritório Econômico / PDV (Core i5 + 16GB RAM + SSD 240GB + Windows 11)',
+                brand: 'IF Tech Custom',
+                category: 'Setups',
+                cost_price: 890.00,
+                selling_price: 1390.00,
+                current_stock: 2,
+                min_stock: 1,
+                reserved_stock: 0,
+                location: 'Vitrine 02'
+            },
+            {
+                id: 'prod-14',
+                sku: 'NOT-LENOVO-R5',
+                barcode: '7891000600030',
+                ean: '7891000600030',
+                name: 'Notebook Lenovo Ideapad 1 15.6 FHD (Ryzen 5 7520U + 16GB + SSD 512GB)',
+                brand: 'Lenovo',
+                category: 'Setups',
+                cost_price: 2199.00,
+                selling_price: 2790.00,
+                current_stock: 1,
+                min_stock: 1,
+                reserved_stock: 0,
+                location: 'Vitrine 03'
+            }
+        ];
+
         let posActiveCategory = 'all';
 
         function switchInventorySubTab(subTab) {
@@ -2372,7 +2592,7 @@ Qualquer dúvida, estou à disposição!
             });
             const targetBtn = Array.from(document.querySelectorAll('.pos-cat-btn')).find(b => {
                 const onclickAttr = b.getAttribute('onclick') || '';
-                return onclickAttr.includes("'" + cat + "'");
+                return onclickAttr.toLowerCase().includes("'" + cat.toLowerCase() + "'");
             });
             if (targetBtn) {
                 targetBtn.className = "pos-cat-btn px-3 py-1.5 bg-brand text-black font-bold uppercase whitespace-nowrap";
@@ -2386,16 +2606,27 @@ Qualquer dúvida, estou à disposição!
             grid.innerHTML = '';
 
             const q = (document.getElementById('pos-barcode-input')?.value || '').toLowerCase().trim();
-            const cat = posActiveCategory;
+            const cat = (posActiveCategory || 'all').toLowerCase();
 
             const filtered = currentInventoryProducts.filter(p => {
-                const matchCat = cat === 'ALL' || p.category === cat;
+                const pCat = (p.category || '').toLowerCase();
+                let matchCat = (cat === 'all');
+                if (!matchCat) {
+                    if (cat === 'carregadores') matchCat = pCat.includes('carregador');
+                    else if (cat === 'cabos') matchCat = pCat.includes('cabo');
+                    else if (cat === 'armazenamento') matchCat = pCat.includes('armazenamento') || pCat.includes('ssd');
+                    else if (cat === 'memoria_ram' || cat === 'memoria') matchCat = pCat.includes('memoria') || pCat.includes('ram');
+                    else if (cat === 'termico') matchCat = pCat.includes('termico') || pCat.includes('pasta');
+                    else if (cat === 'setups') matchCat = pCat.includes('setup') || pCat.includes('notebook') || pCat.includes('computador');
+                    else matchCat = pCat.includes(cat);
+                }
                 const matchQuery = !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || (p.ean && p.ean.toLowerCase().includes(q));
                 return matchCat && matchQuery;
             });
 
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-8 text-zinc-600 text-xs">Nenhum produto encontrado.</div>';
+                grid.innerHTML = '<div class="col-span-full text-center py-8 text-zinc-600 text-xs font-mono"><i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 text-zinc-700"></i>Nenhum produto encontrado nesta categoria.</div>';
+                if (window.lucide) lucide.createIcons();
                 return;
             }
 
@@ -4998,7 +5229,59 @@ IF Tech // Engenharia de Hardware`;
         }
 
         function openClientDetailModal(clientId) {
-            document.getElementById('client-detail-modal')?.classList.remove('hidden');
+            activeClientId = clientId;
+            const client = currentClientsList.find(c => c.id === clientId);
+            if (!client) return;
+
+            const modal = document.getElementById('client-detail-modal');
+            if (!modal) return;
+
+            document.getElementById('cdetail-name').textContent = client.name;
+            document.getElementById('cdetail-phone').textContent = client.phone;
+            document.getElementById('cdetail-ltv').textContent = 'R$ ' + (client.total_spent || 0).toFixed(2).replace('.', ',');
+            document.getElementById('cdetail-orders-count').textContent = (client.orders_count || 0) + ' OSs Concluídas';
+
+            const historyList = document.getElementById('cdetail-history-list');
+            if (historyList) {
+                let mockHistory = [];
+                if (client.id === 'cli-02' || client.name.includes('Roberto')) {
+                    mockHistory = [
+                        { os: '1041', title: 'Workstation Dell XPS - Troca de Pasta Térmica Arctic MX-4 & Desoxidação', date: 'Há 5 dias', value: 280.00, status: 'Pronto / Entregue' },
+                        { os: '1032', title: 'Upgrade SSD Kingston 1TB NVMe + Clonagem Windows 11 Pro', date: 'Há 3 semanas', value: 650.00, status: 'Pronto / Entregue' },
+                        { os: '1015', title: 'Montagem Setup Alta Performance para Consultório Médico', date: 'Há 2 meses', value: 6200.00, status: 'Pronto / Entregue' },
+                        { os: '0988', title: 'Infraestrutura de Rede Gigabit & Backup Local UrBackup', date: 'Há 4 meses', value: 1200.00, status: 'Pronto / Entregue' },
+                        { os: '0942', title: 'Substituição de Fonte 650W 80 Plus Bronze + Cable Management', date: 'Há 6 meses', value: 570.00, status: 'Pronto / Entregue' }
+                    ];
+                } else if (client.id === 'cli-01' || client.name.includes('Lucas')) {
+                    mockHistory = [
+                        { os: '1039', title: 'Setup Gamer RTX 4060 - Montagem Completa e Otimização AIDA64', date: 'Há 12 dias', value: 3850.00, status: 'Pronto / Entregue' },
+                        { os: '1010', title: 'Upgrade Memória RAM Corsair 16GB 3200MHz DDR4', date: 'Há 2 meses', value: 350.00, status: 'Pronto / Entregue' }
+                    ];
+                } else {
+                    mockHistory = [
+                        { os: '1043', title: 'Notebook Acer Aspire 5 - Reparo de Carcaça e Troca de Teclado', date: 'Há 8 dias', value: 415.00, status: 'Pronto / Entregue' }
+                    ];
+                }
+
+                historyList.innerHTML = mockHistory.map(h => `
+                    <div class="p-3 bg-zinc-900 border border-zinc-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="px-1.5 py-0.2 bg-brand text-black font-black text-[10px]">OS #${h.os}</span>
+                                <strong class="text-white font-bold">${escapeHtml(h.title)}</strong>
+                            </div>
+                            <span class="text-zinc-500 text-[10px]">${h.date} • ${h.status} • Garantia CDC 90D</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-brand font-mono font-bold text-sm">R$ ${h.value.toFixed(2).replace('.', ',')}</span>
+                            <button type="button" onclick="printThermalCustomerReceipt()" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold uppercase">Recibo</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
         }
 
         function closeClientDetailModal() {
@@ -5010,21 +5293,7 @@ IF Tech // Engenharia de Hardware`;
         }
 
         function renderClientsTable() {
-            const tbody = document.getElementById('crm-clients-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = currentClientsList.map(c => `
-                <tr class="hover:bg-zinc-900/50">
-                    <td class="py-3 px-3 font-bold text-white">${escapeHtml(c.name)}</td>
-                    <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.phone)}</td>
-                    <td class="py-3 px-3 text-center text-brand font-bold">${c.orders_count}</td>
-                    <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${c.total_spent.toFixed(2).replace('.', ',')}</td>
-                    <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="quickNewOSForClient('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-brand/40 text-brand hover:bg-brand hover:text-black font-bold uppercase text-[10px]">
-                            + Nova OS
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            filterClientsTable();
         }
 
         function loadStandardBuildSlots() {}
@@ -5082,30 +5351,120 @@ IF Tech // Engenharia de Hardware`;
 
         const buildProfiles = {
             GAMER_MID: {
-                name: "Setup Gamer Mid-Range 1080p Ultra",
+                name: "Setup Gamer 1080p / 1440p High (Ryzen 5 + RTX 4060 8GB)",
                 labor: 450.00,
                 parts: [
-                    { name: "Processador AMD Ryzen 5 5600", cost: 650.00, price: 890.00 },
-                    { name: "Placa-Mãe B550M AM4", cost: 480.00, price: 650.00 },
+                    { name: "Processador AMD Ryzen 5 5600 (6C/12T 4.4GHz)", cost: 650.00, price: 890.00 },
+                    { name: "Placa-Mãe B550M AM4 PCIe 4.0", cost: 480.00, price: 650.00 },
                     { name: "Memória RAM 16GB (2x8GB) 3200MHz DDR4", cost: 180.00, price: 280.00 },
-                    { name: "SSD M.2 NVMe 1TB PCIe 4.0", cost: 260.00, price: 390.00 },
+                    { name: "SSD M.2 NVMe 1TB PCIe 4.0 (3500MB/s)", cost: 260.00, price: 390.00 },
                     { name: "Placa de Vídeo RTX 4060 8GB GDDR6", cost: 1750.00, price: 2250.00 },
-                    { name: "Fonte 650W 80 Plus Bronze", cost: 240.00, price: 350.00 },
+                    { name: "Fonte 650W 80 Plus Bronze PFC Ativo", cost: 240.00, price: 350.00 },
                     { name: "Gabinete Aquário + 4 Fans ARGB", cost: 220.00, price: 340.00 }
                 ]
             },
-            AI_WORKSTATION: {
-                name: "Workstation IA & Render 4K",
+            GAMER_HIGH: {
+                name: "Setup Gamer Competitivo / Streaming 1440p (Ryzen 7 + RTX 4070 Super)",
+                labor: 550.00,
+                parts: [
+                    { name: "Processador AMD Ryzen 7 5700X3D 3D V-Cache", cost: 1250.00, price: 1590.00 },
+                    { name: "Water Cooler 240mm ARGB", cost: 260.00, price: 390.00 },
+                    { name: "Placa-Mãe B550M Aorus Elite AM4", cost: 680.00, price: 890.00 },
+                    { name: "Memória RAM 32GB (2x16GB) 3200MHz DDR4", cost: 340.00, price: 490.00 },
+                    { name: "SSD M.2 NVMe 1TB Gen4 (5000MB/s)", cost: 320.00, price: 460.00 },
+                    { name: "Placa de Vídeo RTX 4070 Super 12GB GDDR6X", cost: 3800.00, price: 4690.00 },
+                    { name: "Fonte 750W 80 Plus Gold Modular", cost: 420.00, price: 590.00 },
+                    { name: "Gabinete Aquário Lateral Vidro + 6 Fans", cost: 290.00, price: 420.00 }
+                ]
+            },
+            GAMER_ULTRA: {
+                name: "Setup Gamer Entusiasta 4K Ultra AM5 (Ryzen 7 7800X3D + RTX 4080 Super)",
+                labor: 750.00,
+                parts: [
+                    { name: "Processador AMD Ryzen 7 7800X3D AM5", cost: 2400.00, price: 2990.00 },
+                    { name: "Water Cooler 360mm High Performance ARGB", cost: 480.00, price: 690.00 },
+                    { name: "Placa-Mãe X670 / B650 AM5 DDR5", cost: 1100.00, price: 1450.00 },
+                    { name: "Memória RAM 32GB (2x16GB) DDR5 6000MHz CL30", cost: 650.00, price: 890.00 },
+                    { name: "SSD M.2 NVMe 2TB PCIe 4.0 (7000MB/s)", cost: 580.00, price: 820.00 },
+                    { name: "Placa de Vídeo RTX 4080 Super 16GB GDDR6X", cost: 6200.00, price: 7600.00 },
+                    { name: "Fonte 850W 80 Plus Gold Full Modular", cost: 550.00, price: 780.00 },
+                    { name: "Gabinete Premium Lian Li O11 Dynamic EVO", cost: 850.00, price: 1190.00 }
+                ]
+            },
+            WORKSTATION: {
+                name: "Workstation Edição 4K / IA & Render 3D (Ryzen 9 + RTX 4090 + 64GB DDR5)",
                 labor: 850.00,
                 parts: [
-                    { name: "Processador Intel Core i7-14700K", cost: 2200.00, price: 2890.00 },
-                    { name: "Water Cooler 360mm ARGB", cost: 450.00, price: 690.00 },
-                    { name: "Placa-Mãe Z790 DDR5", cost: 1200.00, price: 1650.00 },
-                    { name: "Memória RAM 64GB (2x32GB) DDR5 6000MHz", cost: 850.00, price: 1290.00 },
-                    { name: "SSD M.2 NVMe 2TB PCIe 4.0 (7000MB/s)", cost: 550.00, price: 820.00 },
-                    { name: "Placa de Vídeo RTX 4080 Super 16GB", cost: 6200.00, price: 7800.00 },
-                    { name: "Fonte 850W 80 Plus Gold Modular", cost: 580.00, price: 820.00 },
-                    { name: "Gabinete Full Tower Airflow", cost: 480.00, price: 720.00 }
+                    { name: "Processador AMD Ryzen 9 7950X AM5 (16C/32T)", cost: 3600.00, price: 4400.00 },
+                    { name: "Water Cooler 360mm Arctic Liquid Freezer III", cost: 650.00, price: 890.00 },
+                    { name: "Placa-Mãe ASUS ProArt X670E-Creator WiFi", cost: 2400.00, price: 2990.00 },
+                    { name: "Memória RAM 64GB (2x32GB) DDR5 6000MHz ECC/Pro", cost: 1200.00, price: 1690.00 },
+                    { name: "SSD M.2 NVMe 4TB (2x 2TB RAID 0/1 7400MB/s)", cost: 1200.00, price: 1680.00 },
+                    { name: "Placa de Vídeo RTX 4090 24GB GDDR6X", cost: 12500.00, price: 14900.00 },
+                    { name: "Fonte 1000W 80 Plus Platinum ATX 3.0", cost: 950.00, price: 1350.00 },
+                    { name: "Gabinete Full Tower Silencioso / E-ATX", cost: 750.00, price: 1050.00 }
+                ]
+            },
+            GAMER_ENTRY: {
+                name: "Setup Gamer Entrada / eSports (Core i3 + RX 6600 8GB + 16GB)",
+                labor: 380.00,
+                parts: [
+                    { name: "Processador Intel Core i3-12100F (4C/8T 4.3GHz)", cost: 480.00, price: 650.00 },
+                    { name: "Placa-Mãe H610M DDR4 LGA1700", cost: 390.00, price: 520.00 },
+                    { name: "Memória RAM 16GB (2x8GB) 3200MHz DDR4", cost: 180.00, price: 280.00 },
+                    { name: "SSD M.2 NVMe 512GB PCIe 3.0", cost: 160.00, price: 240.00 },
+                    { name: "Placa de Vídeo Radeon RX 6600 8GB GDDR6", cost: 1190.00, price: 1490.00 },
+                    { name: "Fonte 500W 80 Plus Bronze", cost: 190.00, price: 280.00 },
+                    { name: "Gabinete Gamer Micro-ATX com Fita LED", cost: 140.00, price: 220.00 }
+                ]
+            },
+            OFFICE_RYZEN3: {
+                name: "Setup Escritório Ágil AM4 (Ryzen 3 3200G/4300G + 16GB + NVMe)",
+                labor: 250.00,
+                parts: [
+                    { name: "Processador AMD Ryzen 3 4300G com Radeon Graphics", cost: 380.00, price: 520.00 },
+                    { name: "Placa-Mãe A520M AM4", cost: 320.00, price: 440.00 },
+                    { name: "Memória RAM 16GB (2x8GB) 3200MHz DDR4", cost: 180.00, price: 280.00 },
+                    { name: "SSD M.2 NVMe 512GB PCIe 3.0", cost: 160.00, price: 240.00 },
+                    { name: "Fonte 400W 80 Plus", cost: 140.00, price: 210.00 },
+                    { name: "Gabinete Slim Corporativo USB 3.0", cost: 110.00, price: 170.00 }
+                ]
+            },
+            OFFICE_INTEL_BUDGET: {
+                name: "Setup Escritório Econômico / PDV (Core i5 + 16GB + SSD)",
+                labor: 200.00,
+                parts: [
+                    { name: "Processador Intel Core i5 Quad-Core com Intel HD Graphics", cost: 240.00, price: 360.00 },
+                    { name: "Placa-Mãe H81 / H110 com HDMI", cost: 220.00, price: 320.00 },
+                    { name: "Memória RAM 16GB (2x8GB) Dual Channel", cost: 140.00, price: 220.00 },
+                    { name: "SSD 240GB/480GB SATA III de Alta Velocidade", cost: 110.00, price: 170.00 },
+                    { name: "Fonte 300W / 400W Eficiente", cost: 95.00, price: 150.00 },
+                    { name: "Gabinete Compacto Corporativo", cost: 85.00, price: 130.00 }
+                ]
+            },
+            OFFICE_PRO: {
+                name: "Setup Escritório Performance (Ryzen 5 5600G + 16GB + NVMe)",
+                labor: 280.00,
+                parts: [
+                    { name: "Processador AMD Ryzen 5 5600G (6C/12T Vega 7)", cost: 620.00, price: 840.00 },
+                    { name: "Placa-Mãe B450M / A520M AM4", cost: 350.00, price: 480.00 },
+                    { name: "Memória RAM 16GB (2x8GB) 3200MHz DDR4", cost: 180.00, price: 280.00 },
+                    { name: "SSD M.2 NVMe 1TB PCIe 3.0 (2400MB/s)", cost: 240.00, price: 360.00 },
+                    { name: "Fonte 500W 80 Plus Bronze", cost: 190.00, price: 280.00 },
+                    { name: "Gabinete Corporativo Elegante com Fonte Baixa", cost: 130.00, price: 190.00 }
+                ]
+            },
+            CUSTOM_BLANK: {
+                name: "Setup Personalizado (Slots em Branco para Cotação Livre)",
+                labor: 350.00,
+                parts: [
+                    { name: "Processador", cost: 0.00, price: 0.00 },
+                    { name: "Placa-Mãe", cost: 0.00, price: 0.00 },
+                    { name: "Memória RAM", cost: 0.00, price: 0.00 },
+                    { name: "Armazenamento SSD", cost: 0.00, price: 0.00 },
+                    { name: "Placa de Vídeo (Opcional)", cost: 0.00, price: 0.00 },
+                    { name: "Fonte de Alimentação", cost: 0.00, price: 0.00 },
+                    { name: "Gabinete", cost: 0.00, price: 0.00 }
                 ]
             }
         };
@@ -5244,7 +5603,7 @@ IF Tech // Engenharia de Hardware`;
 
         function filterClientsTable() {
             const query = (document.getElementById('crm-search-input')?.value || '').toLowerCase().trim();
-            const filterType = document.getElementById('crm-filter-type')?.value || 'all';
+            const filterType = (document.getElementById('crm-filter-type')?.value || 'all').toLowerCase();
 
             const filtered = currentClientsList.filter(c => {
                 const matchQ = c.name.toLowerCase().includes(query) || (c.phone || '').includes(query);
@@ -5256,22 +5615,28 @@ IF Tech // Engenharia de Hardware`;
             const tbody = document.getElementById('crm-clients-tbody');
             if (!tbody) return;
 
-            tbody.innerHTML = filtered.map(c => `
-                <tr class="border-b border-zinc-900 hover:bg-zinc-900/50">
-                    <td class="py-3 px-3 font-bold text-white">${escapeHtml(c.name)}</td>
-                    <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.phone)}</td>
-                    <td class="py-3 px-3 text-center text-brand font-bold">${c.orders_count}</td>
-                    <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${c.total_spent.toFixed(2).replace('.', ',')}</td>
-                    <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="openClientDetailModal('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-brand/40 text-brand hover:bg-brand hover:text-black font-bold uppercase text-[10px] mr-1">
-                            Ver Dossiê
-                        </button>
-                        <button type="button" onclick="quickNewOSForClient('${c.id}')" class="px-2.5 py-1 bg-brand text-black font-bold uppercase text-[10px] hover:bg-white">
-                            + Nova OS
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-zinc-600 font-mono">Nenhum cliente encontrado para este filtro.</td></tr>`;
+            } else {
+                tbody.innerHTML = filtered.map(c => `
+                    <tr class="border-b border-zinc-900 hover:bg-zinc-900/50">
+                        <td class="py-3 px-3 font-bold text-white">${escapeHtml(c.name)}</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 text-[10px] font-bold ${c.orders_count >= 3 ? 'bg-purple-950 text-purple-400 border border-purple-800' : 'bg-cyan-950 text-cyan-400 border border-cyan-800'}">${c.orders_count >= 3 ? 'B2B / Corporativo' : 'B2C / Consumidor'}</span></td>
+                        <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.phone)}</td>
+                        <td class="py-3 px-3 text-zinc-400 font-mono">Bragança Paulista</td>
+                        <td class="py-3 px-3 text-center text-brand font-bold">${c.orders_count}</td>
+                        <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${c.total_spent.toFixed(2).replace('.', ',')}</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="openClientDetailModal('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-brand/40 text-brand hover:bg-brand hover:text-black font-bold uppercase text-[10px] mr-1">
+                                Ver Dossiê
+                            </button>
+                            <button type="button" onclick="quickNewOSForClient('${c.id}')" class="px-2.5 py-1 bg-brand text-black font-bold uppercase text-[10px] hover:bg-white">
+                                + Nova OS
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
 
             // Atualizar contadores do CRM
             const totalCliEl = document.getElementById('crm-total-clients');
@@ -5771,6 +6136,8 @@ IF Tech // Engenharia de Hardware`;
 
         window.addEventListener('DOMContentLoaded', () => {
             loadInventoryStorage();
+            renderPOSGrid();
+            renderInventoryCatalogTable();
             loadSoftwareStorage();
             loadMSPStorage();
             loadSniperStorage();
