@@ -2081,7 +2081,7 @@ Qualquer dúvida, estou à disposição!
                 if (email === 'admin@iflcosta.tech' && password === 'iftech2026') {
                     sessionStorage.setItem('iftech_admin_master_session', 'AUTHENTICATED');
                     unlockAdminCockpit('Admin Fallback');
-                    showToast('✓ Acesso administrativo autenticado!', 'success');
+                    // Sessão ativa
                     if (btn) { btn.disabled = false; btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>Acessar Cockpit ERP</span>`; }
                     return;
                 }
@@ -2108,7 +2108,7 @@ Qualquer dúvida, estou à disposição!
                 } else if (data && data.session) {
                     authFailedAttempts = 0;
                     unlockAdminCockpit(data.user.email.split('@')[0]);
-                    showToast('✓ Autenticado com sucesso via Supabase Auth!', 'success');
+                    // Login ok
                 }
             } catch (err) {
                 showAuthError('Erro na conexão com Supabase Auth.');
@@ -2137,7 +2137,7 @@ Qualquer dúvida, estou à disposição!
                 authFailedAttempts = 0;
                 sessionStorage.setItem('iftech_admin_master_session', 'AUTHENTICATED');
                 unlockAdminCockpit('PIN Master');
-                showToast('✓ Desbloqueado via PIN Master Break-Glass!', 'success');
+                // PIN ok
             } else {
                 authFailedAttempts++;
                 if (authFailedAttempts >= 5) {
@@ -5580,7 +5580,7 @@ IF Tech // Engenharia de Hardware`;
                 });
             }
             recalcTotals();
-            showToast(`✓ Perfil "${profile.name}" carregado com sucesso!`, 'success');
+            // Perfil carregado silenciosamente
         }
 
         function addPartRow() {
