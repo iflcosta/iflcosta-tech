@@ -5542,10 +5542,7 @@ IF Tech // Engenharia de Hardware`;
                     const parsed = JSON.parse(savedRules);
                     if (Array.isArray(parsed)) currentSniperRules = parsed;
                 }
-            } catch (e) {
-                console.warn("Erro ao carregar Sniper do LocalStorage:", e);
-            }
-        } catch (err) {
+            } catch (err) {
                 console.warn("Falha ao carregar sniper storage:", err);
             }
         }
