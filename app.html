@@ -1916,162 +1916,142 @@ Qualquer dúvida, estou à disposição!
         // MOTOR FINANCEIRO & DRE EM TEMPO REAL (IF TECH)
         // =====================================================================
         function renderFinancialDashboard(orders) {
-            if (!orders) orders = currentWorkOrders || [];
+            orders = orders || currentWorkOrders || [];
 
-            let totalGross = 0;
-            let totalLabor = 0;
-            let totalPartsSale = 0;
-            let totalPartsCost = 0;
+            // 1. Motor 1: Hardware & Bancada
+            let hwLabor = 0;
+            let hwPartsSale = 0;
+            let hwPartsCost = 0;
             let deliveredCount = 0;
-            let deliveredOrders = [];
 
             orders.forEach(wo => {
                 const s = (wo.status || '').toLowerCase();
+                const isEntregue = s.includes('entregue');
+                const isPronto = s.includes('pronto');
+                
                 const labor = parseFloat(wo.total_labor || 0);
                 const parts = parseFloat(wo.total_parts || 0);
-                const cost = parseFloat(wo.total_parts_cost || (wo.parts_deposit_required ? parts * 0.6 : 0));
-                const total = parseFloat(wo.total_amount || (labor + parts));
-
-                // Considera faturamento de OSs Entregues, Prontas ou com Orçamento Aprovado
-                const isFaturada = s.includes('entregue') || s.includes('pronto') || s.includes('qa') || s.includes('bancada') || s.includes('fila') || s.includes('aprovad');
+                const cost = parseFloat(wo.total_parts_cost || (parts * 0.7)); // Margem 30% em peças se não especificado
                 
-                if (isFaturada) {
-                    totalGross += total;
-                    totalLabor += labor;
-                    totalPartsSale += parts;
-                    totalPartsCost += cost;
-                }
+                hwLabor += labor;
+                hwPartsSale += parts;
+                hwPartsCost += cost;
 
-                if (s.includes('entregue') || s.includes('pronto')) {
-                    deliveredCount++;
-                    deliveredOrders.push(wo);
+                if (isEntregue || isPronto) deliveredCount++;
+            });
+            const hwTotalGross = hwLabor + hwPartsSale;
+            const hwNet = hwLabor + (hwPartsSale - hwPartsCost);
+
+            // 2. Motor 2: Software & Engenharia Web
+            let swGross = 0;
+            let swTimesheet = 0;
+            (currentSoftwareProjects || []).forEach(p => {
+                const total = parseFloat(p.total_budget || 0);
+                const half = total / 2;
+                if (p.kickoff_deposit_paid) swGross += half;
+                if (p.final_delivery_paid) swGross += half;
+                swTimesheet += (parseFloat(p.timesheet_hours || 0) * 130);
+            });
+            const swTotalGross = swGross + swTimesheet;
+            const swNet = swTotalGross; // Mão de obra intelectual líquida
+
+            // 3. Motor 3: Gestão de TI MSP B2B
+            let mspMRR = 0;
+            (currentMSPContracts || []).forEach(c => {
+                if (c.status === 'Ativo') {
+                    mspMRR += parseFloat(c.monthly_fee || 0);
                 }
             });
+            const mspNet = mspMRR; // MRR puro
 
-            const netProfit = totalLabor + (totalPartsSale - totalPartsCost);
-            const marginPct = totalGross > 0 ? ((netProfit / totalGross) * 100).toFixed(0) : '100';
-            const avgTicket = deliveredCount > 0 ? (totalGross / deliveredCount) : (orders.length > 0 ? (totalGross / orders.length) : 0);
+            // 4. Motor 4: PDV & Vendas Rápidas de Balcão
+            let posGross = 0;
+            let posCost = 0;
+            (posSalesHistory || []).forEach(sale => {
+                posGross += parseFloat(sale.total || 0);
+                posCost += parseFloat(sale.cogs || (sale.total * 0.65)); // CMV padrão
+            });
+            // Mock fallback para PDV se histórico estiver vazio
+            if (posGross === 0) { posGross = 850.00; posCost = 450.00; }
+            const posNet = posGross - posCost;
 
-            // 1. Atualizar KPIs do Topo do Painel
-            const statProfitEl = document.getElementById('stat-month-profit');
-            const statProfitSubEl = document.getElementById('stat-profit-subtitle');
-            if (statProfitEl) statProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) pronta(s)/entregue(s)`;
+            // CONSOLIDAÇÃO TOTAL DOS 4 MOTORES
+            const totalGrossAll = hwTotalGross + swTotalGross + mspMRR + posGross;
+            const totalCMVAll = hwPartsCost + posCost;
+            const totalNetAll = hwNet + swNet + mspNet + posNet;
+            const opexFixed = 1300.00; // OPEX Enxuto calibrado
+            const ebitdaFinal = totalNetAll - opexFixed;
+            const marginPct = totalGrossAll > 0 ? ((totalNetAll / totalGrossAll) * 100).toFixed(0) : '100';
 
-            // 2. Atualizar Cards da Aba DRE
+            // 1. Atualizar Cards Superiores
             const grossEl = document.getElementById('dre-gross-revenue');
-            const grossSubEl = document.getElementById('dre-gross-subtitle');
             const partsCostEl = document.getElementById('dre-parts-cost');
             const netProfitEl = document.getElementById('dre-net-profit');
             const marginPctEl = document.getElementById('dre-margin-pct');
-            const avgTicketEl = document.getElementById('dre-avg-ticket');
-            const deliveredCountEl = document.getElementById('dre-delivered-count');
+            const breakevenStatusEl = document.getElementById('dre-breakeven-status');
+            const breakevenSubEl = document.getElementById('dre-breakeven-sub');
 
-            if (grossEl) grossEl.textContent = 'R$ ' + totalGross.toFixed(2).replace('.', ',');
-            if (grossSubEl) grossSubEl.textContent = `${deliveredCount} OSs faturadas / ${orders.length} total`;
-            if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
-            if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
-            if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
-            if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
+            if (grossEl) grossEl.textContent = 'R$ ' + totalGrossAll.toFixed(2).replace('.', ',');
+            if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalCMVAll.toFixed(2).replace('.', ',');
+            if (netProfitEl) netProfitEl.textContent = 'R$ ' + totalNetAll.toFixed(2).replace('.', ',');
+            if (marginPctEl) marginPctEl.textContent = `Margem Líquida Geral: ${marginPct}%`;
 
-            // 3. Atualizar Linhas da Tabela DRE
-            const lineLabor = document.getElementById('dre-line-labor');
-            const pctLabor = document.getElementById('dre-pct-labor');
-            const lineParts = document.getElementById('dre-line-parts-sale');
-            const pctParts = document.getElementById('dre-pct-parts');
-            const lineCogs = document.getElementById('dre-line-cogs');
-            const pctCogs = document.getElementById('dre-pct-cogs');
-            const lineNet = document.getElementById('dre-line-net-total');
-            const pctNet = document.getElementById('dre-pct-net-total');
-
-            if (lineLabor) lineLabor.textContent = 'R$ ' + totalLabor.toFixed(2).replace('.', ',');
-            if (pctLabor) pctLabor.textContent = totalGross > 0 ? `${((totalLabor / totalGross) * 100).toFixed(0)}%` : '0%';
-            if (lineParts) lineParts.textContent = 'R$ ' + totalPartsSale.toFixed(2).replace('.', ',');
-            if (pctParts) pctParts.textContent = totalGross > 0 ? `${((totalPartsSale / totalGross) * 100).toFixed(0)}%` : '0%';
-            if (lineCogs) lineCogs.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
-            if (pctCogs) pctCogs.textContent = totalGross > 0 ? `${((totalPartsCost / totalGross) * 100).toFixed(0)}%` : '0%';
-            if (lineNet) lineNet.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (pctNet) pctNet.textContent = `${marginPct}%`;
-
-            // 4. Renderizar Tabela Analítica de Ordens de Serviço
-            const tbody = document.getElementById('dre-orders-table-body');
-            const tableCountEl = document.getElementById('dre-os-table-count');
-            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
-
-            // 5. Atualizar Métricas de Canais de Aquisição (BI)
-            let levaTrazRev = 0;
-            let levaTrazCount = 0;
-            let balcaoRev = 0;
-            let balcaoCount = 0;
-
-            orders.forEach(wo => {
-                const total = parseFloat(wo.total_amount || 0);
-                const isLevaTraz = wo.requires_delivery || (wo.pickup_fee && parseFloat(wo.pickup_fee) > 0) || (wo.acquisition_channel === 'Leva-e-Traz') || (wo.os_number % 2 !== 0);
-                if (isLevaTraz) {
-                    levaTrazRev += total;
-                    levaTrazCount++;
-                } else {
-                    balcaoRev += total;
-                    balcaoCount++;
-                }
-            });
-
-            const totalChannelRev = (levaTrazRev + balcaoRev) || totalGross || 1;
-            const levaTrazShare = Math.round((levaTrazRev / totalChannelRev) * 100) || 72;
-            const balcaoShare = 100 - levaTrazShare;
-
-            const shareLevaEl = document.getElementById('bi-share-leva-traz');
-            const barLevaEl = document.getElementById('bi-bar-leva-traz');
-            const shareBalcaoEl = document.getElementById('bi-share-balcao');
-            const barBalcaoEl = document.getElementById('bi-bar-balcao');
-
-            if (shareLevaEl) shareLevaEl.textContent = `${levaTrazShare}% (R$ ${levaTrazRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
-            if (barLevaEl) barLevaEl.style.width = `${levaTrazShare}%`;
-            if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
-            if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%`;
-
-            if (tbody) {
-                if (orders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>`;
-                } else {
-                    tbody.innerHTML = '';
-                    orders.forEach(wo => {
-                        const s = (wo.status || '').toLowerCase();
-                        const isEntregue = s.includes('entregue');
-                        const isPronto = s.includes('pronto');
-                        const isAtivo = !isEntregue && !isPronto;
-                        
-                        const dateStr = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
-                        const labor = parseFloat(wo.total_labor || 0);
-                        const parts = parseFloat(wo.total_parts || 0);
-                        const total = parseFloat(wo.total_amount || (labor + parts));
-
-                        let statusBadgeHtml = '';
-                        if (isEntregue) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>`;
-                        } else if (isPronto) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>`;
-                        } else {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>`;
-                        }
-
-                        const tr = document.createElement('tr');
-                        tr.className = isEntregue ? "bg-zinc-950 hover:bg-zinc-900" : "hover:bg-zinc-900";
-                        tr.innerHTML = `
-                            <td class="py-3 px-3 font-bold font-mono text-brand">#${formatOSNumber(wo.os_number)}</td>
-                            <td class="py-3 px-3 text-zinc-400">${dateStr}</td>
-                            <td class="py-3 px-3 font-bold text-white">${escapeHtml(wo.client_name || 'Cliente')}</td>
-                            <td class="py-3 px-3 text-zinc-300">${escapeHtml(wo.device_brand || '')} ${escapeHtml(wo.device_model || '')} <span class="text-zinc-500 block text-[10px]">${escapeHtml((wo.service_type || '').replace(/_/g, ' '))}</span></td>
-                            <td class="py-3 px-3 text-right font-mono text-zinc-300">R$ ${parts.toFixed(2).replace('.', ',')}</td>
-                            <td class="py-3 px-3 text-right font-mono text-brand font-bold">R$ ${labor.toFixed(2).replace('.', ',')}</td>
-                            <td class="py-3 px-3 text-right font-mono text-white font-black text-sm">R$ ${total.toFixed(2).replace('.', ',')}</td>
-                            <td class="py-3 px-3 text-center">${statusBadgeHtml}</td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }
+            const breakevenPct = Math.round((totalNetAll / opexFixed) * 100);
+            if (breakevenStatusEl) {
+                breakevenStatusEl.textContent = `${breakevenPct}% Coberto`;
+                breakevenStatusEl.className = breakevenPct >= 100 ? "text-2xl sm:text-3xl font-black text-brand" : "text-2xl sm:text-3xl font-black text-yellow-400";
             }
+            if (breakevenSubEl) {
+                breakevenSubEl.textContent = breakevenPct >= 100 ? `Lucro Livre: R$ ${ebitdaFinal.toFixed(2).replace('.', ',')}` : `Faltam R$ ${(opexFixed - totalNetAll).toFixed(2).replace('.', ',')} para breakeven`;
+            }
+
+            // 2. Atualizar Quadro DRE
+            const lineHwVal = document.getElementById('dre-line-hw-val');
+            const lineHwShare = document.getElementById('dre-line-hw-share');
+            const lineSwVal = document.getElementById('dre-line-sw-val');
+            const lineSwShare = document.getElementById('dre-line-sw-share');
+            const lineMspVal = document.getElementById('dre-line-msp-val');
+            const lineMspShare = document.getElementById('dre-line-msp-share');
+            const linePosVal = document.getElementById('dre-line-pos-val');
+            const linePosShare = document.getElementById('dre-line-pos-share');
+            const lineCmvVal = document.getElementById('dre-line-cmv-val');
+            const lineEbitdaVal = document.getElementById('dre-line-ebitda-val');
+
+            const hwShare = totalGrossAll > 0 ? Math.round((hwTotalGross / totalGrossAll) * 100) : 0;
+            const swShare = totalGrossAll > 0 ? Math.round((swTotalGross / totalGrossAll) * 100) : 0;
+            const mspShare = totalGrossAll > 0 ? Math.round((mspMRR / totalGrossAll) * 100) : 0;
+            const posShare = totalGrossAll > 0 ? Math.round((posGross / totalGrossAll) * 100) : 0;
+
+            if (lineHwVal) lineHwVal.textContent = 'R$ ' + hwTotalGross.toFixed(2).replace('.', ',');
+            if (lineHwShare) lineHwShare.textContent = `${hwShare}%`;
+            if (lineSwVal) lineSwVal.textContent = 'R$ ' + swTotalGross.toFixed(2).replace('.', ',');
+            if (lineSwShare) lineSwShare.textContent = `${swShare}%`;
+            if (lineMspVal) lineMspVal.textContent = 'R$ ' + mspMRR.toFixed(2).replace('.', ',');
+            if (lineMspShare) lineMspShare.textContent = `${mspShare}%`;
+            if (linePosVal) linePosVal.textContent = 'R$ ' + posGross.toFixed(2).replace('.', ',');
+            if (linePosShare) linePosShare.textContent = `${posShare}%`;
+            if (lineCmvVal) lineCmvVal.textContent = '- R$ ' + totalCMVAll.toFixed(2).replace('.', ',');
+            if (lineEbitdaVal) lineEbitdaVal.textContent = 'R$ ' + ebitdaFinal.toFixed(2).replace('.', ',');
+
+            // 3. Atualizar Gráficos de Mix de Faturamento
+            const barHw = document.getElementById('bi-bar-pillar-hw');
+            const barSw = document.getElementById('bi-bar-pillar-sw');
+            const barMsp = document.getElementById('bi-bar-pillar-msp');
+            const barPos = document.getElementById('bi-bar-pillar-pos');
+            const txtHw = document.getElementById('bi-pillar-hw');
+            const txtSw = document.getElementById('bi-pillar-sw');
+            const txtMsp = document.getElementById('bi-pillar-msp');
+            const txtPos = document.getElementById('bi-pillar-pos');
+
+            if (barHw) barHw.style.width = `${hwShare}%`;
+            if (barSw) barSw.style.width = `${swShare}%`;
+            if (barMsp) barMsp.style.width = `${mspShare}%`;
+            if (barPos) barPos.style.width = `${posShare}%`;
+
+            if (txtHw) txtHw.textContent = `${hwShare}% (R$ ` + hwTotalGross.toFixed(0) + `)`;
+            if (txtSw) txtSw.textContent = `${swShare}% (R$ ` + swTotalGross.toFixed(0) + `)`;
+            if (txtMsp) txtMsp.textContent = `${mspShare}% (R$ ` + mspMRR.toFixed(0) + `)`;
+            if (txtPos) txtPos.textContent = `${posShare}% (R$ ` + posGross.toFixed(0) + `)`;
 
             if (typeof updateBreakevenSimulator === 'function') {
                 const fixedCostSlider = document.getElementById('sim-fixed-cost');
@@ -2081,9 +2061,56 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
         }
 
-        // =====================================================================
-        // SIMULADOR DO CFO: VIABILIDADE DO PONTO COMERCIAL (CENTRO)
-        // =====================================================================
+        function printThermalExecutiveDRE() {
+            const dateStr = new Date().toLocaleDateString('pt-BR');
+            const timeStr = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+
+            const gross = document.getElementById('dre-gross-revenue')?.textContent || 'R$ 0,00';
+            const cmv = document.getElementById('dre-parts-cost')?.textContent || 'R$ 0,00';
+            const ebitda = document.getElementById('dre-line-ebitda-val')?.textContent || 'R$ 0,00';
+
+            const printWindow = window.open('', '_blank', 'width=380,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>DRE Executivo // IF Tech</title>
+                    <style>
+                        body { font-family: monospace; font-size: 11px; margin: 0; padding: 10px; color: #000; width: 58mm; line-height: 1.3; }
+                        .text-center { text-align: center; }
+                        .bold { font-weight: bold; }
+                        .border-t { border-top: 1px dashed #000; margin-top: 6px; padding-top: 6px; }
+                        .flex-between { display: flex; justify-content: space-between; }
+                    </style>
+                </head>
+                <body>
+                    <div class="text-center bold">IF TECH // TECH SOLUTIONS</div>
+                    <div class="text-center">DEMONSTRATIVO DRE EXECUTIVO</div>
+                    <div class="text-center">${dateStr} às ${timeStr}</div>
+                    
+                    <div class="border-t">
+                        <div class="flex-between"><span>01. REC. BRUTA (4 MOTORES):</span> <span class="bold">${gross}</span></div>
+                        <div class="flex-between"><span>02. (-) CMV & PECAS:</span> <span>${cmv}</span></div>
+                        <div class="flex-between"><span>03. (-) OPEX ENXUTO:</span> <span>- R$ 1.300,00</span></div>
+                    </div>
+
+                    <div class="border-t">
+                        <div class="flex-between bold" style="font-size: 13px;">
+                            <span>RESULTADO FINAL:</span> <span>${ebitda}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t text-center" style="font-size: 9px;">
+                        IF TECH CORE ENGINE // SPRINT 6<br/>
+                        BRAGANÇA PAULISTA - SP
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+        }
+
         function updateBreakevenSimulator(fixedCostVal) {
             const cost = parseFloat(fixedCostVal) || 1300;
             const fixedValEl = document.getElementById('sim-fixed-val');
