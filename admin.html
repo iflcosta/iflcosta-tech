@@ -17,1502 +17,14 @@
     <!-- CSS Minificado de Produção (Tailwind Standalone) -->
     <link rel="stylesheet" href="/assets/css/style.min.css">
     
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest" defer>
-        // =====================================================================
-        // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
-        // =====================================================================
-        let currentSoftwareProjects = [
-            {
-                id: "sw-mock-01",
-                project_code: "PRJ-2026-001",
-                client_id: "c-01",
-                client_name: "Imobiliária Vista Bragança",
-                client_whatsapp: "(11) 98765-4321",
-                title: "Landing Page de Alta Conversão + WhatsApp Engine",
-                service_code: "SW-01",
-                status: "Em_Desenvolvimento",
-                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
-                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
-                staging_url: "https://preview.iflcosta.tech/vista-braganca",
-                total_budget: 1800.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-09-05",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 99,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 96,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-vista-2026"
-            },
-            {
-                id: "sw-mock-02",
-                project_code: "PRJ-2026-002",
-                client_id: "c-02",
-                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
-                client_whatsapp: "(11) 91234-5678",
-                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
-                service_code: "SW-02",
-                status: "Homologacao_Cliente",
-                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
-                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
-                staging_url: "https://preview.iflcosta.tech/odonto-demo",
-                total_budget: 1200.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-08-30",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 100,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 98,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-odonto-2026"
-            }
-        ];
-
-        let softwareTimesheetEntries = [
-            { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
-            { id: "ts-02", project_id: "sw-mock-01", description: "Ajuste de Webhook Asaas para parcelamento", hours: 1.0, rate: 130.00, date: "2026-08-27" }
-        ];
-
-        let activeSoftwareProject = null;
-
-        function loadSoftwareStorage() {
-            try {
-                const saved = localStorage.getItem('if_tech_software_projects');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed) && parsed.length > 0) currentSoftwareProjects = parsed;
-                }
-                const savedTs = localStorage.getItem('if_tech_software_timesheet');
-                if (savedTs) {
-                    const parsedTs = JSON.parse(savedTs);
-                    if (Array.isArray(parsedTs)) softwareTimesheetEntries = parsedTs;
-                }
-            } catch (e) {
-                console.warn("Erro ao carregar storage de software:", e);
-            }
-        }
-
-        function saveSoftwareStorage() {
-            try {
-                localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects));
-                localStorage.setItem('if_tech_software_timesheet', JSON.stringify(softwareTimesheetEntries));
-            } catch (e) {
-                console.warn("Erro ao salvar storage de software:", e);
-            }
-        }
-
-        function renderSoftwareProjectsDashboard(projects) {
-            if (!projects) projects = currentSoftwareProjects || [];
-            const tbody = document.getElementById('software-projects-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            let activeCount = 0;
-            let totalBudgetSum = 0;
-            let collectedSum = 0;
-
-            projects.forEach(p => {
-                const isConcluido = p.status === 'Concluido';
-                if (!isConcluido && p.status !== 'Cancelado') activeCount++;
-                totalBudgetSum += (p.total_budget || 0);
-
-                const half = (p.total_budget || 0) / 2;
-                if (p.kickoff_deposit_paid) collectedSum += half;
-                if (p.final_delivery_paid || isConcluido) collectedSum += half;
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
-
-                let statusBadge = '';
-                if (p.status === 'Briefing') statusBadge = '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 text-[10px] font-bold">01. Briefing</span>';
-                else if (p.status === 'Em_Desenvolvimento') statusBadge = '<span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-bold">02. Em Dev</span>';
-                else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
-                else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
-                else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
-                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
-
-                tr.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
-                        ${p.project_code}
-                    </td>
-                    <td class="py-3 px-3">
-                        <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
-                        <span class="text-[10px] text-zinc-500">${escapeHtml(p.client_whatsapp || '')}</span>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="text-zinc-200 block font-medium">${escapeHtml(p.title)}</span>
-                        <span class="text-[10px] text-cyan-400/80 uppercase">${escapeHtml(p.service_code || 'SW-01')}</span>
-                    </td>
-                    <td class="py-3 px-3 text-right font-black text-white">
-                        R$ ${(p.total_budget || 0).toFixed(2).replace('.', ',')}
-                    </td>
-                    <td class="py-3 px-3 text-center">
-                        ${p.kickoff_deposit_paid ? 
-                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
-                            '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]">PENDENTE</span>'}
-                    </td>
-                    <td class="py-3 px-3 text-center">
-                        ${(p.final_delivery_paid || isConcluido) ? 
-                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
-                            '<span class="px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 font-bold text-[10px]">HOMOLOGAÇÃO</span>'}
-                    </td>
-                    <td class="py-3 px-3 text-center font-bold">
-                        <span class="text-brand">${p.lighthouse_performance_score || 99}</span>
-                        <span class="text-zinc-600">/</span>
-                        <span class="text-cyan-400">${p.lighthouse_seo_score || 100}</span>
-                    </td>
-                    <td class="py-3 px-3 text-center">${statusBadge}</td>
-                    <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="openSoftwareProjectDetail('${p.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-cyan-400 hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">
-                            Gerenciar
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            // Recalcular Timesheet
-            let totalTsHours = 0;
-            let totalTsVal = 0;
-            softwareTimesheetEntries.forEach(ts => {
-                totalTsHours += (ts.hours || 0);
-                totalTsVal += (ts.hours * ts.rate);
-            });
-
-            // Atualizar KPIs
-            document.getElementById('sw-stat-active-count').textContent = activeCount;
-            document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
-            const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
-            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
-
-            document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
-
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function filterSoftwareProjects() {
-            const q = (document.getElementById('sw-search-input')?.value || '').toLowerCase().trim();
-            if (!q) {
-                renderSoftwareProjectsDashboard(currentSoftwareProjects);
-                return;
-            }
-            const filtered = currentSoftwareProjects.filter(p => 
-                p.project_code.toLowerCase().includes(q) ||
-                (p.client_name || '').toLowerCase().includes(q) ||
-                (p.title || '').toLowerCase().includes(q)
-            );
-            renderSoftwareProjectsDashboard(filtered);
-        }
-
-        function openNewSoftwareProjectModal() {
-            const modal = document.getElementById('new-software-project-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                recalcSoftwareFormSplit();
-            }
-        }
-
-        function closeNewSoftwareProjectModal() {
-            const modal = document.getElementById('new-software-project-modal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function applySoftwarePresetPrice() {
-            const code = document.getElementById('sw-form-service-code')?.value;
-            const budgetInput = document.getElementById('sw-form-budget');
-            if (!budgetInput) return;
-            if (code === 'SW-01') budgetInput.value = '1800.00';
-            else if (code === 'SW-02') budgetInput.value = '1200.00';
-            else if (code === 'SW-03') budgetInput.value = '4500.00';
-            recalcSoftwareFormSplit();
-        }
-
-        function recalcSoftwareFormSplit() {
-            const b = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
-            const half = (b / 2).toFixed(2).replace('.', ',');
-            const el1 = document.getElementById('sw-form-split-1');
-            const el2 = document.getElementById('sw-form-split-2');
-            if (el1) el1.textContent = 'R$ ' + half;
-            if (el2) el2.textContent = 'R$ ' + half;
-        }
-
-        async function handleSaveNewSoftwareProject(e) {
-            e.preventDefault();
-            const clientName = document.getElementById('sw-form-client-name')?.value.trim();
-            const clientWhatsapp = document.getElementById('sw-form-client-whatsapp')?.value.trim();
-            const title = document.getElementById('sw-form-title')?.value.trim();
-            const serviceCode = document.getElementById('sw-form-service-code')?.value;
-            const scope = document.getElementById('sw-form-scope')?.value.trim();
-            const budget = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
-            const mrr = parseFloat(document.getElementById('sw-form-mrr')?.value || 0);
-            const deliveryDate = document.getElementById('sw-form-delivery-date')?.value || new Date(Date.now() + 14*86400000).toISOString().split('T')[0];
-            const repoUrl = document.getElementById('sw-form-repo-url')?.value.trim();
-            const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
-
-            const seq = currentSoftwareProjects.length + 1;
-            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
-            const token = `sw-tok-${Date.now()}`;
-
-            const newProj = {
-                id: `sw-${Date.now()}`,
-                project_code: projectCode,
-                client_id: `c-${Date.now()}`,
-                client_name: clientName,
-                client_whatsapp: clientWhatsapp,
-                title: title,
-                service_code: serviceCode,
-                status: "Briefing",
-                scope_description: scope,
-                repository_url: repoUrl || `https://github.com/iflcosta/${projectCode.toLowerCase()}`,
-                staging_url: stagingUrl || `https://preview.iflcosta.tech/${projectCode.toLowerCase()}`,
-                total_budget: budget,
-                recurrent_support_mrr: mrr,
-                kickoff_deposit_paid: false,
-                final_delivery_paid: false,
-                estimated_delivery_date: deliveryDate,
-                actual_delivery_date: null,
-                lighthouse_performance_score: 98,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 95,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: token
-            };
-
-            currentSoftwareProjects.unshift(newProj);
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            closeNewSoftwareProjectModal();
-
-            // Tentar sincronizar com Supabase se cliente existir
-            const client = getSupabase();
-            if (client) {
-                try {
-                    await client.rpc('rpc_create_software_project_atomic', {
-                        p_client_id: null,
-                        p_title: title,
-                        p_service_code: serviceCode,
-                        p_scope_description: scope,
-                        p_total_budget: budget,
-                        p_estimated_delivery_date: deliveryDate,
-                        p_repository_url: repoUrl,
-                        p_staging_url: stagingUrl,
-                        p_recurrent_support_mrr: mrr
-                    });
-                } catch (err) {
-                    console.log("Supabase RPC sync note:", err);
-                }
-            }
-
-            alert(`Projeto ${projectCode} criado com sucesso! Sinal de 50% (R$ ${(budget/2).toFixed(2)}) gerado.`);
-        }
-
-        function openSoftwareProjectDetail(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            activeSoftwareProject = proj;
-
-            document.getElementById('sw-detail-code').textContent = proj.project_code;
-            document.getElementById('sw-detail-title').textContent = proj.title;
-            document.getElementById('sw-detail-client').textContent = proj.client_name;
-            document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
-            document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
-            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
-            
-            const statusSelect = document.getElementById('sw-detail-status-select');
-            if (statusSelect) statusSelect.value = proj.status;
-
-            // Links
-            const stagingEl = document.getElementById('sw-detail-staging-link');
-            if (stagingEl) stagingEl.href = proj.staging_url || '#';
-            const repoEl = document.getElementById('sw-detail-repo-link');
-            if (repoEl) repoEl.href = proj.repository_url || '#';
-
-            // Lighthouse
-            document.getElementById('sw-lh-perf').value = proj.lighthouse_performance_score || 98;
-            document.getElementById('sw-lh-seo').value = proj.lighthouse_seo_score || 100;
-            document.getElementById('sw-lh-bp').value = proj.lighthouse_best_practices_score || 100;
-            document.getElementById('sw-lh-acc').value = proj.lighthouse_accessibility_score || 95;
-
-            // Render Milestones
-            const half = (proj.total_budget || 0) / 2;
-            const msContainer = document.getElementById('sw-detail-milestones-container');
-            if (msContainer) {
-                msContainer.innerHTML = `
-                    <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
-                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
-                        </div>
-                        <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
-                        <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
-                            ${proj.kickoff_deposit_paid ? 'Estornar Sinal' : '✓ Confirmar Sinal 50%'}
-                        </button>
-                    </div>
-                    <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
-                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
-                        </div>
-                        <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
-                        <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
-                            ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
-                        </button>
-                    </div>
-                `;
-            }
-
-            renderProjectTimesheet(proj.id);
-
-            const modal = document.getElementById('software-project-detail-modal');
-            if (modal) modal.classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function closeSoftwareProjectDetail() {
-            const modal = document.getElementById('software-project-detail-modal');
-            if (modal) modal.classList.add('hidden');
-            activeSoftwareProject = null;
-        }
-
-        function handleSoftwareStatusChange(newStatus) {
-            if (!activeSoftwareProject) return;
-            activeSoftwareProject.status = newStatus;
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-        }
-
-        function toggleKickoffPayment(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            proj.kickoff_deposit_paid = !proj.kickoff_deposit_paid;
-            if (proj.kickoff_deposit_paid && proj.status === 'Briefing') {
-                proj.status = 'Em_Desenvolvimento';
-            }
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            openSoftwareProjectDetail(projId);
-        }
-
-        function toggleFinalPayment(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            proj.final_delivery_paid = !proj.final_delivery_paid;
-            if (proj.final_delivery_paid) {
-                proj.status = 'Concluido';
-                proj.actual_delivery_date = new Date().toISOString().split('T')[0];
-            }
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            openSoftwareProjectDetail(projId);
-        }
-
-        function saveSoftwareLighthouseScores() {
-            if (!activeSoftwareProject) return;
-            activeSoftwareProject.lighthouse_performance_score = parseInt(document.getElementById('sw-lh-perf')?.value || 98);
-            activeSoftwareProject.lighthouse_seo_score = parseInt(document.getElementById('sw-lh-seo')?.value || 100);
-            activeSoftwareProject.lighthouse_best_practices_score = parseInt(document.getElementById('sw-lh-bp')?.value || 100);
-            activeSoftwareProject.lighthouse_accessibility_score = parseInt(document.getElementById('sw-lh-acc')?.value || 95);
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            alert("Scores do Lighthouse atualizados com sucesso!");
-        }
-
-        function renderProjectTimesheet(projId) {
-            const tbody = document.getElementById('sw-timesheet-tbody');
-            const totalEl = document.getElementById('sw-timesheet-subtotal');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            const entries = softwareTimesheetEntries.filter(ts => ts.project_id === projId);
-            let sumHours = 0;
-            let sumVal = 0;
-
-            entries.forEach(e => {
-                sumHours += e.hours;
-                const v = e.hours * e.rate;
-                sumVal += v;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-1 px-2 text-zinc-500">${e.date}</td>
-                    <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
-                    <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
-                    <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
-        }
-
-        function handleAddTimesheetEntry() {
-            if (!activeSoftwareProject) return;
-            const desc = document.getElementById('sw-new-timesheet-desc')?.value.trim();
-            const hours = parseFloat(document.getElementById('sw-new-timesheet-hours')?.value || 1.0);
-            if (!desc) {
-                alert("Informe a descrição da atividade.");
-                return;
-            }
-
-            softwareTimesheetEntries.unshift({
-                id: `ts-${Date.now()}`,
-                project_id: activeSoftwareProject.id,
-                description: desc,
-                hours: hours,
-                rate: 130.00,
-                date: new Date().toISOString().split('T')[0]
-            });
-
-            document.getElementById('sw-new-timesheet-desc').value = '';
-            saveSoftwareStorage();
-            renderProjectTimesheet(activeSoftwareProject.id);
-            renderSoftwareProjectsDashboard();
-        }
-
-        function copySoftwareMagicLink() {
-            if (!activeSoftwareProject) return;
-            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
-            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
-            
-            navigator.clipboard.writeText(msg).then(() => {
-                alert("Magic Link de Software copiado para a Área de Transferência!");
-            }).catch(() => {
-                prompt("Copie a mensagem de acompanhamento:", msg);
-            });
-        }
-    
-    </script>
-    <!-- Gerador Nativo de QR Code Térmico -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js">
-        // =====================================================================
-        // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
-        // =====================================================================
-        let currentSoftwareProjects = [
-            {
-                id: "sw-mock-01",
-                project_code: "PRJ-2026-001",
-                client_id: "c-01",
-                client_name: "Imobiliária Vista Bragança",
-                client_whatsapp: "(11) 98765-4321",
-                title: "Landing Page de Alta Conversão + WhatsApp Engine",
-                service_code: "SW-01",
-                status: "Em_Desenvolvimento",
-                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
-                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
-                staging_url: "https://preview.iflcosta.tech/vista-braganca",
-                total_budget: 1800.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-09-05",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 99,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 96,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-vista-2026"
-            },
-            {
-                id: "sw-mock-02",
-                project_code: "PRJ-2026-002",
-                client_id: "c-02",
-                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
-                client_whatsapp: "(11) 91234-5678",
-                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
-                service_code: "SW-02",
-                status: "Homologacao_Cliente",
-                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
-                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
-                staging_url: "https://preview.iflcosta.tech/odonto-demo",
-                total_budget: 1200.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-08-30",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 100,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 98,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-odonto-2026"
-            }
-        ];
-
-        let softwareTimesheetEntries = [
-            { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
-            { id: "ts-02", project_id: "sw-mock-01", description: "Ajuste de Webhook Asaas para parcelamento", hours: 1.0, rate: 130.00, date: "2026-08-27" }
-        ];
-
-        let activeSoftwareProject = null;
-
-        function loadSoftwareStorage() {
-            try {
-                const saved = localStorage.getItem('if_tech_software_projects');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed) && parsed.length > 0) currentSoftwareProjects = parsed;
-                }
-                const savedTs = localStorage.getItem('if_tech_software_timesheet');
-                if (savedTs) {
-                    const parsedTs = JSON.parse(savedTs);
-                    if (Array.isArray(parsedTs)) softwareTimesheetEntries = parsedTs;
-                }
-            } catch (e) {
-                console.warn("Erro ao carregar storage de software:", e);
-            }
-        }
-
-        function saveSoftwareStorage() {
-            try {
-                localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects));
-                localStorage.setItem('if_tech_software_timesheet', JSON.stringify(softwareTimesheetEntries));
-            } catch (e) {
-                console.warn("Erro ao salvar storage de software:", e);
-            }
-        }
-
-        function renderSoftwareProjectsDashboard(projects) {
-            if (!projects) projects = currentSoftwareProjects || [];
-            const tbody = document.getElementById('software-projects-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            let activeCount = 0;
-            let totalBudgetSum = 0;
-            let collectedSum = 0;
-
-            projects.forEach(p => {
-                const isConcluido = p.status === 'Concluido';
-                if (!isConcluido && p.status !== 'Cancelado') activeCount++;
-                totalBudgetSum += (p.total_budget || 0);
-
-                const half = (p.total_budget || 0) / 2;
-                if (p.kickoff_deposit_paid) collectedSum += half;
-                if (p.final_delivery_paid || isConcluido) collectedSum += half;
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
-
-                let statusBadge = '';
-                if (p.status === 'Briefing') statusBadge = '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 text-[10px] font-bold">01. Briefing</span>';
-                else if (p.status === 'Em_Desenvolvimento') statusBadge = '<span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-bold">02. Em Dev</span>';
-                else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
-                else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
-                else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
-                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
-
-                tr.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
-                        ${p.project_code}
-                    </td>
-                    <td class="py-3 px-3">
-                        <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
-                        <span class="text-[10px] text-zinc-500">${escapeHtml(p.client_whatsapp || '')}</span>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="text-zinc-200 block font-medium">${escapeHtml(p.title)}</span>
-                        <span class="text-[10px] text-cyan-400/80 uppercase">${escapeHtml(p.service_code || 'SW-01')}</span>
-                    </td>
-                    <td class="py-3 px-3 text-right font-black text-white">
-                        R$ ${(p.total_budget || 0).toFixed(2).replace('.', ',')}
-                    </td>
-                    <td class="py-3 px-3 text-center">
-                        ${p.kickoff_deposit_paid ? 
-                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
-                            '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]">PENDENTE</span>'}
-                    </td>
-                    <td class="py-3 px-3 text-center">
-                        ${(p.final_delivery_paid || isConcluido) ? 
-                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
-                            '<span class="px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 font-bold text-[10px]">HOMOLOGAÇÃO</span>'}
-                    </td>
-                    <td class="py-3 px-3 text-center font-bold">
-                        <span class="text-brand">${p.lighthouse_performance_score || 99}</span>
-                        <span class="text-zinc-600">/</span>
-                        <span class="text-cyan-400">${p.lighthouse_seo_score || 100}</span>
-                    </td>
-                    <td class="py-3 px-3 text-center">${statusBadge}</td>
-                    <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="openSoftwareProjectDetail('${p.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-cyan-400 hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">
-                            Gerenciar
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            // Recalcular Timesheet
-            let totalTsHours = 0;
-            let totalTsVal = 0;
-            softwareTimesheetEntries.forEach(ts => {
-                totalTsHours += (ts.hours || 0);
-                totalTsVal += (ts.hours * ts.rate);
-            });
-
-            // Atualizar KPIs
-            document.getElementById('sw-stat-active-count').textContent = activeCount;
-            document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
-            const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
-            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
-
-            document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
-
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function filterSoftwareProjects() {
-            const q = (document.getElementById('sw-search-input')?.value || '').toLowerCase().trim();
-            if (!q) {
-                renderSoftwareProjectsDashboard(currentSoftwareProjects);
-                return;
-            }
-            const filtered = currentSoftwareProjects.filter(p => 
-                p.project_code.toLowerCase().includes(q) ||
-                (p.client_name || '').toLowerCase().includes(q) ||
-                (p.title || '').toLowerCase().includes(q)
-            );
-            renderSoftwareProjectsDashboard(filtered);
-        }
-
-        function openNewSoftwareProjectModal() {
-            const modal = document.getElementById('new-software-project-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                recalcSoftwareFormSplit();
-            }
-        }
-
-        function closeNewSoftwareProjectModal() {
-            const modal = document.getElementById('new-software-project-modal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function applySoftwarePresetPrice() {
-            const code = document.getElementById('sw-form-service-code')?.value;
-            const budgetInput = document.getElementById('sw-form-budget');
-            if (!budgetInput) return;
-            if (code === 'SW-01') budgetInput.value = '1800.00';
-            else if (code === 'SW-02') budgetInput.value = '1200.00';
-            else if (code === 'SW-03') budgetInput.value = '4500.00';
-            recalcSoftwareFormSplit();
-        }
-
-        function recalcSoftwareFormSplit() {
-            const b = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
-            const half = (b / 2).toFixed(2).replace('.', ',');
-            const el1 = document.getElementById('sw-form-split-1');
-            const el2 = document.getElementById('sw-form-split-2');
-            if (el1) el1.textContent = 'R$ ' + half;
-            if (el2) el2.textContent = 'R$ ' + half;
-        }
-
-        async function handleSaveNewSoftwareProject(e) {
-            e.preventDefault();
-            const clientName = document.getElementById('sw-form-client-name')?.value.trim();
-            const clientWhatsapp = document.getElementById('sw-form-client-whatsapp')?.value.trim();
-            const title = document.getElementById('sw-form-title')?.value.trim();
-            const serviceCode = document.getElementById('sw-form-service-code')?.value;
-            const scope = document.getElementById('sw-form-scope')?.value.trim();
-            const budget = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
-            const mrr = parseFloat(document.getElementById('sw-form-mrr')?.value || 0);
-            const deliveryDate = document.getElementById('sw-form-delivery-date')?.value || new Date(Date.now() + 14*86400000).toISOString().split('T')[0];
-            const repoUrl = document.getElementById('sw-form-repo-url')?.value.trim();
-            const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
-
-            const seq = currentSoftwareProjects.length + 1;
-            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
-            const token = `sw-tok-${Date.now()}`;
-
-            const newProj = {
-                id: `sw-${Date.now()}`,
-                project_code: projectCode,
-                client_id: `c-${Date.now()}`,
-                client_name: clientName,
-                client_whatsapp: clientWhatsapp,
-                title: title,
-                service_code: serviceCode,
-                status: "Briefing",
-                scope_description: scope,
-                repository_url: repoUrl || `https://github.com/iflcosta/${projectCode.toLowerCase()}`,
-                staging_url: stagingUrl || `https://preview.iflcosta.tech/${projectCode.toLowerCase()}`,
-                total_budget: budget,
-                recurrent_support_mrr: mrr,
-                kickoff_deposit_paid: false,
-                final_delivery_paid: false,
-                estimated_delivery_date: deliveryDate,
-                actual_delivery_date: null,
-                lighthouse_performance_score: 98,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 95,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: token
-            };
-
-            currentSoftwareProjects.unshift(newProj);
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            closeNewSoftwareProjectModal();
-
-            // Tentar sincronizar com Supabase se cliente existir
-            const client = getSupabase();
-            if (client) {
-                try {
-                    await client.rpc('rpc_create_software_project_atomic', {
-                        p_client_id: null,
-                        p_title: title,
-                        p_service_code: serviceCode,
-                        p_scope_description: scope,
-                        p_total_budget: budget,
-                        p_estimated_delivery_date: deliveryDate,
-                        p_repository_url: repoUrl,
-                        p_staging_url: stagingUrl,
-                        p_recurrent_support_mrr: mrr
-                    });
-                } catch (err) {
-                    console.log("Supabase RPC sync note:", err);
-                }
-            }
-
-            alert(`Projeto ${projectCode} criado com sucesso! Sinal de 50% (R$ ${(budget/2).toFixed(2)}) gerado.`);
-        }
-
-        function openSoftwareProjectDetail(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            activeSoftwareProject = proj;
-
-            document.getElementById('sw-detail-code').textContent = proj.project_code;
-            document.getElementById('sw-detail-title').textContent = proj.title;
-            document.getElementById('sw-detail-client').textContent = proj.client_name;
-            document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
-            document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
-            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
-            
-            const statusSelect = document.getElementById('sw-detail-status-select');
-            if (statusSelect) statusSelect.value = proj.status;
-
-            // Links
-            const stagingEl = document.getElementById('sw-detail-staging-link');
-            if (stagingEl) stagingEl.href = proj.staging_url || '#';
-            const repoEl = document.getElementById('sw-detail-repo-link');
-            if (repoEl) repoEl.href = proj.repository_url || '#';
-
-            // Lighthouse
-            document.getElementById('sw-lh-perf').value = proj.lighthouse_performance_score || 98;
-            document.getElementById('sw-lh-seo').value = proj.lighthouse_seo_score || 100;
-            document.getElementById('sw-lh-bp').value = proj.lighthouse_best_practices_score || 100;
-            document.getElementById('sw-lh-acc').value = proj.lighthouse_accessibility_score || 95;
-
-            // Render Milestones
-            const half = (proj.total_budget || 0) / 2;
-            const msContainer = document.getElementById('sw-detail-milestones-container');
-            if (msContainer) {
-                msContainer.innerHTML = `
-                    <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
-                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
-                        </div>
-                        <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
-                        <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
-                            ${proj.kickoff_deposit_paid ? 'Estornar Sinal' : '✓ Confirmar Sinal 50%'}
-                        </button>
-                    </div>
-                    <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
-                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
-                        </div>
-                        <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
-                        <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
-                            ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
-                        </button>
-                    </div>
-                `;
-            }
-
-            renderProjectTimesheet(proj.id);
-
-            const modal = document.getElementById('software-project-detail-modal');
-            if (modal) modal.classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function closeSoftwareProjectDetail() {
-            const modal = document.getElementById('software-project-detail-modal');
-            if (modal) modal.classList.add('hidden');
-            activeSoftwareProject = null;
-        }
-
-        function handleSoftwareStatusChange(newStatus) {
-            if (!activeSoftwareProject) return;
-            activeSoftwareProject.status = newStatus;
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-        }
-
-        function toggleKickoffPayment(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            proj.kickoff_deposit_paid = !proj.kickoff_deposit_paid;
-            if (proj.kickoff_deposit_paid && proj.status === 'Briefing') {
-                proj.status = 'Em_Desenvolvimento';
-            }
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            openSoftwareProjectDetail(projId);
-        }
-
-        function toggleFinalPayment(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            proj.final_delivery_paid = !proj.final_delivery_paid;
-            if (proj.final_delivery_paid) {
-                proj.status = 'Concluido';
-                proj.actual_delivery_date = new Date().toISOString().split('T')[0];
-            }
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            openSoftwareProjectDetail(projId);
-        }
-
-        function saveSoftwareLighthouseScores() {
-            if (!activeSoftwareProject) return;
-            activeSoftwareProject.lighthouse_performance_score = parseInt(document.getElementById('sw-lh-perf')?.value || 98);
-            activeSoftwareProject.lighthouse_seo_score = parseInt(document.getElementById('sw-lh-seo')?.value || 100);
-            activeSoftwareProject.lighthouse_best_practices_score = parseInt(document.getElementById('sw-lh-bp')?.value || 100);
-            activeSoftwareProject.lighthouse_accessibility_score = parseInt(document.getElementById('sw-lh-acc')?.value || 95);
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            alert("Scores do Lighthouse atualizados com sucesso!");
-        }
-
-        function renderProjectTimesheet(projId) {
-            const tbody = document.getElementById('sw-timesheet-tbody');
-            const totalEl = document.getElementById('sw-timesheet-subtotal');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            const entries = softwareTimesheetEntries.filter(ts => ts.project_id === projId);
-            let sumHours = 0;
-            let sumVal = 0;
-
-            entries.forEach(e => {
-                sumHours += e.hours;
-                const v = e.hours * e.rate;
-                sumVal += v;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-1 px-2 text-zinc-500">${e.date}</td>
-                    <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
-                    <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
-                    <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
-        }
-
-        function handleAddTimesheetEntry() {
-            if (!activeSoftwareProject) return;
-            const desc = document.getElementById('sw-new-timesheet-desc')?.value.trim();
-            const hours = parseFloat(document.getElementById('sw-new-timesheet-hours')?.value || 1.0);
-            if (!desc) {
-                alert("Informe a descrição da atividade.");
-                return;
-            }
-
-            softwareTimesheetEntries.unshift({
-                id: `ts-${Date.now()}`,
-                project_id: activeSoftwareProject.id,
-                description: desc,
-                hours: hours,
-                rate: 130.00,
-                date: new Date().toISOString().split('T')[0]
-            });
-
-            document.getElementById('sw-new-timesheet-desc').value = '';
-            saveSoftwareStorage();
-            renderProjectTimesheet(activeSoftwareProject.id);
-            renderSoftwareProjectsDashboard();
-        }
-
-        function copySoftwareMagicLink() {
-            if (!activeSoftwareProject) return;
-            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
-            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
-            
-            navigator.clipboard.writeText(msg).then(() => {
-                alert("Magic Link de Software copiado para a Área de Transferência!");
-            }).catch(() => {
-                prompt("Copie a mensagem de acompanhamento:", msg);
-            });
-        }
-    
-    </script>
+            <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
 
     <!-- Supabase JS Client SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-        // =====================================================================
-        // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
-        // =====================================================================
-        let currentSoftwareProjects = [
-            {
-                id: "sw-mock-01",
-                project_code: "PRJ-2026-001",
-                client_id: "c-01",
-                client_name: "Imobiliária Vista Bragança",
-                client_whatsapp: "(11) 98765-4321",
-                title: "Landing Page de Alta Conversão + WhatsApp Engine",
-                service_code: "SW-01",
-                status: "Em_Desenvolvimento",
-                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
-                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
-                staging_url: "https://preview.iflcosta.tech/vista-braganca",
-                total_budget: 1800.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-09-05",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 99,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 96,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-vista-2026"
-            },
-            {
-                id: "sw-mock-02",
-                project_code: "PRJ-2026-002",
-                client_id: "c-02",
-                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
-                client_whatsapp: "(11) 91234-5678",
-                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
-                service_code: "SW-02",
-                status: "Homologacao_Cliente",
-                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
-                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
-                staging_url: "https://preview.iflcosta.tech/odonto-demo",
-                total_budget: 1200.00,
-                recurrent_support_mrr: 150.00,
-                kickoff_deposit_paid: true,
-                final_delivery_paid: false,
-                estimated_delivery_date: "2026-08-30",
-                actual_delivery_date: null,
-                lighthouse_performance_score: 100,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 98,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: "sw-tok-odonto-2026"
-            }
-        ];
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        let softwareTimesheetEntries = [
-            { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
-            { id: "ts-02", project_id: "sw-mock-01", description: "Ajuste de Webhook Asaas para parcelamento", hours: 1.0, rate: 130.00, date: "2026-08-27" }
-        ];
-
-        let activeSoftwareProject = null;
-
-        function loadSoftwareStorage() {
-            try {
-                const saved = localStorage.getItem('if_tech_software_projects');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed) && parsed.length > 0) currentSoftwareProjects = parsed;
-                }
-                const savedTs = localStorage.getItem('if_tech_software_timesheet');
-                if (savedTs) {
-                    const parsedTs = JSON.parse(savedTs);
-                    if (Array.isArray(parsedTs)) softwareTimesheetEntries = parsedTs;
-                }
-            } catch (e) {
-                console.warn("Erro ao carregar storage de software:", e);
-            }
-        }
-
-        function saveSoftwareStorage() {
-            try {
-                localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects));
-                localStorage.setItem('if_tech_software_timesheet', JSON.stringify(softwareTimesheetEntries));
-            } catch (e) {
-                console.warn("Erro ao salvar storage de software:", e);
-            }
-        }
-
-        function renderSoftwareProjectsDashboard(projects) {
-            if (!projects) projects = currentSoftwareProjects || [];
-            const tbody = document.getElementById('software-projects-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            let activeCount = 0;
-            let totalBudgetSum = 0;
-            let collectedSum = 0;
-
-            projects.forEach(p => {
-                const isConcluido = p.status === 'Concluido';
-                if (!isConcluido && p.status !== 'Cancelado') activeCount++;
-                totalBudgetSum += (p.total_budget || 0);
-
-                const half = (p.total_budget || 0) / 2;
-                if (p.kickoff_deposit_paid) collectedSum += half;
-                if (p.final_delivery_paid || isConcluido) collectedSum += half;
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
-
-                let statusBadge = '';
-                if (p.status === 'Briefing') statusBadge = '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 text-[10px] font-bold">01. Briefing</span>';
-                else if (p.status === 'Em_Desenvolvimento') statusBadge = '<span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-bold">02. Em Dev</span>';
-                else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
-                else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
-                else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
-                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
-
-                tr.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
-                        ${p.project_code}
-                    </td>
-                    <td class="py-3 px-3">
-                        <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
-                        <span class="text-[10px] text-zinc-500">${escapeHtml(p.client_whatsapp || '')}</span>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="text-zinc-200 block font-medium">${escapeHtml(p.title)}</span>
-                        <span class="text-[10px] text-cyan-400/80 uppercase">${escapeHtml(p.service_code || 'SW-01')}</span>
-                    </td>
-                    <td class="py-3 px-3 text-right font-black text-white">
-                        R$ ${(p.total_budget || 0).toFixed(2).replace('.', ',')}
-                    </td>
-                    <td class="py-3 px-3 text-center">
-                        ${p.kickoff_deposit_paid ? 
-                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
-                            '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]">PENDENTE</span>'}
-                    </td>
-                    <td class="py-3 px-3 text-center">
-                        ${(p.final_delivery_paid || isConcluido) ? 
-                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
-                            '<span class="px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 font-bold text-[10px]">HOMOLOGAÇÃO</span>'}
-                    </td>
-                    <td class="py-3 px-3 text-center font-bold">
-                        <span class="text-brand">${p.lighthouse_performance_score || 99}</span>
-                        <span class="text-zinc-600">/</span>
-                        <span class="text-cyan-400">${p.lighthouse_seo_score || 100}</span>
-                    </td>
-                    <td class="py-3 px-3 text-center">${statusBadge}</td>
-                    <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="openSoftwareProjectDetail('${p.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-cyan-400 hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">
-                            Gerenciar
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            // Recalcular Timesheet
-            let totalTsHours = 0;
-            let totalTsVal = 0;
-            softwareTimesheetEntries.forEach(ts => {
-                totalTsHours += (ts.hours || 0);
-                totalTsVal += (ts.hours * ts.rate);
-            });
-
-            // Atualizar KPIs
-            document.getElementById('sw-stat-active-count').textContent = activeCount;
-            document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
-            const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
-            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
-
-            document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
-
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function filterSoftwareProjects() {
-            const q = (document.getElementById('sw-search-input')?.value || '').toLowerCase().trim();
-            if (!q) {
-                renderSoftwareProjectsDashboard(currentSoftwareProjects);
-                return;
-            }
-            const filtered = currentSoftwareProjects.filter(p => 
-                p.project_code.toLowerCase().includes(q) ||
-                (p.client_name || '').toLowerCase().includes(q) ||
-                (p.title || '').toLowerCase().includes(q)
-            );
-            renderSoftwareProjectsDashboard(filtered);
-        }
-
-        function openNewSoftwareProjectModal() {
-            const modal = document.getElementById('new-software-project-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                recalcSoftwareFormSplit();
-            }
-        }
-
-        function closeNewSoftwareProjectModal() {
-            const modal = document.getElementById('new-software-project-modal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function applySoftwarePresetPrice() {
-            const code = document.getElementById('sw-form-service-code')?.value;
-            const budgetInput = document.getElementById('sw-form-budget');
-            if (!budgetInput) return;
-            if (code === 'SW-01') budgetInput.value = '1800.00';
-            else if (code === 'SW-02') budgetInput.value = '1200.00';
-            else if (code === 'SW-03') budgetInput.value = '4500.00';
-            recalcSoftwareFormSplit();
-        }
-
-        function recalcSoftwareFormSplit() {
-            const b = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
-            const half = (b / 2).toFixed(2).replace('.', ',');
-            const el1 = document.getElementById('sw-form-split-1');
-            const el2 = document.getElementById('sw-form-split-2');
-            if (el1) el1.textContent = 'R$ ' + half;
-            if (el2) el2.textContent = 'R$ ' + half;
-        }
-
-        async function handleSaveNewSoftwareProject(e) {
-            e.preventDefault();
-            const clientName = document.getElementById('sw-form-client-name')?.value.trim();
-            const clientWhatsapp = document.getElementById('sw-form-client-whatsapp')?.value.trim();
-            const title = document.getElementById('sw-form-title')?.value.trim();
-            const serviceCode = document.getElementById('sw-form-service-code')?.value;
-            const scope = document.getElementById('sw-form-scope')?.value.trim();
-            const budget = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
-            const mrr = parseFloat(document.getElementById('sw-form-mrr')?.value || 0);
-            const deliveryDate = document.getElementById('sw-form-delivery-date')?.value || new Date(Date.now() + 14*86400000).toISOString().split('T')[0];
-            const repoUrl = document.getElementById('sw-form-repo-url')?.value.trim();
-            const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
-
-            const seq = currentSoftwareProjects.length + 1;
-            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
-            const token = `sw-tok-${Date.now()}`;
-
-            const newProj = {
-                id: `sw-${Date.now()}`,
-                project_code: projectCode,
-                client_id: `c-${Date.now()}`,
-                client_name: clientName,
-                client_whatsapp: clientWhatsapp,
-                title: title,
-                service_code: serviceCode,
-                status: "Briefing",
-                scope_description: scope,
-                repository_url: repoUrl || `https://github.com/iflcosta/${projectCode.toLowerCase()}`,
-                staging_url: stagingUrl || `https://preview.iflcosta.tech/${projectCode.toLowerCase()}`,
-                total_budget: budget,
-                recurrent_support_mrr: mrr,
-                kickoff_deposit_paid: false,
-                final_delivery_paid: false,
-                estimated_delivery_date: deliveryDate,
-                actual_delivery_date: null,
-                lighthouse_performance_score: 98,
-                lighthouse_seo_score: 100,
-                lighthouse_best_practices_score: 100,
-                lighthouse_accessibility_score: 95,
-                qa_homologated_at: null,
-                homologation_hash: null,
-                client_token: token
-            };
-
-            currentSoftwareProjects.unshift(newProj);
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            closeNewSoftwareProjectModal();
-
-            // Tentar sincronizar com Supabase se cliente existir
-            const client = getSupabase();
-            if (client) {
-                try {
-                    await client.rpc('rpc_create_software_project_atomic', {
-                        p_client_id: null,
-                        p_title: title,
-                        p_service_code: serviceCode,
-                        p_scope_description: scope,
-                        p_total_budget: budget,
-                        p_estimated_delivery_date: deliveryDate,
-                        p_repository_url: repoUrl,
-                        p_staging_url: stagingUrl,
-                        p_recurrent_support_mrr: mrr
-                    });
-                } catch (err) {
-                    console.log("Supabase RPC sync note:", err);
-                }
-            }
-
-            alert(`Projeto ${projectCode} criado com sucesso! Sinal de 50% (R$ ${(budget/2).toFixed(2)}) gerado.`);
-        }
-
-        function openSoftwareProjectDetail(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            activeSoftwareProject = proj;
-
-            document.getElementById('sw-detail-code').textContent = proj.project_code;
-            document.getElementById('sw-detail-title').textContent = proj.title;
-            document.getElementById('sw-detail-client').textContent = proj.client_name;
-            document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
-            document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
-            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
-            
-            const statusSelect = document.getElementById('sw-detail-status-select');
-            if (statusSelect) statusSelect.value = proj.status;
-
-            // Links
-            const stagingEl = document.getElementById('sw-detail-staging-link');
-            if (stagingEl) stagingEl.href = proj.staging_url || '#';
-            const repoEl = document.getElementById('sw-detail-repo-link');
-            if (repoEl) repoEl.href = proj.repository_url || '#';
-
-            // Lighthouse
-            document.getElementById('sw-lh-perf').value = proj.lighthouse_performance_score || 98;
-            document.getElementById('sw-lh-seo').value = proj.lighthouse_seo_score || 100;
-            document.getElementById('sw-lh-bp').value = proj.lighthouse_best_practices_score || 100;
-            document.getElementById('sw-lh-acc').value = proj.lighthouse_accessibility_score || 95;
-
-            // Render Milestones
-            const half = (proj.total_budget || 0) / 2;
-            const msContainer = document.getElementById('sw-detail-milestones-container');
-            if (msContainer) {
-                msContainer.innerHTML = `
-                    <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
-                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
-                        </div>
-                        <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
-                        <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
-                            ${proj.kickoff_deposit_paid ? 'Estornar Sinal' : '✓ Confirmar Sinal 50%'}
-                        </button>
-                    </div>
-                    <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
-                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
-                        </div>
-                        <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
-                        <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
-                            ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
-                        </button>
-                    </div>
-                `;
-            }
-
-            renderProjectTimesheet(proj.id);
-
-            const modal = document.getElementById('software-project-detail-modal');
-            if (modal) modal.classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function closeSoftwareProjectDetail() {
-            const modal = document.getElementById('software-project-detail-modal');
-            if (modal) modal.classList.add('hidden');
-            activeSoftwareProject = null;
-        }
-
-        function handleSoftwareStatusChange(newStatus) {
-            if (!activeSoftwareProject) return;
-            activeSoftwareProject.status = newStatus;
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-        }
-
-        function toggleKickoffPayment(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            proj.kickoff_deposit_paid = !proj.kickoff_deposit_paid;
-            if (proj.kickoff_deposit_paid && proj.status === 'Briefing') {
-                proj.status = 'Em_Desenvolvimento';
-            }
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            openSoftwareProjectDetail(projId);
-        }
-
-        function toggleFinalPayment(projId) {
-            const proj = currentSoftwareProjects.find(p => p.id === projId);
-            if (!proj) return;
-            proj.final_delivery_paid = !proj.final_delivery_paid;
-            if (proj.final_delivery_paid) {
-                proj.status = 'Concluido';
-                proj.actual_delivery_date = new Date().toISOString().split('T')[0];
-            }
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            openSoftwareProjectDetail(projId);
-        }
-
-        function saveSoftwareLighthouseScores() {
-            if (!activeSoftwareProject) return;
-            activeSoftwareProject.lighthouse_performance_score = parseInt(document.getElementById('sw-lh-perf')?.value || 98);
-            activeSoftwareProject.lighthouse_seo_score = parseInt(document.getElementById('sw-lh-seo')?.value || 100);
-            activeSoftwareProject.lighthouse_best_practices_score = parseInt(document.getElementById('sw-lh-bp')?.value || 100);
-            activeSoftwareProject.lighthouse_accessibility_score = parseInt(document.getElementById('sw-lh-acc')?.value || 95);
-            saveSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            alert("Scores do Lighthouse atualizados com sucesso!");
-        }
-
-        function renderProjectTimesheet(projId) {
-            const tbody = document.getElementById('sw-timesheet-tbody');
-            const totalEl = document.getElementById('sw-timesheet-subtotal');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            const entries = softwareTimesheetEntries.filter(ts => ts.project_id === projId);
-            let sumHours = 0;
-            let sumVal = 0;
-
-            entries.forEach(e => {
-                sumHours += e.hours;
-                const v = e.hours * e.rate;
-                sumVal += v;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-1 px-2 text-zinc-500">${e.date}</td>
-                    <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
-                    <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
-                    <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
-        }
-
-        function handleAddTimesheetEntry() {
-            if (!activeSoftwareProject) return;
-            const desc = document.getElementById('sw-new-timesheet-desc')?.value.trim();
-            const hours = parseFloat(document.getElementById('sw-new-timesheet-hours')?.value || 1.0);
-            if (!desc) {
-                alert("Informe a descrição da atividade.");
-                return;
-            }
-
-            softwareTimesheetEntries.unshift({
-                id: `ts-${Date.now()}`,
-                project_id: activeSoftwareProject.id,
-                description: desc,
-                hours: hours,
-                rate: 130.00,
-                date: new Date().toISOString().split('T')[0]
-            });
-
-            document.getElementById('sw-new-timesheet-desc').value = '';
-            saveSoftwareStorage();
-            renderProjectTimesheet(activeSoftwareProject.id);
-            renderSoftwareProjectsDashboard();
-        }
-
-        function copySoftwareMagicLink() {
-            if (!activeSoftwareProject) return;
-            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
-            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
-            
-            navigator.clipboard.writeText(msg).then(() => {
-                alert("Magic Link de Software copiado para a Área de Transferência!");
-            }).catch(() => {
-                prompt("Copie a mensagem de acompanhamento:", msg);
-            });
-        }
-    
-    </script>
-
-    <!-- ESTILOS EXCLUSIVOS PARA IMPRESSÃO TÉRMICA DUAL (BANCADA & RECIBO CLIENTE) -->
-    <style id="thermal-label-style">
-        @media print {
-            @page { margin: 0; size: auto; }
-            body { margin: 0; padding: 0; background: #ffffff !important; color: #000000 !important; }
-            body * { visibility: hidden !important; }
-            
-            /* Modo 1: Etiqueta Adesiva de Bancada (58mm / 70mm) */
-            body.print-mode-label #thermal-device-label,
-            body.print-mode-label #thermal-device-label * { 
-                visibility: visible !important; 
-            }
-            body.print-mode-label #thermal-device-label {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 58mm !important;
-                max-width: 70mm !important;
-                display: block !important;
-                font-family: 'JetBrains Mono', 'Courier New', monospace !important;
-                padding: 2mm !important;
-                box-sizing: border-box !important;
-                z-index: 999999 !important;
-            }
-
-                        /* Modo 3: Cupom Térmico Não Fiscal do PDV (58mm / 80mm) */
-            body.print-mode-pos #thermal-pos-receipt,
-            body.print-mode-pos #thermal-pos-receipt * { 
-                visibility: visible !important; 
-            }
-            body.print-mode-pos #thermal-pos-receipt {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 76mm !important;
-                max-width: 80mm !important;
-                display: block !important;
-                font-family: 'JetBrains Mono', 'Courier New', monospace !important;
-                padding: 3mm !important;
-                box-sizing: border-box !important;
-                z-index: 999999 !important;
-            }
-
-            /* Modo 2: Recibo Térmico de Custódia do Cliente (58mm / 80mm) */
-            body.print-mode-receipt #thermal-customer-receipt,
-            body.print-mode-receipt #thermal-customer-receipt * { 
-                visibility: visible !important; 
-            }
-            body.print-mode-receipt #thermal-customer-receipt {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 76mm !important;
-                max-width: 80mm !important;
-                display: block !important;
-                font-family: 'JetBrains Mono', 'Courier New', monospace !important;
-                padding: 3mm !important;
-                box-sizing: border-box !important;
-                z-index: 999999 !important;
-            }
-        }
-    </style>
-
+    <!-- Gerador Nativo de QR Code Térmico -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </head>
 <body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col justify-between">
 
@@ -3032,11 +1544,11 @@ Qualquer dúvida, estou à disposição!
             const accentClass = isSuccess ? 'text-brand' : (isWarning ? 'text-yellow-400' : 'text-red-500');
             const icon = isSuccess ? '✓' : (isWarning ? '⚠️' : '✕');
 
-            toast.className = `pointer-events-auto bg-black border-2 ${borderClass} p-3.5 font-mono text-xs font-bold shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0`;
+            toast.className = `pointer-events-auto bg-black border-2 ${borderClass} p-3.5 font-mono text-xs font-bold shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0
             toast.innerHTML = `
                 <span class="${accentClass} font-black text-sm">${icon}</span>
                 <span class="leading-tight">${escapeHtml(message)}</span>
-            `;
+            
 
             container.appendChild(toast);
             requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
@@ -3245,7 +1757,7 @@ Qualquer dúvida, estou à disposição!
             const statProfitEl = document.getElementById('stat-month-profit');
             const statProfitSubEl = document.getElementById('stat-profit-subtitle');
             if (statProfitEl) statProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) pronta(s)/entregue(s)`;
+            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) pronta(s)/entregue(s)
 
             // 2. Atualizar Cards da Aba DRE
             const grossEl = document.getElementById('dre-gross-revenue');
@@ -3257,12 +1769,12 @@ Qualquer dúvida, estou à disposição!
             const deliveredCountEl = document.getElementById('dre-delivered-count');
 
             if (grossEl) grossEl.textContent = 'R$ ' + totalGross.toFixed(2).replace('.', ',');
-            if (grossSubEl) grossSubEl.textContent = `${deliveredCount} OSs faturadas / ${orders.length} total`;
+            if (grossSubEl) grossSubEl.textContent = `${deliveredCount} OSs faturadas / ${orders.length} total
             if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
+            if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%
             if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
-            if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
+            if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)
 
             // 3. Atualizar Linhas da Tabela DRE
             const lineLabor = document.getElementById('dre-line-labor');
@@ -3281,12 +1793,12 @@ Qualquer dúvida, estou à disposição!
             if (lineCogs) lineCogs.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
             if (pctCogs) pctCogs.textContent = totalGross > 0 ? `${((totalPartsCost / totalGross) * 100).toFixed(0)}%` : '0%';
             if (lineNet) lineNet.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (pctNet) pctNet.textContent = `${marginPct}%`;
+            if (pctNet) pctNet.textContent = `${marginPct}%
 
             // 4. Renderizar Tabela Analítica de Ordens de Serviço
             const tbody = document.getElementById('dre-orders-table-body');
             const tableCountEl = document.getElementById('dre-os-table-count');
-            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
+            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)
 
             // 5. Atualizar Métricas de Canais de Aquisição (BI)
             let levaTrazRev = 0;
@@ -3315,14 +1827,14 @@ Qualquer dúvida, estou à disposição!
             const shareBalcaoEl = document.getElementById('bi-share-balcao');
             const barBalcaoEl = document.getElementById('bi-bar-balcao');
 
-            if (shareLevaEl) shareLevaEl.textContent = `${levaTrazShare}% (R$ ${levaTrazRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
-            if (barLevaEl) barLevaEl.style.width = `${levaTrazShare}%`;
-            if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
-            if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%`;
+            if (shareLevaEl) shareLevaEl.textContent = `${levaTrazShare}% (R$ ${levaTrazRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})
+            if (barLevaEl) barLevaEl.style.width = `${levaTrazShare}%
+            if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})
+            if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%
 
             if (tbody) {
                 if (orders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada no sistema.</td></tr>
                 } else {
                     tbody.innerHTML = '';
                     orders.forEach(wo => {
@@ -3338,11 +1850,11 @@ Qualquer dúvida, estou à disposição!
 
                         let statusBadgeHtml = '';
                         if (isEntregue) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>`;
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>
                         } else if (isPronto) {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>`;
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>
                         } else {
-                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>`;
+                            statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>
                         }
 
                         const tr = document.createElement('tr');
@@ -3356,7 +1868,7 @@ Qualquer dúvida, estou à disposição!
                             <td class="py-3 px-3 text-right font-mono text-brand font-bold">R$ ${labor.toFixed(2).replace('.', ',')}</td>
                             <td class="py-3 px-3 text-right font-mono text-white font-black text-sm">R$ ${total.toFixed(2).replace('.', ',')}</td>
                             <td class="py-3 px-3 text-center">${statusBadgeHtml}</td>
-                        `;
+                        
                         tbody.appendChild(tr);
                     });
                 }
@@ -3386,14 +1898,14 @@ Qualquer dúvida, estou à disposição!
             // Margem média de M.O. Líquida por OS calibrada: R$ 237,50
             const osNeeded = (cost / 237.5).toFixed(1);
             const osPerWeek = (osNeeded / 4.33).toFixed(1);
-            if (breakevenOsEl) breakevenOsEl.textContent = `${osNeeded.replace('.', ',')} OSs / mês`;
-            if (breakevenOsSubEl) breakevenOsSubEl.textContent = `~${osPerWeek.replace('.', ',')} OSs por semana para zero a zero`;
+            if (breakevenOsEl) breakevenOsEl.textContent = `${osNeeded.replace('.', ',')} OSs / mês
+            if (breakevenOsSubEl) breakevenOsSubEl.textContent = `~${osPerWeek.replace('.', ',')} OSs por semana para zero a zero
 
             // Margem média de contrato MSP PME (5 PCs): R$ 475,00 líquidos
             const mspNeeded = (cost / 475).toFixed(1);
             const pcsNeeded = Math.ceil(cost / 95);
-            if (breakevenMspEl) breakevenMspEl.textContent = `${mspNeeded.replace('.', ',')} Contratos`;
-            if (breakevenMspSubEl) breakevenMspSubEl.textContent = `${pcsNeeded} estações gerenciadas cobrem 100% do ponto`;
+            if (breakevenMspEl) breakevenMspEl.textContent = `${mspNeeded.replace('.', ',')} Contratos
+            if (breakevenMspSubEl) breakevenMspSubEl.textContent = `${pcsNeeded} estações gerenciadas cobrem 100% do ponto
         }
 
         function renderKanbanBoard(orders) {
@@ -3433,7 +1945,7 @@ Qualquer dúvida, estou à disposição!
                             <span class="text-zinc-400">${escapeHtml(wo.client_name || 'Cliente')}</span>
                             <span class="text-brand font-bold animate-pulse">Diagnóstico</span>
                         </div>
-                    `;
+                    
                     colTriagem.appendChild(card);
                 } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
                     cO++;
@@ -3476,7 +1988,7 @@ Qualquer dúvida, estou à disposição!
                             <span class="text-zinc-300">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
                             <span class="${badgeColor}">${badgeLabel}</span>
                         </div>
-                    `;
+                    
                     colOrcamento.appendChild(card);
                 } else if (s.includes('bancada') || s.includes('execucao') || s.includes('montagem')) {
                     cB++;
@@ -3492,7 +2004,7 @@ Qualquer dúvida, estou à disposição!
                             <span class="text-zinc-400">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
                             <span class="text-cyan-400 font-bold">Na Bancada</span>
                         </div>
-                    `;
+                    
                     colBancada.appendChild(card);
                 } else if (s.includes('qa') || s.includes('teste') || s.includes('estresse')) {
                     cQ++;
@@ -3508,7 +2020,7 @@ Qualquer dúvida, estou à disposição!
                             <span class="text-brand font-bold">AIDA64 / FurMark</span>
                             <span class="text-white">Estável</span>
                         </div>
-                    `;
+                    
                     colQA.appendChild(card);
                 } else {
                     cP++;
@@ -3525,7 +2037,7 @@ Qualquer dúvida, estou à disposição!
                             <span class="text-zinc-400">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
                             <span class="text-brand font-bold">${isEntregue ? '✓ Quitado' : 'Garantia 90D'}</span>
                         </div>
-                    `;
+                    
                     colPronto.appendChild(card);
                 }
             });
@@ -3543,9 +2055,9 @@ Qualquer dúvida, estou à disposição!
             if (!phone) return '-';
             const clean = phone.replace(/\D/g, '');
             if (clean.length === 11) {
-                return `(${clean.substring(0, 2)}) ${clean.substring(2, 7)}-${clean.substring(7)}`;
+                return `(${clean.substring(0, 2)}) ${clean.substring(2, 7)}-${clean.substring(7)}
             } else if (clean.length === 10) {
-                return `(${clean.substring(0, 2)}) ${clean.substring(2, 6)}-${clean.substring(6)}`;
+                return `(${clean.substring(0, 2)}) ${clean.substring(2, 6)}-${clean.substring(6)}
             }
             return phone;
         }
@@ -3571,7 +2083,7 @@ Qualquer dúvida, estou à disposição!
 
             // Gerar QR Code do Técnico (Abre OS no Cockpit)
             if (window.QRious) {
-                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}`;
+                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}
                 new QRious({
                     element: document.getElementById('qr-label-canvas'),
                     value: qrUrl,
@@ -3612,12 +2124,12 @@ Qualquer dúvida, estou à disposição!
             const cleanDef = rawDef.replace(/\[Checklist:[^\]]+\]/i, '').replace(/\[Acessórios:[^\]]+\]/i, '').replace(/\[Avarias:[^\]]+\]/i, '').trim();
             document.getElementById('rec-defect').textContent = cleanDef || 'Avaliação técnica preliminar';
 
-            const hashStr = `IF-OS-${formatOSNumber(wo.os_number)}-${now.getFullYear()}`;
+            const hashStr = `IF-OS-${formatOSNumber(wo.os_number)}-${now.getFullYear()}
             document.getElementById('rec-hash').textContent = hashStr;
 
             // Gerar QR Code do Cliente (Abre Portal sem senha)
             if (window.QRious) {
-                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}`;
+                const qrUrl = `https://iflcosta.tech/status?token=${wo.public_tracking_token || wo.os_number}
                 new QRious({
                     element: document.getElementById('qr-receipt-canvas'),
                     value: qrUrl,
@@ -3657,7 +2169,7 @@ Qualquer dúvida, estou à disposição!
                     badge.textContent = "🟢 SINAL DE PEÇAS QUITADO VIA ASAAS ✓";
                 } else {
                     badge.className = "px-2.5 py-1 text-[10px] font-black uppercase bg-yellow-400/20 border border-yellow-400 text-yellow-400 animate-pulse";
-                    badge.textContent = `🟡 AGUARDANDO SINAL (R$ ${parts.toFixed(2).replace('.', ',')})`;
+                    badge.textContent = `🟡 AGUARDANDO SINAL (R$ ${parts.toFixed(2).replace('.', ',')})
                 }
             }
         }
@@ -3670,14 +2182,14 @@ Qualquer dúvida, estou à disposição!
             const total = parseFloat(wo.total_amount || 0);
             const payVal = parts > 0 ? parts : total;
 
-            const portalLink = `https://iflcosta.tech/status?token=${token}`;
+            const portalLink = `https://iflcosta.tech/status?token=${token}
             const msg = `Olá, *${wo.client_name || 'Cliente'}*! Aqui é da *IF Tech*.
 
 Seu orçamento da *OS #${formatOSNumber(wo.os_number)}* está pronto! Acesse o link seguro abaixo para aprovar e realizar o pagamento do sinal de peças no Pix:
 
 👉 ${portalLink}
 
-Qualquer dúvida, estamos à disposição!`;
+Qualquer dúvida, estamos à disposição!
 
             navigator.clipboard.writeText(msg).then(() => {
                 showScanNotification("✓ Mensagem com Link Pix copiada para o WhatsApp!", "success");
@@ -3688,7 +2200,7 @@ Qualquer dúvida, estamos à disposição!`;
             if (!selectedWorkOrder) return;
             const wo = selectedWorkOrder;
             const client = getSupabase();
-            const asaasId = wo.asaas_payment_id || `pay_mock_${wo.os_number}_${Date.now()}`;
+            const asaasId = wo.asaas_payment_id || `pay_mock_${wo.os_number}_${Date.now()}
 
             showScanNotification(`Confirmando Pix da OS #${formatOSNumber(wo.os_number)} no Asaas...`, "success");
 
@@ -3744,7 +2256,7 @@ Qualquer dúvida, estamos à disposição!`;
                         badge.className = isWarning 
                             ? "px-2.5 py-1 bg-yellow-950/40 border border-yellow-600/70 text-yellow-300 text-[11px] font-mono flex items-center gap-1"
                             : "px-2.5 py-1 bg-zinc-900 border border-brand/60 text-brand text-[11px] font-mono flex items-center gap-1";
-                        badge.innerHTML = isWarning ? `⚠️ ${escapeHtml(item)}` : `✓ ${escapeHtml(item)}`;
+                        badge.innerHTML = isWarning ? `⚠️ ${escapeHtml(item)}` : `✓ ${escapeHtml(item)}
                         checklistBoxesContainer.appendChild(badge);
                     });
                 }
@@ -3754,7 +2266,7 @@ Qualquer dúvida, estamos à disposição!`;
                     hasTags = true;
                     const badge = document.createElement('span');
                     badge.className = "px-2.5 py-1 bg-zinc-900 border border-cyan-500/60 text-cyan-300 text-[11px] font-mono flex items-center gap-1";
-                    badge.innerHTML = `🔌 Acessórios: ${escapeHtml(accMatch[1])}`;
+                    badge.innerHTML = `🔌 Acessórios: ${escapeHtml(accMatch[1])}
                     checklistBoxesContainer.appendChild(badge);
                 }
 
@@ -3763,7 +2275,7 @@ Qualquer dúvida, estamos à disposição!`;
                     hasTags = true;
                     const badge = document.createElement('span');
                     badge.className = "px-2.5 py-1 bg-zinc-900 border border-red-500/60 text-red-300 text-[11px] font-mono flex items-center gap-1";
-                    badge.innerHTML = `🔍 Avarias: ${escapeHtml(avMatch[1])}`;
+                    badge.innerHTML = `🔍 Avarias: ${escapeHtml(avMatch[1])}
                     checklistBoxesContainer.appendChild(badge);
                 }
 
@@ -3788,8 +2300,8 @@ Qualquer dúvida, estamos à disposição!`;
             // Injeta Botões de Ação Contextuais com base no status da OS
             renderDetailActionButtons(wo);
 
-            const tokenParam = wo.public_tracking_token ? `token=${wo.public_tracking_token}` : `os=${wo.os_number}`;
-            document.getElementById('detail-portal-link').href = `/status?${tokenParam}`;
+            const tokenParam = wo.public_tracking_token ? `token=${wo.public_tracking_token}` : `os=${wo.os_number}
+            document.getElementById('detail-portal-link').href = `/status?${tokenParam}
 
             document.getElementById('os-detail-modal').classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
@@ -3812,7 +2324,7 @@ Qualquer dúvida, estamos à disposição!`;
                     <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-2.5 bg-cyan-950/60 border border-cyan-500 text-cyan-400 font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors flex items-center justify-center gap-1.5">
                         <i data-lucide="play" class="w-4 h-4"></i> Iniciar Bancada Direto
                     </button>
-                `;
+                
             } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
                 const isApprovedClient = s.includes('fila') || s.includes('aprovad');
                 const isEncomendada = s.includes('encomendada') || (hasParts && wo.parts_deposit_paid && !s.includes('diagnostico') && !s.includes('sinal'));
@@ -3827,7 +2339,7 @@ Qualquer dúvida, estamos à disposição!`;
                             <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
                             </button>
-                        `;
+                        
                     } else {
                         container.innerHTML = `
                             <button onclick="advanceOSStatus('Aprovado_Fila_Bancada')" class="px-4 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
@@ -3839,7 +2351,7 @@ Qualquer dúvida, estamos à disposição!`;
                             <button onclick="actionBudgetFromOS()" class="sm:col-span-2 px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar / Ajustar Itens do Orçamento
                             </button>
-                        `;
+                        
                     }
                 } else {
                     // Com Peças Sob Encomenda
@@ -3854,7 +2366,7 @@ Qualquer dúvida, estamos à disposição!`;
                             <button onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar Orçamento
                             </button>
-                        `;
+                        
                     } else {
                         container.innerHTML = `
                             <button onclick="advanceOSStatus('Peca_Encomendada')" class="px-3 py-3 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)] text-xs">
@@ -3869,7 +2381,7 @@ Qualquer dúvida, estamos à disposição!`;
                             <button onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:text-white hover:border-zinc-500 transition-colors flex items-center justify-center gap-1.5 text-xs">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Editar Orçamento
                             </button>
-                        `;
+                        
                     }
                 }
             } else if (s.includes('bancada')) {
@@ -3877,7 +2389,7 @@ Qualquer dúvida, estamos à disposição!`;
                     <button onclick="advanceOSStatus('Teste_Estresse_QA')" class="sm:col-span-2 px-4 py-3 bg-brand/15 border-2 border-brand text-brand font-black uppercase hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
                         <i data-lucide="flame" class="w-4 h-4 animate-pulse"></i> Montagem Concluída • Iniciar Testes QA (FurMark / AIDA64)
                     </button>
-                `;
+                
             } else if (s.includes('qa') || s.includes('teste')) {
                 container.innerHTML = `
                     <button onclick="advanceOSStatus('Pronto')" class="px-3 py-2.5 bg-brand text-black font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
@@ -3886,19 +2398,19 @@ Qualquer dúvida, estamos à disposição!`;
                     <button onclick="advanceOSStatus('Na_Bancada')" class="px-3 py-2.5 bg-zinc-900 border border-red-700 text-red-400 font-bold uppercase hover:bg-red-900 hover:text-white transition-colors flex items-center justify-center gap-1.5">
                         <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reabrir Bancada (Reprovar QA)
                     </button>
-                `;
+                
             } else if (s.includes('pronto')) {
                 container.innerHTML = `
                     <button onclick="advanceOSStatus('Entregue')" class="sm:col-span-2 px-4 py-3 bg-white text-black font-black uppercase hover:bg-brand transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)]">
                         <i data-lucide="package-check" class="w-4 h-4"></i> Entregar ao Cliente & Quitar Saldo Final
                     </button>
-                `;
+                
             } else if (s.includes('entregue')) {
                 container.innerHTML = `
                     <div class="sm:col-span-2 text-center py-2.5 bg-brand/10 border border-brand text-brand font-bold uppercase text-xs">
                         ✓ OS Entregue e Concluída com Garantia CDC de 90 Dias
                     </div>
-                `;
+                
             }
         }
 
@@ -3953,15 +2465,15 @@ Qualquer dúvida, estamos à disposição!`;
             if (!selectedWorkOrder) return;
             const wo = selectedWorkOrder;
             const phone = wo.client_whatsapp ? wo.client_whatsapp.replace(/\D/g, '') : '5511919691542';
-            const cleanPhone = phone.startsWith('55') ? phone : `55${phone}`;
-            const tokenParam = wo.public_tracking_token ? `token=${wo.public_tracking_token}` : `os=${wo.os_number}`;
+            const cleanPhone = phone.startsWith('55') ? phone : `55${phone}
+            const tokenParam = wo.public_tracking_token ? `token=${wo.public_tracking_token}` : `os=${wo.os_number}
             
             const eWave = String.fromCodePoint(0x1F44B);
             const eDoc = String.fromCodePoint(0x1F4CB);
             const eHand = String.fromCodePoint(0x1F449);
             const statusName = (wo.status || 'Triagem').replace(/_/g, ' ');
 
-            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IF Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/status?${tokenParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const msg = `Olá ${wo.client_name || 'Cliente'}! ${eWave}\nAqui é da *IF Tech*.\n\nInformamos que sua *OS #${formatOSNumber(wo.os_number)}* (${wo.device_model || 'Equipamento'}) foi atualizada para o status: *${statusName}*.\n\n${eDoc} *Acompanhe em tempo real:* \n${eHand} https://iflcosta.tech/status?${tokenParam}\n\nQualquer dúvida, estamos à disposição!
             
             window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
@@ -3990,8 +2502,8 @@ Qualquer dúvida, estamos à disposição!`;
             const laborEl = document.getElementById('budget-modal-labor');
             const tbody = document.getElementById('budget-modal-parts-tbody');
 
-            if (titleEl) titleEl.textContent = `Orçamento da OS #${budgetModalOS.os_number} — ${budgetModalOS.device_brand || ''} ${budgetModalOS.device_model || ''}`;
-            if (clientInfoEl) clientInfoEl.textContent = `Cliente: ${budgetModalOS.client_name || 'Cliente'} • WhatsApp: ${budgetModalOS.client_whatsapp || '-'}`;
+            if (titleEl) titleEl.textContent = `Orçamento da OS #${budgetModalOS.os_number} — ${budgetModalOS.device_brand || ''} ${budgetModalOS.device_model || ''}
+            if (clientInfoEl) clientInfoEl.textContent = `Cliente: ${budgetModalOS.client_name || 'Cliente'} • WhatsApp: ${budgetModalOS.client_whatsapp || '-'}
             if (defectEl) defectEl.textContent = budgetModalOS.reported_defect || 'Defeito informado pelo cliente na recepção da bancada.';
             if (sTypeEl) sTypeEl.value = budgetModalOS.service_type || 'Hardware_Reparo';
             if (diagEl) diagEl.value = budgetModalOS.technical_diagnosis || '';
@@ -4073,7 +2585,7 @@ Qualquer dúvida, estamos à disposição!`;
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
                 </td>
-            `;
+            
             tbody.appendChild(tr);
             recalcModalBudgetTotals();
             if (window.lucide) lucide.createIcons();
@@ -4115,11 +2627,11 @@ Qualquer dúvida, estamos à disposição!`;
 
             const btn = document.getElementById('btn-save-budget-modal');
             btn.disabled = true;
-            btn.innerHTML = `<span class="animate-pulse flex items-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando Orçamento...</span>`;
+            btn.innerHTML = `<span class="animate-pulse flex items-center gap-1.5"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando Orçamento...</span>
             if (window.lucide) lucide.createIcons();
 
             const serviceType = document.getElementById('budget-modal-service-type').value;
-            const diagnosis = document.getElementById('budget-modal-diagnosis').value.trim() || `Laudo técnico da OS #${budgetModalOS.os_number}`;
+            const diagnosis = document.getElementById('budget-modal-diagnosis').value.trim() || `Laudo técnico da OS #${budgetModalOS.os_number}
             const laborPrice = parseFloat(document.getElementById('budget-modal-labor').value) || 0;
 
             const items = [];
@@ -4166,7 +2678,7 @@ Qualquer dúvida, estamos à disposição!`;
                     if (error) {
                         alert("Erro ao atualizar orçamento: " + error.message);
                         btn.disabled = false;
-                        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp`;
+                        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp
                         return;
                     }
 
@@ -4187,7 +2699,7 @@ Qualquer dúvida, estamos à disposição!`;
             const partsPriceTotal = parseFloat(document.getElementById('budget-modal-parts-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
             const grandTotal = parseFloat(document.getElementById('budget-modal-grand-total').textContent.replace('R$ ', '').replace('.', '').replace(',', '.')) || 0;
             const clientPhone = (budgetModalOS.client_whatsapp || '').replace(/\D/g, '');
-            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${budgetModalOS.os_number}`;
+            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${budgetModalOS.os_number}
 
             const msg = `*Olá ${budgetModalOS.client_name || 'Cliente'}!*
 Aqui é da *IF Tech*.
@@ -4200,14 +2712,14 @@ Concluímos o diagnóstico e elaboração do orçamento da sua *OS #${budgetModa
 > *Acesse o laudo e aprove o orçamento pelo link:* 
 https://iflcosta.tech/status?${linkParam}
 
-Ficamos no aguardo para iniciar a execução!`;
+Ficamos no aguardo para iniciar a execução!
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
-            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
+            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}
             document.getElementById('whatsapp-modal').classList.remove('hidden');
 
             btn.disabled = false;
-            btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp`;
+            btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp
             if (window.lucide) lucide.createIcons();
         }
 
@@ -4240,7 +2752,7 @@ Ficamos no aguardo para iniciar a execução!`;
             const form = e.target;
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Registrando Entrada...</span>`;
+            submitBtn.innerHTML = `<span class="animate-pulse flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Registrando Entrada...</span>
             if (window.lucide) lucide.createIcons();
 
             const clientName = document.getElementById('intake-client-name').value.trim();
@@ -4299,14 +2811,14 @@ Ficamos no aguardo para iniciar a execução!`;
             form.reset();
 
             // Mensagem de Comprovante de Custódia para WhatsApp (Formatação Nativa WhatsApp)
-            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada especializada para diagnóstico técnico (OS #${finalOsNum}).\n\n> *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estamos à disposição!`;
+            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}
+            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSeu equipamento *${deviceModel}* deu entrada com sucesso em nossa bancada especializada para diagnóstico técnico (OS #${finalOsNum}).\n\n> *Acompanhe o status e laudo do seu aparelho pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estamos à disposição!
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
-            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
+            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}
             
             submitBtn.disabled = false;
-            submitBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Confirmar Entrada & Gerar Comprovante`;
+            submitBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Confirmar Entrada & Gerar Comprovante
             if (window.lucide) lucide.createIcons();
 
             document.getElementById('whatsapp-modal').classList.remove('hidden');
@@ -4525,7 +3037,7 @@ Ficamos no aguardo para iniciar a execução!`;
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
                         </td>
-                    `;
+                    
                     tbody.appendChild(tr);
                 });
             }
@@ -4566,7 +3078,7 @@ Ficamos no aguardo para iniciar a execução!`;
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
                 </td>
-            `;
+            
             tbody.appendChild(tr);
             recalcTotals();
             if (window.lucide) lucide.createIcons();
@@ -4614,7 +3126,7 @@ Ficamos no aguardo para iniciar a execução!`;
             
             const breakdownEl = document.getElementById('calc-profit-breakdown');
             if (breakdownEl) {
-                breakdownEl.textContent = `Peças: R$ ${partsProfit.toFixed(2).replace('.', ',')} + M.O: R$ ${laborPrice.toFixed(2).replace('.', ',')}`;
+                breakdownEl.textContent = `Peças: R$ ${partsProfit.toFixed(2).replace('.', ',')} + M.O: R$ ${laborPrice.toFixed(2).replace('.', ',')}
             }
         }
 
@@ -4709,14 +3221,14 @@ Ficamos no aguardo para iniciar a execução!`;
             e.preventDefault();
             const saveBtn = e.target.querySelector('button[type="submit"]');
             saveBtn.disabled = true;
-            saveBtn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando com Segurança...</span>`;
+            saveBtn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gravando com Segurança...</span>
             if (window.lucide) lucide.createIcons();
 
             const clientName = document.getElementById('client-name').value.trim();
             const rawPhone = document.getElementById('client-phone').value.replace(/\D/g, '');
             const clientPhone = (rawPhone.length >= 12 && rawPhone.startsWith('55')) ? rawPhone.substring(2) : rawPhone;
             const serviceType = document.getElementById('service-type').value;
-            const technicalDiagnosis = document.getElementById('technical-diagnosis') ? document.getElementById('technical-diagnosis').value.trim() : `Laudo técnico para ${serviceType.replace(/_/g, ' ')}`;
+            const technicalDiagnosis = document.getElementById('technical-diagnosis') ? document.getElementById('technical-diagnosis').value.trim() : `Laudo técnico para ${serviceType.replace(/_/g, ' ')}
             const laborPrice = parseFloat(document.getElementById('labor-price').value) || 0;
 
             // Coleta Peças e calcula total de venda das peças
@@ -4798,14 +3310,14 @@ Ficamos no aguardo para iniciar a execução!`;
             }
 
             // Gera link mágico seguro com token UUID (Formatação Nativa WhatsApp)
-            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}`;
-            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n> *Acompanhe e aprove seu orçamento pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estou à disposição!`;
+            const linkParam = trackingToken ? `token=${trackingToken}` : `os=${finalOsNum}
+            const msg = `*Olá ${clientName}!*\nAqui é da *IF Tech*.\n\nSua proposta técnica para a *OS #${finalOsNum}* está pronta com peças de alta durabilidade e laudo de estresse incluso!\n\n> *Acompanhe e aprove seu orçamento pelo link exclusivo:*\nhttps://iflcosta.tech/status?${linkParam}\n\nQualquer dúvida, estou à disposição!
 
             document.getElementById('whatsapp-msg-preview').textContent = msg;
-            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}`;
+            document.getElementById('modal-wpp-link').href = `https://wa.me/55${clientPhone}?text=${encodeURIComponent(msg)}
             
             saveBtn.disabled = false;
-            saveBtn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Salvar OS & Gerar Mensagem WhatsApp`;
+            saveBtn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Salvar OS & Gerar Mensagem WhatsApp
             if (window.lucide) lucide.createIcons();
 
             // Alterna a visualização para o Kanban imediatamente
@@ -4846,7 +3358,7 @@ Ficamos no aguardo para iniciar a execução!`;
             navigator.clipboard.writeText(text);
             const copyBtn = event.target.closest('button');
             const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = `✓ Copiado!`;
+            copyBtn.innerHTML = `✓ Copiado!
             setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
         }
 
@@ -4951,7 +3463,7 @@ Ficamos no aguardo para iniciar a execução!`;
                             Nenhum cliente localizado no CRM.
                         </td>
                     </tr>
-                `;
+                
                 return;
             }
 
@@ -4959,10 +3471,10 @@ Ficamos no aguardo para iniciar a execução!`;
                 const isB2B = (c.type || '').toUpperCase() === 'B2B';
                 const typeBadge = isB2B 
                     ? `<span class="px-2 py-0.5 bg-purple-950/80 border border-purple-500 text-purple-400 text-[10px] font-bold">B2B • EMPRESA</span>`
-                    : `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-cyan-400 text-[10px] font-bold">B2C • GAMER</span>`;
+                    : `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-cyan-400 text-[10px] font-bold">B2C • GAMER</span>
                 
                 const ltvVal = parseFloat(c.total_spent || 0);
-                const ltvText = ltvVal > 0 ? `R$ ${ltvVal.toFixed(2).replace('.', ',')}` : `<span class="text-zinc-600">R$ 0,00</span>`;
+                const ltvText = ltvVal > 0 ? `R$ ${ltvVal.toFixed(2).replace('.', ',')}` : `<span class="text-zinc-600">R$ 0,00</span>
                 const locationText = c.neighborhood ? `${escapeHtml(c.neighborhood)}, ${escapeHtml(c.city || 'Bragança')}` : (c.city || 'Bragança Paulista');
                 const cleanPhone = (c.whatsapp || '').replace(/\D/g, '');
 
@@ -5000,7 +3512,7 @@ Ficamos no aguardo para iniciar a execução!`;
                             </div>
                         </td>
                     </tr>
-                `;
+                
             }).join('');
 
             if (window.lucide) lucide.createIcons();
@@ -5029,7 +3541,7 @@ Ficamos no aguardo para iniciar a execução!`;
             e.preventDefault();
             const btn = document.getElementById('btn-save-client');
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Salvando...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Salvando...
 
             const client = getSupabase();
             const clientId = document.getElementById('modal-client-id').value;
@@ -5068,7 +3580,7 @@ Ficamos no aguardo para iniciar a execução!`;
                 alert('Erro ao salvar cliente: ' + err.message);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Salvar Cliente`;
+                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Salvar Cliente
                 if (window.lucide) lucide.createIcons();
             }
         }
@@ -5086,17 +3598,17 @@ Ficamos no aguardo para iniciar a execução!`;
             document.getElementById('cdetail-ltv').textContent = "R$ " + ltv.toFixed(2).replace('.', ',');
 
             const isB2B = (clientObj.type || '').toUpperCase() === 'B2B';
-            document.getElementById('cdetail-type-badge').textContent = `${isB2B ? 'B2B • EMPRESA' : 'B2C • CONSUMIDOR'} • Cadastrado em ${new Date(clientObj.created_at || Date.now()).toLocaleDateString('pt-BR')}`;
+            document.getElementById('cdetail-type-badge').textContent = `${isB2B ? 'B2B • EMPRESA' : 'B2C • CONSUMIDOR'} • Cadastrado em ${new Date(clientObj.created_at || Date.now()).toLocaleDateString('pt-BR')}
 
             const cleanPhone = (clientObj.whatsapp || '').replace(/\D/g, '');
-            document.getElementById('cdetail-whatsapp-btn').href = `https://wa.me/55${cleanPhone}`;
+            document.getElementById('cdetail-whatsapp-btn').href = `https://wa.me/55${cleanPhone}
 
             selectedClientForOS = clientObj;
 
             // Carrega ordens de serviço do cliente
             const client = getSupabase();
             const tbody = document.getElementById('cdetail-orders-tbody');
-            tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Buscando histórico...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Buscando histórico...</td></tr>
 
             try {
                 const { data: orders, error } = await client
@@ -5122,10 +3634,10 @@ Ficamos no aguardo para iniciar a execução!`;
                                     </button>
                                 </td>
                             </tr>
-                        `;
+                        
                     }).join('');
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada para este cliente.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-zinc-500">Nenhuma Ordem de Serviço registrada para este cliente.</td></tr>
                 }
             } catch (e) {
                 console.warn(e);
@@ -5168,8 +3680,8 @@ Ficamos no aguardo para iniciar a execução!`;
                 type === 'success' 
                     ? 'bg-black border-brand text-brand shadow-[0_0_25px_rgba(204,255,0,0.3)]' 
                     : 'bg-black border-yellow-500 text-yellow-400 shadow-[0_0_25px_rgba(234,179,8,0.3)]'
-            }`;
-            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-triangle'}" class="w-4 h-4"></i> <span>${msg}</span>`;
+            }
+            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-triangle'}" class="w-4 h-4"></i> <span>${msg}</span>
             document.body.appendChild(toast);
             if (window.lucide) lucide.createIcons();
 
@@ -5420,7 +3932,7 @@ Ficamos no aguardo para iniciar a execução!`;
                     isOutOfStock 
                         ? 'border-zinc-800 opacity-50 cursor-not-allowed' 
                         : 'border-zinc-800 hover:border-brand hover:shadow-[3px_3px_0px_0px_rgba(204,255,0,0.3)]'
-                }`;
+                }
 
                 card.onclick = () => {
                     if (!isOutOfStock) addToPOSCart(prod);
@@ -5440,7 +3952,7 @@ Ficamos no aguardo para iniciar a execução!`;
                         <span class="text-xs text-zinc-500 font-mono">${escapeHtml(prod.sku)}</span>
                         <strong class="text-sm font-black text-brand">R$ ${prod.selling_price.toFixed(2).replace('.', ',')}</strong>
                     </div>
-                `;
+                
                 grid.appendChild(card);
             });
             if (window.lucide) lucide.createIcons();
@@ -5512,7 +4024,7 @@ Ficamos no aguardo para iniciar a execução!`;
                         <i data-lucide="shopping-bag" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
                         Carrinho vazio.<br>Bipe um produto ou clique nos cards.
                     </div>
-                `;
+                
                 recalcPOSCartTotals();
                 if (window.lucide) lucide.createIcons();
                 return;
@@ -5538,7 +4050,7 @@ Ficamos no aguardo para iniciar a execução!`;
                     <button type="button" onclick="removeCartItem(${idx})" class="text-zinc-600 hover:text-red-400 p-1">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
-                `;
+                
                 container.appendChild(itemRow);
             });
 
@@ -5639,7 +4151,7 @@ Ficamos no aguardo para iniciar a execução!`;
             const total = Math.max(0, subtotal - discount);
             const profit = total - totalCost;
 
-            const saleNumber = `PDV-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}`;
+            const saleNumber = `PDV-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}
 
             // 1. Dar baixa física no estoque local
             posCart.forEach(cartItem => {
@@ -5691,7 +4203,7 @@ Ficamos no aguardo para iniciar a execução!`;
             document.getElementById('pos-rec-discount').textContent = 'R$ ' + data.discount.toFixed(2).replace('.', ',');
             document.getElementById('pos-rec-total').textContent = 'R$ ' + data.total.toFixed(2).replace('.', ',');
             document.getElementById('pos-rec-method').textContent = data.method.replace('_', ' ').toUpperCase();
-            document.getElementById('pos-rec-hash').textContent = `IF-${data.saleNumber}-${Date.now().toString().slice(-4)}`;
+            document.getElementById('pos-rec-hash').textContent = `IF-${data.saleNumber}-${Date.now().toString().slice(-4)}
 
             const tbody = document.getElementById('pos-rec-items-tbody');
             if (tbody) {
@@ -5701,7 +4213,7 @@ Ficamos no aguardo para iniciar a execução!`;
                     tr.innerHTML = `
                         <td class="py-0.5">${it.qty}x ${escapeHtml(it.name)}</td>
                         <td class="text-right font-bold">R$ ${(it.price * it.qty).toFixed(2).replace('.', ',')}</td>
-                    `;
+                    
                     tbody.appendChild(tr);
                 });
             }
@@ -5778,7 +4290,7 @@ Ficamos no aguardo para iniciar a execução!`;
                             + Venda
                         </button>
                     </td>
-                `;
+                
                 tbody.appendChild(tr);
             });
 
@@ -5835,7 +4347,7 @@ Ficamos no aguardo para iniciar a execução!`;
             const modal = document.getElementById('new-product-modal');
             if (!modal) return;
             document.getElementById('new-product-form')?.reset();
-            document.getElementById('inp-prod-sku').value = `PROD-${Date.now().toString().slice(-4)}`;
+            document.getElementById('inp-prod-sku').value = `PROD-${Date.now().toString().slice(-4)}
             modal.classList.remove('hidden');
             setTimeout(() => document.getElementById('inp-prod-name')?.focus(), 100);
             if (window.lucide) lucide.createIcons();
@@ -5926,7 +4438,7 @@ Ficamos no aguardo para iniciar a execução!`;
                     <td class="py-2.5 px-3 text-right font-bold text-zinc-300">R$ ${m.totalCost.toFixed(2).replace('.', ',')}</td>
                     <td class="py-2.5 px-3 text-zinc-300">${escapeHtml(m.docRef)}</td>
                     <td class="py-2.5 px-3 text-zinc-500">${escapeHtml(m.operator)}</td>
-                `;
+                
                 tbody.appendChild(tr);
             });
         }
@@ -5982,7 +4494,7 @@ Ficamos no aguardo para iniciar a execução!`;
                             ⚡ Gerar Dossiê de Troca RMA
                         </button>
                     </div>
-                `;
+                
             } else {
                 resultBox.innerHTML = `
                     <div class="text-center py-4 text-zinc-400">
@@ -5990,23 +4502,13 @@ Ficamos no aguardo para iniciar a execução!`;
                         <p class="font-bold text-white">Nenhum registro encontrado para o Serial "${escapeHtml(snQuery)}"</p>
                         <span class="text-[11px] text-zinc-500">Verifique se o número foi digitado corretamente ou se a peça é de terceiros.</span>
                     </div>
-                `;
+                
             }
             if (window.lucide) lucide.createIcons();
         }
 
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadInventoryStorage();
-            loadSoftwareStorage();
-            renderSoftwareProjectsDashboard();
-            if (window.lucide) lucide.createIcons();
-            recalcTotals();
-            loadSupabaseData();
-            setupAdminRealtime();
-            loadStandardBuildSlots();
-        });
-    
+        
         // =====================================================================
         // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
         // =====================================================================
@@ -6126,7 +4628,7 @@ Ficamos no aguardo para iniciar a execução!`;
                 else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
                 else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
                 else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
-                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
+                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>
 
                 tr.innerHTML = `
                     <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
@@ -6164,7 +4666,7 @@ Ficamos no aguardo para iniciar a execução!`;
                             Gerenciar
                         </button>
                     </td>
-                `;
+                
                 tbody.appendChild(tr);
             });
 
@@ -6181,10 +4683,10 @@ Ficamos no aguardo para iniciar a execução!`;
             document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
             document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
             const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
-            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
+            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas
 
             document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
-            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
+            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h
 
             if (window.lucide) lucide.createIcons();
         }
@@ -6249,8 +4751,8 @@ Ficamos no aguardo para iniciar a execução!`;
             const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
 
             const seq = currentSoftwareProjects.length + 1;
-            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
-            const token = `sw-tok-${Date.now()}`;
+            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}
+            const token = `sw-tok-${Date.now()}
 
             const newProj = {
                 id: `sw-${Date.now()}`,
@@ -6284,7 +4786,6 @@ Ficamos no aguardo para iniciar a execução!`;
             renderSoftwareProjectsDashboard();
             closeNewSoftwareProjectModal();
 
-            // Tentar sincronizar com Supabase se cliente existir
             const client = getSupabase();
             if (client) {
                 try {
@@ -6317,7 +4818,7 @@ Ficamos no aguardo para iniciar a execução!`;
             document.getElementById('sw-detail-client').textContent = proj.client_name;
             document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
             document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
-            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
+            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}
             
             const statusSelect = document.getElementById('sw-detail-status-select');
             if (statusSelect) statusSelect.value = proj.status;
@@ -6359,7 +4860,7 @@ Ficamos no aguardo para iniciar a execução!`;
                             ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
                         </button>
                     </div>
-                `;
+                
             }
 
             renderProjectTimesheet(proj.id);
@@ -6438,11 +4939,11 @@ Ficamos no aguardo para iniciar a execução!`;
                     <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
                     <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
                     <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
-                `;
+                
                 tbody.appendChild(tr);
             });
 
-            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
+            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})
         }
 
         function handleAddTimesheetEntry() {
@@ -6480,7 +4981,17 @@ Ficamos no aguardo para iniciar a execução!`;
                 prompt("Copie a mensagem de acompanhamento:", msg);
             });
         }
-    
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadInventoryStorage();
+            loadSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            if (window.lucide) lucide.createIcons();
+            recalcTotals();
+            loadSupabaseData();
+            setupAdminRealtime();
+            loadStandardBuildSlots();
+        });
     </script>
 
     <!-- ========================================================================= -->

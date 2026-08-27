@@ -5,6 +5,9 @@
 -- Compatível com: PostgreSQL 15+ & Supabase RLS
 -- ==============================================================================
 
+-- 0. EXTENSÕES OBRIGATÓRIAS
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- 1. ENUMS ESPECÍFICOS DE SOFTWARE E MILESTONES
 DO $$ BEGIN
     CREATE TYPE project_status_enum AS ENUM (
