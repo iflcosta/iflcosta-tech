@@ -4195,6 +4195,7 @@ Ficamos no aguardo para iniciar a execução!`;
                 method: posActivePaymentMethod
             });
 
+            saveInventoryStorage();
             showScanNotification(`✓ Venda ${saleNumber} concluída com sucesso! Lucro: R$ ${profit.toFixed(2).replace('.', ',')}`, 'success');
 
             // 3. Limpar carrinho e atualizar UI
@@ -4322,42 +4323,104 @@ Ficamos no aguardo para iniciar a execução!`;
             renderInventoryCatalogTable();
         }
 
-        function openNewProductModal() {
-            const name = prompt("Nome do Produto / Peça:");
-            if (!name) return;
-            const sku = prompt("SKU (Código único):", `PROD-${Date.now().toString().slice(-4)}`);
-            const cost = parseFloat(prompt("Custo de Aquisição (R$):", "50.00")) || 0;
-            const price = parseFloat(prompt("Preço de Venda Sugerido (R$):", "95.00")) || 0;
-            const qty = parseInt(prompt("Quantidade em Estoque:", "5")) || 1;
+        // Persistência em LocalStorage
+        function loadInventoryStorage() {
+            try {
+                const saved = localStorage.getItem('if_tech_inventory_products');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        currentInventoryProducts = parsed;
+                    }
+                }
+                const savedKardex = localStorage.getItem('if_tech_kardex_movements');
+                if (savedKardex) {
+                    const parsedK = JSON.parse(savedKardex);
+                    if (Array.isArray(parsedK)) {
+                        kardexMovements = parsedK;
+                    }
+                }
+            } catch (e) {
+                console.warn("Erro ao carregar do LocalStorage:", e);
+            }
+        }
 
-            currentInventoryProducts.push({
-                id: `prod_${Date.now()}`,
-                sku: sku.toUpperCase(),
-                name: name,
-                category: "Geral",
-                brand: "Distribuidor",
-                cost_price: cost,
-                selling_price: price,
-                current_stock: qty,
-                reserved_stock: 0,
-                min_stock: 2,
-                ean: ""
-            });
+        function saveInventoryStorage() {
+            try {
+                localStorage.setItem('if_tech_inventory_products', JSON.stringify(currentInventoryProducts));
+                localStorage.setItem('if_tech_kardex_movements', JSON.stringify(kardexMovements));
+            } catch (e) {
+                console.warn("Erro ao salvar no LocalStorage:", e);
+            }
+        }
+
+        function openNewProductModal() {
+            const modal = document.getElementById('new-product-modal');
+            if (!modal) return;
+            document.getElementById('new-product-form')?.reset();
+            document.getElementById('inp-prod-sku').value = `PROD-${Date.now().toString().slice(-4)}`;
+            modal.classList.remove('hidden');
+            setTimeout(() => document.getElementById('inp-prod-name')?.focus(), 100);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeNewProductModal() {
+            const modal = document.getElementById('new-product-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleSaveNewProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('inp-prod-name').value.trim();
+            const sku = document.getElementById('inp-prod-sku').value.trim().toUpperCase();
+            const cat = document.getElementById('inp-prod-cat').value;
+            const brand = document.getElementById('inp-prod-brand').value.trim() || 'Distribuidor';
+            const ean = document.getElementById('inp-prod-ean').value.trim();
+            const cost = parseFloat(document.getElementById('inp-prod-cost').value) || 0;
+            const price = parseFloat(document.getElementById('inp-prod-price').value) || 0;
+            const qty = parseInt(document.getElementById('inp-prod-qty').value) || 1;
+
+            if (!name || !sku) return;
+
+            const existingIdx = currentInventoryProducts.findIndex(p => p.sku === sku);
+            if (existingIdx >= 0) {
+                currentInventoryProducts[existingIdx].name = name;
+                currentInventoryProducts[existingIdx].cost_price = cost;
+                currentInventoryProducts[existingIdx].selling_price = price;
+                currentInventoryProducts[existingIdx].current_stock += qty;
+            } else {
+                currentInventoryProducts.unshift({
+                    id: `prod_${Date.now()}`,
+                    sku: sku,
+                    name: name,
+                    category: cat,
+                    brand: brand,
+                    cost_price: cost,
+                    selling_price: price,
+                    current_stock: qty,
+                    reserved_stock: 0,
+                    min_stock: 2,
+                    ean: ean
+                });
+            }
 
             kardexMovements.unshift({
                 date: new Date().toISOString(),
-                type: "Entrada_Avulsa_Ajuste",
-                sku: sku.toUpperCase(),
+                type: "Entrada_Cadastro_Produto",
+                sku: sku,
                 prodName: name,
                 qty: qty,
                 totalCost: cost * qty,
-                docRef: "Entrada Manual",
+                docRef: "Cadastro Manual",
                 operator: "Gestor IF Tech"
             });
 
-            showScanNotification(`✓ Produto ${name} cadastrado com sucesso!`, 'success');
+            saveInventoryStorage();
+            closeNewProductModal();
+            showScanNotification(`✓ Produto "${name}" (${sku}) cadastrado e salvo com sucesso!`, 'success');
             renderInventoryCatalogTable();
             renderPOSGrid();
+            renderKardexTable();
         }
 
         // =========================================================================
@@ -4457,6 +4520,7 @@ Ficamos no aguardo para iniciar a execução!`;
 
 
         window.addEventListener('DOMContentLoaded', () => {
+            loadInventoryStorage();
             if (window.lucide) lucide.createIcons();
             recalcTotals();
             loadSupabaseData();
@@ -4630,6 +4694,88 @@ Ficamos no aguardo para iniciar a execução!`;
                 <canvas id="qr-pos-receipt-canvas" class="w-24 h-24 block mx-auto"></canvas>
             </div>
             <p class="text-[7px] text-zinc-600">HASH: <span id="pos-rec-hash">IF-PDV-2026-9948</span></p>
+        </div>
+    </div>
+
+
+    <!-- ============================================================= -->
+    <!-- MODAL DE CADASTRO DE NOVO PRODUTO / ENTRADA DE ESTOQUE        -->
+    <!-- ============================================================= -->
+    <div id="new-product-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-black border-2 border-brand w-full max-w-lg shadow-[8px_8px_0px_0px_rgba(204,255,0,0.5)] my-8 overflow-hidden font-sans">
+            
+            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-6 bg-brand"></div>
+                    <div>
+                        <span class="text-[10px] font-mono font-bold text-brand uppercase tracking-widest block">ALMOXARIFADO & CATÁLOGO</span>
+                        <h3 class="text-lg font-black text-white uppercase tracking-tight">Cadastrar Produto / Entrada</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeNewProductModal()" class="text-zinc-500 hover:text-white p-1 text-xl font-mono transition-colors">✕</button>
+            </div>
+
+            <form id="new-product-form" onsubmit="handleSaveNewProduct(event)" class="p-6 space-y-4 font-mono text-xs">
+                <div>
+                    <label class="block text-zinc-400 uppercase font-bold mb-1">Nome do Produto / Descrição:*</label>
+                    <input type="text" id="inp-prod-name" required placeholder="Ex: SSD Kingston NV2 1TB / Carregador 20W" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">SKU / Código Único:*</label>
+                        <input type="text" id="inp-prod-sku" required placeholder="PROD-001" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-brand font-bold focus:outline-none focus:border-brand uppercase">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Categoria:*</label>
+                        <select id="inp-prod-cat" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-bold focus:outline-none focus:border-brand">
+                            <option value="Carregadores">Carregadores</option>
+                            <option value="Cabos">Cabos</option>
+                            <option value="Armazenamento">Armazenamento (SSDs)</option>
+                            <option value="Memoria_RAM">Memória RAM</option>
+                            <option value="Termico">Térmico & Insumos</option>
+                            <option value="Setups">Setups Prontos</option>
+                            <option value="Perifericos">Periféricos</option>
+                            <option value="Geral">Geral</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Marca / Fornecedor:</label>
+                        <input type="text" id="inp-prod-brand" placeholder="Ex: Kingston / Kaidi" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Código de Barras EAN-13:</label>
+                        <input type="text" id="inp-prod-ean" placeholder="Opcional / Bipar..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 border-t border-zinc-900">
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Custo Aquisição (R$):*</label>
+                        <input type="number" id="inp-prod-cost" required step="0.01" min="0" placeholder="50,00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-yellow-400 font-bold focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Preço Venda (R$):*</label>
+                        <input type="number" id="inp-prod-price" required step="0.01" min="0" placeholder="95,00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-brand font-bold focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Qtd em Estoque:*</label>
+                        <input type="number" id="inp-prod-qty" required min="1" placeholder="5" value="5" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-bold focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t-2 border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closeNewProductModal()" class="px-4 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-bold uppercase hover:text-white transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.4)]">
+                        <i data-lucide="check" class="w-4 h-4"></i> Salvar Produto
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
