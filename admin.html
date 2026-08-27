@@ -1981,6 +1981,38 @@ Qualquer dúvida, estou à disposição!
                 document.getElementById('admin-login-pin')?.focus();
             }
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function showAuthError(msg) {
@@ -2018,6 +2050,38 @@ Qualquer dúvida, estou à disposição!
             // Setup Custom Build inicia limpo
 
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         async function checkAdminAuthSession() {
@@ -2050,6 +2114,38 @@ Qualquer dúvida, estou à disposição!
             if (guard) guard.classList.remove('hidden');
             if (app) app.classList.add('hidden');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         async function handleAdminEmailLogin(e) {
@@ -2175,6 +2271,38 @@ Qualquer dúvida, estou à disposição!
 
             showToast('Sessão encerrada com sucesso.', 'warning');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         
@@ -2435,9 +2563,20 @@ Qualquer dúvida, estou à disposição!
         }
         
         function switchTab(tabId) {
+            if (!tabId) tabId = 'kanban';
+            try {
+                sessionStorage.setItem('if_tech_active_tab', tabId);
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState(null, null, '#' + tabId);
+                }
+            } catch(e) {}
+
             if (tabId === 'sniper') setTimeout(() => { if (typeof renderSniperDashboard === 'function') renderSniperDashboard(); }, 50);
             if (tabId === 'msp') setTimeout(() => { if (typeof renderMSPDashboard === 'function') renderMSPDashboard(); }, 50);
             if (tabId === 'inventory') setTimeout(() => { if (typeof renderPOSGrid === 'function') renderPOSGrid(); if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable(); }, 50);
+            if (tabId === 'financial') setTimeout(() => { if (typeof renderFinancialDashboard === 'function') renderFinancialDashboard(currentWorkOrders); }, 50);
+            if (tabId === 'clients') setTimeout(() => { if (typeof filterClientsTable === 'function') filterClientsTable(); }, 50);
+            if (tabId === 'software') setTimeout(() => { if (typeof renderSoftwareProjectsDashboard === 'function') renderSoftwareProjectsDashboard(); }, 50);
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -2454,11 +2593,39 @@ Qualquer dúvida, estou à disposição!
                 targetBtn.classList.add('text-brand', 'border-brand', 'bg-brand/5');
             }
 
-            if (tabId === 'financial') {
-                if (typeof renderFinancialDashboard === 'function') renderFinancialDashboard(currentWorkOrders);
-            }
-
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         // Lista de OSs em memória
@@ -2466,68 +2633,7 @@ Qualquer dúvida, estou à disposição!
         let selectedWorkOrder = null;
 
         // Mock Fallback Inicial se o banco estiver vazio
-        const defaultMockOrders = [
-            {
-                os_number: 1050,
-                device_brand: 'Notebook',
-                device_model: 'Dell Inspiron 15',
-                reported_defect: 'Não dá vídeo e bipa 3 vezes. Cliente precisa p/ trabalho.',
-                client_name: 'Roberto F.',
-                client_whatsapp: '11991969154',
-                status: 'Triagem',
-                total_amount: 0.00,
-                public_tracking_token: 'mock-1050',
-                created_at: new Date().toISOString()
-            },
-            {
-                os_number: 1049,
-                device_brand: 'Desktop',
-                device_model: 'Upgrade PC Escritório',
-                reported_defect: 'Lentidão no Windows. Deseja SSD NVMe 1TB + 16GB RAM.',
-                client_name: 'Marcos Silveira',
-                client_whatsapp: '11988887777',
-                status: 'Orcamento_Aguardando_Aprovacao',
-                total_amount: 560.00,
-                public_tracking_token: 'mock-1049',
-                created_at: new Date().toISOString()
-            },
-            {
-                os_number: 1048,
-                device_brand: 'Custom Build',
-                device_model: 'PC Gamer Ryzen 5 7600',
-                reported_defect: 'Montagem de PC Novo com cable management.',
-                client_name: 'Lucas Gamer',
-                client_whatsapp: '11977776666',
-                status: 'Na_Bancada',
-                total_amount: 3865.00,
-                public_tracking_token: 'c75e295b-a48c-4294-a6ad-f28a4ac2efb8',
-                created_at: new Date().toISOString()
-            },
-            {
-                os_number: 1047,
-                device_brand: 'PC Gamer',
-                device_model: 'Limpeza Profunda PC Gamer',
-                reported_defect: 'Superaquecimento em jogos. Troca de pasta térmica por Arctic MX-4.',
-                client_name: 'Felipe Costa',
-                client_whatsapp: '11966665555',
-                status: 'Testes_QA',
-                total_amount: 220.00,
-                public_tracking_token: 'mock-1047',
-                created_at: new Date().toISOString()
-            },
-            {
-                os_number: 1046,
-                device_brand: 'Workstation',
-                device_model: 'Workstation i7 13700K',
-                reported_defect: 'Otimização e testes de estabilidade concluídos.',
-                client_name: 'Dra. Fernanda',
-                client_whatsapp: '11955554444',
-                status: 'Pronto',
-                total_amount: 415.00,
-                public_tracking_token: 'mock-1046',
-                created_at: new Date().toISOString()
-            }
-        ];
+        const defaultMockOrders = [];
 
         
         // =====================================================================
@@ -2709,6 +2815,38 @@ Qualquer dúvida, estou à disposição!
             }
 
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         // =====================================================================
@@ -2877,6 +3015,7 @@ Qualquer dúvida, estou à disposição!
         let posActiveCategory = 'all';
 
         function switchInventorySubTab(subTab) {
+            try { sessionStorage.setItem('if_tech_inv_subtab', subTab); } catch(e) {}
             const subtabs = ['pos', 'catalog', 'kardex'];
             subtabs.forEach(t => {
                 const el = document.getElementById('inv-subtab-' + t);
@@ -2901,6 +3040,38 @@ Qualquer dúvida, estou à disposição!
             if (subTab === 'catalog') renderInventoryCatalogTable();
             if (subTab === 'kardex') renderKardexTable();
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function filterPOSCategory(cat) {
@@ -2981,6 +3152,38 @@ Qualquer dúvida, estou à disposição!
                 grid.appendChild(card);
             });
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function addToPOSCart(prod) {
@@ -3081,6 +3284,38 @@ Qualquer dúvida, estou à disposição!
 
             recalcPOSCartTotals();
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function changeCartQty(idx, delta) {
@@ -3376,6 +3611,38 @@ Qualquer dúvida, estou à disposição!
             modal.classList.remove('hidden');
             setTimeout(() => document.getElementById('inp-prod-name')?.focus(), 100);
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function closeNewProductModal() {
@@ -3530,6 +3797,38 @@ Qualquer dúvida, estou à disposição!
                 `;
             }
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
 
@@ -3661,6 +3960,38 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
 
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function filterSoftwareProjects() {
@@ -3840,6 +4171,38 @@ Qualquer dúvida, estou à disposição!
             const modal = document.getElementById('software-project-detail-modal');
             if (modal) modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function closeSoftwareProjectDetail() {
@@ -4016,6 +4379,38 @@ Qualquer dúvida, estou à disposição!
 
             renderMSPDashboard();
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function renderMSPDashboard() {
@@ -4127,6 +4522,38 @@ Qualquer dúvida, estou à disposição!
                 grid.appendChild(card);
             });
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function filterMSPDevices() {
@@ -4438,6 +4865,38 @@ Qualquer dúvida, estou à disposição!
 
             document.getElementById('msp-ticket-detail-modal').classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function closeMSPTicketDetail() {
@@ -4607,6 +5066,38 @@ Qualquer dúvida, estou à disposição!
             renderDetailActionButtons(wo);
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function closeOSDetailModal() {
@@ -4704,6 +5195,38 @@ Qualquer dúvida, estou à disposição!
 
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function closeBudgetModal() {
@@ -5059,6 +5582,38 @@ IF Tech // Engenharia de Hardware`;
 
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function closeClientDetailModal() {
@@ -5644,6 +6199,38 @@ IF Tech // Engenharia de Hardware`;
             }
 
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function filterSniperCategory(cat) {
@@ -5720,6 +6307,38 @@ IF Tech // Engenharia de Hardware`;
 
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         }
 
         function closeSniperBroadcastModal() {
@@ -5855,6 +6474,38 @@ IF Tech // Engenharia de Hardware`;
         window.addEventListener('DOMContentLoaded', () => {
             checkAdminAuthSession();
             if (window.lucide) lucide.createIcons();
+
+            // Restaurar última aba ativa após F5
+            let activeTab = 'kanban';
+            const hash = (window.location.hash || '').replace('#', '');
+            if (ADMIN_TABS.includes(hash)) {
+                activeTab = hash;
+            } else {
+                try {
+                    const saved = sessionStorage.getItem('if_tech_active_tab');
+                    if (saved && ADMIN_TABS.includes(saved)) {
+                        activeTab = saved;
+                    }
+                } catch(e) {}
+            }
+            switchTab(activeTab);
+
+            // Restaurar sub-aba de Estoque
+            try {
+                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
+                if (savedInvSub && typeof switchInventorySubTab === 'function') {
+                    switchInventorySubTab(savedInvSub);
+                }
+            } catch(e) {}
+
+            // Restaurar sub-aba de MSP
+            try {
+                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
+                if (savedMspSub && typeof switchMSPSubTab === 'function') {
+                    switchMSPSubTab(savedMspSub);
+                }
+            } catch(e) {}
+        
         });
     </script>
 
