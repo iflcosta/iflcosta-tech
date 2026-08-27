@@ -18,12 +18,1437 @@
     <link rel="stylesheet" href="/assets/css/style.min.css">
     
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer>
+        // =====================================================================
+        // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
+        // =====================================================================
+        let currentSoftwareProjects = [
+            {
+                id: "sw-mock-01",
+                project_code: "PRJ-2026-001",
+                client_id: "c-01",
+                client_name: "Imobiliária Vista Bragança",
+                client_whatsapp: "(11) 98765-4321",
+                title: "Landing Page de Alta Conversão + WhatsApp Engine",
+                service_code: "SW-01",
+                status: "Em_Desenvolvimento",
+                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
+                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
+                staging_url: "https://preview.iflcosta.tech/vista-braganca",
+                total_budget: 1800.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-09-05",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 99,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 96,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-vista-2026"
+            },
+            {
+                id: "sw-mock-02",
+                project_code: "PRJ-2026-002",
+                client_id: "c-02",
+                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
+                client_whatsapp: "(11) 91234-5678",
+                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
+                service_code: "SW-02",
+                status: "Homologacao_Cliente",
+                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
+                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
+                staging_url: "https://preview.iflcosta.tech/odonto-demo",
+                total_budget: 1200.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-08-30",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 100,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 98,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-odonto-2026"
+            }
+        ];
+
+        let softwareTimesheetEntries = [
+            { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
+            { id: "ts-02", project_id: "sw-mock-01", description: "Ajuste de Webhook Asaas para parcelamento", hours: 1.0, rate: 130.00, date: "2026-08-27" }
+        ];
+
+        let activeSoftwareProject = null;
+
+        function loadSoftwareStorage() {
+            try {
+                const saved = localStorage.getItem('if_tech_software_projects');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) currentSoftwareProjects = parsed;
+                }
+                const savedTs = localStorage.getItem('if_tech_software_timesheet');
+                if (savedTs) {
+                    const parsedTs = JSON.parse(savedTs);
+                    if (Array.isArray(parsedTs)) softwareTimesheetEntries = parsedTs;
+                }
+            } catch (e) {
+                console.warn("Erro ao carregar storage de software:", e);
+            }
+        }
+
+        function saveSoftwareStorage() {
+            try {
+                localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects));
+                localStorage.setItem('if_tech_software_timesheet', JSON.stringify(softwareTimesheetEntries));
+            } catch (e) {
+                console.warn("Erro ao salvar storage de software:", e);
+            }
+        }
+
+        function renderSoftwareProjectsDashboard(projects) {
+            if (!projects) projects = currentSoftwareProjects || [];
+            const tbody = document.getElementById('software-projects-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let activeCount = 0;
+            let totalBudgetSum = 0;
+            let collectedSum = 0;
+
+            projects.forEach(p => {
+                const isConcluido = p.status === 'Concluido';
+                if (!isConcluido && p.status !== 'Cancelado') activeCount++;
+                totalBudgetSum += (p.total_budget || 0);
+
+                const half = (p.total_budget || 0) / 2;
+                if (p.kickoff_deposit_paid) collectedSum += half;
+                if (p.final_delivery_paid || isConcluido) collectedSum += half;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
+
+                let statusBadge = '';
+                if (p.status === 'Briefing') statusBadge = '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 text-[10px] font-bold">01. Briefing</span>';
+                else if (p.status === 'Em_Desenvolvimento') statusBadge = '<span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-bold">02. Em Dev</span>';
+                else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
+                else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
+                else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
+                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
+                        ${p.project_code}
+                    </td>
+                    <td class="py-3 px-3">
+                        <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
+                        <span class="text-[10px] text-zinc-500">${escapeHtml(p.client_whatsapp || '')}</span>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="text-zinc-200 block font-medium">${escapeHtml(p.title)}</span>
+                        <span class="text-[10px] text-cyan-400/80 uppercase">${escapeHtml(p.service_code || 'SW-01')}</span>
+                    </td>
+                    <td class="py-3 px-3 text-right font-black text-white">
+                        R$ ${(p.total_budget || 0).toFixed(2).replace('.', ',')}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${p.kickoff_deposit_paid ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]">PENDENTE</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${(p.final_delivery_paid || isConcluido) ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 font-bold text-[10px]">HOMOLOGAÇÃO</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center font-bold">
+                        <span class="text-brand">${p.lighthouse_performance_score || 99}</span>
+                        <span class="text-zinc-600">/</span>
+                        <span class="text-cyan-400">${p.lighthouse_seo_score || 100}</span>
+                    </td>
+                    <td class="py-3 px-3 text-center">${statusBadge}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="openSoftwareProjectDetail('${p.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-cyan-400 hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">
+                            Gerenciar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Recalcular Timesheet
+            let totalTsHours = 0;
+            let totalTsVal = 0;
+            softwareTimesheetEntries.forEach(ts => {
+                totalTsHours += (ts.hours || 0);
+                totalTsVal += (ts.hours * ts.rate);
+            });
+
+            // Atualizar KPIs
+            document.getElementById('sw-stat-active-count').textContent = activeCount;
+            document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
+            const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
+            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
+
+            document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function filterSoftwareProjects() {
+            const q = (document.getElementById('sw-search-input')?.value || '').toLowerCase().trim();
+            if (!q) {
+                renderSoftwareProjectsDashboard(currentSoftwareProjects);
+                return;
+            }
+            const filtered = currentSoftwareProjects.filter(p => 
+                p.project_code.toLowerCase().includes(q) ||
+                (p.client_name || '').toLowerCase().includes(q) ||
+                (p.title || '').toLowerCase().includes(q)
+            );
+            renderSoftwareProjectsDashboard(filtered);
+        }
+
+        function openNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                recalcSoftwareFormSplit();
+            }
+        }
+
+        function closeNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function applySoftwarePresetPrice() {
+            const code = document.getElementById('sw-form-service-code')?.value;
+            const budgetInput = document.getElementById('sw-form-budget');
+            if (!budgetInput) return;
+            if (code === 'SW-01') budgetInput.value = '1800.00';
+            else if (code === 'SW-02') budgetInput.value = '1200.00';
+            else if (code === 'SW-03') budgetInput.value = '4500.00';
+            recalcSoftwareFormSplit();
+        }
+
+        function recalcSoftwareFormSplit() {
+            const b = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const half = (b / 2).toFixed(2).replace('.', ',');
+            const el1 = document.getElementById('sw-form-split-1');
+            const el2 = document.getElementById('sw-form-split-2');
+            if (el1) el1.textContent = 'R$ ' + half;
+            if (el2) el2.textContent = 'R$ ' + half;
+        }
+
+        async function handleSaveNewSoftwareProject(e) {
+            e.preventDefault();
+            const clientName = document.getElementById('sw-form-client-name')?.value.trim();
+            const clientWhatsapp = document.getElementById('sw-form-client-whatsapp')?.value.trim();
+            const title = document.getElementById('sw-form-title')?.value.trim();
+            const serviceCode = document.getElementById('sw-form-service-code')?.value;
+            const scope = document.getElementById('sw-form-scope')?.value.trim();
+            const budget = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const mrr = parseFloat(document.getElementById('sw-form-mrr')?.value || 0);
+            const deliveryDate = document.getElementById('sw-form-delivery-date')?.value || new Date(Date.now() + 14*86400000).toISOString().split('T')[0];
+            const repoUrl = document.getElementById('sw-form-repo-url')?.value.trim();
+            const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
+
+            const seq = currentSoftwareProjects.length + 1;
+            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
+            const token = `sw-tok-${Date.now()}`;
+
+            const newProj = {
+                id: `sw-${Date.now()}`,
+                project_code: projectCode,
+                client_id: `c-${Date.now()}`,
+                client_name: clientName,
+                client_whatsapp: clientWhatsapp,
+                title: title,
+                service_code: serviceCode,
+                status: "Briefing",
+                scope_description: scope,
+                repository_url: repoUrl || `https://github.com/iflcosta/${projectCode.toLowerCase()}`,
+                staging_url: stagingUrl || `https://preview.iflcosta.tech/${projectCode.toLowerCase()}`,
+                total_budget: budget,
+                recurrent_support_mrr: mrr,
+                kickoff_deposit_paid: false,
+                final_delivery_paid: false,
+                estimated_delivery_date: deliveryDate,
+                actual_delivery_date: null,
+                lighthouse_performance_score: 98,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 95,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: token
+            };
+
+            currentSoftwareProjects.unshift(newProj);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            closeNewSoftwareProjectModal();
+
+            // Tentar sincronizar com Supabase se cliente existir
+            const client = getSupabase();
+            if (client) {
+                try {
+                    await client.rpc('rpc_create_software_project_atomic', {
+                        p_client_id: null,
+                        p_title: title,
+                        p_service_code: serviceCode,
+                        p_scope_description: scope,
+                        p_total_budget: budget,
+                        p_estimated_delivery_date: deliveryDate,
+                        p_repository_url: repoUrl,
+                        p_staging_url: stagingUrl,
+                        p_recurrent_support_mrr: mrr
+                    });
+                } catch (err) {
+                    console.log("Supabase RPC sync note:", err);
+                }
+            }
+
+            alert(`Projeto ${projectCode} criado com sucesso! Sinal de 50% (R$ ${(budget/2).toFixed(2)}) gerado.`);
+        }
+
+        function openSoftwareProjectDetail(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            activeSoftwareProject = proj;
+
+            document.getElementById('sw-detail-code').textContent = proj.project_code;
+            document.getElementById('sw-detail-title').textContent = proj.title;
+            document.getElementById('sw-detail-client').textContent = proj.client_name;
+            document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
+            document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
+            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
+            
+            const statusSelect = document.getElementById('sw-detail-status-select');
+            if (statusSelect) statusSelect.value = proj.status;
+
+            // Links
+            const stagingEl = document.getElementById('sw-detail-staging-link');
+            if (stagingEl) stagingEl.href = proj.staging_url || '#';
+            const repoEl = document.getElementById('sw-detail-repo-link');
+            if (repoEl) repoEl.href = proj.repository_url || '#';
+
+            // Lighthouse
+            document.getElementById('sw-lh-perf').value = proj.lighthouse_performance_score || 98;
+            document.getElementById('sw-lh-seo').value = proj.lighthouse_seo_score || 100;
+            document.getElementById('sw-lh-bp').value = proj.lighthouse_best_practices_score || 100;
+            document.getElementById('sw-lh-acc').value = proj.lighthouse_accessibility_score || 95;
+
+            // Render Milestones
+            const half = (proj.total_budget || 0) / 2;
+            const msContainer = document.getElementById('sw-detail-milestones-container');
+            if (msContainer) {
+                msContainer.innerHTML = `
+                    <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
+                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.kickoff_deposit_paid ? 'Estornar Sinal' : '✓ Confirmar Sinal 50%'}
+                        </button>
+                    </div>
+                    <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
+                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderProjectTimesheet(proj.id);
+
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeSoftwareProjectDetail() {
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.add('hidden');
+            activeSoftwareProject = null;
+        }
+
+        function handleSoftwareStatusChange(newStatus) {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.status = newStatus;
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+        }
+
+        function toggleKickoffPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.kickoff_deposit_paid = !proj.kickoff_deposit_paid;
+            if (proj.kickoff_deposit_paid && proj.status === 'Briefing') {
+                proj.status = 'Em_Desenvolvimento';
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function toggleFinalPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.final_delivery_paid = !proj.final_delivery_paid;
+            if (proj.final_delivery_paid) {
+                proj.status = 'Concluido';
+                proj.actual_delivery_date = new Date().toISOString().split('T')[0];
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function saveSoftwareLighthouseScores() {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.lighthouse_performance_score = parseInt(document.getElementById('sw-lh-perf')?.value || 98);
+            activeSoftwareProject.lighthouse_seo_score = parseInt(document.getElementById('sw-lh-seo')?.value || 100);
+            activeSoftwareProject.lighthouse_best_practices_score = parseInt(document.getElementById('sw-lh-bp')?.value || 100);
+            activeSoftwareProject.lighthouse_accessibility_score = parseInt(document.getElementById('sw-lh-acc')?.value || 95);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            alert("Scores do Lighthouse atualizados com sucesso!");
+        }
+
+        function renderProjectTimesheet(projId) {
+            const tbody = document.getElementById('sw-timesheet-tbody');
+            const totalEl = document.getElementById('sw-timesheet-subtotal');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const entries = softwareTimesheetEntries.filter(ts => ts.project_id === projId);
+            let sumHours = 0;
+            let sumVal = 0;
+
+            entries.forEach(e => {
+                sumHours += e.hours;
+                const v = e.hours * e.rate;
+                sumVal += v;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-1 px-2 text-zinc-500">${e.date}</td>
+                    <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
+                    <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
+                    <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
+        }
+
+        function handleAddTimesheetEntry() {
+            if (!activeSoftwareProject) return;
+            const desc = document.getElementById('sw-new-timesheet-desc')?.value.trim();
+            const hours = parseFloat(document.getElementById('sw-new-timesheet-hours')?.value || 1.0);
+            if (!desc) {
+                alert("Informe a descrição da atividade.");
+                return;
+            }
+
+            softwareTimesheetEntries.unshift({
+                id: `ts-${Date.now()}`,
+                project_id: activeSoftwareProject.id,
+                description: desc,
+                hours: hours,
+                rate: 130.00,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            document.getElementById('sw-new-timesheet-desc').value = '';
+            saveSoftwareStorage();
+            renderProjectTimesheet(activeSoftwareProject.id);
+            renderSoftwareProjectsDashboard();
+        }
+
+        function copySoftwareMagicLink() {
+            if (!activeSoftwareProject) return;
+            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
+            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
+            
+            navigator.clipboard.writeText(msg).then(() => {
+                alert("Magic Link de Software copiado para a Área de Transferência!");
+            }).catch(() => {
+                prompt("Copie a mensagem de acompanhamento:", msg);
+            });
+        }
+    
+    </script>
     <!-- Gerador Nativo de QR Code Térmico -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js">
+        // =====================================================================
+        // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
+        // =====================================================================
+        let currentSoftwareProjects = [
+            {
+                id: "sw-mock-01",
+                project_code: "PRJ-2026-001",
+                client_id: "c-01",
+                client_name: "Imobiliária Vista Bragança",
+                client_whatsapp: "(11) 98765-4321",
+                title: "Landing Page de Alta Conversão + WhatsApp Engine",
+                service_code: "SW-01",
+                status: "Em_Desenvolvimento",
+                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
+                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
+                staging_url: "https://preview.iflcosta.tech/vista-braganca",
+                total_budget: 1800.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-09-05",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 99,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 96,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-vista-2026"
+            },
+            {
+                id: "sw-mock-02",
+                project_code: "PRJ-2026-002",
+                client_id: "c-02",
+                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
+                client_whatsapp: "(11) 91234-5678",
+                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
+                service_code: "SW-02",
+                status: "Homologacao_Cliente",
+                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
+                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
+                staging_url: "https://preview.iflcosta.tech/odonto-demo",
+                total_budget: 1200.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-08-30",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 100,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 98,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-odonto-2026"
+            }
+        ];
+
+        let softwareTimesheetEntries = [
+            { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
+            { id: "ts-02", project_id: "sw-mock-01", description: "Ajuste de Webhook Asaas para parcelamento", hours: 1.0, rate: 130.00, date: "2026-08-27" }
+        ];
+
+        let activeSoftwareProject = null;
+
+        function loadSoftwareStorage() {
+            try {
+                const saved = localStorage.getItem('if_tech_software_projects');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) currentSoftwareProjects = parsed;
+                }
+                const savedTs = localStorage.getItem('if_tech_software_timesheet');
+                if (savedTs) {
+                    const parsedTs = JSON.parse(savedTs);
+                    if (Array.isArray(parsedTs)) softwareTimesheetEntries = parsedTs;
+                }
+            } catch (e) {
+                console.warn("Erro ao carregar storage de software:", e);
+            }
+        }
+
+        function saveSoftwareStorage() {
+            try {
+                localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects));
+                localStorage.setItem('if_tech_software_timesheet', JSON.stringify(softwareTimesheetEntries));
+            } catch (e) {
+                console.warn("Erro ao salvar storage de software:", e);
+            }
+        }
+
+        function renderSoftwareProjectsDashboard(projects) {
+            if (!projects) projects = currentSoftwareProjects || [];
+            const tbody = document.getElementById('software-projects-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let activeCount = 0;
+            let totalBudgetSum = 0;
+            let collectedSum = 0;
+
+            projects.forEach(p => {
+                const isConcluido = p.status === 'Concluido';
+                if (!isConcluido && p.status !== 'Cancelado') activeCount++;
+                totalBudgetSum += (p.total_budget || 0);
+
+                const half = (p.total_budget || 0) / 2;
+                if (p.kickoff_deposit_paid) collectedSum += half;
+                if (p.final_delivery_paid || isConcluido) collectedSum += half;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
+
+                let statusBadge = '';
+                if (p.status === 'Briefing') statusBadge = '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 text-[10px] font-bold">01. Briefing</span>';
+                else if (p.status === 'Em_Desenvolvimento') statusBadge = '<span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-bold">02. Em Dev</span>';
+                else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
+                else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
+                else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
+                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
+                        ${p.project_code}
+                    </td>
+                    <td class="py-3 px-3">
+                        <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
+                        <span class="text-[10px] text-zinc-500">${escapeHtml(p.client_whatsapp || '')}</span>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="text-zinc-200 block font-medium">${escapeHtml(p.title)}</span>
+                        <span class="text-[10px] text-cyan-400/80 uppercase">${escapeHtml(p.service_code || 'SW-01')}</span>
+                    </td>
+                    <td class="py-3 px-3 text-right font-black text-white">
+                        R$ ${(p.total_budget || 0).toFixed(2).replace('.', ',')}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${p.kickoff_deposit_paid ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]">PENDENTE</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${(p.final_delivery_paid || isConcluido) ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 font-bold text-[10px]">HOMOLOGAÇÃO</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center font-bold">
+                        <span class="text-brand">${p.lighthouse_performance_score || 99}</span>
+                        <span class="text-zinc-600">/</span>
+                        <span class="text-cyan-400">${p.lighthouse_seo_score || 100}</span>
+                    </td>
+                    <td class="py-3 px-3 text-center">${statusBadge}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="openSoftwareProjectDetail('${p.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-cyan-400 hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">
+                            Gerenciar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Recalcular Timesheet
+            let totalTsHours = 0;
+            let totalTsVal = 0;
+            softwareTimesheetEntries.forEach(ts => {
+                totalTsHours += (ts.hours || 0);
+                totalTsVal += (ts.hours * ts.rate);
+            });
+
+            // Atualizar KPIs
+            document.getElementById('sw-stat-active-count').textContent = activeCount;
+            document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
+            const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
+            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
+
+            document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function filterSoftwareProjects() {
+            const q = (document.getElementById('sw-search-input')?.value || '').toLowerCase().trim();
+            if (!q) {
+                renderSoftwareProjectsDashboard(currentSoftwareProjects);
+                return;
+            }
+            const filtered = currentSoftwareProjects.filter(p => 
+                p.project_code.toLowerCase().includes(q) ||
+                (p.client_name || '').toLowerCase().includes(q) ||
+                (p.title || '').toLowerCase().includes(q)
+            );
+            renderSoftwareProjectsDashboard(filtered);
+        }
+
+        function openNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                recalcSoftwareFormSplit();
+            }
+        }
+
+        function closeNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function applySoftwarePresetPrice() {
+            const code = document.getElementById('sw-form-service-code')?.value;
+            const budgetInput = document.getElementById('sw-form-budget');
+            if (!budgetInput) return;
+            if (code === 'SW-01') budgetInput.value = '1800.00';
+            else if (code === 'SW-02') budgetInput.value = '1200.00';
+            else if (code === 'SW-03') budgetInput.value = '4500.00';
+            recalcSoftwareFormSplit();
+        }
+
+        function recalcSoftwareFormSplit() {
+            const b = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const half = (b / 2).toFixed(2).replace('.', ',');
+            const el1 = document.getElementById('sw-form-split-1');
+            const el2 = document.getElementById('sw-form-split-2');
+            if (el1) el1.textContent = 'R$ ' + half;
+            if (el2) el2.textContent = 'R$ ' + half;
+        }
+
+        async function handleSaveNewSoftwareProject(e) {
+            e.preventDefault();
+            const clientName = document.getElementById('sw-form-client-name')?.value.trim();
+            const clientWhatsapp = document.getElementById('sw-form-client-whatsapp')?.value.trim();
+            const title = document.getElementById('sw-form-title')?.value.trim();
+            const serviceCode = document.getElementById('sw-form-service-code')?.value;
+            const scope = document.getElementById('sw-form-scope')?.value.trim();
+            const budget = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const mrr = parseFloat(document.getElementById('sw-form-mrr')?.value || 0);
+            const deliveryDate = document.getElementById('sw-form-delivery-date')?.value || new Date(Date.now() + 14*86400000).toISOString().split('T')[0];
+            const repoUrl = document.getElementById('sw-form-repo-url')?.value.trim();
+            const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
+
+            const seq = currentSoftwareProjects.length + 1;
+            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
+            const token = `sw-tok-${Date.now()}`;
+
+            const newProj = {
+                id: `sw-${Date.now()}`,
+                project_code: projectCode,
+                client_id: `c-${Date.now()}`,
+                client_name: clientName,
+                client_whatsapp: clientWhatsapp,
+                title: title,
+                service_code: serviceCode,
+                status: "Briefing",
+                scope_description: scope,
+                repository_url: repoUrl || `https://github.com/iflcosta/${projectCode.toLowerCase()}`,
+                staging_url: stagingUrl || `https://preview.iflcosta.tech/${projectCode.toLowerCase()}`,
+                total_budget: budget,
+                recurrent_support_mrr: mrr,
+                kickoff_deposit_paid: false,
+                final_delivery_paid: false,
+                estimated_delivery_date: deliveryDate,
+                actual_delivery_date: null,
+                lighthouse_performance_score: 98,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 95,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: token
+            };
+
+            currentSoftwareProjects.unshift(newProj);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            closeNewSoftwareProjectModal();
+
+            // Tentar sincronizar com Supabase se cliente existir
+            const client = getSupabase();
+            if (client) {
+                try {
+                    await client.rpc('rpc_create_software_project_atomic', {
+                        p_client_id: null,
+                        p_title: title,
+                        p_service_code: serviceCode,
+                        p_scope_description: scope,
+                        p_total_budget: budget,
+                        p_estimated_delivery_date: deliveryDate,
+                        p_repository_url: repoUrl,
+                        p_staging_url: stagingUrl,
+                        p_recurrent_support_mrr: mrr
+                    });
+                } catch (err) {
+                    console.log("Supabase RPC sync note:", err);
+                }
+            }
+
+            alert(`Projeto ${projectCode} criado com sucesso! Sinal de 50% (R$ ${(budget/2).toFixed(2)}) gerado.`);
+        }
+
+        function openSoftwareProjectDetail(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            activeSoftwareProject = proj;
+
+            document.getElementById('sw-detail-code').textContent = proj.project_code;
+            document.getElementById('sw-detail-title').textContent = proj.title;
+            document.getElementById('sw-detail-client').textContent = proj.client_name;
+            document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
+            document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
+            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
+            
+            const statusSelect = document.getElementById('sw-detail-status-select');
+            if (statusSelect) statusSelect.value = proj.status;
+
+            // Links
+            const stagingEl = document.getElementById('sw-detail-staging-link');
+            if (stagingEl) stagingEl.href = proj.staging_url || '#';
+            const repoEl = document.getElementById('sw-detail-repo-link');
+            if (repoEl) repoEl.href = proj.repository_url || '#';
+
+            // Lighthouse
+            document.getElementById('sw-lh-perf').value = proj.lighthouse_performance_score || 98;
+            document.getElementById('sw-lh-seo').value = proj.lighthouse_seo_score || 100;
+            document.getElementById('sw-lh-bp').value = proj.lighthouse_best_practices_score || 100;
+            document.getElementById('sw-lh-acc').value = proj.lighthouse_accessibility_score || 95;
+
+            // Render Milestones
+            const half = (proj.total_budget || 0) / 2;
+            const msContainer = document.getElementById('sw-detail-milestones-container');
+            if (msContainer) {
+                msContainer.innerHTML = `
+                    <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
+                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.kickoff_deposit_paid ? 'Estornar Sinal' : '✓ Confirmar Sinal 50%'}
+                        </button>
+                    </div>
+                    <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
+                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderProjectTimesheet(proj.id);
+
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeSoftwareProjectDetail() {
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.add('hidden');
+            activeSoftwareProject = null;
+        }
+
+        function handleSoftwareStatusChange(newStatus) {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.status = newStatus;
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+        }
+
+        function toggleKickoffPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.kickoff_deposit_paid = !proj.kickoff_deposit_paid;
+            if (proj.kickoff_deposit_paid && proj.status === 'Briefing') {
+                proj.status = 'Em_Desenvolvimento';
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function toggleFinalPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.final_delivery_paid = !proj.final_delivery_paid;
+            if (proj.final_delivery_paid) {
+                proj.status = 'Concluido';
+                proj.actual_delivery_date = new Date().toISOString().split('T')[0];
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function saveSoftwareLighthouseScores() {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.lighthouse_performance_score = parseInt(document.getElementById('sw-lh-perf')?.value || 98);
+            activeSoftwareProject.lighthouse_seo_score = parseInt(document.getElementById('sw-lh-seo')?.value || 100);
+            activeSoftwareProject.lighthouse_best_practices_score = parseInt(document.getElementById('sw-lh-bp')?.value || 100);
+            activeSoftwareProject.lighthouse_accessibility_score = parseInt(document.getElementById('sw-lh-acc')?.value || 95);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            alert("Scores do Lighthouse atualizados com sucesso!");
+        }
+
+        function renderProjectTimesheet(projId) {
+            const tbody = document.getElementById('sw-timesheet-tbody');
+            const totalEl = document.getElementById('sw-timesheet-subtotal');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const entries = softwareTimesheetEntries.filter(ts => ts.project_id === projId);
+            let sumHours = 0;
+            let sumVal = 0;
+
+            entries.forEach(e => {
+                sumHours += e.hours;
+                const v = e.hours * e.rate;
+                sumVal += v;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-1 px-2 text-zinc-500">${e.date}</td>
+                    <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
+                    <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
+                    <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
+        }
+
+        function handleAddTimesheetEntry() {
+            if (!activeSoftwareProject) return;
+            const desc = document.getElementById('sw-new-timesheet-desc')?.value.trim();
+            const hours = parseFloat(document.getElementById('sw-new-timesheet-hours')?.value || 1.0);
+            if (!desc) {
+                alert("Informe a descrição da atividade.");
+                return;
+            }
+
+            softwareTimesheetEntries.unshift({
+                id: `ts-${Date.now()}`,
+                project_id: activeSoftwareProject.id,
+                description: desc,
+                hours: hours,
+                rate: 130.00,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            document.getElementById('sw-new-timesheet-desc').value = '';
+            saveSoftwareStorage();
+            renderProjectTimesheet(activeSoftwareProject.id);
+            renderSoftwareProjectsDashboard();
+        }
+
+        function copySoftwareMagicLink() {
+            if (!activeSoftwareProject) return;
+            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
+            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
+            
+            navigator.clipboard.writeText(msg).then(() => {
+                alert("Magic Link de Software copiado para a Área de Transferência!");
+            }).catch(() => {
+                prompt("Copie a mensagem de acompanhamento:", msg);
+            });
+        }
+    
+    </script>
 
     <!-- Supabase JS Client SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        // =====================================================================
+        // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
+        // =====================================================================
+        let currentSoftwareProjects = [
+            {
+                id: "sw-mock-01",
+                project_code: "PRJ-2026-001",
+                client_id: "c-01",
+                client_name: "Imobiliária Vista Bragança",
+                client_whatsapp: "(11) 98765-4321",
+                title: "Landing Page de Alta Conversão + WhatsApp Engine",
+                service_code: "SW-01",
+                status: "Em_Desenvolvimento",
+                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
+                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
+                staging_url: "https://preview.iflcosta.tech/vista-braganca",
+                total_budget: 1800.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-09-05",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 99,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 96,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-vista-2026"
+            },
+            {
+                id: "sw-mock-02",
+                project_code: "PRJ-2026-002",
+                client_id: "c-02",
+                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
+                client_whatsapp: "(11) 91234-5678",
+                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
+                service_code: "SW-02",
+                status: "Homologacao_Cliente",
+                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
+                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
+                staging_url: "https://preview.iflcosta.tech/odonto-demo",
+                total_budget: 1200.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-08-30",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 100,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 98,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-odonto-2026"
+            }
+        ];
+
+        let softwareTimesheetEntries = [
+            { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
+            { id: "ts-02", project_id: "sw-mock-01", description: "Ajuste de Webhook Asaas para parcelamento", hours: 1.0, rate: 130.00, date: "2026-08-27" }
+        ];
+
+        let activeSoftwareProject = null;
+
+        function loadSoftwareStorage() {
+            try {
+                const saved = localStorage.getItem('if_tech_software_projects');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) currentSoftwareProjects = parsed;
+                }
+                const savedTs = localStorage.getItem('if_tech_software_timesheet');
+                if (savedTs) {
+                    const parsedTs = JSON.parse(savedTs);
+                    if (Array.isArray(parsedTs)) softwareTimesheetEntries = parsedTs;
+                }
+            } catch (e) {
+                console.warn("Erro ao carregar storage de software:", e);
+            }
+        }
+
+        function saveSoftwareStorage() {
+            try {
+                localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects));
+                localStorage.setItem('if_tech_software_timesheet', JSON.stringify(softwareTimesheetEntries));
+            } catch (e) {
+                console.warn("Erro ao salvar storage de software:", e);
+            }
+        }
+
+        function renderSoftwareProjectsDashboard(projects) {
+            if (!projects) projects = currentSoftwareProjects || [];
+            const tbody = document.getElementById('software-projects-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let activeCount = 0;
+            let totalBudgetSum = 0;
+            let collectedSum = 0;
+
+            projects.forEach(p => {
+                const isConcluido = p.status === 'Concluido';
+                if (!isConcluido && p.status !== 'Cancelado') activeCount++;
+                totalBudgetSum += (p.total_budget || 0);
+
+                const half = (p.total_budget || 0) / 2;
+                if (p.kickoff_deposit_paid) collectedSum += half;
+                if (p.final_delivery_paid || isConcluido) collectedSum += half;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
+
+                let statusBadge = '';
+                if (p.status === 'Briefing') statusBadge = '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 text-[10px] font-bold">01. Briefing</span>';
+                else if (p.status === 'Em_Desenvolvimento') statusBadge = '<span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-bold">02. Em Dev</span>';
+                else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
+                else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
+                else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
+                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
+                        ${p.project_code}
+                    </td>
+                    <td class="py-3 px-3">
+                        <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
+                        <span class="text-[10px] text-zinc-500">${escapeHtml(p.client_whatsapp || '')}</span>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="text-zinc-200 block font-medium">${escapeHtml(p.title)}</span>
+                        <span class="text-[10px] text-cyan-400/80 uppercase">${escapeHtml(p.service_code || 'SW-01')}</span>
+                    </td>
+                    <td class="py-3 px-3 text-right font-black text-white">
+                        R$ ${(p.total_budget || 0).toFixed(2).replace('.', ',')}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${p.kickoff_deposit_paid ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]">PENDENTE</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${(p.final_delivery_paid || isConcluido) ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 font-bold text-[10px]">HOMOLOGAÇÃO</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center font-bold">
+                        <span class="text-brand">${p.lighthouse_performance_score || 99}</span>
+                        <span class="text-zinc-600">/</span>
+                        <span class="text-cyan-400">${p.lighthouse_seo_score || 100}</span>
+                    </td>
+                    <td class="py-3 px-3 text-center">${statusBadge}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="openSoftwareProjectDetail('${p.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-cyan-400 hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">
+                            Gerenciar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Recalcular Timesheet
+            let totalTsHours = 0;
+            let totalTsVal = 0;
+            softwareTimesheetEntries.forEach(ts => {
+                totalTsHours += (ts.hours || 0);
+                totalTsVal += (ts.hours * ts.rate);
+            });
+
+            // Atualizar KPIs
+            document.getElementById('sw-stat-active-count').textContent = activeCount;
+            document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
+            const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
+            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
+
+            document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function filterSoftwareProjects() {
+            const q = (document.getElementById('sw-search-input')?.value || '').toLowerCase().trim();
+            if (!q) {
+                renderSoftwareProjectsDashboard(currentSoftwareProjects);
+                return;
+            }
+            const filtered = currentSoftwareProjects.filter(p => 
+                p.project_code.toLowerCase().includes(q) ||
+                (p.client_name || '').toLowerCase().includes(q) ||
+                (p.title || '').toLowerCase().includes(q)
+            );
+            renderSoftwareProjectsDashboard(filtered);
+        }
+
+        function openNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                recalcSoftwareFormSplit();
+            }
+        }
+
+        function closeNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function applySoftwarePresetPrice() {
+            const code = document.getElementById('sw-form-service-code')?.value;
+            const budgetInput = document.getElementById('sw-form-budget');
+            if (!budgetInput) return;
+            if (code === 'SW-01') budgetInput.value = '1800.00';
+            else if (code === 'SW-02') budgetInput.value = '1200.00';
+            else if (code === 'SW-03') budgetInput.value = '4500.00';
+            recalcSoftwareFormSplit();
+        }
+
+        function recalcSoftwareFormSplit() {
+            const b = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const half = (b / 2).toFixed(2).replace('.', ',');
+            const el1 = document.getElementById('sw-form-split-1');
+            const el2 = document.getElementById('sw-form-split-2');
+            if (el1) el1.textContent = 'R$ ' + half;
+            if (el2) el2.textContent = 'R$ ' + half;
+        }
+
+        async function handleSaveNewSoftwareProject(e) {
+            e.preventDefault();
+            const clientName = document.getElementById('sw-form-client-name')?.value.trim();
+            const clientWhatsapp = document.getElementById('sw-form-client-whatsapp')?.value.trim();
+            const title = document.getElementById('sw-form-title')?.value.trim();
+            const serviceCode = document.getElementById('sw-form-service-code')?.value;
+            const scope = document.getElementById('sw-form-scope')?.value.trim();
+            const budget = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const mrr = parseFloat(document.getElementById('sw-form-mrr')?.value || 0);
+            const deliveryDate = document.getElementById('sw-form-delivery-date')?.value || new Date(Date.now() + 14*86400000).toISOString().split('T')[0];
+            const repoUrl = document.getElementById('sw-form-repo-url')?.value.trim();
+            const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
+
+            const seq = currentSoftwareProjects.length + 1;
+            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
+            const token = `sw-tok-${Date.now()}`;
+
+            const newProj = {
+                id: `sw-${Date.now()}`,
+                project_code: projectCode,
+                client_id: `c-${Date.now()}`,
+                client_name: clientName,
+                client_whatsapp: clientWhatsapp,
+                title: title,
+                service_code: serviceCode,
+                status: "Briefing",
+                scope_description: scope,
+                repository_url: repoUrl || `https://github.com/iflcosta/${projectCode.toLowerCase()}`,
+                staging_url: stagingUrl || `https://preview.iflcosta.tech/${projectCode.toLowerCase()}`,
+                total_budget: budget,
+                recurrent_support_mrr: mrr,
+                kickoff_deposit_paid: false,
+                final_delivery_paid: false,
+                estimated_delivery_date: deliveryDate,
+                actual_delivery_date: null,
+                lighthouse_performance_score: 98,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 95,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: token
+            };
+
+            currentSoftwareProjects.unshift(newProj);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            closeNewSoftwareProjectModal();
+
+            // Tentar sincronizar com Supabase se cliente existir
+            const client = getSupabase();
+            if (client) {
+                try {
+                    await client.rpc('rpc_create_software_project_atomic', {
+                        p_client_id: null,
+                        p_title: title,
+                        p_service_code: serviceCode,
+                        p_scope_description: scope,
+                        p_total_budget: budget,
+                        p_estimated_delivery_date: deliveryDate,
+                        p_repository_url: repoUrl,
+                        p_staging_url: stagingUrl,
+                        p_recurrent_support_mrr: mrr
+                    });
+                } catch (err) {
+                    console.log("Supabase RPC sync note:", err);
+                }
+            }
+
+            alert(`Projeto ${projectCode} criado com sucesso! Sinal de 50% (R$ ${(budget/2).toFixed(2)}) gerado.`);
+        }
+
+        function openSoftwareProjectDetail(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            activeSoftwareProject = proj;
+
+            document.getElementById('sw-detail-code').textContent = proj.project_code;
+            document.getElementById('sw-detail-title').textContent = proj.title;
+            document.getElementById('sw-detail-client').textContent = proj.client_name;
+            document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
+            document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
+            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
+            
+            const statusSelect = document.getElementById('sw-detail-status-select');
+            if (statusSelect) statusSelect.value = proj.status;
+
+            // Links
+            const stagingEl = document.getElementById('sw-detail-staging-link');
+            if (stagingEl) stagingEl.href = proj.staging_url || '#';
+            const repoEl = document.getElementById('sw-detail-repo-link');
+            if (repoEl) repoEl.href = proj.repository_url || '#';
+
+            // Lighthouse
+            document.getElementById('sw-lh-perf').value = proj.lighthouse_performance_score || 98;
+            document.getElementById('sw-lh-seo').value = proj.lighthouse_seo_score || 100;
+            document.getElementById('sw-lh-bp').value = proj.lighthouse_best_practices_score || 100;
+            document.getElementById('sw-lh-acc').value = proj.lighthouse_accessibility_score || 95;
+
+            // Render Milestones
+            const half = (proj.total_budget || 0) / 2;
+            const msContainer = document.getElementById('sw-detail-milestones-container');
+            if (msContainer) {
+                msContainer.innerHTML = `
+                    <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
+                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.kickoff_deposit_paid ? 'Estornar Sinal' : '✓ Confirmar Sinal 50%'}
+                        </button>
+                    </div>
+                    <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
+                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderProjectTimesheet(proj.id);
+
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeSoftwareProjectDetail() {
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.add('hidden');
+            activeSoftwareProject = null;
+        }
+
+        function handleSoftwareStatusChange(newStatus) {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.status = newStatus;
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+        }
+
+        function toggleKickoffPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.kickoff_deposit_paid = !proj.kickoff_deposit_paid;
+            if (proj.kickoff_deposit_paid && proj.status === 'Briefing') {
+                proj.status = 'Em_Desenvolvimento';
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function toggleFinalPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.final_delivery_paid = !proj.final_delivery_paid;
+            if (proj.final_delivery_paid) {
+                proj.status = 'Concluido';
+                proj.actual_delivery_date = new Date().toISOString().split('T')[0];
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function saveSoftwareLighthouseScores() {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.lighthouse_performance_score = parseInt(document.getElementById('sw-lh-perf')?.value || 98);
+            activeSoftwareProject.lighthouse_seo_score = parseInt(document.getElementById('sw-lh-seo')?.value || 100);
+            activeSoftwareProject.lighthouse_best_practices_score = parseInt(document.getElementById('sw-lh-bp')?.value || 100);
+            activeSoftwareProject.lighthouse_accessibility_score = parseInt(document.getElementById('sw-lh-acc')?.value || 95);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            alert("Scores do Lighthouse atualizados com sucesso!");
+        }
+
+        function renderProjectTimesheet(projId) {
+            const tbody = document.getElementById('sw-timesheet-tbody');
+            const totalEl = document.getElementById('sw-timesheet-subtotal');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const entries = softwareTimesheetEntries.filter(ts => ts.project_id === projId);
+            let sumHours = 0;
+            let sumVal = 0;
+
+            entries.forEach(e => {
+                sumHours += e.hours;
+                const v = e.hours * e.rate;
+                sumVal += v;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-1 px-2 text-zinc-500">${e.date}</td>
+                    <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
+                    <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
+                    <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
+        }
+
+        function handleAddTimesheetEntry() {
+            if (!activeSoftwareProject) return;
+            const desc = document.getElementById('sw-new-timesheet-desc')?.value.trim();
+            const hours = parseFloat(document.getElementById('sw-new-timesheet-hours')?.value || 1.0);
+            if (!desc) {
+                alert("Informe a descrição da atividade.");
+                return;
+            }
+
+            softwareTimesheetEntries.unshift({
+                id: `ts-${Date.now()}`,
+                project_id: activeSoftwareProject.id,
+                description: desc,
+                hours: hours,
+                rate: 130.00,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            document.getElementById('sw-new-timesheet-desc').value = '';
+            saveSoftwareStorage();
+            renderProjectTimesheet(activeSoftwareProject.id);
+            renderSoftwareProjectsDashboard();
+        }
+
+        function copySoftwareMagicLink() {
+            if (!activeSoftwareProject) return;
+            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
+            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
+            
+            navigator.clipboard.writeText(msg).then(() => {
+                alert("Magic Link de Software copiado para a Área de Transferência!");
+            }).catch(() => {
+                prompt("Copie a mensagem de acompanhamento:", msg);
+            });
+        }
+    
+    </script>
 
     <!-- ESTILOS EXCLUSIVOS PARA IMPRESSÃO TÉRMICA DUAL (BANCADA & RECIBO CLIENTE) -->
     <style id="thermal-label-style">
@@ -484,41 +1909,68 @@
             </div>
 
             <!-- ============================================================= -->
-            <!-- 3. ABA: PROJETOS DE SOFTWARE & WEB ENGINES                     -->
+            <!-- 3. ABA: PROJETOS DE SOFTWARE & WEB ENGINES (SPRINT 4)          -->
             <!-- ============================================================= -->
-            <div id="tab-content-software" class="tab-content hidden space-y-6">
-                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 font-mono">
-                    <div class="flex justify-between items-center pb-4 border-b border-zinc-800 mb-6">
+            <div id="tab-content-software" class="tab-content hidden space-y-6 font-mono">
+                <!-- Métricas Executivas de Software (Motor 2) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-cyan-500 transition-colors">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">PROJETOS ATIVOS</div>
+                        <div class="text-2xl sm:text-3xl font-black text-cyan-400" id="sw-stat-active-count">0</div>
+                        <div class="text-[10px] text-zinc-400 mt-1">Pipeline em Desenvolvimento</div>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-brand transition-colors">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">FATURAMENTO CONTRATADO</div>
+                        <div class="text-xl sm:text-2xl font-black text-white" id="sw-stat-total-budget">R$ 0,00</div>
+                        <div class="text-[10px] text-zinc-400 mt-1">Soma Contratos 50/50</div>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-brand transition-colors">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">RECEITA LIQUIDADA (50/50)</div>
+                        <div class="text-xl sm:text-2xl font-black text-brand" id="sw-stat-collected-val">R$ 0,00</div>
+                        <div class="text-[10px] text-brand/80 mt-1" id="sw-stat-collected-pct">0% Recebido Asaas</div>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-yellow-500 transition-colors">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">TIMESHEET HORAS EXTRAS</div>
+                        <div class="text-xl sm:text-2xl font-black text-yellow-400" id="sw-stat-timesheet-val">R$ 0,00</div>
+                        <div class="text-[10px] text-zinc-400 mt-1" id="sw-stat-timesheet-hours">0h @ R$ 130/h</div>
+                    </div>
+                </div>
+
+                <!-- Painel Principal de Projetos -->
+                <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-6">
                         <div>
-                            <span class="text-cyan-400 text-xs font-bold uppercase block mb-1">[ Pilar 2 • Software & Engenharia Web ]</span>
-                            <h3 class="text-xl sm:text-2xl font-extrabold text-white">Pipeline de Projetos Ativos</h3>
+                            <span class="text-cyan-400 text-xs font-bold uppercase block mb-1">[ Pilar 2 • Software, Sistemas Web & Automações ]</span>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-white flex items-center gap-2">
+                                <i data-lucide="code-2" class="w-5 h-5 text-cyan-400"></i> Pipeline de Engenharia de Software
+                            </h3>
                         </div>
-                        <button class="px-3 py-1.5 bg-cyan-950/60 border border-cyan-500 text-cyan-400 text-xs font-bold uppercase hover:bg-cyan-400 hover:text-black transition-colors">
-                            + Novo Projeto Web
-                        </button>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <input type="text" id="sw-search-input" onkeyup="filterSoftwareProjects()" placeholder="Buscar por código, cliente ou escopo..." class="w-full sm:w-64 bg-zinc-900 border border-zinc-700 px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-400">
+                            <button type="button" onclick="openNewSoftwareProjectModal()" class="px-4 py-2 bg-cyan-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)] whitespace-nowrap">
+                                <i data-lucide="plus" class="w-4 h-4"></i> + Novo Projeto Web
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- Tabela de Projetos Reativa -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-xs text-left border-collapse">
                             <thead>
-                                <tr class="border-b border-zinc-800 text-zinc-400">
-                                    <th class="py-2.5 px-3">Código</th>
-                                    <th class="py-2.5 px-3">Cliente / Empresa</th>
-                                    <th class="py-2.5 px-3">Escopo do Projeto</th>
-                                    <th class="py-2.5 px-3">Milestone 1 (50%)</th>
-                                    <th class="py-2.5 px-3">Milestone 2 (50%)</th>
-                                    <th class="py-2.5 px-3">Status</th>
+                                <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950/80">
+                                    <th class="py-3 px-3">Código</th>
+                                    <th class="py-3 px-3">Cliente / Empresa</th>
+                                    <th class="py-3 px-3">Escopo & Tipo</th>
+                                    <th class="py-3 px-3 text-right">Orçamento 50/50</th>
+                                    <th class="py-3 px-3 text-center">Kickoff (50%)</th>
+                                    <th class="py-3 px-3 text-center">Entrega (50%)</th>
+                                    <th class="py-3 px-3 text-center">Lighthouse QA</th>
+                                    <th class="py-3 px-3 text-center">Status</th>
+                                    <th class="py-3 px-3 text-center">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-zinc-900 text-zinc-300">
-                                <tr>
-                                    <td class="py-3 px-3 font-bold text-cyan-400">PRJ-2026-01</td>
-                                    <td class="py-3 px-3 text-white font-bold">Imobiliária Vista Bragança</td>
-                                    <td class="py-3 px-3">Landing Page de Alta Conversão + WhatsApp Engine</td>
-                                    <td class="py-3 px-3 text-brand font-bold">R$ 900 (PAGO)</td>
-                                    <td class="py-3 px-3 text-yellow-400">R$ 900 (Homologação)</td>
-                                    <td class="py-3 px-3"><span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px]">Staging Live</span></td>
-                                </tr>
+                            <tbody id="software-projects-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                <!-- Injetado dinamicamente via renderSoftwareProjectsDashboard -->
                             </tbody>
                         </table>
                     </div>
@@ -4521,12 +5973,489 @@ Ficamos no aguardo para iniciar a execução!`;
 
         window.addEventListener('DOMContentLoaded', () => {
             loadInventoryStorage();
+            loadSoftwareStorage();
+            renderSoftwareProjectsDashboard();
             if (window.lucide) lucide.createIcons();
             recalcTotals();
             loadSupabaseData();
             setupAdminRealtime();
             loadStandardBuildSlots();
         });
+    
+        // =====================================================================
+        // SPRINT 4: MOTOR DE SOFTWARE & ENGENHARIA WEB (IF TECH)
+        // =====================================================================
+        let currentSoftwareProjects = [
+            {
+                id: "sw-mock-01",
+                project_code: "PRJ-2026-001",
+                client_id: "c-01",
+                client_name: "Imobiliária Vista Bragança",
+                client_whatsapp: "(11) 98765-4321",
+                title: "Landing Page de Alta Conversão + WhatsApp Engine",
+                service_code: "SW-01",
+                status: "Em_Desenvolvimento",
+                scope_description: "Design Neobrutalista, formulários otimizados, 100/100 no Lighthouse SEO, integração Typebot/WhatsApp e hospedagem rápida.",
+                repository_url: "https://github.com/iflcosta/vista-braganca-landing",
+                staging_url: "https://preview.iflcosta.tech/vista-braganca",
+                total_budget: 1800.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-09-05",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 99,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 96,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-vista-2026"
+            },
+            {
+                id: "sw-mock-02",
+                project_code: "PRJ-2026-002",
+                client_id: "c-02",
+                client_name: "Dr. Carlos Eduardo (Clínica Odonto)",
+                client_whatsapp: "(11) 91234-5678",
+                title: "Automação de Agendamento WhatsApp & Triagem de Pacientes",
+                service_code: "SW-02",
+                status: "Homologacao_Cliente",
+                scope_description: "Bot inteligente no WhatsApp integrado ao Google Calendar para confirmação automática de consultas.",
+                repository_url: "https://github.com/iflcosta/odonto-agenda-bot",
+                staging_url: "https://preview.iflcosta.tech/odonto-demo",
+                total_budget: 1200.00,
+                recurrent_support_mrr: 150.00,
+                kickoff_deposit_paid: true,
+                final_delivery_paid: false,
+                estimated_delivery_date: "2026-08-30",
+                actual_delivery_date: null,
+                lighthouse_performance_score: 100,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 98,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: "sw-tok-odonto-2026"
+            }
+        ];
+
+        let softwareTimesheetEntries = [
+            { id: "ts-01", project_id: "sw-mock-01", description: "Configuração de DNS Cloudflare & SSL Edge", hours: 1.5, rate: 130.00, date: "2026-08-26" },
+            { id: "ts-02", project_id: "sw-mock-01", description: "Ajuste de Webhook Asaas para parcelamento", hours: 1.0, rate: 130.00, date: "2026-08-27" }
+        ];
+
+        let activeSoftwareProject = null;
+
+        function loadSoftwareStorage() {
+            try {
+                const saved = localStorage.getItem('if_tech_software_projects');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) currentSoftwareProjects = parsed;
+                }
+                const savedTs = localStorage.getItem('if_tech_software_timesheet');
+                if (savedTs) {
+                    const parsedTs = JSON.parse(savedTs);
+                    if (Array.isArray(parsedTs)) softwareTimesheetEntries = parsedTs;
+                }
+            } catch (e) {
+                console.warn("Erro ao carregar storage de software:", e);
+            }
+        }
+
+        function saveSoftwareStorage() {
+            try {
+                localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects));
+                localStorage.setItem('if_tech_software_timesheet', JSON.stringify(softwareTimesheetEntries));
+            } catch (e) {
+                console.warn("Erro ao salvar storage de software:", e);
+            }
+        }
+
+        function renderSoftwareProjectsDashboard(projects) {
+            if (!projects) projects = currentSoftwareProjects || [];
+            const tbody = document.getElementById('software-projects-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let activeCount = 0;
+            let totalBudgetSum = 0;
+            let collectedSum = 0;
+
+            projects.forEach(p => {
+                const isConcluido = p.status === 'Concluido';
+                if (!isConcluido && p.status !== 'Cancelado') activeCount++;
+                totalBudgetSum += (p.total_budget || 0);
+
+                const half = (p.total_budget || 0) / 2;
+                if (p.kickoff_deposit_paid) collectedSum += half;
+                if (p.final_delivery_paid || isConcluido) collectedSum += half;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-zinc-900/60 transition-colors border-b border-zinc-900";
+
+                let statusBadge = '';
+                if (p.status === 'Briefing') statusBadge = '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 text-[10px] font-bold">01. Briefing</span>';
+                else if (p.status === 'Em_Desenvolvimento') statusBadge = '<span class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-bold">02. Em Dev</span>';
+                else if (p.status === 'Em_QA') statusBadge = '<span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 text-[10px] font-bold">03. QA & LH</span>';
+                else if (p.status === 'Homologacao_Cliente') statusBadge = '<span class="px-2 py-0.5 bg-yellow-400 text-black font-black text-[10px] animate-pulse">04. Homologação</span>';
+                else if (p.status === 'Concluido') statusBadge = '<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">✓ 05. Concluído</span>';
+                else statusBadge = `<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-[10px]">${p.status}</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-cyan-400 cursor-pointer hover:underline" onclick="openSoftwareProjectDetail('${p.id}')">
+                        ${p.project_code}
+                    </td>
+                    <td class="py-3 px-3">
+                        <strong class="text-white block">${escapeHtml(p.client_name)}</strong>
+                        <span class="text-[10px] text-zinc-500">${escapeHtml(p.client_whatsapp || '')}</span>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="text-zinc-200 block font-medium">${escapeHtml(p.title)}</span>
+                        <span class="text-[10px] text-cyan-400/80 uppercase">${escapeHtml(p.service_code || 'SW-01')}</span>
+                    </td>
+                    <td class="py-3 px-3 text-right font-black text-white">
+                        R$ ${(p.total_budget || 0).toFixed(2).replace('.', ',')}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${p.kickoff_deposit_paid ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]">PENDENTE</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                        ${(p.final_delivery_paid || isConcluido) ? 
+                            '<span class="px-2 py-0.5 bg-brand/10 text-brand border border-brand/40 font-bold text-[10px]">✓ PAGO (50%)</span>' : 
+                            '<span class="px-2 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 font-bold text-[10px]">HOMOLOGAÇÃO</span>'}
+                    </td>
+                    <td class="py-3 px-3 text-center font-bold">
+                        <span class="text-brand">${p.lighthouse_performance_score || 99}</span>
+                        <span class="text-zinc-600">/</span>
+                        <span class="text-cyan-400">${p.lighthouse_seo_score || 100}</span>
+                    </td>
+                    <td class="py-3 px-3 text-center">${statusBadge}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="openSoftwareProjectDetail('${p.id}')" class="px-2.5 py-1 bg-zinc-900 hover:bg-cyan-400 hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">
+                            Gerenciar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Recalcular Timesheet
+            let totalTsHours = 0;
+            let totalTsVal = 0;
+            softwareTimesheetEntries.forEach(ts => {
+                totalTsHours += (ts.hours || 0);
+                totalTsVal += (ts.hours * ts.rate);
+            });
+
+            // Atualizar KPIs
+            document.getElementById('sw-stat-active-count').textContent = activeCount;
+            document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
+            const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
+            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
+
+            document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
+            document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function filterSoftwareProjects() {
+            const q = (document.getElementById('sw-search-input')?.value || '').toLowerCase().trim();
+            if (!q) {
+                renderSoftwareProjectsDashboard(currentSoftwareProjects);
+                return;
+            }
+            const filtered = currentSoftwareProjects.filter(p => 
+                p.project_code.toLowerCase().includes(q) ||
+                (p.client_name || '').toLowerCase().includes(q) ||
+                (p.title || '').toLowerCase().includes(q)
+            );
+            renderSoftwareProjectsDashboard(filtered);
+        }
+
+        function openNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                recalcSoftwareFormSplit();
+            }
+        }
+
+        function closeNewSoftwareProjectModal() {
+            const modal = document.getElementById('new-software-project-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function applySoftwarePresetPrice() {
+            const code = document.getElementById('sw-form-service-code')?.value;
+            const budgetInput = document.getElementById('sw-form-budget');
+            if (!budgetInput) return;
+            if (code === 'SW-01') budgetInput.value = '1800.00';
+            else if (code === 'SW-02') budgetInput.value = '1200.00';
+            else if (code === 'SW-03') budgetInput.value = '4500.00';
+            recalcSoftwareFormSplit();
+        }
+
+        function recalcSoftwareFormSplit() {
+            const b = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const half = (b / 2).toFixed(2).replace('.', ',');
+            const el1 = document.getElementById('sw-form-split-1');
+            const el2 = document.getElementById('sw-form-split-2');
+            if (el1) el1.textContent = 'R$ ' + half;
+            if (el2) el2.textContent = 'R$ ' + half;
+        }
+
+        async function handleSaveNewSoftwareProject(e) {
+            e.preventDefault();
+            const clientName = document.getElementById('sw-form-client-name')?.value.trim();
+            const clientWhatsapp = document.getElementById('sw-form-client-whatsapp')?.value.trim();
+            const title = document.getElementById('sw-form-title')?.value.trim();
+            const serviceCode = document.getElementById('sw-form-service-code')?.value;
+            const scope = document.getElementById('sw-form-scope')?.value.trim();
+            const budget = parseFloat(document.getElementById('sw-form-budget')?.value || 0);
+            const mrr = parseFloat(document.getElementById('sw-form-mrr')?.value || 0);
+            const deliveryDate = document.getElementById('sw-form-delivery-date')?.value || new Date(Date.now() + 14*86400000).toISOString().split('T')[0];
+            const repoUrl = document.getElementById('sw-form-repo-url')?.value.trim();
+            const stagingUrl = document.getElementById('sw-form-staging-url')?.value.trim();
+
+            const seq = currentSoftwareProjects.length + 1;
+            const projectCode = `PRJ-${new Date().getFullYear()}-${String(seq).padStart(3, '0')}`;
+            const token = `sw-tok-${Date.now()}`;
+
+            const newProj = {
+                id: `sw-${Date.now()}`,
+                project_code: projectCode,
+                client_id: `c-${Date.now()}`,
+                client_name: clientName,
+                client_whatsapp: clientWhatsapp,
+                title: title,
+                service_code: serviceCode,
+                status: "Briefing",
+                scope_description: scope,
+                repository_url: repoUrl || `https://github.com/iflcosta/${projectCode.toLowerCase()}`,
+                staging_url: stagingUrl || `https://preview.iflcosta.tech/${projectCode.toLowerCase()}`,
+                total_budget: budget,
+                recurrent_support_mrr: mrr,
+                kickoff_deposit_paid: false,
+                final_delivery_paid: false,
+                estimated_delivery_date: deliveryDate,
+                actual_delivery_date: null,
+                lighthouse_performance_score: 98,
+                lighthouse_seo_score: 100,
+                lighthouse_best_practices_score: 100,
+                lighthouse_accessibility_score: 95,
+                qa_homologated_at: null,
+                homologation_hash: null,
+                client_token: token
+            };
+
+            currentSoftwareProjects.unshift(newProj);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            closeNewSoftwareProjectModal();
+
+            // Tentar sincronizar com Supabase se cliente existir
+            const client = getSupabase();
+            if (client) {
+                try {
+                    await client.rpc('rpc_create_software_project_atomic', {
+                        p_client_id: null,
+                        p_title: title,
+                        p_service_code: serviceCode,
+                        p_scope_description: scope,
+                        p_total_budget: budget,
+                        p_estimated_delivery_date: deliveryDate,
+                        p_repository_url: repoUrl,
+                        p_staging_url: stagingUrl,
+                        p_recurrent_support_mrr: mrr
+                    });
+                } catch (err) {
+                    console.log("Supabase RPC sync note:", err);
+                }
+            }
+
+            alert(`Projeto ${projectCode} criado com sucesso! Sinal de 50% (R$ ${(budget/2).toFixed(2)}) gerado.`);
+        }
+
+        function openSoftwareProjectDetail(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            activeSoftwareProject = proj;
+
+            document.getElementById('sw-detail-code').textContent = proj.project_code;
+            document.getElementById('sw-detail-title').textContent = proj.title;
+            document.getElementById('sw-detail-client').textContent = proj.client_name;
+            document.getElementById('sw-detail-whatsapp').textContent = proj.client_whatsapp || '';
+            document.getElementById('sw-detail-budget').textContent = 'R$ ' + (proj.total_budget || 0).toFixed(2).replace('.', ',');
+            document.getElementById('sw-detail-delivery-est').textContent = `Previsão: ${new Date(proj.estimated_delivery_date).toLocaleDateString('pt-BR')}`;
+            
+            const statusSelect = document.getElementById('sw-detail-status-select');
+            if (statusSelect) statusSelect.value = proj.status;
+
+            // Links
+            const stagingEl = document.getElementById('sw-detail-staging-link');
+            if (stagingEl) stagingEl.href = proj.staging_url || '#';
+            const repoEl = document.getElementById('sw-detail-repo-link');
+            if (repoEl) repoEl.href = proj.repository_url || '#';
+
+            // Lighthouse
+            document.getElementById('sw-lh-perf').value = proj.lighthouse_performance_score || 98;
+            document.getElementById('sw-lh-seo').value = proj.lighthouse_seo_score || 100;
+            document.getElementById('sw-lh-bp').value = proj.lighthouse_best_practices_score || 100;
+            document.getElementById('sw-lh-acc').value = proj.lighthouse_accessibility_score || 95;
+
+            // Render Milestones
+            const half = (proj.total_budget || 0) / 2;
+            const msContainer = document.getElementById('sw-detail-milestones-container');
+            if (msContainer) {
+                msContainer.innerHTML = `
+                    <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
+                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.kickoff_deposit_paid ? 'Estornar Sinal' : '✓ Confirmar Sinal 50%'}
+                        </button>
+                    </div>
+                    <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
+                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
+                        </div>
+                        <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
+                        <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
+                            ${proj.final_delivery_paid ? 'Estornar Quitação' : '✓ Confirmar Quitação 50%'}
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderProjectTimesheet(proj.id);
+
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeSoftwareProjectDetail() {
+            const modal = document.getElementById('software-project-detail-modal');
+            if (modal) modal.classList.add('hidden');
+            activeSoftwareProject = null;
+        }
+
+        function handleSoftwareStatusChange(newStatus) {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.status = newStatus;
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+        }
+
+        function toggleKickoffPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.kickoff_deposit_paid = !proj.kickoff_deposit_paid;
+            if (proj.kickoff_deposit_paid && proj.status === 'Briefing') {
+                proj.status = 'Em_Desenvolvimento';
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function toggleFinalPayment(projId) {
+            const proj = currentSoftwareProjects.find(p => p.id === projId);
+            if (!proj) return;
+            proj.final_delivery_paid = !proj.final_delivery_paid;
+            if (proj.final_delivery_paid) {
+                proj.status = 'Concluido';
+                proj.actual_delivery_date = new Date().toISOString().split('T')[0];
+            }
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            openSoftwareProjectDetail(projId);
+        }
+
+        function saveSoftwareLighthouseScores() {
+            if (!activeSoftwareProject) return;
+            activeSoftwareProject.lighthouse_performance_score = parseInt(document.getElementById('sw-lh-perf')?.value || 98);
+            activeSoftwareProject.lighthouse_seo_score = parseInt(document.getElementById('sw-lh-seo')?.value || 100);
+            activeSoftwareProject.lighthouse_best_practices_score = parseInt(document.getElementById('sw-lh-bp')?.value || 100);
+            activeSoftwareProject.lighthouse_accessibility_score = parseInt(document.getElementById('sw-lh-acc')?.value || 95);
+            saveSoftwareStorage();
+            renderSoftwareProjectsDashboard();
+            alert("Scores do Lighthouse atualizados com sucesso!");
+        }
+
+        function renderProjectTimesheet(projId) {
+            const tbody = document.getElementById('sw-timesheet-tbody');
+            const totalEl = document.getElementById('sw-timesheet-subtotal');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const entries = softwareTimesheetEntries.filter(ts => ts.project_id === projId);
+            let sumHours = 0;
+            let sumVal = 0;
+
+            entries.forEach(e => {
+                sumHours += e.hours;
+                const v = e.hours * e.rate;
+                sumVal += v;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-1 px-2 text-zinc-500">${e.date}</td>
+                    <td class="py-1 px-2 text-white">${escapeHtml(e.description)}</td>
+                    <td class="py-1 px-2 text-center font-bold text-yellow-400">${e.hours}h</td>
+                    <td class="py-1 px-2 text-right font-bold text-zinc-300">R$ ${v.toFixed(2).replace('.', ',')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if (totalEl) totalEl.textContent = `Total: ${sumHours}h (R$ ${sumVal.toFixed(2).replace('.', ',')})`;
+        }
+
+        function handleAddTimesheetEntry() {
+            if (!activeSoftwareProject) return;
+            const desc = document.getElementById('sw-new-timesheet-desc')?.value.trim();
+            const hours = parseFloat(document.getElementById('sw-new-timesheet-hours')?.value || 1.0);
+            if (!desc) {
+                alert("Informe a descrição da atividade.");
+                return;
+            }
+
+            softwareTimesheetEntries.unshift({
+                id: `ts-${Date.now()}`,
+                project_id: activeSoftwareProject.id,
+                description: desc,
+                hours: hours,
+                rate: 130.00,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            document.getElementById('sw-new-timesheet-desc').value = '';
+            saveSoftwareStorage();
+            renderProjectTimesheet(activeSoftwareProject.id);
+            renderSoftwareProjectsDashboard();
+        }
+
+        function copySoftwareMagicLink() {
+            if (!activeSoftwareProject) return;
+            const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
+            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
+            
+            navigator.clipboard.writeText(msg).then(() => {
+                alert("Magic Link de Software copiado para a Área de Transferência!");
+            }).catch(() => {
+                prompt("Copie a mensagem de acompanhamento:", msg);
+            });
+        }
+    
     </script>
 
     <!-- ========================================================================= -->
@@ -4779,5 +6708,225 @@ Ficamos no aguardo para iniciar a execução!`;
         </div>
     </div>
 
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: NOVO PROJETO DE SOFTWARE & WEB ENGINE (SPRINT 4)                   -->
+    <!-- ========================================================================= -->
+    <div id="new-software-project-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
+        <div class="bg-zinc-950 border-2 border-cyan-400 w-full max-w-2xl shadow-[0_0_30px_rgba(6,182,212,0.3)] my-8">
+            <div class="p-4 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-cyan-400"></span>
+                    <h3 class="font-black text-sm text-white uppercase tracking-wider">Novo Projeto // Engenharia Web & Software</h3>
+                </div>
+                <button type="button" onclick="closeNewSoftwareProjectModal()" class="text-zinc-500 hover:text-white font-bold text-base px-2">✕</button>
+            </div>
+            
+            <form id="new-software-project-form" onsubmit="handleSaveNewSoftwareProject(event)" class="p-6 space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Cliente / Empresa *</label>
+                        <input type="text" id="sw-form-client-name" required placeholder="Ex: Imobiliária Vista Bragança" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">WhatsApp do Responsável *</label>
+                        <input type="text" id="sw-form-client-whatsapp" required placeholder="Ex: (11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="sm:col-span-2">
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Título do Projeto *</label>
+                        <input type="text" id="sw-form-title" required placeholder="Ex: Landing Page de Alta Conversão + WhatsApp Engine" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Tipo de Serviço *</label>
+                        <select id="sw-form-service-code" onchange="applySoftwarePresetPrice()" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
+                            <option value="SW-01">SW-01: Landing Page (R$ 1.800)</option>
+                            <option value="SW-02">SW-02: Bot WhatsApp (R$ 1.200)</option>
+                            <option value="SW-03">SW-03: Painel Web/SaaS (R$ 4.500)</option>
+                            <option value="SW-04">SW-04: Escopo Customizado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Escopo & Entregáveis Detalhados</label>
+                    <textarea id="sw-form-scope" rows="3" placeholder="Descreva os requisitos técnicos, telas, integrações e objetivos de negócio..." class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Orçamento Total (R$) *</label>
+                        <input type="number" id="sw-form-budget" required step="0.01" value="1800.00" oninput="recalcSoftwareFormSplit()" class="w-full bg-zinc-900 border border-cyan-500 p-2.5 text-cyan-400 font-bold text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Mensalidade Suporte (MRR)</label>
+                        <input type="number" id="sw-form-mrr" step="0.01" value="0.00" placeholder="Ex: 150.00" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Previsão de Entrega *</label>
+                        <input type="date" id="sw-form-delivery-date" required class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Preview do Motor 50/50 -->
+                <div class="bg-cyan-950/40 border border-cyan-500/50 p-3 flex justify-between items-center text-[11px]">
+                    <div>
+                        <span class="text-zinc-400 block">Sinal 1 (Kickoff 50%):</span>
+                        <strong class="text-cyan-400 text-sm" id="sw-form-split-1">R$ 900,00</strong>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-zinc-400 block">Sinal 2 (Homologação 50%):</span>
+                        <strong class="text-brand text-sm" id="sw-form-split-2">R$ 900,00</strong>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Repositório GitHub (URL)</label>
+                        <input type="url" id="sw-form-repo-url" placeholder="https://github.com/iflcosta/..." class="w-full bg-zinc-900 border border-zinc-700 p-2 text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Ambiente de Staging (URL)</label>
+                        <input type="url" id="sw-form-staging-url" placeholder="https://preview.iflcosta.tech/..." class="w-full bg-zinc-900 border border-zinc-700 p-2 text-white focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800 flex justify-end gap-3">
+                    <button type="button" onclick="closeNewSoftwareProjectModal()" class="px-4 py-2.5 bg-zinc-900 text-zinc-400 font-bold uppercase hover:bg-zinc-800 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 bg-cyan-400 text-black font-black uppercase hover:bg-white transition-colors shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)]">
+                        ⚡ Criar Projeto & Gerar Milestones
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: GESTÃO DETALHADA DO PROJETO DE SOFTWARE (SPRINT 4)                 -->
+    <!-- ========================================================================= -->
+    <div id="software-project-detail-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
+        <div class="bg-zinc-950 border-2 border-cyan-400 w-full max-w-4xl shadow-[0_0_40px_rgba(6,182,212,0.4)] my-8">
+            <div class="p-5 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="px-2.5 py-1 bg-cyan-400 text-black font-black text-xs uppercase" id="sw-detail-code">PRJ-2026-001</span>
+                    <h3 class="font-black text-sm sm:text-base text-white uppercase tracking-wider" id="sw-detail-title">Nome do Projeto</h3>
+                </div>
+                <button type="button" onclick="closeSoftwareProjectDetail()" class="text-zinc-500 hover:text-white font-bold text-lg px-2">✕</button>
+            </div>
+
+            <div class="p-6 space-y-6 max-h-[80vh] overflow-y-auto text-xs">
+                <!-- Status & Dados Gerais -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-zinc-900/80 p-4 border border-zinc-800">
+                    <div>
+                        <span class="text-zinc-500 uppercase text-[10px] block">Cliente Contratante:</span>
+                        <strong class="text-white text-sm" id="sw-detail-client">Nome do Cliente</strong>
+                        <span class="text-zinc-400 block text-[11px]" id="sw-detail-whatsapp">(11) 99999-9999</span>
+                    </div>
+                    <div>
+                        <span class="text-zinc-500 uppercase text-[10px] block">Orçamento & Contrato:</span>
+                        <strong class="text-cyan-400 text-sm" id="sw-detail-budget">R$ 0,00</strong>
+                        <span class="text-zinc-400 block text-[11px]" id="sw-detail-delivery-est">Entrega: --/--/----</span>
+                    </div>
+                    <div>
+                        <span class="text-zinc-500 uppercase text-[10px] block">Fase do Projeto (Status):</span>
+                        <select id="sw-detail-status-select" onchange="handleSoftwareStatusChange(this.value)" class="w-full mt-1 bg-black border border-cyan-500 text-cyan-400 font-bold p-1.5 focus:outline-none">
+                            <option value="Briefing">01. Briefing & Escopo</option>
+                            <option value="Em_Desenvolvimento">02. Codificação & Dev</option>
+                            <option value="Em_QA">03. Testes QA & Lighthouse</option>
+                            <option value="Homologacao_Cliente">04. Homologação Cliente</option>
+                            <option value="Concluido">05. Homologado & Go-Live</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Links Rápidos -->
+                <div class="flex flex-wrap gap-2">
+                    <a id="sw-detail-staging-link" href="#" target="_blank" class="px-3 py-1.5 bg-cyan-950 text-cyan-300 border border-cyan-700 hover:bg-cyan-400 hover:text-black font-bold uppercase text-[11px] transition-colors flex items-center gap-1.5">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Abrir Staging Live
+                    </a>
+                    <a id="sw-detail-repo-link" href="#" target="_blank" class="px-3 py-1.5 bg-zinc-900 text-zinc-300 border border-zinc-700 hover:text-white font-bold uppercase text-[11px] transition-colors flex items-center gap-1.5">
+                        <i data-lucide="github" class="w-3.5 h-3.5"></i> Repositório GitHub
+                    </a>
+                    <button type="button" onclick="copySoftwareMagicLink()" class="px-3 py-1.5 bg-brand/10 border border-brand text-brand hover:bg-brand hover:text-black font-bold uppercase text-[11px] transition-colors flex items-center gap-1.5">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Magic Link WhatsApp
+                    </button>
+                </div>
+
+                <!-- Milestones 50/50 & Faturamento Asaas -->
+                <div class="bg-black border border-zinc-800 p-4 space-y-3">
+                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                        <h4 class="font-bold text-white uppercase text-xs flex items-center gap-1.5 text-cyan-400">
+                            <i data-lucide="credit-card" class="w-4 h-4"></i> Faturamento 50/50 & Milestones Asaas
+                        </h4>
+                        <span class="text-zinc-500 text-[10px]">Trava de Liberação de Código</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="sw-detail-milestones-container">
+                        <!-- Injetado dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Painel de QA & Scores Lighthouse -->
+                <div class="bg-black border border-zinc-800 p-4 space-y-3">
+                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                        <h4 class="font-bold text-white uppercase text-xs flex items-center gap-1.5 text-brand">
+                            <i data-lucide="gauge" class="w-4 h-4"></i> Auditoria de Performance & QA Lighthouse (>95)
+                        </h4>
+                        <button type="button" onclick="saveSoftwareLighthouseScores()" class="px-2.5 py-1 bg-zinc-900 hover:bg-brand hover:text-black text-zinc-300 font-bold uppercase text-[10px] border border-zinc-700 transition-colors">Salvar Notas</button>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        <div class="bg-zinc-900/60 p-3 border border-zinc-800">
+                            <span class="text-[10px] text-zinc-400 block mb-1">Performance</span>
+                            <input type="number" id="sw-lh-perf" min="0" max="100" class="w-16 mx-auto text-center font-black text-brand bg-black border border-zinc-700 p-1 text-sm">
+                        </div>
+                        <div class="bg-zinc-900/60 p-3 border border-zinc-800">
+                            <span class="text-[10px] text-zinc-400 block mb-1">SEO Google</span>
+                            <input type="number" id="sw-lh-seo" min="0" max="100" class="w-16 mx-auto text-center font-black text-brand bg-black border border-zinc-700 p-1 text-sm">
+                        </div>
+                        <div class="bg-zinc-900/60 p-3 border border-zinc-800">
+                            <span class="text-[10px] text-zinc-400 block mb-1">Best Practices</span>
+                            <input type="number" id="sw-lh-bp" min="0" max="100" class="w-16 mx-auto text-center font-black text-cyan-400 bg-black border border-zinc-700 p-1 text-sm">
+                        </div>
+                        <div class="bg-zinc-900/60 p-3 border border-zinc-800">
+                            <span class="text-[10px] text-zinc-400 block mb-1">Acessibilidade</span>
+                            <input type="number" id="sw-lh-acc" min="0" max="100" class="w-16 mx-auto text-center font-black text-cyan-400 bg-black border border-zinc-700 p-1 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timesheet de Horas Adicionais (R$ 130/h) -->
+                <div class="bg-black border border-zinc-800 p-4 space-y-3">
+                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                        <h4 class="font-bold text-white uppercase text-xs flex items-center gap-1.5 text-yellow-400">
+                            <i data-lucide="clock" class="w-4 h-4"></i> Timesheet de Horas Adicionais (R$ 130,00 / hora)
+                        </h4>
+                        <span class="text-zinc-400 font-bold" id="sw-timesheet-subtotal">Total: 0h (R$ 0,00)</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="sw-new-timesheet-desc" placeholder="Descrição da atividade extra / refatoração..." class="flex-grow bg-zinc-900 border border-zinc-700 p-2 text-white focus:outline-none text-xs">
+                        <input type="number" id="sw-new-timesheet-hours" step="0.5" value="1.0" class="w-20 bg-zinc-900 border border-zinc-700 p-2 text-white text-center focus:outline-none text-xs">
+                        <button type="button" onclick="handleAddTimesheetEntry()" class="px-3 py-2 bg-yellow-400 text-black font-bold uppercase text-xs hover:bg-white transition-colors">+ Lançar</button>
+                    </div>
+                    <div class="overflow-x-auto max-h-40">
+                        <table class="w-full text-[11px] text-left">
+                            <thead class="text-zinc-500 border-b border-zinc-800">
+                                <tr>
+                                    <th class="py-1 px-2">Data</th>
+                                    <th class="py-1 px-2">Descrição</th>
+                                    <th class="py-1 px-2 text-center">Horas</th>
+                                    <th class="py-1 px-2 text-right">Valor (R$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sw-timesheet-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                <!-- Injetado dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>

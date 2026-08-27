@@ -370,86 +370,154 @@
 
             </div>
 
-            <!-- ================================================================= -->
-            <!-- 2. CONTAINER DINÂMICO: SOFTWARE & ENGENHARIA WEB                  -->
+                        <!-- ================================================================= -->
+            <!-- 2. CONTAINER DINÂMICO: SOFTWARE & ENGENHARIA WEB (SPRINT 4)        -->
             <!-- ================================================================= -->
             <div id="sw-container" class="hidden space-y-8">
                 <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
+                    <!-- Cabeçalho do Projeto -->
                     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-6 border-b-2 border-zinc-800">
                         <div>
                             <div class="flex items-center gap-2 font-mono text-xs text-zinc-400 mb-1">
-                                <span>PROJETO WEB:</span>
-                                <span class="text-cyan-400 font-bold text-sm">PRJ-2026-01</span>
+                                <span>PROJETO DE SOFTWARE:</span>
+                                <span class="text-cyan-400 font-bold text-sm" id="sw-card-code">PRJ-2026-001</span>
                                 <span class="text-zinc-600">•</span>
-                                <span>Entrega Contratual: 30/08/2026</span>
+                                <span id="sw-card-delivery">Previsão de Entrega: --/--/----</span>
                             </div>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                                Landing Page de Alta Conversão & Motor de Vendas
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="sw-card-title">
+                                Nome do Projeto de Software
                             </h2>
                             <p class="text-zinc-400 text-sm mt-0.5">
-                                Cliente: <strong class="text-zinc-200">Imobiliária Vista Bragança</strong> • Stack: React / Tailwind / Cloudflare
+                                Cliente: <strong class="text-zinc-200" id="sw-card-client">Cliente</strong> • Modalidade: <strong class="text-cyan-400" id="sw-card-service">SW-01</strong>
                             </p>
                         </div>
 
-                        <div class="px-4 py-2 bg-cyan-950/50 border-2 border-cyan-500 text-cyan-400 font-mono text-sm font-black uppercase tracking-wider flex items-center gap-2">
+                        <div id="sw-card-status-badge" class="px-4 py-2 bg-cyan-950/50 border-2 border-cyan-500 text-cyan-400 font-mono text-sm font-black uppercase tracking-wider flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                            <span>EM HOMOLOGAÇÃO QA</span>
+                            <span id="sw-card-status-text">EM DESENVOLVIMENTO</span>
                         </div>
                     </div>
 
-                    <!-- Milestones 50/50 -->
+                    <!-- Stepper de Desenvolvimento de Software (5 Fases) -->
                     <div class="py-8 border-b-2 border-zinc-800">
-                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Milestones & Faturamento 50/50</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
-                            <div class="border-2 border-brand bg-brand/10 p-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="font-bold text-brand">MILESTONE 1 (50% KICKOFF)</span>
-                                    <span class="text-brand font-bold">PAGO (Pix)</span>
-                                </div>
-                                <p class="text-zinc-300">R$ 900,00 • Arquitetura, Wireframe & Configuração de Servidores</p>
+                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Pipeline de Engenharia & Desenvolvimento</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono text-xs">
+                            <div id="sw-step-1" class="border-2 border-brand bg-brand/10 p-3 transition-colors">
+                                <span class="text-[10px] text-zinc-400 block font-bold">01. ESCOPO</span>
+                                <strong class="text-brand text-xs block mt-0.5">Briefing & Arquitetura</strong>
                             </div>
-                            <div class="border-2 border-yellow-500 bg-yellow-950/20 p-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="font-bold text-yellow-400">MILESTONE 2 (50% ENTREGA)</span>
-                                    <span class="text-yellow-400 font-bold">AGUARDANDO HOMOLOGAÇÃO</span>
-                                </div>
-                                <p class="text-zinc-300">R$ 900,00 • Quitação final após validação do cliente</p>
+                            <div id="sw-step-2" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                                <span class="text-[10px] text-zinc-400 block font-bold">02. DESIGN</span>
+                                <strong class="text-zinc-300 text-xs block mt-0.5">UI/UX & Wireframes</strong>
+                            </div>
+                            <div id="sw-step-3" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                                <span class="text-[10px] text-zinc-400 block font-bold">03. CÓDIGO</span>
+                                <strong class="text-zinc-300 text-xs block mt-0.5">Dev Frontend & Backend</strong>
+                            </div>
+                            <div id="sw-step-4" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                                <span class="text-[10px] text-zinc-400 block font-bold">04. QA & TESTES</span>
+                                <strong class="text-zinc-300 text-xs block mt-0.5">Lighthouse >95 & Staging</strong>
+                            </div>
+                            <div id="sw-step-5" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                                <span class="text-[10px] text-zinc-400 block font-bold">05. HOMOLOGAÇÃO</span>
+                                <strong class="text-zinc-300 text-xs block mt-0.5">Aceite & Deploy Live</strong>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Scorecard Lighthouse 100/100 -->
+                    <!-- Escopo e Entregáveis -->
                     <div class="py-6 border-b-2 border-zinc-800">
-                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Laudo de Performance Google Lighthouse</span>
+                        <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-2">Escopo Coberto & Especificações Técnicas</span>
+                        <div class="bg-zinc-900/60 border border-zinc-800 p-4 font-mono text-xs text-zinc-300 leading-relaxed" id="sw-card-scope">
+                            Descrição detalhada do projeto...
+                        </div>
+                    </div>
+
+                    <!-- Milestones 50/50 & Pagamentos Asaas -->
+                    <div class="py-8 border-b-2 border-zinc-800 font-mono">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-zinc-500 text-xs font-bold uppercase tracking-widest block">Faturamento Contratual 50/50 (Asaas Fintech)</span>
+                            <span class="text-xs text-zinc-400">Total: <strong class="text-white font-bold" id="sw-card-total-budget">R$ 0,00</strong></span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <!-- Milestone 1: Kickoff 50% -->
+                            <div id="sw-card-ms1-box" class="border-2 border-brand bg-brand/10 p-5 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-black text-brand text-xs uppercase">MILESTONE 1 // SINAL (50% KICKOFF)</span>
+                                    <span id="sw-card-ms1-badge" class="px-2 py-0.5 bg-brand text-black font-black text-[10px]">PAGO (Pix)</span>
+                                </div>
+                                <div class="text-2xl font-black text-white" id="sw-card-ms1-val">R$ 0,00</div>
+                                <p class="text-zinc-400 text-[11px]">Garante a alocação de engenharia, arquitetura e infraestrutura de servidores.</p>
+                                <button type="button" id="sw-card-ms1-btn" onclick="openSoftwareAsaasPaymentModal(1)" class="w-full py-2.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors hidden">
+                                    ⚡ Pagar Sinal (Pix / Cartão 12x)
+                                </button>
+                            </div>
+
+                            <!-- Milestone 2: Entrega 50% -->
+                            <div id="sw-card-ms2-box" class="border-2 border-zinc-800 bg-zinc-950 p-5 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-black text-yellow-400 text-xs uppercase">MILESTONE 2 // ENTREGA (50% HOMOLOGAÇÃO)</span>
+                                    <span id="sw-card-ms2-badge" class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[10px]">AGUARDANDO VALIDAÇÃO</span>
+                                </div>
+                                <div class="text-2xl font-black text-white" id="sw-card-ms2-val">R$ 0,00</div>
+                                <p class="text-zinc-400 text-[11px]">Quitação final na aprovação do Staging e liberação para produção (Go-Live).</p>
+                                <button type="button" id="sw-card-ms2-btn" onclick="openSoftwareAsaasPaymentModal(2)" class="w-full py-2.5 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors">
+                                    💳 Quitar Saldo Final (Pix / Cartão 12x)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scorecard Google Lighthouse >95 -->
+                    <div class="py-6 border-b-2 border-zinc-800">
+                        <div class="flex justify-between items-center mb-4 font-mono">
+                            <span class="text-zinc-500 text-xs font-bold uppercase tracking-widest block">Laudo de Engenharia & Performance (Google Lighthouse)</span>
+                            <span class="text-[11px] text-brand font-bold">✓ Padrão Ouro de Velocidade Web</span>
+                        </div>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-center">
                             <div class="bg-zinc-900 border border-zinc-800 p-4">
-                                <span class="text-3xl font-black text-brand block mb-1">100</span>
+                                <span class="text-3xl font-black text-brand block mb-1" id="sw-card-lh-perf">99</span>
                                 <span class="text-xs text-zinc-400 uppercase">Performance</span>
                             </div>
                             <div class="bg-zinc-900 border border-zinc-800 p-4">
-                                <span class="text-3xl font-black text-brand block mb-1">100</span>
-                                <span class="text-xs text-zinc-400 uppercase">Acessibilidade</span>
+                                <span class="text-3xl font-black text-brand block mb-1" id="sw-card-lh-seo">100</span>
+                                <span class="text-xs text-zinc-400 uppercase">SEO Google</span>
                             </div>
                             <div class="bg-zinc-900 border border-zinc-800 p-4">
-                                <span class="text-3xl font-black text-brand block mb-1">100</span>
+                                <span class="text-3xl font-black text-brand block mb-1" id="sw-card-lh-bp">100</span>
                                 <span class="text-xs text-zinc-400 uppercase">Boas Práticas</span>
                             </div>
                             <div class="bg-zinc-900 border border-zinc-800 p-4">
-                                <span class="text-3xl font-black text-brand block mb-1">100</span>
-                                <span class="text-xs text-zinc-400 uppercase">SEO Local</span>
+                                <span class="text-3xl font-black text-cyan-400 block mb-1" id="sw-card-lh-acc">96</span>
+                                <span class="text-xs text-zinc-400 uppercase">Acessibilidade</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Ação: Abrir Staging -->
-                    <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <div class="text-sm font-mono text-zinc-400">
-                            Versão de testes pronta para navegação mobile e desktop.
+                    <!-- Ambiente de Staging & Botão de Homologação Formal -->
+                    <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 font-mono">
+                        <div>
+                            <span class="text-xs text-zinc-400 block">Ambiente de Demonstração Ativo:</span>
+                            <p class="text-sm text-white font-bold" id="sw-card-staging-url-text">preview.iflcosta.tech/...</p>
                         </div>
-                        <a href="https://iflcosta.tech" target="_blank" class="w-full sm:w-auto px-8 py-3.5 bg-cyan-400 text-black font-mono font-black text-sm uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 border-2 border-transparent">
-                            <i data-lucide="external-link" class="w-4 h-4"></i>
-                            Abrir Ambiente de Staging
-                        </a>
+                        <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+                            <a id="sw-card-staging-btn" href="#" target="_blank" class="w-full sm:w-auto px-6 py-3.5 bg-cyan-400 text-black font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)]">
+                                <i data-lucide="external-link" class="w-4 h-4"></i>
+                                Abrir Ambiente de Testes
+                            </a>
+                            <button type="button" id="sw-card-homologate-btn" onclick="openHomologationModal()" class="w-full sm:w-auto px-6 py-3.5 bg-brand text-black font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.4)]">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                ✅ Homologar & Aceitar Entrega
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Certificado Digital de Homologação (quando concluído) -->
+                    <div id="sw-homologation-cert-box" class="mt-6 p-4 bg-brand/10 border-2 border-brand font-mono text-xs text-brand hidden">
+                        <div class="flex items-center gap-2 font-black text-sm uppercase mb-1">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i> PROJETO HOMOLOGADO COM SUCESSO
+                        </div>
+                        <p class="text-zinc-300">Termo de aceite formal concluído com garantia de software CDC ativa. Hash de integridade: <strong class="text-white" id="sw-cert-hash">SHA-256-...</strong></p>
                     </div>
                 </div>
             </div>
@@ -1858,5 +1926,43 @@
         </div>
     </div>
 
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: ACEITE & HOMOLOGAÇÃO DIGITAL DE SOFTWARE (SPRINT 4)                -->
+    <!-- ========================================================================= -->
+    <div id="homologation-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 font-mono">
+        <div class="bg-zinc-950 border-2 border-brand w-full max-w-lg shadow-[0_0_40px_rgba(204,255,0,0.3)] p-6 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-brand"></span>
+                    <h3 class="font-black text-sm text-white uppercase tracking-wider">Termo de Homologação & Aceite</h3>
+                </div>
+                <button type="button" onclick="closeHomologationModal()" class="text-zinc-500 hover:text-white font-bold text-base px-2">✕</button>
+            </div>
+
+            <p class="text-zinc-300 leading-relaxed">
+                Ao clicar em confirmar, você declara ter testado e validado o sistema/site no ambiente de Staging, aprovando o escopo contratado e liberando o deploy definitivo em produção.
+            </p>
+
+            <div class="space-y-3 bg-zinc-900/60 p-4 border border-zinc-800">
+                <div>
+                    <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Nome Completo do Responsável *</label>
+                    <input type="text" id="homologate-signer-name" placeholder="Ex: Roberto Silva" required class="w-full bg-black border border-zinc-700 p-2 text-white focus:outline-none focus:border-brand">
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">CPF ou CNPJ *</label>
+                    <input type="text" id="homologate-signer-doc" placeholder="Ex: 000.000.000-00" required class="w-full bg-black border border-zinc-700 p-2 text-white focus:outline-none focus:border-brand">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="closeHomologationModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:bg-zinc-800 transition-colors">Voltar</button>
+                <button type="button" onclick="confirmSoftwareHomologation()" class="px-6 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                    ✓ Homologar & Concluir
+                </button>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
