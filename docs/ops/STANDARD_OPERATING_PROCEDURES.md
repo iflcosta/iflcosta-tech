@@ -39,3 +39,22 @@
 - **Passo 4.2:** Instalação do Agente RMM (MeshCentral, Tactical RMM, Atera ou similar) em todas as estações e servidores cobertos pelo contrato.
 - **Passo 4.3:** Configuração da rotina de Backup Redundante 3-2-1. (Ex: Script de cópia local NAS + Espelhamento em Nuvem fria como S3/Backblaze B2 usando Duplicati ou Rclone).
 - **Passo 4.4:** Criação do SLA (Acordo de Nível de Serviço) e canais de acesso rápido ao suporte (Ticket ou Grupo de WhatsApp). Disparo do **Template 5** (Termo de Contrato MSP).
+
+## 5. Governança de Bancada, Técnicos Parceiros & Blindagem de Marca
+**Objetivo:** Permitir a escala da assistência técnica com técnicos terceirizados/parceiros com total controle de qualidade, rastreabilidade interna e proteção institucional da marca IF Tech.
+
+- **Regra 5.1 (Anonimato Institucional do Técnico perante o Cliente):**
+  - O cliente final **NUNCA** tem acesso ao nome pessoal ou contato direto do técnico que executou a OS;
+  - Toda comunicação no Portal do Cliente (`portal.html`), mensagens no WhatsApp, laudos técnicos e recibos térmicos é assinada institucionalmente como **"Engenharia Especializada // IF Tech"** ou **"Laboratório Central IF Tech"**;
+  - A responsabilidade jurídica (CDC Art. 26) e a garantia legal são 100% da **IF Tech**. Internamente, o sistema mantém rastreabilidade forense completa de qual técnico executou cada etapa.
+- **Regra 5.2 (Trava Rígida de WIP — Limite de 2 OSs Simultâneas por Técnico):**
+  - Cada técnico parceiro pode ter no máximo **2 (duas) Ordens de Serviço simultâneas** no status `Na_Bancada` (em execução física);
+  - Para puxar uma 3ª OS da fila, o técnico é obrigado a concluir a montagem e os testes térmicos de estresse QA (FurMark / AIDA64 de 15 min), avançando o equipamento para `Pronto`;
+  - Isso impede o acúmulo de máquinas paradas na bancada e garante o cumprimento rigoroso dos prazos combinados.
+- **Regra 5.3 (Modelo de Distribuição Híbrido):**
+  - **Serviços Padrão / Rotina (Troca de SSD, Limpeza, Formatação):** Fila aberta com auto-atribuição (`[ ⚡ Puxar p/ Minha Bancada ]`);
+  - **Serviços Críticos (Microeletrônica, Placa-Mãe, BGA, MacBook):** Atribuição direta e manual realizada exclusivamente pelo Lead Engineer / Gestor da IF Tech.
+- **Regra 5.4 (Responsabilidade de RMA & Garantia Reversa):**
+  - Equipamentos que retornarem dentro do prazo de garantia CDC de 90 dias com o mesmo vício oculto/defeito são direcionados compulsoriamente ao mesmo técnico responsável pela execução inicial;
+  - O retrabalho em garantia não gera nova comissão de mão de obra, incentivando o técnico a aplicar o checklist de QA de 15 minutos com excelência na primeira intervenção.
+
