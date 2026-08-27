@@ -40,11 +40,15 @@
                     <span class="font-mono text-[10px] sm:text-xs font-black text-black bg-brand px-2 py-0.5 uppercase tracking-widest">COCKPIT ADMIN // 360°</span>
                 </div>
                 
-                <!-- Barra de Scanner USB & Busca Rápida de OS (Ctrl+K) -->
+                <!-- Barra de Scanner USB & Busca Rápida de OS (/ ou Alt+K) -->
                 <div class="hidden md:flex items-center flex-1 max-w-md mx-4 relative font-mono text-xs">
                     <i data-lucide="scan-barcode" class="w-4 h-4 absolute left-3 top-2.5 text-brand animate-pulse"></i>
-                    <input type="text" id="global-scanner-input" onkeydown="handleScannerInputKeydown(event)" placeholder="Bipar QR Code / Buscar OS, Cliente ou S/N (Ctrl+K)..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-16 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand transition-colors">
-                    <kbd class="absolute right-2.5 top-2 text-[9px] bg-zinc-800 text-zinc-400 px-1.5 py-0.5 border border-zinc-700 font-mono">Ctrl+K</kbd>
+                    <input type="text" id="global-scanner-input" onkeydown="handleScannerInputKeydown(event)" placeholder="Bipar QR Code / Buscar OS, Cliente ou S/N (/ ou Alt+K)..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-24 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand transition-colors">
+                    <div class="absolute right-2.5 top-2 flex items-center gap-1 text-[9px] font-mono select-none">
+                        <kbd class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 border border-zinc-700">/</kbd>
+                        <span class="text-zinc-500">ou</span>
+                        <kbd class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 border border-zinc-700">Alt+K</kbd>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-3 font-mono text-xs">
@@ -52,9 +56,17 @@
                         <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
                         <span class="text-[11px]">SUPABASE LIVE</span>
                     </div>
-                    <button onclick="openIntakeModal()" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                    <!-- Botão de Ajuda de Atalhos [?] / [F1] -->
+                    <button type="button" onclick="openShortcutsModal()" title="Central de Atalhos de Teclado (Pressione ? ou F1)" class="hidden sm:flex px-2.5 py-2 sm:px-3 sm:py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.05)] group">
+                        <i data-lucide="keyboard" class="w-4 h-4 text-brand"></i>
+                        <span class="hidden lg:inline">Atalhos</span>
+                        <kbd class="text-[9px] bg-black text-zinc-400 px-1 py-0.5 border border-zinc-800 font-mono group-hover:text-brand">?</kbd>
+                    </button>
+                    <!-- Check-in Entrada [N] / [Alt+N] -->
+                    <button onclick="openIntakeModal()" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] group" title="Check-in Rápido de Entrada (Pressione N ou Alt+N)">
                         <i data-lucide="zap" class="w-4 h-4"></i>
                         <span class="hidden sm:inline">Check-in</span> Entrada (30s)
+                        <kbd class="hidden md:inline-block text-[9px] bg-black/20 text-black px-1 py-0.5 border border-black/30 font-mono font-black">N</kbd>
                     </button>
                     <a href="/status" target="_blank" class="hidden sm:flex px-3 py-2 sm:px-4 sm:py-2.5 bg-black border border-zinc-800 text-zinc-400 font-bold uppercase hover:text-brand hover:border-brand transition-colors items-center gap-1">
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal
@@ -65,39 +77,48 @@
     </header>
 
     <!-- Barra de Navegação de Abas do Cockpit -->
-    <nav class="bg-zinc-950 border-b-2 border-zinc-800">
+    <nav class="bg-zinc-950 border-b-2 border-zinc-800 sticky top-16 sm:top-20 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex space-x-1 sm:space-x-4 overflow-x-auto py-2 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider">
-                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-4 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-2">
-                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                    Bancada & OS (Kanban)
+            <div class="flex space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar py-2 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider scroll-smooth">
+                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-3 sm:px-4 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
+                    <span>Bancada & OS (Kanban)</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-400 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+1</kbd>
                 </button>
-                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-                    <i data-lucide="wrench" class="w-4 h-4"></i>
-                    Montagem de PCs (Custom Build)
+                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i>
+                    <span>Montagem de PCs (Custom Build)</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+2</kbd>
                 </button>
-                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-                    <i data-lucide="package" class="w-4 h-4 text-brand"></i>
-                    Estoque & PDV
+                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="package" class="w-4 h-4 shrink-0 text-brand"></i>
+                    <span>Estoque & PDV</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+3</kbd>
                 </button>
-                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-                    <i data-lucide="users" class="w-4 h-4"></i>
-                    Clientes & CRM
+                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
+                    <span>Clientes & CRM</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+4</kbd>
                 </button>
-                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-                    <i data-lucide="code" class="w-4 h-4"></i>
-                    Projetos Software (50/50)
+                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="code" class="w-4 h-4 shrink-0"></i>
+                    <span>Projetos Software (50/50)</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+5</kbd>
                 </button>
-                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-                    <i data-lucide="shield" class="w-4 h-4"></i>
-                    Contratos MSP & MRR
+                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="shield" class="w-4 h-4 shrink-0"></i>
+                    <span>Contratos MSP & MRR</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+6</kbd>
                 </button>
-                <button onclick="switchTab('sniper')" id="tab-btn-sniper" class="tab-btn pb-3 px-3 border-b-2 border-transparent text-zinc-400 hover:text-white font-mono text-xs uppercase tracking-wider flex items-center gap-2 transition-all">
-                    <i data-lucide="crosshair" class="w-4 h-4 text-brand"></i> Radar Sniper
+                <button onclick="switchTab('sniper')" id="tab-btn-sniper" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="crosshair" class="w-4 h-4 shrink-0 text-brand"></i>
+                    <span>Radar Sniper</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
-                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
-                    DRE & Faturamento
+                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-3 sm:px-4 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors group">
+                    <i data-lucide="dollar-sign" class="w-4 h-4 shrink-0"></i>
+                    <span>DRE & Faturamento</span>
+                    <kbd class="hidden md:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.5 font-mono group-hover:border-zinc-700">Alt+8</kbd>
                 </button>
             </div>
         </div>
@@ -1100,7 +1121,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black border-2 border-zinc-800 p-4 font-mono text-xs">
                     <div class="flex flex-wrap gap-2">
                         <button type="button" onclick="switchInventorySubTab('pos')" id="inv-subtab-btn-pos" class="px-4 py-2.5 bg-brand text-black font-black uppercase tracking-wider flex items-center gap-2 transition-colors">
-                            <i data-lucide="zap" class="w-4 h-4"></i> ⚡ PDV Caixa Rápido (F2)
+                            <i data-lucide="zap" class="w-4 h-4"></i> ⚡ PDV Caixa Rápido (F2 / Alt+P)
                         </button>
                         <button type="button" onclick="switchInventorySubTab('catalog')" id="inv-subtab-btn-catalog" class="px-4 py-2.5 bg-zinc-900 text-zinc-400 border border-zinc-700 hover:text-white flex items-center gap-2 transition-colors font-bold uppercase">
                             <i data-lucide="list" class="w-4 h-4"></i> 📋 Catálogo & Saldo
@@ -1129,7 +1150,7 @@
                                 <div class="flex flex-col sm:flex-row gap-3 items-center">
                                     <div class="relative flex-1 w-full font-mono">
                                         <i data-lucide="scan-barcode" class="w-5 h-5 absolute left-3 top-3 text-brand animate-pulse"></i>
-                                        <input type="text" id="pos-barcode-input" onkeydown="handlePOSBarcodeKeydown(event)" placeholder="Bipar Código de Barras / EAN-13 / SKU ou digitar nome (F2)..." class="w-full bg-zinc-900 border border-zinc-700 pl-10 pr-4 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                        <input type="text" id="pos-barcode-input" onkeydown="handlePOSBarcodeKeydown(event)" placeholder="Bipar Código de Barras / EAN-13 / SKU ou digitar nome (F2 ou Alt+P)..." class="w-full bg-zinc-900 border border-zinc-700 pl-10 pr-4 py-2.5 text-white font-sans text-sm focus:outline-none focus:border-brand">
                                     </div>
                                     <button type="button" onclick="triggerPOSBarcodeSearch()" class="w-full sm:w-auto px-5 py-2.5 bg-brand text-black font-mono font-black text-xs uppercase hover:bg-white transition-colors flex items-center justify-center gap-1.5">
                                         <i data-lucide="plus" class="w-4 h-4"></i> Adicionar
@@ -1900,44 +1921,183 @@ Qualquer dúvida, estou à disposição!
             });
         }
 
-        // Atalhos de Teclado Globais para Gestores Power Users
-        document.addEventListener('keydown', (e) => {
-            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
-                if (e.key === 'Escape') {
-                    closeAllModals();
+        // =====================================================================
+        // CENTRAL DE ATALHOS DE TECLADO // ERGONOMIA & POWER USER NAVIGATION
+        // =====================================================================
+        const ADMIN_TABS = [
+            'kanban',    // 1: Bancada & OS (Kanban)
+            'new-os',    // 2: Montagem de PCs (Custom Build)
+            'inventory', // 3: Estoque & PDV
+            'clients',   // 4: Clientes & CRM
+            'software',  // 5: Projetos Software (50/50)
+            'msp',       // 6: Contratos MSP & MRR
+            'sniper',    // 7: Radar Sniper
+            'financial'  // 8: DRE & Faturamento
+        ];
+
+        function isInputFocused() {
+            const active = document.activeElement;
+            if (!active) return false;
+            const tag = active.tagName;
+            return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || active.isContentEditable;
+        }
+
+        function focusGlobalSearch() {
+            const input = document.getElementById('global-scanner-input');
+            if (input) {
+                input.focus();
+                input.select();
+            }
+        }
+
+        function focusPOSQuickSale() {
+            switchTab('inventory');
+            if (typeof switchInventorySubTab === 'function') {
+                switchInventorySubTab('pos');
+            }
+            setTimeout(() => {
+                const input = document.getElementById('pos-barcode-input');
+                if (input) {
+                    input.focus();
+                    input.select();
                 }
-                return;
-            }
+            }, 60);
+        }
 
-            if (e.key === 'Escape') {
-                closeAllModals();
+        function openShortcutsModal() {
+            const modal = document.getElementById('shortcuts-help-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                if (window.lucide) lucide.createIcons();
             }
+        }
 
-            if (e.key === 'n' || e.key === 'N') {
-                e.preventDefault();
-                openIntakeModal();
+        function closeShortcutsModal() {
+            const modal = document.getElementById('shortcuts-help-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function toggleShortcutsModal() {
+            const modal = document.getElementById('shortcuts-help-modal');
+            if (modal) {
+                if (modal.classList.contains('hidden')) {
+                    openShortcutsModal();
+                } else {
+                    closeShortcutsModal();
+                }
             }
-            
-            const tabs = ['kanban', 'new-os', 'clients', 'software', 'msp', 'financial'];
-            const digit = parseInt(e.key);
-            if (!isNaN(digit) && digit >= 1 && digit <= tabs.length) {
-                e.preventDefault();
-                switchTab(tabs[digit - 1]);
-            }
-        });
+        }
+
+        function closeWhatsAppModal() {
+            document.getElementById('whatsapp-modal')?.classList.add('hidden');
+        }
 
         function closeAllModals() {
             closeIntakeModal();
             closeOSDetailModal();
             closeBudgetModal();
             closeWhatsAppModal();
+            closeShortcutsModal();
+            if (typeof closeNewProductModal === 'function') closeNewProductModal();
+            if (typeof closeNewSoftwareProjectModal === 'function') closeNewSoftwareProjectModal();
+            if (typeof closeSoftwareProjectDetail === 'function') closeSoftwareProjectDetail();
+            if (typeof closeNewMSPContractModal === 'function') closeNewMSPContractModal();
+            if (typeof closeNewMSPDeviceModal === 'function') closeNewMSPDeviceModal();
+            if (typeof closeNewMSPTicketModal === 'function') closeNewMSPTicketModal();
+            if (typeof closeMSPTicketDetail === 'function') closeMSPTicketDetail();
+            if (typeof closeClientModal === 'function') closeClientModal();
+            if (typeof closeClientDetailModal === 'function') closeClientDetailModal();
+            if (typeof closeNewSniperRuleModal === 'function') closeNewSniperRuleModal();
+            if (typeof closeSniperConfigModal === 'function') closeSniperConfigModal();
+            if (typeof closeSniperBroadcastModal === 'function') closeSniperBroadcastModal();
+
+            // Fechamento universal de segurança para qualquer modal remanescente
+            document.querySelectorAll('[id$="-modal"]').forEach(modal => {
+                modal.classList.add('hidden');
+            });
         }
 
+        // Listener Global de Teclado (Zero Colisão com Atalhos Nativos do Browser)
+        document.addEventListener('keydown', (e) => {
+            const inInput = isInputFocused();
+
+            // 1. ESCAPE: Sempre fecha modais ou remove foco
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                closeAllModals();
+                if (inInput && document.activeElement) {
+                    document.activeElement.blur();
+                }
+                return;
+            }
+
+            // 2. F1 ou Atalho ?: Abre Central de Atalhos (Cheat Sheet)
+            if (e.key === 'F1') {
+                e.preventDefault();
+                toggleShortcutsModal();
+                return;
+            }
+
+            if (e.key === '?' && !inInput && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                toggleShortcutsModal();
+                return;
+            }
+
+            // 3. F2 ou Alt+P: PDV Caixa Rápido
+            if (e.key === 'F2' || (e.altKey && (e.key === 'p' || e.key === 'P'))) {
+                e.preventDefault();
+                focusPOSQuickSale();
+                return;
+            }
+
+            // 4. Busca Global / Scanner USB: / (fora de inputs) ou Alt+K ou Ctrl+Espaço
+            if (
+                (e.key === '/' && !inInput && !e.ctrlKey && !e.altKey && !e.metaKey) ||
+                (e.altKey && (e.key === 'k' || e.key === 'K')) ||
+                (e.ctrlKey && e.code === 'Space')
+            ) {
+                e.preventDefault();
+                focusGlobalSearch();
+                return;
+            }
+
+            // 5. Novo Check-in de Entrada (30s): N (fora de inputs) ou Alt+N
+            if (
+                (!inInput && (e.key === 'n' || e.key === 'N') && !e.ctrlKey && !e.altKey && !e.metaKey) ||
+                (e.altKey && (e.key === 'n' || e.key === 'N'))
+            ) {
+                e.preventDefault();
+                openIntakeModal();
+                return;
+            }
+
+            // 6. Navegação entre as 8 Abas do Cockpit
+            // 6A. Com tecla Alt + (1..8) [funciona globalmente sem conflito com o navegador]
+            if (e.altKey && !e.ctrlKey && !e.metaKey && e.key >= '1' && e.key <= '8') {
+                const tabIndex = parseInt(e.key, 10) - 1;
+                if (ADMIN_TABS[tabIndex]) {
+                    e.preventDefault();
+                    switchTab(ADMIN_TABS[tabIndex]);
+                }
+                return;
+            }
+
+            // 6B. Dígitos 1..8 diretos quando fora de inputs
+            if (!inInput && !e.altKey && !e.ctrlKey && !e.metaKey && e.key >= '1' && e.key <= '8') {
+                const tabIndex = parseInt(e.key, 10) - 1;
+                if (ADMIN_TABS[tabIndex]) {
+                    e.preventDefault();
+                    switchTab(ADMIN_TABS[tabIndex]);
+                }
+                return;
+            }
+        });
+
         function switchTab(tabId) {
-            if (tabId === 'sniper') setTimeout(() => { renderSniperDashboard(); }, 50);
-            if (tabId === 'msp') setTimeout(() => { renderMSPDashboard(); }, 50);
-            if (tabId === 'inventory') setTimeout(() => { renderPOSGrid(); renderInventoryCatalogTable(); }, 50);
-            if (tabId === 'inventory') setTimeout(() => { renderPOSGrid(); renderInventoryCatalogTable(); }, 50);
+            if (tabId === 'sniper') setTimeout(() => { if (typeof renderSniperDashboard === 'function') renderSniperDashboard(); }, 50);
+            if (tabId === 'msp') setTimeout(() => { if (typeof renderMSPDashboard === 'function') renderMSPDashboard(); }, 50);
+            if (tabId === 'inventory') setTimeout(() => { if (typeof renderPOSGrid === 'function') renderPOSGrid(); if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable(); }, 50);
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('text-brand', 'border-brand', 'bg-brand/5');
@@ -1954,7 +2114,7 @@ Qualquer dúvida, estou à disposição!
             }
 
             if (tabId === 'financial') {
-                renderFinancialDashboard(currentWorkOrders);
+                if (typeof renderFinancialDashboard === 'function') renderFinancialDashboard(currentWorkOrders);
             }
 
             if (window.lucide) lucide.createIcons();
@@ -6892,6 +7052,205 @@ IF Tech // Engenharia de Hardware`;
                         <i data-lucide="send" class="w-3.5 h-3.5"></i> 🚀 Disparar Telegram
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- MODAL: GUIA DE ATALHOS DE TECLADO / SHORTCUTS CHEAT SHEET     -->
+    <!-- ============================================================= -->
+    <div id="shortcuts-help-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[10000] hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-black border-2 border-brand w-full max-w-3xl p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
+            <!-- Header do Modal -->
+            <div class="flex justify-between items-center pb-4 border-b border-zinc-800 mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-brand text-black flex items-center justify-center font-black">
+                        <i data-lucide="keyboard" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-brand text-[10px] font-black uppercase tracking-widest block">// NAVEGAÇÃO DE ALTA VELOCIDADE</span>
+                        <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-tight">Central de Atalhos de Teclado // IF Tech Cockpit</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeShortcutsModal()" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-zinc-400 hover:text-white hover:border-brand transition-colors flex items-center gap-1 text-xs">
+                    <span>Fechar</span>
+                    <kbd class="text-[9px] bg-black text-brand px-1 border border-zinc-800">Esc</kbd>
+                </button>
+            </div>
+
+            <!-- Grid de Atalhos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Coluna 1: Navegação de Abas (1 a 8) -->
+                <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3">
+                    <div class="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                        <span class="text-brand font-black uppercase text-[11px] flex items-center gap-1.5">
+                            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> 1. Navegação de Abas
+                        </span>
+                        <span class="text-[10px] text-zinc-500 font-mono">Alt + 1..8 ou 1..8</span>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                Bancada & OS (Kanban)
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+1</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">1</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                Montagem de PCs (Custom Build)
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+2</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">2</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                Estoque & PDV Caixa Rápido
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+3</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">3</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                Clientes & CRM
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+4</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">4</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                Projetos Software (50/50)
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+5</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">5</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                Contratos MSP & MRR
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+6</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">6</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                Radar Sniper (Hardware)
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+7</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">7</kbd>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between py-1 text-zinc-300">
+                            <span class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand"></span>
+                                DRE & Faturamento
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+8</kbd>
+                                <span class="text-zinc-600 text-[10px]">ou</span>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">8</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna 2: Operações Rápidas & Modais -->
+                <div class="space-y-4">
+                    <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3">
+                        <div class="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                            <span class="text-cyan-400 font-black uppercase text-[11px] flex items-center gap-1.5">
+                                <i data-lucide="zap" class="w-3.5 h-3.5"></i> 2. Ações Rápidas de Operação
+                            </span>
+                            <span class="text-[10px] text-zinc-500 font-mono">Foco & Entrada</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                                <span>Busca Global / Scanner QR/OS</span>
+                                <div class="flex items-center gap-1">
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-cyan-500/50 text-cyan-300 font-mono text-[10px]">/</kbd>
+                                    <span class="text-zinc-600 text-[10px]">ou</span>
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+K</kbd>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                                <span>Check-in Entrada (30 segundos)</span>
+                                <div class="flex items-center gap-1">
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-brand/50 text-brand font-mono text-[10px]">N</kbd>
+                                    <span class="text-zinc-600 text-[10px]">ou</span>
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+N</kbd>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                                <span>PDV Caixa / Scanner Código de Barras</span>
+                                <div class="flex items-center gap-1">
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">F2</kbd>
+                                    <span class="text-zinc-600 text-[10px]">ou</span>
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+P</kbd>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-1 border-b border-zinc-900 text-zinc-300">
+                                <span>Fechar Qualquer Modal Aberto</span>
+                                <kbd class="px-2 py-0.5 bg-zinc-900 border border-red-500/50 text-red-400 font-mono text-[10px]">Esc</kbd>
+                            </div>
+                            <div class="flex items-center justify-between py-1 text-zinc-300">
+                                <span>Abrir / Fechar este Guia</span>
+                                <div class="flex items-center gap-1">
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">?</kbd>
+                                    <span class="text-zinc-600 text-[10px]">ou</span>
+                                    <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">F1</kbd>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Informativo de Ergonomia -->
+                    <div class="p-3 bg-black border border-zinc-800 text-[11px] space-y-1.5 text-zinc-400">
+                        <div class="flex items-center gap-1.5 text-white font-bold">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i>
+                            <span>Engenharia de Atalhos Sem Conflitos:</span>
+                        </div>
+                        <p class="leading-relaxed">
+                            Teclas simples (<kbd class="text-brand font-mono text-[10px]">1..8</kbd>, <kbd class="text-brand font-mono text-[10px]">N</kbd>, <kbd class="text-brand font-mono text-[10px]">/</kbd>, <kbd class="text-brand font-mono text-[10px]">?</kbd>) são automaticamente ignoradas enquanto você digita em formulários. Os atalhos <kbd class="text-white font-mono text-[10px]">Alt+1..8</kbd> funcionam globalmente sem conflitar com abas nativas do navegador.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer do Modal -->
+            <div class="pt-4 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-zinc-500 text-[11px]">
+                    <span class="w-2 h-2 rounded-full bg-brand"></span>
+                    <span>Padrão Linear / GitHub Ergonomics v2.0</span>
+                </div>
+                <button type="button" onclick="closeShortcutsModal()" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                    Entendido (Esc)
+                </button>
             </div>
         </div>
     </div>
