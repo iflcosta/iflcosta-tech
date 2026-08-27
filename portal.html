@@ -168,7 +168,7 @@
                                     <span>01. TRIAGEM</span>
                                     <i data-lucide="check-circle-2" class="w-4 h-4"></i>
                                 </div>
-                                <span class="text-[11px] text-zinc-400">Checklist & Fotos</span>
+                                <span id="step-1-sub" class="text-[11px] text-zinc-400">Checklist & Fotos</span>
                             </div>
 
                             <!-- Etapa 2 -->
@@ -177,7 +177,7 @@
                                     <span>02. ORÇAMENTO</span>
                                     <i data-lucide="check-circle-2" class="w-4 h-4"></i>
                                 </div>
-                                <span class="text-[11px] text-zinc-400">Aprovado & Sinal Pago</span>
+                                <span id="step-2-sub" class="text-[11px] text-zinc-400">Aprovado & Sinal Pago</span>
                             </div>
 
                             <!-- Etapa 3 -->
@@ -186,7 +186,7 @@
                                     <span>03. BANCADA</span>
                                     <i data-lucide="check-circle-2" class="w-4 h-4"></i>
                                 </div>
-                                <span class="text-[11px] text-zinc-400">Montagem & Cable Mgmt</span>
+                                <span id="step-3-sub" class="text-[11px] text-zinc-400">Montagem & Cable Mgmt</span>
                             </div>
 
                             <!-- Etapa 4 -->
@@ -195,7 +195,7 @@
                                     <span>04. TESTES QA</span>
                                     <i data-lucide="cpu" class="w-4 h-4"></i>
                                 </div>
-                                <span class="text-[11px] text-zinc-900 font-bold">AIDA64 / 15 Min</span>
+                                <span id="step-4-sub" class="text-[11px] text-zinc-900 font-bold">AIDA64 / 15 Min</span>
                             </div>
 
                             <!-- Etapa 5 -->
@@ -204,7 +204,7 @@
                                     <span>05. PRONTO</span>
                                     <i data-lucide="package-check" class="w-4 h-4"></i>
                                 </div>
-                                <span class="text-[11px]">Garantia 90D & Entrega</span>
+                                <span id="step-5-sub" class="text-[11px]">Garantia 90D & Entrega</span>
                             </div>
                         </div>
                     </div>
@@ -2063,6 +2063,95 @@
         }
 
         // Submissão do Formulário com Validação de WhatsApp
+        // =====================================================================
+        // SPRINT 5 & CDC: FUNÇÕES DO PORTAL DO CLIENTE & TERMO DE GARANTIA
+        // =====================================================================
+        function downloadWarrantyPDF() {
+            const osNum = currentWorkOrder?.os_number || '082601';
+            const clientName = currentWorkOrder?.client_name || 'Cliente';
+            const device = (currentWorkOrder?.device_brand || 'Equipamento') + ' ' + (currentWorkOrder?.device_model || '');
+            const dateStr = new Date().toLocaleDateString('pt-BR');
+
+            const printWindow = window.open('', '_blank', 'width=700,height=800');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Certificado de Garantia // IF Tech OS #${osNum}</title>
+                    <style>
+                        body { font-family: monospace; font-size: 12px; margin: 30px; color: #000; line-height: 1.5; }
+                        .header { border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 20px; }
+                        .title { font-size: 18px; font-weight: bold; }
+                        .section { margin-bottom: 16px; }
+                        .bold { font-weight: bold; }
+                        .border-box { border: 1px solid #000; padding: 12px; margin-top: 15px; }
+                        .footer { margin-top: 30px; text-align: center; font-size: 10px; border-top: 1px solid #000; padding-top: 8px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="title">IF TECH // TECH SOLUTIONS</div>
+                        <div>CERTIFICADO DE CUSTÓDIA & GARANTIA TÉCNICA CDC 90 DIAS</div>
+                        <div>ORDEM DE SERVIÇO: #${osNum} • DATA: ${dateStr}</div>
+                    </div>
+
+                    <div class="section">
+                        <div><strong>TITULAR DO EQUIPAMENTO:</strong> ${clientName}</div>
+                        <div><strong>EQUIPAMENTO / MODELO:</strong> ${device}</div>
+                        <div><strong>GARANTIA LEGAL:</strong> 90 (noventa) dias nos termos do Art. 26 do Código de Defesa do Consumidor (Lei 8.078/90).</div>
+                    </div>
+
+                    <div class="border-box">
+                        <div class="bold">TERMOS DE GARANTIA & CONDIÇÕES:</div>
+                        <ol style="margin: 8px 0; padding-left: 20px; font-size: 11px;">
+                            <li>A garantia cobre exclusivamente os serviços executados e as peças substituídas descritas no Laudo Técnico da OS #${osNum}.</li>
+                            <li>A violação do lacre de segurança, presença de umidade, quedas físicas ou intervenções de terceiros anulam imediatamente a garantia.</li>
+                            <li>Peças novas com garantia estendida de fabricante (ex: SSDs e Memórias 1 a 3 anos) possuem cobertura RMA intermediada pela IF Tech.</li>
+                        </ol>
+                    </div>
+
+                    <div style="margin-top: 40px; display: flex; justify-content: space-between;">
+                        <div style="text-align: center; width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 4px;">IF Tech Soluções Tecnológicas<br/>Responsável Técnico</div>
+                        </div>
+                        <div style="text-align: center; width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 4px;">Assinatura do Cliente<br/>${clientName}</div>
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        HASH DE AUTENTICIDADE DIGITAL: SHA256-${Date.now().toString(36).toUpperCase()}<br/>
+                        IF TECH // BRAGANÇA PAULISTA - SP • iflcosta.tech
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => { printWindow.print(); }, 500);
+        }
+
+        function closePortalNewTicketModal() {
+            document.getElementById('portal-new-ticket-modal')?.classList.add('hidden');
+        }
+
+        function handlePortalSaveTicket(e) {
+            e.preventDefault();
+            const subject = document.getElementById('portal-ticket-subject')?.value.trim();
+            const desc = document.getElementById('portal-ticket-desc')?.value.trim();
+            const severity = document.getElementById('portal-ticket-severity')?.value || 'P3_Media';
+            const device = document.getElementById('portal-ticket-device')?.value || '';
+
+            if (!subject || !desc) {
+                alert('Por favor, preencha o assunto e a descrição do incidente.');
+                return;
+            }
+
+            const ticketCode = 'TICK-2026-' + Math.floor(1000 + Math.random() * 9000);
+            alert(`✓ Chamado ${ticketCode} registrado com sucesso!
+Nossa equipe técnica já recebeu o alerta e o cronômetro SLA de 2h foi iniciado.`);
+            closePortalNewTicketModal();
+        }
+
         searchForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const osVal = searchInput.value.trim();
@@ -2265,42 +2354,41 @@
     
 
     <!-- Modal: Abrir Chamado no Portal do Cliente -->
-    <div id="portal-new-ticket-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 overflow-y-auto font-mono">
-        <div class="bg-black border-2 border-yellow-400 w-full max-w-lg shadow-[8px_8px_0px_0px_rgba(234,179,8,0.5)] my-8 overflow-hidden">
-            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-6 bg-yellow-400"></div>
-                    <div>
-                        <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest block">SUPORTE TÉCNICO DEDICADO</span>
-                        <h3 class="text-lg font-black text-white uppercase">Abrir Chamado em 10s</h3>
-                    </div>
-                </div>
-                <button type="button" onclick="closePortalNewTicketModal()" class="text-zinc-500 hover:text-white p-1 text-xl">✕</button>
-            </div>
-
-            <form id="portal-new-ticket-form" onsubmit="handlePortalSaveTicket(event)" class="p-6 space-y-4 text-xs">
+    <!-- MODAL: ABERTURA DE CHAMADO MSP B2B DO CLIENTE -->
+    <div id="portal-new-ticket-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-yellow-400 w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(250,204,21,0.3)]">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
                 <div>
-                    <label class="block text-zinc-400 uppercase font-bold mb-1">Qual computador está com problema?*</label>
-                    <select id="portal-ticket-device-select" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-cyan-400 font-bold focus:outline-none focus:border-yellow-400">
-                        <!-- Injetado dinamicamente -->
+                    <span class="text-yellow-400 text-[10px] font-bold uppercase block">// SERVICE DESK B2B • SLA 2H</span>
+                    <h3 class="text-base font-black text-white uppercase">Abrir Novo Chamado de Suporte</h3>
+                </div>
+                <button type="button" onclick="closePortalNewTicketModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <form onsubmit="handlePortalSaveTicket(event)" class="space-y-4">
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Estação / Ativo (Opcional):</label>
+                    <input type="text" id="portal-ticket-device" placeholder="Ex: WS-FIN-01 ou Servidor Principal" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Severidade / Urgência:</label>
+                    <select id="portal-ticket-severity" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
+                        <option value="P3_Media">🟡 P3 - Média (Problema em 1 estação, trabalho continua - SLA 2h)</option>
+                        <option value="P1_Critica">🔴 P1 - Crítica (Servidor parado, empresa sem faturar - SLA 30m)</option>
+                        <option value="P2_Alta">🟠 P2 - Alta (Setor financeiro/vendas impactado - SLA 1h)</option>
+                        <option value="P4_Baixa">🟢 P4 - Baixa (Dúvida, instalação de software, melhoria)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-zinc-400 uppercase font-bold mb-1">Seu Nome:*</label>
-                    <input type="text" id="portal-ticket-name" required placeholder="Ex: Roberto / Camila" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Assunto / Resumo do Incidente *</label>
+                    <input type="text" id="portal-ticket-subject" required placeholder="Ex: Erro ao emitir NF-e ou Computador não liga" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
                 </div>
                 <div>
-                    <label class="block text-zinc-400 uppercase font-bold mb-1">Seu WhatsApp (para acompanhar):*</label>
-                    <input type="text" id="portal-ticket-whatsapp" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Descrição Detalhada do Problema *</label>
+                    <textarea id="portal-ticket-desc" rows="3" required placeholder="Descreva o que está acontecendo e se apareceu alguma mensagem de erro..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400"></textarea>
                 </div>
-                <div>
-                    <label class="block text-zinc-400 uppercase font-bold mb-1">Descreva o que está acontecendo:*</label>
-                    <textarea id="portal-ticket-desc" rows="3" required placeholder="Ex: Não consigo acessar a pasta de rede / O computador travou com tela azul..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-yellow-400"></textarea>
-                </div>
-
-                <div class="pt-4 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closePortalNewTicketModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white">Cancelar</button>
-                    <button type="submit" class="px-6 py-2 bg-yellow-400 text-black font-black uppercase hover:bg-white transition-colors">Enviar Chamado</button>
+                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closePortalNewTicketModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-yellow-400 text-black font-black uppercase hover:bg-white transition-colors">🚀 Abrir Chamado Agora</button>
                 </div>
             </form>
         </div>

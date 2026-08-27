@@ -492,45 +492,246 @@
             <!-- ============================================================= -->
             <!-- 4. ABA: CONTRATOS DE TI GERENCIADA (MSP & MRR)                 -->
             <!-- ============================================================= -->
+            <!-- ============================================================= -->
+            <!-- 4. ABA: CONTRATOS DE TI GERENCIADA, ITAM & SERVICE DESK (MSP)  -->
+            <!-- ============================================================= -->
+            <!-- ============================================================= -->
+            <!-- 4. ABA: CONTRATOS DE TI GERENCIADA, ITAM & SERVICE DESK (MSP)  -->
+            <!-- ============================================================= -->
             <div id="tab-content-msp" class="tab-content hidden space-y-6">
-                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8 font-mono">
-                    <div class="flex justify-between items-center pb-4 border-b border-zinc-800 mb-6">
-                        <div>
-                            <span class="text-purple-400 text-xs font-bold uppercase block mb-1">[ Pilar 3 • TI Gerenciada & Contratos B2B ]</span>
-                            <h3 class="text-xl sm:text-2xl font-extrabold text-white">Carteira de Empresas & MRR</h3>
-                        </div>
-                        <button class="px-3 py-1.5 bg-purple-950/60 border border-purple-500 text-purple-400 text-xs font-bold uppercase hover:bg-purple-400 hover:text-black transition-colors">
-                            + Novo Contrato MSP
-                        </button>
+                <!-- Header & KPIs Executivos MSP -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-purple-500 transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">CONTRATOS ATIVOS</div>
+                        <div class="text-xl sm:text-2xl font-black text-white" id="msp-stat-contracts-count">0</div>
+                        <div class="text-[10px] text-purple-400 mt-1">PMEs em Bragança & Região</div>
                     </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-brand transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">RECEITA RECORRENTE (MRR)</div>
+                        <div class="text-xl sm:text-2xl font-black text-brand" id="msp-stat-total-mrr">R$ 0,00</div>
+                        <div class="text-[10px] text-zinc-400 mt-1" id="msp-stat-mrr-arr">ARR: R$ 0,00/ano</div>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-cyan-400 transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">PARQUE DE ATIVOS (ITAM)</div>
+                        <div class="text-xl sm:text-2xl font-black text-cyan-400" id="msp-stat-devices-count">0</div>
+                        <div class="text-[10px] text-zinc-400 mt-1">Estações & Servidores RustDesk</div>
+                    </div>
+                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-yellow-400 transition-colors font-mono">
+                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">SLA GLOBAL // SERVICE DESK</div>
+                        <div class="text-xl sm:text-2xl font-black text-yellow-400" id="msp-stat-sla-pct">100%</div>
+                        <div class="text-[10px] text-zinc-400 mt-1" id="msp-stat-active-tickets">0 chamados abertos</div>
+                    </div>
+                </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-zinc-800 text-zinc-400">
-                                    <th class="py-2.5 px-3">Contrato</th>
-                                    <th class="py-2.5 px-3">Empresa Cliente</th>
-                                    <th class="py-2.5 px-3">Plano</th>
-                                    <th class="py-2.5 px-3">Estações</th>
-                                    <th class="py-2.5 px-3">Backup 3-2-1</th>
-                                    <th class="py-2.5 px-3 text-right">MRR Mensal</th>
-                                    <th class="py-2.5 px-3 text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-zinc-900 text-zinc-300">
-                                <tr>
-                                    <td class="py-3 px-3 font-bold text-purple-400">MSP-2026-004</td>
-                                    <td class="py-3 px-3 text-white font-bold">Clínica Médica São Francisco</td>
-                                    <td class="py-3 px-3"><span class="text-purple-400 font-bold">Professional</span></td>
-                                    <td class="py-3 px-3">10 PCs + 1 Server</td>
-                                    <td class="py-3 px-3 text-brand">● Wasabi OK (04:00 AM)</td>
-                                    <td class="py-3 px-3 text-right font-bold text-white">R$ 1.099,00/mês</td>
-                                    <td class="py-3 px-3 text-center">
-                                        <a href="https://wa.me/5511919691542" target="_blank" class="text-brand hover:underline">RustDesk</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Sub-navegação interna MSP -->
+                <div class="flex flex-wrap gap-2 border-b border-zinc-800 pb-2">
+                    <button type="button" onclick="switchMSPSubTab('contracts')" id="msp-subtab-btn-contracts" class="msp-subtab-btn px-4 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-mono text-xs font-bold uppercase transition-all">
+                        💼 Contratos & MRR
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('devices')" id="msp-subtab-btn-devices" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all">
+                        🖥️ Inventário ITAM (RustDesk)
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('tickets')" id="msp-subtab-btn-tickets" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5">
+                        🎫 Service Desk (SLA 2h) <span id="msp-badge-open-tickets" class="px-1.5 py-0.2 bg-yellow-400 text-black text-[10px] font-black rounded-full hidden">0</span>
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('visits')" id="msp-subtab-btn-visits" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all">
+                        🚗 Visitas Presenciais & GPS
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('snitch')" id="msp-subtab-btn-snitch" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5">
+                        🛡️ Dead Man's Snitch (Backup 3-2-1)
+                    </button>
+                </div>
+
+                <!-- SUB-ABA 1: CONTRATOS & CARTEIRA B2B -->
+                <div id="msp-subtab-content-contracts" class="msp-subtab-content space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-purple-400 text-xs font-bold uppercase block mb-1">[ Pilar 3 • Gestão de Contratos Recorrentes ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Carteira de Empresas Gerenciadas</h3>
+                            </div>
+                            <button type="button" onclick="openNewMSPContractModal()" class="px-4 py-2 bg-purple-500 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(168,85,247,0.4)]">
+                                <i data-lucide="plus" class="w-4 h-4"></i> + Novo Contrato MSP
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950/80">
+                                        <th class="py-3 px-3">Código</th>
+                                        <th class="py-3 px-3">Empresa Cliente</th>
+                                        <th class="py-3 px-3">Contato / WhatsApp</th>
+                                        <th class="py-3 px-3">Plano MSP</th>
+                                        <th class="py-3 px-3 text-center">Ativos</th>
+                                        <th class="py-3 px-3 text-center">SLA Remoto</th>
+                                        <th class="py-3 px-3 text-right">MRR Mensal</th>
+                                        <th class="py-3 px-3 text-center">Status</th>
+                                        <th class="py-3 px-3 text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="msp-contracts-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 2: INVENTÁRIO ITAM (ATIVOS & RUSTDESK) -->
+                <div id="msp-subtab-content-devices" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-cyan-400 text-xs font-bold uppercase block mb-1">[ ITAM • Inventário de Hardware & Telemetria ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Estações, Servidores & Acesso RustDesk</h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="msp-device-search" onkeyup="filterMSPDevices()" placeholder="Buscar por tag, hostname, usuário..." class="bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-400">
+                                <button type="button" onclick="openNewMSPDeviceModal()" class="px-4 py-2 bg-cyan-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)]">
+                                    <i data-lucide="plus" class="w-4 h-4"></i> + Cadastrar Ativo
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="msp-devices-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <!-- Injetado dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 3: SERVICE DESK & INCIDENTES (ITIL V4) -->
+                <div id="msp-subtab-content-tickets" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-yellow-400 text-xs font-bold uppercase block mb-1">[ Service Desk • Gestão de Incidentes & SLA ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Fila de Chamados & Cronômetro de Resposta</h3>
+                            </div>
+                            <button type="button" onclick="openNewMSPTicketModal()" class="px-4 py-2 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(234,179,8,0.4)]">
+                                <i data-lucide="plus" class="w-4 h-4"></i> + Abrir Chamado
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                            <!-- Coluna 1: Aberto / Triagem -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-yellow-400 flex items-center gap-1.5">● ABERTOS (SLA ATIVO)</span>
+                                    <span id="msp-col-count-aberto" class="px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-700 text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-aberto" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+
+                            <!-- Coluna 2: Em Atendimento Remoto -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-cyan-400 flex items-center gap-1.5">⚡ EM ATENDIMENTO</span>
+                                    <span id="msp-col-count-em-atendimento" class="px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-700 text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-em-atendimento" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+
+                            <!-- Coluna 3: Encaminhado Bancada -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-purple-400 flex items-center gap-1.5">🛠️ BANCADA DE HARDWARE</span>
+                                    <span id="msp-col-count-bancada" class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-700 text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-bancada" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+
+                            <!-- Coluna 4: Resolvido / Fechado -->
+                            <div class="bg-zinc-950 border border-zinc-800 p-3 space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-zinc-800 text-xs font-bold">
+                                    <span class="text-brand flex items-center gap-1.5">✓ RESOLVIDOS (CSAT)</span>
+                                    <span id="msp-col-count-resolvido" class="px-2 py-0.5 bg-brand/20 text-brand border border-brand text-[10px]">0</span>
+                                </div>
+                                <div id="msp-tickets-col-resolvido" class="space-y-3 min-h-[200px]">
+                                    <!-- Injetado dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 4: VISITAS PRESENCIAIS & GPS -->
+                <div id="msp-subtab-content-visits" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
+                            <div>
+                                <span class="text-brand text-xs font-bold uppercase block mb-1">[ Atendimento On-Site • Checklist Preventivo & GPS ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Relatórios de Visitas & Assinatura Digital</h3>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950/80">
+                                        <th class="py-3 px-3">Código</th>
+                                        <th class="py-3 px-3">Empresa</th>
+                                        <th class="py-3 px-3">Tipo de Visita</th>
+                                        <th class="py-3 px-3">Data / Período</th>
+                                        <th class="py-3 px-3">Responsável</th>
+                                        <th class="py-3 px-3 text-center">Check-in GPS</th>
+                                        <th class="py-3 px-3 text-center">Assinatura</th>
+                                        <th class="py-3 px-3 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="msp-visits-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 5: TELEMETRIA & DEAD MAN'S SNITCH -->
+                <div id="msp-subtab-content-snitch" class="msp-subtab-content hidden space-y-4">
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-zinc-800">
+                            <div>
+                                <span class="text-red-400 text-xs font-bold uppercase block mb-1">[ Telemetria Proativa • Dead Man's Snitch ]</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-white">Vigilância de Backup 3-2-1 & Integridade de Servidores</h3>
+                            </div>
+                            <span class="px-3 py-1 bg-brand/10 border border-brand text-brand text-xs font-bold uppercase flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span> Heartbeat 24/7 Ativo
+                            </span>
+                        </div>
+
+                        <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3 text-xs">
+                            <h4 class="font-bold text-white uppercase text-sm flex items-center gap-2">
+                                <i data-lucide="terminal" class="w-4 h-4 text-brand"></i> Como Configurar o Dead Man's Snitch no UrBackup / Script PowerShell:
+                            </h4>
+                            <p class="text-zinc-400">Insira o comando cURL ou Invoke-RestMethod ao final do script de backup da máquina cliente. Se o ping não for recebido em 24h, o IF Tech Core abre chamado P1 Crítico automaticamente.</p>
+                            <div class="bg-black p-3 border border-zinc-800 text-brand font-mono text-[11px] overflow-x-auto select-all">
+                                curl -X POST https://iflcosta.tech/api/snitch -H "Content-Type: application/json" -d '{"token": "SNITCH_TOKEN_DO_DEVICE", "status": "SUCCESS", "bytes": 14200000000}'
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950/80">
+                                        <th class="py-3 px-3">Empresa</th>
+                                        <th class="py-3 px-3">Dispositivo / Tag</th>
+                                        <th class="py-3 px-3">Último Backup (Snitch)</th>
+                                        <th class="py-3 px-3 text-center">Status Proteção</th>
+                                        <th class="py-3 px-3 text-center">Ações / Teste</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="msp-snitch-tbody" class="divide-y divide-zinc-900 text-zinc-300">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2071,7 +2272,7 @@ Qualquer dúvida, estou à disposição!
             if (!grid) return;
             grid.innerHTML = '';
 
-            const q = (document.getElementById('pos-search-input')?.value || '').toLowerCase().trim();
+            const q = (document.getElementById('pos-barcode-input')?.value || '').toLowerCase().trim();
             const cat = posActiveCategory;
 
             const filtered = currentInventoryProducts.filter(p => {
@@ -3863,12 +4064,11 @@ Qualquer dúvida, estou à disposição!
             e.preventDefault();
             const name = document.getElementById('intake-client-name')?.value.trim();
             const phone = document.getElementById('intake-client-phone')?.value.trim();
-            const brand = document.getElementById('intake-device-brand')?.value.trim();
-            const model = document.getElementById('intake-device-model')?.value.trim();
+            const deviceType = document.getElementById('intake-device-type')?.value || 'Notebook';
+            const model = document.getElementById('intake-device-model')?.value.trim() || 'Equipamento';
             const defect = document.getElementById('intake-defect')?.value.trim();
-            const isLevaTraz = document.getElementById('intake-leva-traz')?.checked || false;
 
-            if (!name || !brand || !defect) {
+            if (!name || !defect) {
                 showToast('Preencha os campos obrigatórios (*)', 'warning');
                 return;
             }
@@ -3881,14 +4081,13 @@ Qualquer dúvida, estou à disposição!
                 os_number: nextOSNum,
                 client_name: name,
                 client_whatsapp: phone,
-                device_brand: brand,
+                device_brand: deviceType,
                 device_model: model,
                 reported_defect: defect,
                 status: 'Triagem',
                 total_amount: 0.00,
                 total_labor: 0.00,
                 total_parts: 0.00,
-                requires_delivery: isLevaTraz,
                 public_tracking_token: token,
                 created_at: new Date().toISOString()
             };
@@ -3909,7 +4108,7 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('detail-device-title').textContent = (wo.device_brand || '') + ' // ' + (wo.device_model || '');
             document.getElementById('detail-client-name').textContent = wo.client_name || 'Cliente';
             document.getElementById('detail-client-phone').textContent = wo.client_whatsapp || '-';
-            document.getElementById('detail-defect').textContent = wo.reported_defect || '-';
+            document.getElementById('detail-device-title').textContent = wo.reported_defect || '-';
             document.getElementById('detail-status-badge').textContent = (wo.status || 'Triagem').replace(/_/g, ' ');
             document.getElementById('detail-total-amount').textContent = 'R$ ' + parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
 
@@ -4019,22 +4218,18 @@ Qualquer dúvida, estou à disposição!
         }
 
         function addModalBudgetPartRow() {
-            const tbody = document.getElementById('modal-budget-parts-tbody');
+            const tbody = document.getElementById('budget-modal-parts-tbody');
             if (!tbody) return;
 
             const tr = document.createElement('tr');
             tr.className = 'border-b border-zinc-900';
             tr.innerHTML = `
-                <td class="py-2 px-2"><input type="text" placeholder="Ex: SSD 512GB" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs modal-part-name"></td>
-                <td class="py-2 px-2"><input type="number" step="0.01" placeholder="0.00" oninput="recalcModalBudgetTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs modal-part-cost"></td>
-                <td class="py-2 px-2"><input type="number" step="0.01" placeholder="0.00" oninput="recalcModalBudgetTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs modal-part-price"></td>
+                <td class="py-2 px-2"><input type="text" name="part_name[]" placeholder="Ex: SSD 512GB NVMe" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs modal-part-name"></td>
+                <td class="py-2 px-2"><input type="number" step="0.01" name="part_cost[]" placeholder="0.00" oninput="recalcModalBudgetTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs modal-part-cost"></td>
+                <td class="py-2 px-2"><input type="number" step="0.01" name="part_price[]" placeholder="0.00" oninput="recalcModalBudgetTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs modal-part-price"></td>
                 <td class="py-2 px-2 text-center"><button type="button" onclick="this.closest('tr').remove(); recalcModalBudgetTotals();" class="text-zinc-600 hover:text-red-400 font-bold">✕</button></td>
             `;
             tbody.appendChild(tr);
-        }
-
-        function addPartRow() {
-            addModalBudgetPartRow();
         }
 
         function recalcModalBudgetTotals() {
@@ -4047,18 +4242,29 @@ Qualquer dúvida, estou à disposição!
                 partsCostTotal += (parseFloat(input.value) || 0);
             });
 
-            const labor = parseFloat(document.getElementById('modal-budget-labor')?.value || 0);
-            const total = labor + partsTotal;
+            const laborInput = document.getElementById('budget-modal-labor');
+            const labor = parseFloat(laborInput ? laborInput.value : 0) || 0;
+            const grandTotal = labor + partsTotal;
+            const netProfit = labor + (partsTotal - partsCostTotal);
 
-            const totalEl = document.getElementById('modal-budget-total-val');
-            if (totalEl) totalEl.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+            const partsTotalEl = document.getElementById('budget-modal-parts-total');
+            const laborTotalEl = document.getElementById('budget-modal-labor-total');
+            const grandTotalEl = document.getElementById('budget-modal-grand-total');
+            const netProfitEl = document.getElementById('budget-modal-net-profit');
+
+            if (partsTotalEl) partsTotalEl.textContent = 'R$ ' + partsTotal.toFixed(2).replace('.', ',');
+            if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
+            if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+            if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
         }
 
         function handleSaveBudgetFromModal(e) {
             e.preventDefault();
             if (!selectedWorkOrder) return;
 
-            const labor = parseFloat(document.getElementById('modal-budget-labor')?.value || 0);
+            const laborInput = document.getElementById('budget-modal-labor');
+            const labor = parseFloat(laborInput ? laborInput.value : 0) || 0;
+
             let partsTotal = 0;
             let partsCostTotal = 0;
             document.querySelectorAll('.modal-part-price').forEach(input => { partsTotal += (parseFloat(input.value) || 0); });
@@ -4076,6 +4282,65 @@ Qualquer dúvida, estou à disposição!
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
             showToast('✓ Orçamento da OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' gerado com sucesso! Link pronto para envio.', 'success');
+        }
+
+        let activeClientId = null;
+        function handleSaveClient(e) {
+            e.preventDefault();
+            const name = document.getElementById('cli-name')?.value.trim();
+            const phone = document.getElementById('cli-phone')?.value.trim();
+            const doc = document.getElementById('cli-doc')?.value.trim();
+            const address = document.getElementById('cli-address')?.value.trim();
+
+            if (!name || !phone) {
+                showToast('Preencha os campos obrigatórios', 'warning');
+                return;
+            }
+
+            const newClient = {
+                id: 'cli-' + Date.now(),
+                name: name,
+                phone: phone,
+                document: doc,
+                address: address,
+                orders_count: 0,
+                total_spent: 0.00
+            };
+
+            currentClientsList.unshift(newClient);
+            closeClientModal();
+            filterClientsTable();
+            showToast('✓ Cliente ' + name + ' cadastrado com sucesso no CRM!', 'success');
+        }
+
+        function openClientDetailModal(clientId) {
+            activeClientId = clientId;
+            const client = currentClientsList.find(c => c.id === clientId);
+            if (!client) return;
+
+            const modal = document.getElementById('client-detail-modal');
+            if (!modal) return;
+
+            document.getElementById('cdetail-name').textContent = client.name;
+            document.getElementById('cdetail-phone').textContent = client.phone;
+            document.getElementById('cdetail-ltv').textContent = 'R$ ' + (client.total_spent || 0).toFixed(2).replace('.', ',');
+            document.getElementById('cdetail-orders-count').textContent = (client.orders_count || 0) + ' OSs no Histórico';
+
+            const historyList = document.getElementById('cdetail-history-list');
+            if (historyList) {
+                historyList.innerHTML = `
+                    <div class="p-2.5 bg-zinc-900 border border-zinc-800 flex justify-between items-center text-xs">
+                        <div>
+                            <strong class="text-white font-bold block">Manutenção Especializada & Upgrade</strong>
+                            <span class="text-zinc-500 text-[10px]">OS Recente • Garantia CDC 90D Ativa</span>
+                        </div>
+                        <span class="text-brand font-mono font-bold">R$ ${(client.total_spent || 350).toFixed(2).replace('.', ',')}</span>
+                    </div>
+                `;
+            }
+
+            modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
         }
 
         function printThermalDeviceLabel(wo) {
@@ -4106,7 +4371,81 @@ Qualquer dúvida, estou à disposição!
                         Rastreamento: iflcosta.tech/status<br/>
                         Bragança Paulista - SP
                     </div>
-                </body>
+                <!-- MODAL: NOVO CLIENTE CRM -->
+    <div id="client-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
+                <h3 class="text-base font-black text-white uppercase flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-brand"></i> Cadastrar Novo Cliente
+                </h3>
+                <button type="button" onclick="closeClientModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <form id="new-client-form" onsubmit="handleSaveClient(event)" class="space-y-4">
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome Completo / Razão Social *</label>
+                    <input type="text" id="cli-name" required placeholder="Ex: Dr. Roberto Guimarães" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">WhatsApp / Telefone *</label>
+                        <input type="text" id="cli-phone" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">CPF / CNPJ</label>
+                        <input type="text" id="cli-doc" placeholder="000.000.000-00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Endereço / Condomínio (Leva-e-Traz)</label>
+                    <input type="text" id="cli-address" placeholder="Ex: Residencial Euroville, Casa 42" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                </div>
+                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closeClientModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: DETALHE DO CLIENTE CRM -->
+    <div id="client-detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-2xl p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
+                <div>
+                    <span class="text-brand text-[10px] font-bold uppercase block">// CRM & HISTÓRICO LTV</span>
+                    <h3 class="text-base font-black text-white uppercase" id="cdetail-name">Dr. Roberto Guimarães</h3>
+                </div>
+                <button type="button" onclick="closeClientDetailModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-zinc-950 border border-zinc-800 mb-4">
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">WhatsApp:</span>
+                    <strong class="text-white" id="cdetail-phone">(11) 98765-4321</strong>
+                </div>
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">Total Gasto (LTV):</span>
+                    <strong class="text-brand" id="cdetail-ltv">R$ 8.900,00</strong>
+                </div>
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">Ordens de Serviço:</span>
+                    <strong class="text-cyan-400" id="cdetail-orders-count">5 OSs Concluídas</strong>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <span class="text-zinc-400 font-bold uppercase text-[10px] block">Histórico de Máquinas & Serviços:</span>
+                <div id="cdetail-history-list" class="space-y-2 max-h-48 overflow-y-auto">
+                    <!-- Injetado dinamicamente -->
+                </div>
+            </div>
+            <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
+                <button type="button" onclick="quickNewOSForClient(activeClientId)" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors">
+                    + Abrir Nova OS para este Cliente
+                </button>
+                <button type="button" onclick="closeClientDetailModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Fechar</button>
+            </div>
+        </div>
+    </div>
+</body>
                 </html>
             `);
             printWindow.document.close();
@@ -4150,7 +4489,81 @@ Qualquer dúvida, estou à disposição!
                     <div class="text-center" style="margin-top: 15px; border-top: 1px solid #000; padding-top: 4px;">
                         Assinatura do Cliente
                     </div>
-                </body>
+                <!-- MODAL: NOVO CLIENTE CRM -->
+    <div id="client-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
+                <h3 class="text-base font-black text-white uppercase flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-brand"></i> Cadastrar Novo Cliente
+                </h3>
+                <button type="button" onclick="closeClientModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <form id="new-client-form" onsubmit="handleSaveClient(event)" class="space-y-4">
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome Completo / Razão Social *</label>
+                    <input type="text" id="cli-name" required placeholder="Ex: Dr. Roberto Guimarães" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">WhatsApp / Telefone *</label>
+                        <input type="text" id="cli-phone" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">CPF / CNPJ</label>
+                        <input type="text" id="cli-doc" placeholder="000.000.000-00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Endereço / Condomínio (Leva-e-Traz)</label>
+                    <input type="text" id="cli-address" placeholder="Ex: Residencial Euroville, Casa 42" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                </div>
+                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closeClientModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: DETALHE DO CLIENTE CRM -->
+    <div id="client-detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-2xl p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
+                <div>
+                    <span class="text-brand text-[10px] font-bold uppercase block">// CRM & HISTÓRICO LTV</span>
+                    <h3 class="text-base font-black text-white uppercase" id="cdetail-name">Dr. Roberto Guimarães</h3>
+                </div>
+                <button type="button" onclick="closeClientDetailModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-zinc-950 border border-zinc-800 mb-4">
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">WhatsApp:</span>
+                    <strong class="text-white" id="cdetail-phone">(11) 98765-4321</strong>
+                </div>
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">Total Gasto (LTV):</span>
+                    <strong class="text-brand" id="cdetail-ltv">R$ 8.900,00</strong>
+                </div>
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">Ordens de Serviço:</span>
+                    <strong class="text-cyan-400" id="cdetail-orders-count">5 OSs Concluídas</strong>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <span class="text-zinc-400 font-bold uppercase text-[10px] block">Histórico de Máquinas & Serviços:</span>
+                <div id="cdetail-history-list" class="space-y-2 max-h-48 overflow-y-auto">
+                    <!-- Injetado dinamicamente -->
+                </div>
+            </div>
+            <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
+                <button type="button" onclick="quickNewOSForClient(activeClientId)" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors">
+                    + Abrir Nova OS para este Cliente
+                </button>
+                <button type="button" onclick="closeClientDetailModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Fechar</button>
+            </div>
+        </div>
+    </div>
+</body>
                 </html>
             `);
             printWindow.document.close();
@@ -4222,7 +4635,7 @@ IF Tech // Engenharia de Hardware`;
         }
 
         function renderClientsTable() {
-            const tbody = document.getElementById('clients-table-body');
+            const tbody = document.getElementById('crm-clients-tbody');
             if (!tbody) return;
             tbody.innerHTML = currentClientsList.map(c => `
                 <tr class="hover:bg-zinc-900/50">
@@ -4244,12 +4657,277 @@ IF Tech // Engenharia de Hardware`;
         function loadSupabaseData() {}
         function closeModal() { closeAllModals(); }
 
+        // =====================================================================
+        // MOTORES CLÁSSICOS: SCANNER UNIVERSAL, CUSTOM BUILD, ABERTURA OS & CRM
+        // =====================================================================
+        function handleScannerInputKeydown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const val = e.target.value.trim();
+                if (!val) return;
+                handleUniversalBarcodeScan(val);
+                e.target.value = '';
+            }
+        }
+
+        function handleUniversalBarcodeScan(code) {
+            // 1. Verificar se é produto no PDV/Estoque
+            const prod = currentInventoryProducts.find(p => p.barcode === code || p.sku.toLowerCase() === code.toLowerCase());
+            if (prod) {
+                switchTab('inventory');
+                switchInventorySubTab('pos');
+                addToPOSCart(prod);
+                showToast(`✓ [BIP USB] Produto ${prod.name} adicionado ao carrinho!`, 'success');
+                return;
+            }
+
+            // 2. Verificar se é Ordem de Serviço
+            const cleanCode = code.replace('#', '').trim();
+            const wo = currentWorkOrders.find(o => String(o.os_number) === cleanCode || o.public_tracking_token === cleanCode);
+            if (wo) {
+                switchTab('kanban');
+                openOSDetailModal(wo);
+                showToast(`✓ [BIP USB] OS #${formatOSNumber(wo.os_number)} localizada e aberta!`, 'success');
+                return;
+            }
+
+            // 3. Verificar se é consulta de RMA (Serial Number)
+            const rmaMatch = (mockSerialsDB || []).find(s => s.serial_number.toLowerCase() === code.toLowerCase());
+            if (rmaMatch) {
+                switchTab('inventory');
+                switchInventorySubTab('kardex');
+                const rmaInput = document.getElementById('rma-sn-input');
+                if (rmaInput) { rmaInput.value = code; executeRMALookup(); }
+                showToast(`✓ [BIP USB] Serial Number localizado no Kardex de RMA!`, 'success');
+                return;
+            }
+
+            showToast(`⚠️ Código "${code}" não encontrado no sistema.`, 'warning');
+        }
+
+        const buildProfiles = {
+            GAMER_MID: {
+                name: "Setup Gamer Mid-Range 1080p Ultra",
+                labor: 450.00,
+                parts: [
+                    { name: "Processador AMD Ryzen 5 5600", cost: 650.00, price: 890.00 },
+                    { name: "Placa-Mãe B550M AM4", cost: 480.00, price: 650.00 },
+                    { name: "Memória RAM 16GB (2x8GB) 3200MHz DDR4", cost: 180.00, price: 280.00 },
+                    { name: "SSD M.2 NVMe 1TB PCIe 4.0", cost: 260.00, price: 390.00 },
+                    { name: "Placa de Vídeo RTX 4060 8GB GDDR6", cost: 1750.00, price: 2250.00 },
+                    { name: "Fonte 650W 80 Plus Bronze", cost: 240.00, price: 350.00 },
+                    { name: "Gabinete Aquário + 4 Fans ARGB", cost: 220.00, price: 340.00 }
+                ]
+            },
+            AI_WORKSTATION: {
+                name: "Workstation IA & Render 4K",
+                labor: 850.00,
+                parts: [
+                    { name: "Processador Intel Core i7-14700K", cost: 2200.00, price: 2890.00 },
+                    { name: "Water Cooler 360mm ARGB", cost: 450.00, price: 690.00 },
+                    { name: "Placa-Mãe Z790 DDR5", cost: 1200.00, price: 1650.00 },
+                    { name: "Memória RAM 64GB (2x32GB) DDR5 6000MHz", cost: 850.00, price: 1290.00 },
+                    { name: "SSD M.2 NVMe 2TB PCIe 4.0 (7000MB/s)", cost: 550.00, price: 820.00 },
+                    { name: "Placa de Vídeo RTX 4080 Super 16GB", cost: 6200.00, price: 7800.00 },
+                    { name: "Fonte 850W 80 Plus Gold Modular", cost: 580.00, price: 820.00 },
+                    { name: "Gabinete Full Tower Airflow", cost: 480.00, price: 720.00 }
+                ]
+            }
+        };
+
+        function handleBuildProfileChange(val) {
+            const profile = buildProfiles[val] || buildProfiles['GAMER_MID'];
+            const tbody = document.getElementById('parts-table-body');
+            const laborInput = document.getElementById('labor-price');
+            if (laborInput) laborInput.value = profile.labor.toFixed(2);
+
+            if (tbody) {
+                tbody.innerHTML = '';
+                profile.parts.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'part-row border-b border-zinc-900';
+                    tr.innerHTML = `
+                        <td class="py-2 px-2"><input type="text" name="part_name[]" value="${p.name}" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs"></td>
+                        <td class="py-2 px-2"><input type="number" step="0.01" name="part_cost[]" value="${p.cost.toFixed(2)}" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs part-cost"></td>
+                        <td class="py-2 px-2"><input type="number" step="0.01" name="part_price[]" value="${p.price.toFixed(2)}" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs part-price"></td>
+                        <td class="py-2 px-2 text-center"><button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-400 font-bold">✕</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            recalcTotals();
+            showToast(`✓ Perfil "${profile.name}" carregado!`, 'success');
+        }
+
+        function addPartRow() {
+            const tbody = document.getElementById('parts-table-body');
+            if (!tbody) return;
+            const tr = document.createElement('tr');
+            tr.className = 'part-row border-b border-zinc-900';
+            tr.innerHTML = `
+                <td class="py-2 px-2"><input type="text" name="part_name[]" placeholder="Descrição do componente" class="w-full bg-zinc-900 border border-zinc-700 px-2 py-1 text-white text-xs"></td>
+                <td class="py-2 px-2"><input type="number" step="0.01" name="part_cost[]" placeholder="0.00" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-zinc-300 text-xs part-cost"></td>
+                <td class="py-2 px-2"><input type="number" step="0.01" name="part_price[]" placeholder="0.00" oninput="recalcTotals()" class="w-24 bg-zinc-900 border border-zinc-700 px-2 py-1 text-right text-brand font-bold text-xs part-price"></td>
+                <td class="py-2 px-2 text-center"><button type="button" onclick="removePartRow(this)" class="text-zinc-600 hover:text-red-400 font-bold">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function removePartRow(btn) {
+            const row = btn.closest('tr');
+            if (row) {
+                row.remove();
+                recalcTotals();
+            }
+        }
+
+        function recalcTotals() {
+            let totalCost = 0;
+            let totalSale = 0;
+
+            document.querySelectorAll('.part-row').forEach(row => {
+                const cost = parseFloat(row.querySelector('.part-cost')?.value || 0);
+                const sale = parseFloat(row.querySelector('.part-price')?.value || 0);
+                totalCost += cost;
+                totalSale += sale;
+            });
+
+            const laborInput = document.getElementById('labor-price');
+            const labor = parseFloat(laborInput ? laborInput.value : 0) || 0;
+            const grandTotal = labor + totalSale;
+            const netProfit = labor + (totalSale - totalCost);
+
+            const partsTotalEl = document.getElementById('calc-parts-total');
+            const laborTotalEl = document.getElementById('calc-labor-total');
+            const grandTotalEl = document.getElementById('calc-grand-total');
+            const netProfitEl = document.getElementById('calc-net-profit');
+
+            if (partsTotalEl) partsTotalEl.textContent = 'R$ ' + totalSale.toFixed(2).replace('.', ',');
+            if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
+            if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+            if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+        }
+
+        function handleServiceTypeChange(type) {
+            const laborInput = document.getElementById('labor-price');
+            if (type === 'Limpeza_Preventiva' && laborInput) laborInput.value = '190.00';
+            if (type === 'Reparo_Placa' && laborInput) laborInput.value = '380.00';
+            if (type === 'Formatacao_Otimizacao' && laborInput) laborInput.value = '150.00';
+            recalcTotals();
+        }
+
+        function handleManualStatusChange(newStatus) {
+            advanceOSStatus(newStatus);
+        }
+
+        function handleSaveOS(e) {
+            e.preventDefault();
+            const clientName = document.getElementById('client-name')?.value.trim();
+            const clientPhone = document.getElementById('client-phone')?.value.trim();
+            const serviceType = document.getElementById('service-type')?.value || 'Custom_Build';
+            const diagnosis = document.getElementById('technical-diagnosis')?.value.trim();
+
+            if (!clientName) {
+                showToast('Preencha o nome do cliente', 'warning');
+                return;
+            }
+
+            const nextOSNum = currentWorkOrders.length > 0 ? (Math.max(...currentWorkOrders.map(o => o.os_number || 1045)) + 1) : 1051;
+            const token = 'tok-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5);
+
+            let partsCost = 0;
+            let partsSale = 0;
+            document.querySelectorAll('.part-row').forEach(row => {
+                partsCost += parseFloat(row.querySelector('.part-cost')?.value || 0);
+                partsSale += parseFloat(row.querySelector('.part-price')?.value || 0);
+            });
+            const labor = parseFloat(document.getElementById('labor-price')?.value || 0);
+
+            const newOS = {
+                id: 'wo-' + Date.now(),
+                os_number: nextOSNum,
+                client_name: clientName,
+                client_whatsapp: clientPhone,
+                device_brand: 'Setup Customizado',
+                device_model: serviceType.replace(/_/g, ' '),
+                reported_defect: diagnosis || 'Montagem e configuração de alta performance.',
+                status: (partsSale > 0 || labor > 0) ? 'Orcamento_Aguardando_Aprovacao' : 'Triagem',
+                total_labor: labor,
+                total_parts: partsSale,
+                total_parts_cost: partsCost,
+                total_amount: labor + partsSale,
+                public_tracking_token: token,
+                created_at: new Date().toISOString()
+            };
+
+            currentWorkOrders.unshift(newOS);
+            switchTab('kanban');
+            renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
+            showToast(`✓ OS #${formatOSNumber(nextOSNum)} cadastrada e movida para o Kanban!`, 'success');
+        }
+
+        function filterClientsTable() {
+            const query = (document.getElementById('crm-search-input')?.value || '').toLowerCase().trim();
+            const filterType = document.getElementById('crm-filter-type')?.value || 'all';
+
+            const filtered = currentClientsList.filter(c => {
+                const matchQ = c.name.toLowerCase().includes(query) || (c.phone || '').includes(query);
+                if (filterType === 'b2b') return matchQ && c.orders_count >= 3;
+                if (filterType === 'b2c') return matchQ && c.orders_count < 3;
+                return matchQ;
+            });
+
+            const tbody = document.getElementById('crm-clients-tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = filtered.map(c => `
+                <tr class="border-b border-zinc-900 hover:bg-zinc-900/50">
+                    <td class="py-3 px-3 font-bold text-white">${escapeHtml(c.name)}</td>
+                    <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.phone)}</td>
+                    <td class="py-3 px-3 text-center text-brand font-bold">${c.orders_count}</td>
+                    <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${c.total_spent.toFixed(2).replace('.', ',')}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="openClientDetailModal('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-brand/40 text-brand hover:bg-brand hover:text-black font-bold uppercase text-[10px] mr-1">
+                            Ver Dossiê
+                        </button>
+                        <button type="button" onclick="quickNewOSForClient('${c.id}')" class="px-2.5 py-1 bg-brand text-black font-bold uppercase text-[10px] hover:bg-white">
+                            + Nova OS
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Atualizar contadores do CRM
+            const totalCliEl = document.getElementById('crm-total-clients');
+            const totalLtvEl = document.getElementById('crm-total-ltv');
+            const totalB2CEl = document.getElementById('crm-total-b2c');
+            const totalB2BEl = document.getElementById('crm-total-b2b');
+
+            if (totalCliEl) totalCliEl.textContent = currentClientsList.length;
+            if (totalLtvEl) {
+                const totalLTV = currentClientsList.reduce((acc, c) => acc + (c.total_spent || 0), 0);
+                totalLtvEl.textContent = 'R$ ' + totalLTV.toFixed(2).replace('.', ',');
+            }
+            if (totalB2CEl) totalB2CEl.textContent = currentClientsList.filter(c => c.orders_count < 3).length;
+            if (totalB2BEl) totalB2BEl.textContent = currentClientsList.filter(c => c.orders_count >= 3).length;
+        }
+
+        function formatPhoneBR(phone) {
+            if (!phone) return '-';
+            const clean = phone.replace(/\D/g, '');
+            if (clean.length === 11) {
+                return `(${clean.substr(0,2)}) ${clean.substr(2,5)}-${clean.substr(7,4)}`;
+            }
+            return phone;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             loadInventoryStorage();
             loadSoftwareStorage();
             loadMSPStorage();
             renderMSPDashboard();
-            renderClientsTable();
+            filterClientsTable();
 
             renderSoftwareProjectsDashboard();
             if (window.lucide) lucide.createIcons();
@@ -4975,6 +5653,80 @@ IF Tech // Engenharia de Hardware`;
                         </button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+<!-- MODAL: NOVO CLIENTE CRM -->
+    <div id="client-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)]">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
+                <h3 class="text-base font-black text-white uppercase flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-brand"></i> Cadastrar Novo Cliente
+                </h3>
+                <button type="button" onclick="closeClientModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <form id="new-client-form" onsubmit="handleSaveClient(event)" class="space-y-4">
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome Completo / Razão Social *</label>
+                    <input type="text" id="cli-name" required placeholder="Ex: Dr. Roberto Guimarães" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">WhatsApp / Telefone *</label>
+                        <input type="text" id="cli-phone" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">CPF / CNPJ</label>
+                        <input type="text" id="cli-doc" placeholder="000.000.000-00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Endereço / Condomínio (Leva-e-Traz)</label>
+                    <input type="text" id="cli-address" placeholder="Ex: Residencial Euroville, Casa 42" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                </div>
+                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closeClientModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: DETALHE DO CLIENTE CRM -->
+    <div id="client-detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-2xl p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(204,255,0,0.3)] max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
+                <div>
+                    <span class="text-brand text-[10px] font-bold uppercase block">// CRM & HISTÓRICO LTV</span>
+                    <h3 class="text-base font-black text-white uppercase" id="cdetail-name">Dr. Roberto Guimarães</h3>
+                </div>
+                <button type="button" onclick="closeClientDetailModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-zinc-950 border border-zinc-800 mb-4">
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">WhatsApp:</span>
+                    <strong class="text-white" id="cdetail-phone">(11) 98765-4321</strong>
+                </div>
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">Total Gasto (LTV):</span>
+                    <strong class="text-brand" id="cdetail-ltv">R$ 8.900,00</strong>
+                </div>
+                <div>
+                    <span class="text-zinc-500 text-[10px] uppercase block">Ordens de Serviço:</span>
+                    <strong class="text-cyan-400" id="cdetail-orders-count">5 OSs Concluídas</strong>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <span class="text-zinc-400 font-bold uppercase text-[10px] block">Histórico de Máquinas & Serviços:</span>
+                <div id="cdetail-history-list" class="space-y-2 max-h-48 overflow-y-auto">
+                    <!-- Injetado dinamicamente -->
+                </div>
+            </div>
+            <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
+                <button type="button" onclick="quickNewOSForClient(activeClientId)" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors">
+                    + Abrir Nova OS para este Cliente
+                </button>
+                <button type="button" onclick="closeClientDetailModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Fechar</button>
             </div>
         </div>
     </div>
