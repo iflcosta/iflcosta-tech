@@ -1958,7 +1958,7 @@ Qualquer dúvida, estou à disposição!
         let authLockUntil = 0;
         let currentAuthMode = 'supabase';
 
-                function switchAuthMode(mode) {
+        function switchAuthMode(mode) {
             currentAuthMode = mode;
             const btnSupa = document.getElementById('tab-auth-supabase');
             const btnPin = document.getElementById('tab-auth-pin');
@@ -1992,7 +1992,7 @@ Qualquer dúvida, estou à disposição!
             }
         }
 
-                function unlockAdminCockpit(userLabel = 'Admin') {
+        function unlockAdminCockpit(userLabel = 'Admin') {
             const guard = document.getElementById('admin-auth-guard');
             const app = document.getElementById('admin-cockpit-app');
             const label = document.getElementById('admin-session-label');
@@ -2015,40 +2015,18 @@ Qualquer dúvida, estou à disposição!
             recalcTotals();
             loadSupabaseData();
             setupAdminRealtime();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
+            // Setup Custom Build inicia limpo
 
             if (window.lucide) lucide.createIcons();
-        }
+
+            // Restaurar última aba ativa após login/F5
+            try {
+                const savedTab = sessionStorage.getItem('if_tech_active_tab');
+                if (savedTab && ADMIN_TABS.includes(savedTab) && savedTab !== 'kanban') {
+                    switchTab(savedTab);
+                }
+            } catch(e) {}
+                }
 
         async function checkAdminAuthSession() {
             const client = getSupabase();
@@ -2080,38 +2058,6 @@ Qualquer dúvida, estou à disposição!
             if (guard) guard.classList.remove('hidden');
             if (app) app.classList.add('hidden');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         async function handleAdminEmailLogin(e) {
@@ -2237,38 +2183,6 @@ Qualquer dúvida, estou à disposição!
 
             showToast('Sessão encerrada com sucesso.', 'warning');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         
@@ -2528,14 +2442,12 @@ Qualquer dúvida, estou à disposição!
             }
         }
         
-                function switchTab(tabId) {
+        function switchTab(tabId) {
             if (!tabId) tabId = 'kanban';
-            try {
-                sessionStorage.setItem('if_tech_active_tab', tabId);
-                if (window.location.hash !== '#' + tabId) {
-                    window.location.hash = tabId;
-                }
-            } catch(e) {}
+            try { sessionStorage.setItem('if_tech_active_tab', tabId); } catch(e) {}
+            if (tabId === 'sniper') setTimeout(() => { if (typeof renderSniperDashboard === 'function') renderSniperDashboard(); }, 50);
+            if (tabId === 'msp') setTimeout(() => { if (typeof renderMSPDashboard === 'function') renderMSPDashboard(); }, 50);
+            if (tabId === 'inventory') setTimeout(() => { if (typeof renderPOSGrid === 'function') renderPOSGrid(); if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable(); }, 50);
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -2552,19 +2464,14 @@ Qualquer dúvida, estou à disposição!
                 targetBtn.classList.add('text-brand', 'border-brand', 'bg-brand/5');
             }
 
-            if (tabId === 'sniper' && typeof renderSniperDashboard === 'function') renderSniperDashboard();
-            if (tabId === 'msp' && typeof renderMSPDashboard === 'function') renderMSPDashboard();
-            if (tabId === 'inventory') {
-                if (typeof renderPOSGrid === 'function') renderPOSGrid();
-                if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable();
+            if (tabId === 'financial') {
+                if (typeof renderFinancialDashboard === 'function') renderFinancialDashboard(currentWorkOrders);
             }
-            if (tabId === 'financial' && typeof renderFinancialDashboard === 'function') renderFinancialDashboard(currentWorkOrders);
-            if (tabId === 'clients' && typeof filterClientsTable === 'function') filterClientsTable();
-            if (tabId === 'software' && typeof renderSoftwareProjectsDashboard === 'function') renderSoftwareProjectsDashboard();
 
             if (window.lucide) lucide.createIcons();
         }
 
+        // Lista de OSs em memória
         let currentWorkOrders = [];
         let selectedWorkOrder = null;
 
@@ -2751,38 +2658,6 @@ Qualquer dúvida, estou à disposição!
             }
 
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         // =====================================================================
@@ -2951,7 +2826,6 @@ Qualquer dúvida, estou à disposição!
         let posActiveCategory = 'all';
 
         function switchInventorySubTab(subTab) {
-            try { sessionStorage.setItem('if_tech_inv_subtab', subTab); } catch(e) {}
             const subtabs = ['pos', 'catalog', 'kardex'];
             subtabs.forEach(t => {
                 const el = document.getElementById('inv-subtab-' + t);
@@ -2976,38 +2850,6 @@ Qualquer dúvida, estou à disposição!
             if (subTab === 'catalog') renderInventoryCatalogTable();
             if (subTab === 'kardex') renderKardexTable();
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function filterPOSCategory(cat) {
@@ -3088,38 +2930,6 @@ Qualquer dúvida, estou à disposição!
                 grid.appendChild(card);
             });
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function addToPOSCart(prod) {
@@ -3220,38 +3030,6 @@ Qualquer dúvida, estou à disposição!
 
             recalcPOSCartTotals();
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function changeCartQty(idx, delta) {
@@ -3547,38 +3325,6 @@ Qualquer dúvida, estou à disposição!
             modal.classList.remove('hidden');
             setTimeout(() => document.getElementById('inp-prod-name')?.focus(), 100);
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function closeNewProductModal() {
@@ -3733,38 +3479,6 @@ Qualquer dúvida, estou à disposição!
                 `;
             }
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
 
@@ -3896,38 +3610,6 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
 
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function filterSoftwareProjects() {
@@ -4107,38 +3789,6 @@ Qualquer dúvida, estou à disposição!
             const modal = document.getElementById('software-project-detail-modal');
             if (modal) modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function closeSoftwareProjectDetail() {
@@ -4315,38 +3965,6 @@ Qualquer dúvida, estou à disposição!
 
             renderMSPDashboard();
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function renderMSPDashboard() {
@@ -4458,38 +4076,6 @@ Qualquer dúvida, estou à disposição!
                 grid.appendChild(card);
             });
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function filterMSPDevices() {
@@ -4801,38 +4387,6 @@ Qualquer dúvida, estou à disposição!
 
             document.getElementById('msp-ticket-detail-modal').classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function closeMSPTicketDetail() {
@@ -5002,38 +4556,6 @@ Qualquer dúvida, estou à disposição!
             renderDetailActionButtons(wo);
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function closeOSDetailModal() {
@@ -5131,38 +4653,6 @@ Qualquer dúvida, estou à disposição!
 
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function closeBudgetModal() {
@@ -5518,38 +5008,6 @@ IF Tech // Engenharia de Hardware`;
 
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function closeClientDetailModal() {
@@ -6135,38 +5593,6 @@ IF Tech // Engenharia de Hardware`;
             }
 
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function filterSniperCategory(cat) {
@@ -6243,38 +5669,6 @@ IF Tech // Engenharia de Hardware`;
 
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
-
-            // Restaurar última aba ativa após F5
-            let activeTab = 'kanban';
-            const hash = (window.location.hash || '').replace('#', '');
-            if (ADMIN_TABS.includes(hash)) {
-                activeTab = hash;
-            } else {
-                try {
-                    const saved = sessionStorage.getItem('if_tech_active_tab');
-                    if (saved && ADMIN_TABS.includes(saved)) {
-                        activeTab = saved;
-                    }
-                } catch(e) {}
-            }
-            switchTab(activeTab);
-
-            // Restaurar sub-aba de Estoque
-            try {
-                const savedInvSub = sessionStorage.getItem('if_tech_inv_subtab');
-                if (savedInvSub && typeof switchInventorySubTab === 'function') {
-                    switchInventorySubTab(savedInvSub);
-                }
-            } catch(e) {}
-
-            // Restaurar sub-aba de MSP
-            try {
-                const savedMspSub = sessionStorage.getItem('if_tech_msp_subtab');
-                if (savedMspSub && typeof switchMSPSubTab === 'function') {
-                    switchMSPSubTab(savedMspSub);
-                }
-            } catch(e) {}
-        
         }
 
         function closeSniperBroadcastModal() {
@@ -6407,7 +5801,7 @@ IF Tech // Engenharia de Hardware`;
             }, 600);
         }
 
-                window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', () => {
             checkAdminAuthSession();
             if (window.lucide) lucide.createIcons();
         });
