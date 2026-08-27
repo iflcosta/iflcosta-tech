@@ -19,17 +19,16 @@
   - [x] Opção de Cartão de Crédito em até 12x com cálculo de parcelamento;
   - [x] Trava inteligente de sinal de 100% de peças (com avanço automático para `Peca_Encomendada` após pagamento);
   - [x] Painel de conciliação Asaas no Cockpit Admin com cópia de cobrança para WhatsApp e simulador Sandbox.
+- [x] **Sprint 3: Estoque Inteligente & PDV Caixa Rápido (Loja Express)**
+  - [x] Implementação da aba `[ 📦 Estoque & PDV ]` no Cockpit Admin com 3 sub-visões especializadas;
+  - [x] PDV Caixa Rápido com leitor de código de barras USB (atalho `F2`), Hot-Tiles e cálculo de troco automático;
+  - [x] Emissão de Cupom Térmico Não Fiscal 58mm/80mm no PDV (atalho `F8`);
+  - [x] Catálogo Geral com saldo físico, reservado e disponível + Alertas de Reposição (Curva ABC);
+  - [x] Raio-X de Garantia Reversa (RMA de Fornecedor) por Número de Série (S/N) e Livro Kardex auditável.
 
 ---
 
 ## 🔮 PRÓXIMAS SPRINTS
-
-- [ ] **Sprint 3: Estoque Inteligente & PDV Caixa Rápido (Loja Express)**
-  - [ ] Implementação da aba `[ 📦 Estoque & PDV ]` no Cockpit Admin;
-  - [ ] Mecânica de Baixa Dupla (Consumo em OS na Bancada com S/N vs Venda Rápida de Balcão);
-  - [ ] Rastreamento de Garantia de Fornecedor (KaBuM/SND/All Nations) por Número de Série (S/N) e RMA em 1 clique;
-  - [ ] Emissão de Cupom Térmico Não Fiscal 58mm/80mm no PDV;
-  - [ ] Alertas visuais de Ponto de Reposição (Kanban de Compras: 🟢 Confortável, 🟡 Reposição, 🔴 Crítico, 🟣 Ruptura).
 
 - [ ] **Sprint 4: Portal B2B MSP & Gestão de Contratos de TI**
   - [ ] Painel corporativo para clientes de TI Gerenciada com inventário de estações e servidores;
