@@ -127,7 +127,7 @@
                 <!-- Barra de Scanner USB & Busca Rápida de OS (/ ou Alt+K) -->
                 <div class="hidden md:flex items-center flex-1 max-w-md mx-4 relative font-mono text-xs">
                     <i data-lucide="scan-barcode" class="w-4 h-4 absolute left-3 top-2.5 text-brand animate-pulse"></i>
-                    <input type="text" id="global-scanner-input" onkeydown="handleScannerInputKeydown(event)" placeholder="Bipar QR Code / Buscar OS, Cliente ou S/N (/ ou Alt+K)..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-24 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand transition-colors">
+                    <input type="text" id="global-scanner-input" onkeydown="handleScannerInputKeydown(event)" placeholder="Bipar QR Code / Buscar OS, Cliente ou S/N..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-24 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand transition-colors text-ellipsis">
                     <div class="absolute right-2.5 top-2 flex items-center gap-1 text-[9px] font-mono select-none">
                         <kbd class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 border border-zinc-700">/</kbd>
                         <span class="text-zinc-500">ou</span>
@@ -168,49 +168,49 @@
         </div>
     </header>
 
-    <!-- Barra de Navegação de Abas do Cockpit (8 Abas 100% Visíveis) -->
+    <!-- Barra de Navegação de Abas do Cockpit (8 Abas Fluidas & 100% Visíveis) -->
     <nav class="bg-zinc-950 border-b-2 border-zinc-800 sticky top-16 sm:top-20 z-40">
-        <div class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6">
-            <div class="flex items-center justify-between overflow-x-auto py-1.5 font-mono text-xs font-bold uppercase tracking-wider scroll-smooth gap-1 sm:gap-1.5 scrollbar-thin scrollbar-thumb-zinc-800 hover:scrollbar-thumb-brand/50">
-                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-2.5 sm:px-3 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+        <div class="w-full max-w-[1680px] mx-auto px-2 sm:px-4">
+            <div class="flex items-center justify-between overflow-x-auto py-1 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider scroll-smooth gap-1 scrollbar-none no-scrollbar">
+                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-2 sm:px-2.5 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="layout-grid" class="w-3.5 h-3.5 shrink-0"></i>
                     <span>1. Bancada & OS</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-400 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+1</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-400 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+1</kbd>
                 </button>
-                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="wrench" class="w-3.5 h-3.5 shrink-0"></i>
                     <span>2. Custom Build</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+2</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+2</kbd>
                 </button>
-                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="package" class="w-3.5 h-3.5 shrink-0 text-brand"></i>
                     <span>3. Estoque & PDV</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+3</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+3</kbd>
                 </button>
-                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="users" class="w-3.5 h-3.5 shrink-0"></i>
                     <span>4. Clientes & CRM</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+4</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+4</kbd>
                 </button>
-                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="code" class="w-3.5 h-3.5 shrink-0"></i>
+                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                    <i data-lucide="code" class="w-3.5 h-3.5 shrink-0 text-cyan-400"></i>
                     <span>5. Software (50/50)</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+5</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+5</kbd>
                 </button>
-                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="shield" class="w-3.5 h-3.5 shrink-0 text-purple-400"></i>
                     <span>6. Contratos MSP</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+6</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+6</kbd>
                 </button>
-                <button onclick="switchTab('sniper')" id="tab-btn-sniper" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                <button onclick="switchTab('sniper')" id="tab-btn-sniper" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="crosshair" class="w-3.5 h-3.5 shrink-0 text-brand"></i>
                     <span>7. Radar Sniper</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
-                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-2.5 sm:px-3 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
+                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="dollar-sign" class="w-3.5 h-3.5 shrink-0 text-yellow-400"></i>
                     <span>8. DRE 360°</span>
-                    <kbd class="hidden xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+8</kbd>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+8</kbd>
                 </button>
             </div>
         </div>
