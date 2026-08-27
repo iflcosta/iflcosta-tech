@@ -1020,10 +1020,10 @@
                                 <div>
                                     <div class="flex justify-between text-zinc-300 mb-1">
                                         <span class="font-bold flex items-center gap-1"><span class="w-2.5 h-2.5 bg-brand inline-block"></span> Leva-e-Traz VIP (Condomínios/B2B)</span>
-                                        <span id="bi-share-leva-traz" class="font-mono text-brand font-bold">72% (R$ 7.020)</span>
+                                        <span id="bi-share-leva-traz" class="font-mono text-brand font-bold">0% (R$ 0)</span>
                                     </div>
                                     <div class="w-full bg-zinc-900 h-2.5 border border-zinc-800">
-                                        <div id="bi-bar-leva-traz" class="bg-brand h-full" style="width: 72%"></div>
+                                        <div id="bi-bar-leva-traz" class="bg-brand h-full" style="width: 0%"></div>
                                     </div>
                                     <span class="text-[10px] text-zinc-500">Ticket Médio: R$ 480 | Margem Líquida: 88% | Fricção Zero</span>
                                 </div>
@@ -1031,10 +1031,10 @@
                                 <div>
                                     <div class="flex justify-between text-zinc-300 mb-1">
                                         <span class="font-bold flex items-center gap-1"><span class="w-2.5 h-2.5 bg-cyan-400 inline-block"></span> Balcão Presencial / Walk-in</span>
-                                        <span id="bi-share-balcao" class="font-mono text-cyan-400 font-bold">28% (R$ 2.695)</span>
+                                        <span id="bi-share-balcao" class="font-mono text-cyan-400 font-bold">0% (R$ 0)</span>
                                     </div>
                                     <div class="w-full bg-zinc-900 h-2.5 border border-zinc-800">
-                                        <div id="bi-bar-balcao" class="bg-cyan-400 h-full" style="width: 28%"></div>
+                                        <div id="bi-bar-balcao" class="bg-cyan-400 h-full" style="width: 0%"></div>
                                     </div>
                                     <span class="text-[10px] text-zinc-500">Ticket Médio: R$ 220 | Margem Líquida: 62% | Vendas de Acessórios</span>
                                 </div>
@@ -1054,30 +1054,30 @@
                                 <div>
                                     <div class="flex justify-between text-zinc-300 mb-1">
                                         <span class="font-bold">1. Hardware & Bancada (Caixa Rápido)</span>
-                                        <span id="bi-pillar-hw" class="font-mono text-white font-bold">58% (R$ 5.630)</span>
+                                        <span id="bi-pillar-hw" class="font-mono text-white font-bold">0% (R$ 0)</span>
                                     </div>
                                     <div class="w-full bg-zinc-900 h-2 border border-zinc-800">
-                                        <div id="bi-bar-pillar-hw" class="bg-zinc-200 h-full" style="width: 58%"></div>
+                                        <div id="bi-bar-pillar-hw" class="bg-zinc-200 h-full" style="width: 0%"></div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <div class="flex justify-between text-zinc-300 mb-1">
                                         <span class="font-bold">2. Software & Engenharia Web (Alto Ticket)</span>
-                                        <span id="bi-pillar-sw" class="font-mono text-white font-bold">22% (R$ 2.150)</span>
+                                        <span id="bi-pillar-sw" class="font-mono text-white font-bold">0% (R$ 0)</span>
                                     </div>
                                     <div class="w-full bg-zinc-900 h-2 border border-zinc-800">
-                                        <div id="bi-bar-pillar-sw" class="bg-purple-400 h-full" style="width: 22%"></div>
+                                        <div id="bi-bar-pillar-sw" class="bg-purple-400 h-full" style="width: 0%"></div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <div class="flex justify-between text-zinc-300 mb-1">
                                         <span class="font-bold">3. TI Gerenciada MSP B2B (MRR Recorrente)</span>
-                                        <span id="bi-pillar-msp" class="font-mono text-brand font-bold">20% (R$ 1.935)</span>
+                                        <span id="bi-pillar-msp" class="font-mono text-brand font-bold">0% (R$ 0)</span>
                                     </div>
                                     <div class="w-full bg-zinc-900 h-2 border border-zinc-800">
-                                        <div id="bi-bar-pillar-msp" class="bg-brand h-full" style="width: 20%"></div>
+                                        <div id="bi-bar-pillar-msp" class="bg-brand h-full" style="width: 0%"></div>
                                     </div>
                                 </div>
                             </div>
@@ -2577,7 +2577,7 @@ Qualquer dúvida, estou à disposição!
                     swGross += parseFloat(p.contract_value || (p.price_model === 'SW-01' ? 2450 : 3800));
                 });
             } else {
-                swGross = 2450.00;
+                swGross = 0.00;
             }
 
             // 3. MOTOR 3: TI GERENCIADA MSP B2B (MRR)
@@ -2587,19 +2587,19 @@ Qualquer dúvida, estou à disposição!
                     mspGross += parseFloat(c.monthly_fee || 890);
                 });
             } else {
-                mspGross = 1935.00;
+                mspGross = 0.00;
             }
 
             // 4. MOTOR 4: VENDA DE EQUIPAMENTOS & PDV
-            let posGross = 1620.00;
-            let posCogs = 980.00;
+            let posGross = 0.00;
+            let posCogs = 0.00;
 
             // 5. CONSOLIDAÇÃO TOTAL DOS 4 MOTORES
             const totalGross = hwGross + swGross + mspGross + posGross;
             const totalPartsCost = hwPartsCost + posCogs;
             const netProfit = totalGross - totalPartsCost;
-            const marginPct = totalGross > 0 ? ((netProfit / totalGross) * 100).toFixed(0) : '100';
-            const avgTicket = (deliveredCount > 0 ? (hwGross / (deliveredCount || 1)) : 280.00);
+            const marginPct = totalGross > 0 ? ((netProfit / totalGross) * 100).toFixed(0) : '0';
+            const avgTicket = (deliveredCount > 0 ? (hwGross / (deliveredCount || 1)) : 0.00);
 
             // Atualizar KPIs do Topo do Painel
             const statProfitEl = document.getElementById('stat-month-profit');
@@ -4194,18 +4194,7 @@ Qualquer dúvida, estou à disposição!
         function renderMSPVisitsTable() {
             const tbody = document.getElementById('msp-visits-tbody');
             if (!tbody) return;
-            tbody.innerHTML = `
-                <tr class="hover:bg-zinc-900/60 transition-colors border-b border-zinc-900">
-                    <td class="py-3 px-3 font-bold text-brand">VIS-2026-001</td>
-                    <td class="py-3 px-3 text-white font-bold">Clínica Médica São Francisco</td>
-                    <td class="py-3 px-3"><span class="px-2 py-0.5 bg-brand/10 border border-brand/40 text-brand text-[10px] font-bold">Preventiva Mensal</span></td>
-                    <td class="py-3 px-3 text-zinc-300">20/08/2026 (Manhã)</td>
-                    <td class="py-3 px-3 text-zinc-400">Responsável Técnico // IF Tech</td>
-                    <td class="py-3 px-3 text-center text-brand font-bold">✓ GPS Confirmado (-22.9519, -46.5412)</td>
-                    <td class="py-3 px-3 text-center text-white">✓ Assinado (Dr. Roberto)</td>
-                    <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold text-[10px]">Concluída</span></td>
-                </tr>
-            `;
+            tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-zinc-600 font-mono">Nenhuma visita técnica preventiva agendada ou realizada.</td></tr>';
         }
 
         function renderMSPSnitchTable() {
