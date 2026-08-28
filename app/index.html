@@ -202,15 +202,11 @@
                     <span>6. Contratos MSP</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+6</kbd>
                 </button>
-                <button onclick="switchTab('sniper')" id="tab-btn-sniper" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="crosshair" class="w-3.5 h-3.5 shrink-0 text-brand"></i>
-                    <span>7. Radar Sniper</span>
-                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
-                </button>
+
                 <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
                     <i data-lucide="dollar-sign" class="w-3.5 h-3.5 shrink-0 text-yellow-400"></i>
-                    <span>8. DRE 360°</span>
-                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+8</kbd>
+                    <span>7. DRE 360°</span>
+                    <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
             </div>
         </div>
@@ -2007,9 +2003,7 @@ Qualquer dúvida, estou à disposição!
             renderInventoryCatalogTable();
             loadSoftwareStorage();
             loadMSPStorage();
-            loadSniperStorage();
-            renderSniperDashboard();
-            renderMSPDashboard();
+                                    renderMSPDashboard();
             filterClientsTable();
             renderSoftwareProjectsDashboard();
             recalcTotals();
@@ -2445,8 +2439,7 @@ Qualquer dúvida, estou à disposição!
         function switchTab(tabId) {
             if (!tabId) tabId = 'kanban';
             try { sessionStorage.setItem('if_tech_active_tab', tabId); } catch(e) {}
-            if (tabId === 'sniper') setTimeout(() => { if (typeof renderSniperDashboard === 'function') renderSniperDashboard(); }, 50);
-            if (tabId === 'msp') setTimeout(() => { if (typeof renderMSPDashboard === 'function') renderMSPDashboard(); }, 50);
+                        if (tabId === 'msp') setTimeout(() => { if (typeof renderMSPDashboard === 'function') renderMSPDashboard(); }, 50);
             if (tabId === 'inventory') setTimeout(() => { if (typeof renderPOSGrid === 'function') renderPOSGrid(); if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable(); }, 50);
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -5604,8 +5597,7 @@ IF Tech // Engenharia de Hardware`;
             if (targetBtn) {
                 targetBtn.className = "sniper-cat-btn px-3 py-1 bg-brand text-black font-bold uppercase whitespace-nowrap";
             }
-            renderSniperDashboard();
-        }
+                    }
 
         function filterSniperStore(store) {
             activeSniperStore = store;
@@ -5619,8 +5611,7 @@ IF Tech // Engenharia de Hardware`;
             if (targetBtn) {
                 targetBtn.className = "sniper-store-btn px-2.5 py-0.5 bg-zinc-800 text-white font-bold uppercase text-[10px]";
             }
-            renderSniperDashboard();
-        }
+                    }
 
         function importDealToInventory(dealId) {
             const deal = currentSniperDeals.find(d => d.id === dealId);
@@ -5749,15 +5740,13 @@ IF Tech // Engenharia de Hardware`;
             currentSniperRules.unshift(newRule);
             saveSniperStorage();
             closeNewSniperRuleModal();
-            renderSniperDashboard();
-            showToast(`✓ Regra "${name}" ativada no Radar Sniper!`, 'success');
+                        showToast(`✓ Regra "${name}" ativada no Radar Sniper!`, 'success');
         }
 
         function deleteSniperRule(ruleId) {
             currentSniperRules = currentSniperRules.filter(r => r.id !== ruleId);
             saveSniperStorage();
-            renderSniperDashboard();
-            showToast('Regra removida do Radar Sniper.', 'warning');
+                        showToast('Regra removida do Radar Sniper.', 'warning');
         }
 
         function openSniperConfigModal() {
@@ -5793,8 +5782,7 @@ IF Tech // Engenharia de Hardware`;
         function refreshSniperDeals() {
             showToast('🔄 Sincronizando com feeds e comparadores de hardware...', 'success');
             setTimeout(() => {
-                renderSniperDashboard();
-                showToast('✓ Radar Sniper atualizado com 6 novas promoções!', 'success');
+                                showToast('✓ Radar Sniper atualizado com 6 novas promoções!', 'success');
             }, 600);
         }
 
