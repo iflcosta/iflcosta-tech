@@ -853,114 +853,8 @@
             <!-- 5. ABA: DRE, BUSINESS ANALYTICS & VIABILIDADE FINANCEIRA      -->
             <!-- ============================================================= -->
             <!-- ============================================================= -->
-            <!-- 6. ABA: RADAR SNIPER DE HARDWARE & ALERTA DE OPORTUNIDADES     -->
+            <!-- 7. ABA: DRE 360° -->
             <!-- ============================================================= -->
-            <div id="tab-content-sniper" class="tab-content hidden space-y-6 font-mono">
-                <!-- Header & KPIs Executivos do Sniper -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-brand transition-colors">
-                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">OFERTAS MONITORADAS</div>
-                        <div class="text-xl sm:text-2xl font-black text-white" id="sniper-stat-active-deals">0</div>
-                        <div class="text-[10px] text-brand mt-1">Varredura em 6 Varejistas</div>
-                    </div>
-                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-cyan-400 transition-colors">
-                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">OPORTUNIDADES BANCADA</div>
-                        <div class="text-xl sm:text-2xl font-black text-cyan-400" id="sniper-stat-bancada-ops">0</div>
-                        <div class="text-[10px] text-zinc-400 mt-1">Margem de Revenda &gt; 40%</div>
-                    </div>
-                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-yellow-400 transition-colors">
-                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">ECONOMIA PROJETADA (MÊS)</div>
-                        <div class="text-xl sm:text-2xl font-black text-yellow-400" id="sniper-stat-projected-savings">R$ 0,00</div>
-                        <div class="text-[10px] text-zinc-400 mt-1">Diferença vs Preço Médio</div>
-                    </div>
-                    <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-purple-500 transition-colors">
-                        <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">ALERTAS DISPARADOS</div>
-                        <div class="text-xl sm:text-2xl font-black text-purple-400" id="sniper-stat-alerts-sent">0</div>
-                        <div class="text-[10px] text-zinc-400 mt-1">Telegram VIP & WhatsApp</div>
-                    </div>
-                </div>
-
-                <!-- Barra de Ferramentas & Configuração -->
-                <div class="bg-black border-2 border-zinc-800 p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div class="flex items-center gap-2">
-                        <span class="text-brand text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <i data-lucide="crosshair" class="w-4 h-4 text-brand animate-pulse"></i> RADAR SNIPER ATIVO // IF TECH
-                        </span>
-                        <span class="px-2 py-0.5 bg-brand/10 border border-brand text-brand text-[10px] font-bold uppercase">Auto-Refresh 15m</span>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <button type="button" onclick="openNewSniperRuleModal()" class="px-3.5 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> + Criar Regra de Alvo
-                        </button>
-                        <button type="button" onclick="openSniperConfigModal()" class="px-3.5 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white font-bold uppercase text-xs transition-colors flex items-center gap-1.5">
-                            <i data-lucide="settings" class="w-3.5 h-3.5 text-zinc-400"></i> Configurar Bots & Afiliados
-                        </button>
-                        <button type="button" onclick="refreshSniperDeals()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-brand font-bold uppercase text-xs transition-colors flex items-center gap-1">
-                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Sincronizar
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Filtros Rápidos de Categoria & Lojas -->
-                <div class="space-y-2">
-                    <div class="flex flex-wrap items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-                        <span class="text-[10px] text-zinc-500 uppercase font-bold mr-1">Categoria:</span>
-                        <button type="button" onclick="filterSniperCategory('all')" class="sniper-cat-btn px-3 py-1 bg-brand text-black font-bold uppercase whitespace-nowrap">Todas</button>
-                        <button type="button" onclick="filterSniperCategory('SSD')" class="sniper-cat-btn px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase whitespace-nowrap">💾 SSDs NVMe</button>
-                        <button type="button" onclick="filterSniperCategory('RAM')" class="sniper-cat-btn px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase whitespace-nowrap">⚡ Memória RAM</button>
-                        <button type="button" onclick="filterSniperCategory('GPU')" class="sniper-cat-btn px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase whitespace-nowrap">🎮 Placas de Vídeo</button>
-                        <button type="button" onclick="filterSniperCategory('CPU')" class="sniper-cat-btn px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase whitespace-nowrap">🧠 Processadores</button>
-                        <button type="button" onclick="filterSniperCategory('Fonte')" class="sniper-cat-btn px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase whitespace-nowrap">🔌 Fontes 80+</button>
-                        <button type="button" onclick="filterSniperCategory('Notebook')" class="sniper-cat-btn px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase whitespace-nowrap">💻 Notebooks</button>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-1.5 text-xs">
-                        <span class="text-[10px] text-zinc-500 uppercase font-bold mr-1">Loja / Origem:</span>
-                        <button type="button" onclick="filterSniperStore('all')" class="sniper-store-btn px-2.5 py-0.5 bg-zinc-800 text-white font-bold uppercase text-[10px]">Todas</button>
-                        <button type="button" onclick="filterSniperStore('Kabum')" class="sniper-store-btn px-2.5 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase text-[10px]">Kabum</button>
-                        <button type="button" onclick="filterSniperStore('Terabyte')" class="sniper-store-btn px-2.5 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase text-[10px]">Terabyte</button>
-                        <button type="button" onclick="filterSniperStore('Pichau')" class="sniper-store-btn px-2.5 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase text-[10px]">Pichau</button>
-                        <button type="button" onclick="filterSniperStore('Amazon')" class="sniper-store-btn px-2.5 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase text-[10px]">Amazon</button>
-                        <button type="button" onclick="filterSniperStore('Mercado Livre')" class="sniper-store-btn px-2.5 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white uppercase text-[10px]">Mercado Livre</button>
-                    </div>
-                </div>
-
-                <!-- Grid de Ofertas Capturadas pelo Sniper -->
-                <div id="sniper-deals-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Cards injetados via JavaScript -->
-                </div>
-
-                <!-- Seção: Regras de Preço Alvo Ativas -->
-                <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 space-y-4">
-                    <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
-                        <div>
-                            <span class="text-brand text-xs font-bold uppercase block">// GATILHOS AUTOMATIZADOS</span>
-                            <h4 class="text-base font-black text-white uppercase">Regras de Preço-Alvo Cadastradas</h4>
-                        </div>
-                        <span class="text-[10px] text-zinc-500 uppercase">Alertas Imediatos via Telegram/WhatsApp</span>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead>
-                                <tr class="border-b-2 border-zinc-800 text-zinc-400 uppercase text-[11px] bg-zinc-950">
-                                    <th class="py-2.5 px-3">Nome da Regra</th>
-                                    <th class="py-2.5 px-3">Categoria</th>
-                                    <th class="py-2.5 px-3">Palavras-Chave</th>
-                                    <th class="py-2.5 px-3 text-right">Preço Máximo Alvo</th>
-                                    <th class="py-2.5 px-3 text-center">Telegram</th>
-                                    <th class="py-2.5 px-3 text-center">Status</th>
-                                    <th class="py-2.5 px-3 text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sniper-rules-tbody" class="divide-y divide-zinc-900 text-zinc-300">
-                                <!-- Injetado dinamicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <div id="tab-content-financial" class="tab-content hidden space-y-8">
                 <!-- Cabeçalho Executivo -->
                 <div class="bg-black border-2 border-brand p-6 sm:p-8 font-mono relative shadow-[8px_8px_0px_0px_rgba(204,255,0,0.15)]">
@@ -6832,7 +6726,7 @@ IF Tech // Engenharia de Hardware`;
                                 DRE & Faturamento
                             </span>
                             <div class="flex items-center gap-1">
-                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+8</kbd>
+                                <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-mono text-[10px]">Alt+7</kbd>
                                 <span class="text-zinc-600 text-[10px]">ou</span>
                                 <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-brand font-mono text-[10px]">8</kbd>
                             </div>
