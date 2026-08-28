@@ -33,8 +33,44 @@
         "addressRegion": "SP",
         "addressCountry": "BR"
       },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -22.9519,
+        "longitude": -46.5412
+      },
+      "url": "https://iflcosta.tech",
       "priceRange": "$$",
-      "description": "Consultoria em Engenharia de Software, Upgrades de Hardware de alta performance e Gestão de TI Gerenciada (MSP) para PMEs em Bragança Paulista."
+      "description": "Consultoria em Engenharia de Software, Upgrades de Hardware de alta performance e Gestão de TI Gerenciada (MSP) para PMEs em Bragança Paulista e Região.",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Serviços Técnicos IF Tech",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Manutenção e Upgrade de Computadores e Notebooks",
+              "description": "Limpeza preventiva, upgrade SSD NVMe, memórias RAM e montagem de setups com telemetria e garantia CDC 90 dias."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Desenvolvimento de Software e Sistemas Web",
+              "description": "Landing pages de alta conversão, web apps, automações comerciais integradas ao WhatsApp."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Gestão de TI Empresarial e Suporte MSP",
+              "description": "Suporte com SLA ágil, rotinas de backup 3-2-1, monitoramento e manutenção de infraestrutura para PMEs."
+            }
+          }
+        ]
+      }
     }
     </script>
 
@@ -133,6 +169,18 @@
                             <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20um%20diagn%C3%B3stico%20t%C3%A9cnico%20para%20minha%20m%C3%A1quina%20ou%20empresa." target="_blank" rel="noopener noreferrer" class="inline-flex justify-center items-center px-7 py-3.5 bg-brand text-black text-base sm:text-lg font-black uppercase tracking-wider hover:bg-white transition-colors border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
                                 Solicitar Diagnóstico Rápido
                             </a>
+                        </div>
+                        <div class="mt-6 pt-5 border-t border-zinc-800/80 font-mono">
+                            <span class="text-[11px] text-zinc-400 uppercase font-bold block mb-2 flex items-center gap-1.5">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i> Já é cliente? Rastreie seu equipamento em tempo real:
+                            </span>
+                            <form onsubmit="handleHeroTracking(event)" class="flex flex-col sm:flex-row gap-2 max-w-md">
+                                <input type="text" id="hero-tracking-input" placeholder="Digite Nº da OS ou Token..." required class="w-full bg-zinc-900/90 border-2 border-zinc-700 px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 font-mono focus:outline-none focus:border-brand">
+                                <button type="submit" class="px-5 py-2.5 bg-zinc-900 border-2 border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 font-bold text-xs uppercase transition-colors whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer">
+                                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                                    <span>Rastrear</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                     <div class="relative hidden lg:block group">
@@ -340,6 +388,128 @@
                             </a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seletor Interativo de Diagnóstico no WhatsApp (Zero Fricção) -->
+        <section class="py-20 sm:py-24 bg-black border-b-2 border-zinc-800 font-mono relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 text-center sm:text-left">
+                    <span class="text-brand text-xs sm:text-sm font-bold uppercase mb-2 block">[ DIAGNÓSTICO RÁPIDO // 1 CLIQUE ]</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Qual é o seu objetivo hoje?</h2>
+                    <p class="text-zinc-400 text-sm mt-2 font-sans">Selecione o seu cenário para abrir o atendimento direto com o especialista no WhatsApp sem formulários longos:</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Opção 1: Hardware -->
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Meu%20computador%2Fnotebook%20est%C3%A1%20lento%20ou%20com%20defeito%20e%20gostaria%20de%20um%20diagn%C3%B3stico%20da%20IF%20Tech%20em%20Bragan%C3%A7a." target="_blank" rel="noopener noreferrer" class="bg-zinc-950 border-2 border-zinc-800 hover:border-brand p-6 flex flex-col justify-between group transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(204,255,0,0.3)]">
+                        <div>
+                            <div class="w-10 h-10 bg-brand/10 border border-brand text-brand flex items-center justify-center mb-4 group-hover:bg-brand group-hover:text-black transition-colors">
+                                <i data-lucide="cpu" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Cenário 01 &bull; Hardware & PC</span>
+                            <h3 class="text-lg font-black text-white group-hover:text-brand mb-2">Máquina Lenta, Travando ou Upgrade</h3>
+                            <p class="text-zinc-400 text-xs font-sans leading-relaxed mb-4">
+                                Diagnóstico com telemetria térmica, upgrade de SSD NVMe/RAM, montagem de PC Gamer e Leva-e-Traz em Bragança.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-900 flex items-center justify-between text-brand text-xs font-bold uppercase">
+                            <span>Pedir Diagnóstico</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+
+                    <!-- Opção 2: Software & Web -->
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento%20para%20desenvolvimento%20de%20site%2Fsoftware%20com%20a%20IF%20Tech." target="_blank" rel="noopener noreferrer" class="bg-zinc-950 border-2 border-zinc-800 hover:border-cyan-400 p-6 flex flex-col justify-between group transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(6,182,212,0.3)]">
+                        <div>
+                            <div class="w-10 h-10 bg-cyan-400/10 border border-cyan-400 text-cyan-400 flex items-center justify-center mb-4 group-hover:bg-cyan-400 group-hover:text-black transition-colors">
+                                <i data-lucide="code-2" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Cenário 02 &bull; Engenharia Web</span>
+                            <h3 class="text-lg font-black text-white group-hover:text-cyan-400 mb-2">Criar Site, Sistema ou Automação</h3>
+                            <p class="text-zinc-400 text-xs font-sans leading-relaxed mb-4">
+                                Landing page de alta conversão, sistema web sob medida, integração de APIs e automações comerciais no WhatsApp.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-900 flex items-center justify-between text-cyan-400 text-xs font-bold uppercase">
+                            <span>Orçar Projeto</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+
+                    <!-- Opção 3: TI Empresarial MSP -->
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Tenho%20uma%20empresa%20em%20Bragan%C3%A7a%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o%20t%C3%A9cnica%20de%20TI%20gratuita." target="_blank" rel="noopener noreferrer" class="bg-zinc-950 border-2 border-zinc-800 hover:border-purple-400 p-6 flex flex-col justify-between group transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(168,85,247,0.3)]">
+                        <div>
+                            <div class="w-10 h-10 bg-purple-400/10 border border-purple-400 text-purple-400 flex items-center justify-center mb-4 group-hover:bg-purple-400 group-hover:text-black transition-colors">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Cenário 03 &bull; B2B Corporativo</span>
+                            <h3 class="text-lg font-black text-white group-hover:text-purple-400 mb-2">Suporte de TI & Backups PME</h3>
+                            <p class="text-zinc-400 text-xs font-sans leading-relaxed mb-4">
+                                Gestão completa de máquinas da empresa, backups automáticos 3-2-1, redes corporativas e suporte com SLA ágil.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-900 flex items-center justify-between text-purple-400 text-xs font-bold uppercase">
+                            <span>Agendar Avaliação Gratuita</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabela Comparativa de Autoridade: Assistência Tradicional vs IF Tech -->
+        <section class="py-20 sm:py-24 bg-black border-b-2 border-zinc-800 font-mono">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 text-center sm:text-left">
+                    <span class="text-brand text-xs sm:text-sm font-bold uppercase mb-2 block">[ TRANSPARÊNCIA & ENGENHARIA ]</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Por que a IF Tech não é uma assistência comum?</h2>
+                    <p class="text-zinc-400 text-sm mt-2 font-sans">Entenda como a nossa metodologia de engenharia protege seus dados e garante resultados comprovados:</p>
+                </div>
+
+                <div class="overflow-x-auto border-2 border-zinc-800">
+                    <table class="w-full text-xs sm:text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-zinc-800 bg-zinc-950 text-zinc-400 uppercase text-[11px]">
+                                <th class="py-4 px-4 sm:px-6 w-1/3">Critério de Qualidade</th>
+                                <th class="py-4 px-4 sm:px-6 w-1/3 text-zinc-500">Assistência Tradicional</th>
+                                <th class="py-4 px-4 sm:px-6 w-1/3 text-brand bg-brand/5 border-l-2 border-brand font-black">IF Tech // Engenharia</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-900 text-zinc-300">
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-4 px-4 sm:px-6 font-bold text-white">Método de Diagnóstico</td>
+                                <td class="py-4 px-4 sm:px-6 text-zinc-500">"Troca de peça no chute" ou teste superficial</td>
+                                <td class="py-4 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Telemetria AIDA64, estresse térmico e voltagens</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-4 px-4 sm:px-6 font-bold text-white">Acompanhamento do Serviço</td>
+                                <td class="py-4 px-4 sm:px-6 text-zinc-500">Cliente liga várias vezes sem saber o status</td>
+                                <td class="py-4 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Portal Digital 24/7 com fotos de bancada em tempo real</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-4 px-4 sm:px-6 font-bold text-white">Sigilo de Arquivos e Fotos</td>
+                                <td class="py-4 px-4 sm:px-6 text-zinc-500">Sem protocolo formal, dados vulneráveis</td>
+                                <td class="py-4 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Blindagem LGPD & Protocolo de Custódia Digital</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-4 px-4 sm:px-6 font-bold text-white">Procedência de Peças</td>
+                                <td class="py-4 px-4 sm:px-6 text-zinc-500">Peças genéricas sem controle de garantia</td>
+                                <td class="py-4 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Peças homologadas com Número de Série (S/N)</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-4 px-4 sm:px-6 font-bold text-white">Comprovação de Entrega</td>
+                                <td class="py-4 px-4 sm:px-6 text-zinc-500">Papel de recibo simples ou nada</td>
+                                <td class="py-4 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Laudo Técnico em PDF com Autenticação HASH SHA-256</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-4 px-4 sm:px-6 font-bold text-white">Garantia Legal</td>
+                                <td class="py-4 px-4 sm:px-6 text-zinc-500">30 dias "de boca" com atritos</td>
+                                <td class="py-4 px-4 sm:px-6 text-brand font-black bg-brand/5 border-l-2 border-brand">✓ 90 Dias Integrais (Art. 26 CDC) com Certificado Digital</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -583,6 +753,18 @@
 
     <!-- Script de Interatividade & Mobile Menu -->
     <script>
+                // Rastreamento Direto no Hero
+        function handleHeroTracking(e) {
+            e.preventDefault();
+            const query = (document.getElementById('hero-tracking-input')?.value || '').trim();
+            if (!query) return;
+            if (query.length > 8 || query.includes('-')) {
+                window.location.href = `/status?token=${encodeURIComponent(query)}`;
+            } else {
+                window.location.href = `/status?os=${encodeURIComponent(query.replace(/\D/g, ''))}`;
+            }
+        }
+
         // Função Global de Controle do Menu Mobile (Zero Lag & Resiliente)
         function toggleMobileMenu(forceState) {
             const btn = document.getElementById('mobile-menu-btn');
