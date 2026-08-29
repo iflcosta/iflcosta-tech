@@ -2016,8 +2016,8 @@
             }
 
             // 2. BUSCA DIRETA POR TOKEN UUID (Magic Link do WhatsApp ou colar token no campo)
-            const isTokenFormat = cleanQuery.includes("-") || cleanQuery.length >= 25;
-            if (isTokenFormat) {
+            const isUUIDToken = (cleanQuery.includes("-") && cleanQuery.length >= 30) || (cleanQuery.startsWith("tok-"));
+            if (isUUIDToken && client) {
                 try {
                     const { data, error } = await client.rpc('rpc_track_work_order', {
                         p_token: cleanQuery
@@ -2033,13 +2033,13 @@
                         return;
                     }
                 } catch (err) {
-                    console.warn("Falha na busca por token:", err);
+                    console.warn("Falha na busca por token via Supabase:", err);
                 }
             }
 
-            // 3. BUSCA POR NÚMERO DA OS + CONFIRMAÇÃO DE TELEFONE (2FA)
+            // 3. BUSCA POR NÚMERO DA OS + CONFIRMAÇÃO DE TELEFONE (2FA) VIA SUPABASE
             const num = parseInt(cleanQuery.replace(/\D/g, ''));
-            if (!isNaN(num) && num > 0) {
+            if (!isNaN(num) && num > 0 && client) {
                 try {
                     const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
                     const { data, error } = await client.rpc('rpc_track_work_order_by_number', {
@@ -2057,29 +2057,61 @@
                         return;
                     }
                 } catch (err) {
-                    console.warn("Falha na busca por número de OS:", err);
+                    console.warn("Falha na busca por número de OS via Supabase:", err);
                 }
             }
 
-            // 4. FALLBACK: Tentar como token simples se ainda não tentou
-            if (!isTokenFormat) {
-                try {
-                    const { data, error } = await client.rpc('rpc_track_work_order', {
-                        p_token: cleanQuery
+            // 4. FALLBACK EM TEMPO REAL: BUSCA EM ARMAZENAMENTO LOCAL (LOCALSTORAGE / MEMÓRIA DO COCKPIT)
+            try {
+                const localOrdersRaw = localStorage.getItem('if_tech_work_orders');
+                if (localOrdersRaw) {
+                    const localOrders = JSON.parse(localOrdersRaw);
+                    const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
+                    const match = localOrders.find(o => {
+                        const matchNum = num && (parseInt(o.os_number) === num);
+                        const matchTok = o.public_tracking_token && (o.public_tracking_token === cleanQuery || o.id === cleanQuery);
+                        if (!matchNum && !matchTok) return false;
+                        
+                        // Validação 2FA de telefone se fornecido
+                        if (cleanPhone && o.client_whatsapp) {
+                            const oPhone = o.client_whatsapp.replace(/\D/g, '');
+                            return oPhone.endsWith(cleanPhone) || oPhone === cleanPhone || cleanPhone.length < 4;
+                        }
+                        return true;
                     });
 
-                    if (!error && data && data.found) {
+                    if (match) {
+                        const formattedData = {
+                            found: true,
+                            id: match.id,
+                            os_number: match.os_number,
+                            status: match.status || 'Triagem',
+                            client_first_name: (match.client_name || 'Cliente').split(' ')[0],
+                            device_brand: match.device_brand || 'Notebook',
+                            device_model: match.device_model || 'Equipamento',
+                            device_serial: match.device_serial || '',
+                            reported_defect: match.reported_defect || 'Em análise técnica.',
+                            technical_diagnosis: match.technical_diagnosis || 'Equipamento recebido no laboratório. Iniciando checklist e triagem.',
+                            items: match.items || [],
+                            total_parts: match.total_parts || 0,
+                            total_labor: match.total_labor || 0,
+                            total_amount: match.total_amount || 0,
+                            requires_parts_deposit: Boolean(match.total_parts > 0),
+                            parts_deposit_amount: match.total_parts || 0,
+                            parts_deposit_status: match.parts_deposit_status || 'PENDING',
+                            created_at: match.created_at || new Date().toISOString()
+                        };
+
                         loadingState.classList.add("hidden");
-                        renderWorkOrderData(data);
-                        if (data.id) setupPortalRealtime(data.id);
+                        renderWorkOrderData(formattedData);
                         hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
                         return;
                     }
-                } catch (err) {
-                    console.warn("Fallback por token falhou:", err);
                 }
+            } catch(localErr) {
+                console.warn("Erro ao buscar em fallback local:", localErr);
             }
 
             // Não encontrado

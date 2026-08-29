@@ -1645,7 +1645,7 @@
             </div>
 
             <form id="intake-form" onsubmit="handleSaveIntake(event)" class="space-y-4 text-xs">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">Nome do Cliente *</label>
                         <input type="text" id="intake-client-name" placeholder="Ex: Carlos Eduardo" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
@@ -1653,6 +1653,13 @@
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">WhatsApp do Cliente *</label>
                         <input type="text" id="intake-client-phone" placeholder="Ex: (11) 98888-7777" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 font-bold uppercase mb-1">Origem do Atendimento *</label>
+                        <select id="intake-channel" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                            <option value="Balcão">🏬 Balcão Presencial</option>
+                            <option value="Leva-e-Traz">🚗 Coleta Leva-e-Traz</option>
+                        </select>
                     </div>
                 </div>
 
@@ -2360,6 +2367,10 @@ Qualquer dúvida, estou à disposição!
 
         // Lista de OSs em memória
         let currentWorkOrders = [];
+        try {
+            const savedWO = localStorage.getItem('if_tech_work_orders');
+            if (savedWO) currentWorkOrders = JSON.parse(savedWO) || [];
+        } catch(e) {}
         let selectedWorkOrder = null;
 
         // Mock Fallback Inicial se o banco estiver vazio
@@ -2598,8 +2609,8 @@ Qualquer dúvida, estou à disposição!
 
                 const isLevaTraz = wo.requires_delivery || (wo.acquisition_channel === 'Leva-e-Traz') || (wo.is_pickup_delivery);
                 const channelBadge = isLevaTraz 
-                    ? '<span class="px-1.5 py-0.2 bg-brand/10 border border-brand/40 text-brand text-[9px] font-bold">🚗 Leva-e-Traz</span>' 
-                    : '<span class="px-1.5 py-0.2 bg-cyan-950 border border-cyan-800 text-cyan-400 text-[9px] font-bold">🏬 Balcão</span>';
+                    ? '<span class="px-1.5 py-0.2 bg-brand/10 border border-brand/40 text-brand text-[9px] font-bold" title="Origem: Coleta em Domicílio">🚗 Leva-e-Traz</span>' 
+                    : '<span class="px-1.5 py-0.2 bg-cyan-950 border border-cyan-800 text-cyan-400 text-[9px] font-bold" title="Origem: Entrega Presencial no Balcão">📍 Balcão</span>';
 
                 if (s.includes('triagem')) {
                     cT++;
@@ -4384,8 +4395,12 @@ Qualquer dúvida, estou à disposição!
             e.preventDefault();
             const name = document.getElementById('intake-client-name')?.value.trim();
             const phone = document.getElementById('intake-client-phone')?.value.trim();
+            const channel = document.getElementById('intake-channel')?.value || 'Balcão';
+            const serviceType = document.getElementById('intake-service-type')?.value || 'Hardware_Reparo';
             const deviceType = document.getElementById('intake-device-type')?.value || 'Notebook';
             const model = document.getElementById('intake-device-model')?.value.trim() || 'Equipamento';
+            const serial = document.getElementById('intake-device-serial')?.value.trim() || '';
+            const pin = document.getElementById('intake-device-pin')?.value.trim() || '';
             const defect = document.getElementById('intake-defect')?.value.trim();
 
             if (!name || !defect) {
@@ -4393,7 +4408,7 @@ Qualquer dúvida, estou à disposição!
                 return;
             }
 
-            const nextOSNum = currentWorkOrders.length > 0 ? (Math.max(...currentWorkOrders.map(o => o.os_number || 1045)) + 1) : 1051;
+            const nextOSNum = currentWorkOrders.length > 0 ? (Math.max(...currentWorkOrders.map(o => parseInt(o.os_number) || 1045)) + 1) : 1051;
             const token = 'tok-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5);
 
             const newOS = {
@@ -4401,21 +4416,63 @@ Qualquer dúvida, estou à disposição!
                 os_number: nextOSNum,
                 client_name: name,
                 client_whatsapp: phone,
+                acquisition_channel: channel,
+                service_type: serviceType,
                 device_brand: deviceType,
                 device_model: model,
+                device_serial: serial,
+                device_pin: pin,
                 reported_defect: defect,
                 status: 'Triagem',
                 total_amount: 0.00,
                 total_labor: 0.00,
                 total_parts: 0.00,
+                items: [],
                 public_tracking_token: token,
                 created_at: new Date().toISOString()
             };
 
             currentWorkOrders.unshift(newOS);
+            try {
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
+            } catch(err) {}
+
+            // Atualiza CRM de Clientes
+            const existingClient = currentClientsList.find(c => c.whatsapp && c.whatsapp === phone);
+            if (existingClient) {
+                existingClient.orders_count = (existingClient.orders_count || 0) + 1;
+            } else {
+                currentClientsList.unshift({
+                    id: 'cli-' + Date.now(),
+                    name: name,
+                    whatsapp: phone,
+                    channel: channel,
+                    orders_count: 1,
+                    total_spent: 0.00,
+                    created_at: new Date().toISOString()
+                });
+            }
+            try {
+                localStorage.setItem('if_tech_clients', JSON.stringify(currentClientsList));
+            } catch(err) {}
+
+            // Sincronização assíncrona com Supabase se disponível
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                supabaseClient.from('work_orders').insert([{
+                    os_number: nextOSNum,
+                    device_brand: deviceType,
+                    device_model: model,
+                    reported_defect: defect,
+                    status: 'Triagem',
+                    total_amount: 0,
+                    public_tracking_token: token
+                }]).then(() => {}).catch(() => {});
+            }
+
             closeIntakeModal();
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
+            if (typeof renderClientsTable === 'function') renderClientsTable();
             showToast('✓ OS #' + formatOSNumber(nextOSNum) + ' aberta com sucesso na Triagem!', 'success');
         }
 
@@ -4494,6 +4551,7 @@ Qualquer dúvida, estou à disposição!
             showToast('✓ OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' avançou para ' + newStatus.replace(/_/g, ' '), 'success');
             closeOSDetailModal();
             renderKanbanBoard(currentWorkOrders);
+            try { localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); } catch(e){}
             renderFinancialDashboard(currentWorkOrders);
         }
 
@@ -4801,6 +4859,10 @@ IF Tech // Engenharia de Hardware`;
         // CRM & CLIENTES
         // =====================================================================
         let currentClientsList = [];
+        try {
+            const savedCl = localStorage.getItem('if_tech_clients');
+            if (savedCl) currentClientsList = JSON.parse(savedCl) || [];
+        } catch(e) {}
 
         function openNewClientModal() {
             document.getElementById('client-modal')?.classList.remove('hidden');
