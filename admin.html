@@ -4588,10 +4588,29 @@ Qualquer dúvida, estou à disposição!
         function advanceOSStatus(newStatus) {
             if (!selectedWorkOrder) return;
             selectedWorkOrder.status = newStatus;
+            
+            // Se avançar para Bancada, QA ou Pronto, quita o sinal de peças automaticamente
+            if (['Na_Bancada', 'Testes_QA', 'Pronto', 'Entregue'].includes(newStatus)) {
+                selectedWorkOrder.parts_deposit_paid = true;
+                selectedWorkOrder.parts_deposit_status = 'CONFIRMED';
+            }
+
+            try { 
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); 
+            } catch(e){}
+
+            // Sincronização Supabase
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                supabaseClient.from('work_orders').update({
+                    status: newStatus,
+                    parts_deposit_paid: selectedWorkOrder.parts_deposit_paid || false,
+                    parts_deposit_status: selectedWorkOrder.parts_deposit_status || 'PENDING'
+                }).eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+            }
+
             showToast('✓ OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' avançou para ' + newStatus.replace(/_/g, ' '), 'success');
             closeOSDetailModal();
             renderKanbanBoard(currentWorkOrders);
-            try { localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); } catch(e){}
             renderFinancialDashboard(currentWorkOrders);
         }
 
@@ -4930,8 +4949,23 @@ IF Tech // Engenharia de Hardware`;
             wo = wo || selectedWorkOrder;
             if (!wo) return;
             wo.parts_deposit_paid = true;
+            wo.parts_deposit_status = 'CONFIRMED';
             wo.status = 'Na_Bancada';
-            showToast('✓ Pagamento Asaas simulado com sucesso! OS movida para Na Bancada.', 'success');
+
+            try { 
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); 
+            } catch(e){}
+
+            // Sincronização Supabase
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                supabaseClient.from('work_orders').update({
+                    status: 'Na_Bancada',
+                    parts_deposit_paid: true,
+                    parts_deposit_status: 'CONFIRMED'
+                }).eq('id', wo.id).then(() => {}).catch(() => {});
+            }
+
+            showToast('✓ Sinal Asaas confirmado! OS movida para 03. Na Bancada.', 'success');
             closeOSDetailModal();
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
