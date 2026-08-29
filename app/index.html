@@ -1897,6 +1897,34 @@ Qualquer dúvida, estou à disposição!
             }
         }
 
+                function loadWorkOrdersStorage() {
+            try {
+                const savedWO = localStorage.getItem('if_tech_work_orders');
+                if (savedWO) {
+                    const parsed = JSON.parse(savedWO);
+                    if (Array.isArray(parsed)) {
+                        currentWorkOrders = parsed;
+                    }
+                }
+            } catch(e) {
+                console.warn("Erro ao carregar OSs locais:", e);
+            }
+        }
+
+        function loadClientsStorage() {
+            try {
+                const savedCl = localStorage.getItem('if_tech_clients');
+                if (savedCl) {
+                    const parsed = JSON.parse(savedCl);
+                    if (Array.isArray(parsed)) {
+                        currentClientsList = parsed;
+                    }
+                }
+            } catch(e) {
+                console.warn("Erro ao carregar CRM local:", e);
+            }
+        }
+
         function unlockAdminCockpit(userLabel = 'Admin') {
             const guard = document.getElementById('admin-auth-guard');
             const app = document.getElementById('admin-cockpit-app');
@@ -1907,12 +1935,16 @@ Qualquer dúvida, estou à disposição!
             if (label) label.textContent = userLabel;
 
             // Inicializar dados do Cockpit
+            loadWorkOrdersStorage();
+            loadClientsStorage();
+            renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
             loadInventoryStorage();
             renderPOSGrid();
             renderInventoryCatalogTable();
             loadSoftwareStorage();
             loadMSPStorage();
-                                    renderMSPDashboard();
+            renderMSPDashboard();
             filterClientsTable();
             renderSoftwareProjectsDashboard();
             recalcTotals();
