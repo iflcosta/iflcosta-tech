@@ -79,6 +79,89 @@
     
     <!-- Lucide Icons -->
     <script defer src="https://unpkg.com/lucide@latest"></script>
+    <!-- Estilos Específicos para Cards de Triagem Interativa -->
+    <style>
+        /* Card Hardware (Neon Brand) */
+        .card-triage-hw {
+            background-color: #09090b;
+            border: 2px solid #27272a;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .card-triage-hw:hover {
+            border-color: #ccff00 !important;
+            box-shadow: 4px 4px 0px 0px rgba(204, 255, 0, 0.35) !important;
+            transform: translateY(-2px);
+        }
+        .card-triage-hw .icon-box {
+            background-color: rgba(204, 255, 0, 0.12);
+            border: 1px solid rgba(204, 255, 0, 0.6);
+            color: #ccff00;
+            transition: all 0.2s ease;
+        }
+        .card-triage-hw:hover .icon-box {
+            background-color: #ccff00 !important;
+            color: #000000 !important;
+            border-color: #ccff00 !important;
+        }
+        .card-triage-hw:hover .card-title {
+            color: #ccff00 !important;
+        }
+
+        /* Card Software (Cyan Web Engine) */
+        .card-triage-sw {
+            background-color: #09090b;
+            border: 2px solid #27272a;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .card-triage-sw:hover {
+            border-color: #22d3ee !important;
+            box-shadow: 4px 4px 0px 0px rgba(34, 211, 238, 0.35) !important;
+            transform: translateY(-2px);
+        }
+        .card-triage-sw .icon-box {
+            background-color: rgba(34, 211, 238, 0.12);
+            border: 1px solid rgba(34, 211, 238, 0.6);
+            color: #22d3ee;
+            transition: all 0.2s ease;
+        }
+        .card-triage-sw:hover .icon-box {
+            background-color: #22d3ee !important;
+            color: #000000 !important;
+            border-color: #22d3ee !important;
+        }
+        .card-triage-sw:hover .card-title {
+            color: #22d3ee !important;
+        }
+
+        /* Card MSP / TI B2B (Purple Neon) */
+        .card-triage-msp {
+            background-color: #09090b;
+            border: 2px solid #27272a;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .card-triage-msp:hover {
+            border-color: #a855f7 !important;
+            box-shadow: 4px 4px 0px 0px rgba(168, 85, 247, 0.35) !important;
+            transform: translateY(-2px);
+        }
+        .card-triage-msp .icon-box {
+            background-color: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.6);
+            color: #c084fc;
+            transition: all 0.2s ease;
+        }
+        .card-triage-msp:hover .icon-box {
+            background-color: #a855f7 !important;
+            color: #000000 !important;
+            border-color: #a855f7 !important;
+        }
+        .card-triage-msp:hover .card-title {
+            color: #c084fc !important;
+        }
+    </style>
 </head>
 <body class="bg-dark text-gray-300 font-sans antialiased selection:bg-brand selection:text-black">
 
@@ -403,13 +486,13 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Opção 1: Hardware -->
-                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Meu%20computador%2Fnotebook%20est%C3%A1%20lento%20ou%20com%20defeito%20e%20gostaria%20de%20um%20diagn%C3%B3stico%20da%20IF%20Tech%20em%20Bragan%C3%A7a." target="_blank" rel="noopener noreferrer" class="bg-zinc-950 border-2 border-zinc-800 hover:border-brand p-6 flex flex-col justify-between group transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(204,255,0,0.3)]">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Meu%20computador%2Fnotebook%20est%C3%A1%20lento%20ou%20com%20defeito%20e%20gostaria%20de%20um%20diagn%C3%B3stico%20da%20IF%20Tech%20em%20Bragan%C3%A7a." target="_blank" rel="noopener noreferrer" class="card-triage-hw p-6 flex flex-col justify-between group">
                         <div>
-                            <div class="w-10 h-10 bg-brand/10 border border-brand text-brand flex items-center justify-center mb-4 group-hover:bg-brand group-hover:text-black transition-colors">
+                            <div class="icon-box w-10 h-10 flex items-center justify-center mb-4">
                                 <i data-lucide="cpu" class="w-5 h-5"></i>
                             </div>
                             <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Cenário 01 &bull; Hardware & PC</span>
-                            <h3 class="text-lg font-black text-white group-hover:text-brand mb-2">Máquina Lenta, Travando ou Upgrade</h3>
+                            <h3 class="card-title text-lg font-black text-white mb-2 transition-colors">Máquina Lenta, Travando ou Upgrade</h3>
                             <p class="text-zinc-400 text-xs font-sans leading-relaxed mb-4">
                                 Diagnóstico com telemetria térmica, upgrade de SSD NVMe/RAM, montagem de PC Gamer e Leva-e-Traz em Bragança.
                             </p>
@@ -421,13 +504,13 @@
                     </a>
 
                     <!-- Opção 2: Software & Web -->
-                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento%20para%20desenvolvimento%20de%20site%2Fsoftware%20com%20a%20IF%20Tech." target="_blank" rel="noopener noreferrer" class="bg-zinc-950 border-2 border-zinc-800 hover:border-cyan-400 p-6 flex flex-col justify-between group transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(6,182,212,0.3)]">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento%20para%20desenvolvimento%20de%20site%2Fsoftware%20com%20a%20IF%20Tech." target="_blank" rel="noopener noreferrer" class="card-triage-sw p-6 flex flex-col justify-between group">
                         <div>
-                            <div class="w-10 h-10 bg-cyan-400/10 border border-cyan-400 text-cyan-400 flex items-center justify-center mb-4 group-hover:bg-cyan-400 group-hover:text-black transition-colors">
+                            <div class="icon-box w-10 h-10 flex items-center justify-center mb-4">
                                 <i data-lucide="code-2" class="w-5 h-5"></i>
                             </div>
                             <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Cenário 02 &bull; Engenharia Web</span>
-                            <h3 class="text-lg font-black text-white group-hover:text-cyan-400 mb-2">Criar Site, Sistema ou Automação</h3>
+                            <h3 class="card-title text-lg font-black text-white mb-2 transition-colors">Criar Site, Sistema ou Automação</h3>
                             <p class="text-zinc-400 text-xs font-sans leading-relaxed mb-4">
                                 Landing page de alta conversão, sistema web sob medida, integração de APIs e automações comerciais no WhatsApp.
                             </p>
@@ -439,13 +522,13 @@
                     </a>
 
                     <!-- Opção 3: TI Empresarial MSP -->
-                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Tenho%20uma%20empresa%20em%20Bragan%C3%A7a%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o%20t%C3%A9cnica%20de%20TI%20gratuita." target="_blank" rel="noopener noreferrer" class="bg-zinc-950 border-2 border-zinc-800 hover:border-purple-400 p-6 flex flex-col justify-between group transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(168,85,247,0.3)]">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Tenho%20uma%20empresa%20em%20Bragan%C3%A7a%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o%20t%C3%A9cnica%20de%20TI%20gratuita." target="_blank" rel="noopener noreferrer" class="card-triage-msp p-6 flex flex-col justify-between group">
                         <div>
-                            <div class="w-10 h-10 bg-purple-400/10 border border-purple-400 text-purple-400 flex items-center justify-center mb-4 group-hover:bg-purple-400 group-hover:text-black transition-colors">
+                            <div class="icon-box w-10 h-10 flex items-center justify-center mb-4">
                                 <i data-lucide="shield" class="w-5 h-5"></i>
                             </div>
                             <span class="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Cenário 03 &bull; B2B Corporativo</span>
-                            <h3 class="text-lg font-black text-white group-hover:text-purple-400 mb-2">Suporte de TI & Backups PME</h3>
+                            <h3 class="card-title text-lg font-black text-white mb-2 transition-colors">Suporte de TI & Backups PME</h3>
                             <p class="text-zinc-400 text-xs font-sans leading-relaxed mb-4">
                                 Gestão completa de máquinas da empresa, backups automáticos 3-2-1, redes corporativas e suporte com SLA ágil.
                             </p>
