@@ -21,6 +21,7 @@
     <script src="https://unpkg.com/lucide@latest" defer></script>
 
     <!-- Supabase JS Client SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col justify-between">
@@ -1380,6 +1381,9 @@
         // APROVAÇÃO DE ORÇAMENTO PELO CLIENTE (1-CLIQUE SEGURO VIA TOKEN)
         // =========================================================================
         async function handleApproveBudget(token) {
+            if (!token || token === 'undefined' || token === 'null') {
+                token = currentWorkOrderData ? (currentWorkOrderData.public_tracking_token || currentWorkOrderData.id || String(currentWorkOrderData.os_number)) : '';
+            }
             if (!token) return;
 
             // Se a OS tiver peças e o sinal ainda não tiver sido pago, abre o Modal Asaas de Sinal!
@@ -1625,6 +1629,23 @@
             document.body.appendChild(toast);
             if (window.lucide) lucide.createIcons();
 
+            // Atualização persistente local imediata
+            try {
+                const rawOrders = localStorage.getItem('if_tech_work_orders');
+                if (rawOrders) {
+                    const orders = JSON.parse(rawOrders);
+                    const target = orders.find(o => String(o.os_number) === String(wo.os_number) || o.id === wo.id || o.public_tracking_token === wo.public_tracking_token);
+                    if (target) {
+                        target.parts_deposit_paid = true;
+                        target.parts_deposit_status = 'CONFIRMED';
+                        target.status = 'Sinal_Pago';
+                        localStorage.setItem('if_tech_work_orders', JSON.stringify(orders));
+                    }
+                }
+            } catch(e) {
+                console.warn("Erro ao atualizar sinal local:", e);
+            }
+
             if (client) {
                 try {
                     await client.rpc('rpc_confirm_asaas_payment', {
@@ -1641,6 +1662,8 @@
                 toast.remove();
                 if (activeTrackingQuery) {
                     await handleSearch(activeTrackingQuery, activeTrackingPhone, true);
+                } else if (wo.public_tracking_token) {
+                    await handleSearch(wo.public_tracking_token, '', true);
                 }
             }, 1800);
         }
@@ -2112,6 +2135,7 @@
                             found: true,
                             id: match.id,
                             os_number: match.os_number,
+                            public_tracking_token: match.public_tracking_token || match.id || String(match.os_number),
                             status: match.status || 'Triagem',
                             client_first_name: (match.client_name || 'Cliente').split(' ')[0],
                             device_brand: match.device_brand || 'Notebook',
@@ -2126,6 +2150,7 @@
                             requires_parts_deposit: Boolean(match.total_parts > 0),
                             parts_deposit_amount: match.total_parts || 0,
                             parts_deposit_status: match.parts_deposit_status || 'PENDING',
+                            parts_deposit_paid: Boolean(match.parts_deposit_paid || match.status === 'Sinal_Pago' || match.status === 'Na_Fila_Bancada' || match.status === 'Na_Bancada' || match.status === 'Pronto_Retirada'),
                             created_at: match.created_at || new Date().toISOString()
                         };
 
