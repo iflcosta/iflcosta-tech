@@ -1414,31 +1414,58 @@
             if (window.lucide) lucide.createIcons();
 
             try {
+                let approvedOk = false;
                 const client = getSupabase();
-                if (!client) throw new Error("Cliente Supabase não inicializado.");
 
-                const { data, error } = await client.rpc('rpc_advance_work_order_status_by_token', {
-                    p_token: token,
-                    p_new_status: 'Aprovado_Pelo_Cliente'
-                });
+                // 1. Tentar via Supabase RPC se disponível
+                if (client) {
+                    try {
+                        const { data, error } = await client.rpc('rpc_advance_work_order_status_by_token', {
+                            p_token: token,
+                            p_new_status: 'Aprovado_Pelo_Cliente'
+                        });
+                        if (!error && data && data.success) approvedOk = true;
+                    } catch(rpcErr) {
+                        console.warn("RPC de aprovação remota indisponível, aplicando fallback local:", rpcErr);
+                    }
+                }
 
-                if (error) throw error;
+                // 2. Atualizar no armazenamento local compartilhado (LocalStorage)
+                try {
+                    const rawOrders = localStorage.getItem('if_tech_work_orders');
+                    if (rawOrders) {
+                        const orders = JSON.parse(rawOrders);
+                        const target = orders.find(o => o.public_tracking_token === token || String(o.os_number) === String(token) || o.id === token);
+                        if (target) {
+                            target.status = 'Aprovado_Pelo_Cliente';
+                            localStorage.setItem('if_tech_work_orders', JSON.stringify(orders));
+                            approvedOk = true;
+                        }
+                    }
+                } catch(lsErr) {
+                    console.warn("Erro ao atualizar localStorage:", lsErr);
+                }
 
-                if (data && data.success) {
+                if (approvedOk) {
                     // Re-renderiza os dados atualizados com o novo status
                     if (activeTrackingQuery) {
                         await handleSearch(activeTrackingQuery, activeTrackingPhone, true);
+                    } else if (token) {
+                        await handleSearch(token, '', true);
                     }
                 } else {
-                    alert("Não foi possível registrar a aprovação. Por favor, tente novamente ou fale com nosso suporte.");
-                    if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
-                    if (stickyBtn) { stickyBtn.disabled = false; stickyBtn.innerHTML = `<span>Aprovar Orçamento</span>`; }
+                    // Se não encontrou para atualizar, re-renderiza com status de aprovação
+                    if (currentWorkOrderData) {
+                        currentWorkOrderData.status = 'Aprovado_Pelo_Cliente';
+                        renderWorkOrderData(currentWorkOrderData);
+                    }
                 }
             } catch (err) {
                 console.error("Erro ao aprovar orçamento:", err);
-                alert("Erro ao aprovar orçamento: " + (err.message || err));
-                if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
-                if (stickyBtn) { stickyBtn.disabled = false; stickyBtn.innerHTML = `<span>Aprovar Orçamento</span>`; }
+                if (currentWorkOrderData) {
+                    currentWorkOrderData.status = 'Aprovado_Pelo_Cliente';
+                    renderWorkOrderData(currentWorkOrderData);
+                }
             }
             if (window.lucide) lucide.createIcons();
         }

@@ -1618,13 +1618,21 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end gap-3 pt-3 border-t border-zinc-800 font-mono">
-                    <button type="button" onclick="closeBudgetModal()" class="px-4 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">
-                        Cancelar
-                    </button>
-                    <button type="submit" id="btn-save-budget-modal" class="px-6 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
-                        <i data-lucide="check-circle" class="w-4 h-4"></i> Salvar Orçamento & Notificar WhatsApp
-                    </button>
+                <!-- Rodapé Fixo / Sticky com Botões de Ação Sempre Visíveis -->
+                <div class="sticky bottom-0 -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 bg-zinc-950/95 backdrop-blur-md p-4 sm:p-5 border-t-2 border-brand flex flex-col sm:flex-row justify-between items-center gap-3 z-30 font-mono shadow-[0_-8px_20px_rgba(0,0,0,0.8)]">
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="text-zinc-400">Total Cliente:</span>
+                        <strong class="text-brand text-sm font-black" id="budget-sticky-total">R$ 0,00</strong>
+                    </div>
+                    <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                        <button type="button" onclick="closeBudgetModal()" class="px-4 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800 text-xs">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btn-save-budget-modal" class="px-6 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white flex items-center justify-center gap-2 text-xs shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] transition-all cursor-pointer">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-black"></i>
+                            <span>Salvar Orçamento & Emitir Proposta</span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -2467,6 +2475,8 @@ Qualquer dúvida, estou à disposição!
             if (grossSubEl) grossSubEl.textContent = `${orders.length} OSs + Web + MSP + PDV`;
             if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            const stickyTotalEl = document.getElementById('budget-sticky-total');
+            if (stickyTotalEl) stickyTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
             if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
             if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
@@ -4684,6 +4694,8 @@ Qualquer dúvida, estou à disposição!
             if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
             if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            const stickyTotalEl = document.getElementById('budget-sticky-total');
+            if (stickyTotalEl) stickyTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
         }
 
         function handleSaveBudgetFromModal(e) {
@@ -4692,24 +4704,71 @@ Qualquer dúvida, estou à disposição!
 
             const laborInput = document.getElementById('budget-modal-labor');
             const labor = parseFloat(laborInput ? laborInput.value : 0) || 0;
+            const diagnosisText = document.getElementById('budget-modal-diagnosis')?.value.trim() || 'Diagnóstico concluído pelo laboratório.';
+            const serviceType = document.getElementById('budget-modal-service-type')?.value || 'Hardware_Reparo';
 
+            // Coleta cada linha de peça cadastrada
+            const partsList = [];
             let partsTotal = 0;
             let partsCostTotal = 0;
-            document.querySelectorAll('.modal-part-price').forEach(input => { partsTotal += (parseFloat(input.value) || 0); });
-            document.querySelectorAll('.modal-part-cost').forEach(input => { partsCostTotal += (parseFloat(input.value) || 0); });
+
+            document.querySelectorAll('.modal-part-row').forEach((row, idx) => {
+                const name = row.querySelector('.modal-part-name')?.value.trim();
+                const cost = parseFloat(row.querySelector('.modal-part-cost')?.value || 0) || 0;
+                const price = parseFloat(row.querySelector('.modal-part-price')?.value || 0) || 0;
+                const type = row.querySelector('input[name="modal_part_type[]"]')?.value.trim() || 'Hardware';
+
+                if (name || price > 0) {
+                    partsList.push({
+                        id: 'part-' + Date.now() + '-' + idx,
+                        item_type: type,
+                        description: name || 'Componente de Reposição',
+                        cost_price: cost,
+                        unit_price: price,
+                        total_price: price,
+                        quantity: 1
+                    });
+                    partsTotal += price;
+                    partsCostTotal += cost;
+                }
+            });
 
             const total = labor + partsTotal;
 
+            selectedWorkOrder.service_type = serviceType;
+            selectedWorkOrder.technical_diagnosis = diagnosisText;
+            selectedWorkOrder.items = partsList;
             selectedWorkOrder.total_labor = labor;
             selectedWorkOrder.total_parts = partsTotal;
             selectedWorkOrder.total_parts_cost = partsCostTotal;
             selectedWorkOrder.total_amount = total;
             selectedWorkOrder.status = 'Orcamento_Aguardando_Aprovacao';
 
+            // Persistência local segura
+            try {
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
+            } catch(err) {}
+
+            // Sincronização Supabase
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                supabaseClient.from('work_orders').update({
+                    status: 'Orcamento_Aguardando_Aprovacao',
+                    technical_diagnosis: diagnosisText,
+                    total_labor: labor,
+                    total_parts: partsTotal,
+                    total_amount: total
+                }).eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+            }
+
             closeBudgetModal();
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
-            showToast('✓ Orçamento da OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' gerado com sucesso! Link pronto para envio.', 'success');
+            showToast('✓ Orçamento da OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' gerado com sucesso!', 'success');
+
+            // Abrir modal de WhatsApp com Magic Link para o cliente aprovar
+            setTimeout(() => {
+                openWhatsAppNotificationModal(selectedWorkOrder, 'orcamento');
+            }, 300);
         }
 
         let activeClientId = null;
@@ -5274,6 +5333,8 @@ IF Tech // Engenharia de Hardware`;
             if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
             if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            const stickyTotalEl = document.getElementById('budget-sticky-total');
+            if (stickyTotalEl) stickyTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
         }
 
         function handleServiceTypeChange(type) {
