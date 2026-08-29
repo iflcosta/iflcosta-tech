@@ -14,7 +14,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://togrnwxazuweuihlaljo.supabase.co wss://togrnwxazuweuihlaljo.supabase.co https://api.telegram.org https://api.asaas.com https://sandbox.asaas.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me;"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://togrnwxazuweuihlaljo.supabase.co wss://togrnwxazuweuihlaljo.supabase.co https://api.telegram.org https://api.asaas.com https://sandbox.asaas.com https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me;"
         },
         {
           "key": "Strict-Transport-Security",

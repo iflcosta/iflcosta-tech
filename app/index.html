@@ -2507,8 +2507,6 @@ Qualquer dúvida, estou à disposição!
             if (grossSubEl) grossSubEl.textContent = `${orders.length} OSs + Web + MSP + PDV`;
             if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            const stickyTotalEl = document.getElementById('budget-sticky-total');
-            if (stickyTotalEl) stickyTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
             if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
             if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
@@ -4726,8 +4724,6 @@ Qualquer dúvida, estou à disposição!
             if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
             if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            const stickyTotalEl = document.getElementById('budget-sticky-total');
-            if (stickyTotalEl) stickyTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
         }
 
         function handleSaveBudgetFromModal(e) {
@@ -5365,8 +5361,6 @@ IF Tech // Engenharia de Hardware`;
             if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
             if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            const stickyTotalEl = document.getElementById('budget-sticky-total');
-            if (stickyTotalEl) stickyTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
         }
 
         function handleServiceTypeChange(type) {
