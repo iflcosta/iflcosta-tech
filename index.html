@@ -643,75 +643,93 @@
                                 <span class="bg-brand text-black font-black text-xs px-2.5 py-1 uppercase">Aprovado</span>
                             </div>
 
-                            <!-- Comparativos Visuais Antes vs Depois -->
+                                                        <!-- Comparativos Visuais Antes vs Depois (Responsivo & Sem Cortes) -->
                             <div class="space-y-4">
                                 <!-- Item 1: Boot Time -->
-                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2">
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2.5">
                                     <div class="flex justify-between items-center text-xs">
-                                        <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="zap" class="w-3.5 h-3.5 text-brand"></i> Boot Time (Inicialização do Sistema)</span>
+                                        <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="zap" class="w-3.5 h-3.5 text-brand"></i> Boot Time (Inicialização)</span>
                                         <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5">-85% TEMPO</span>
                                     </div>
-                                    <div class="space-y-1.5 text-xs">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-24 text-zinc-400 text-[11px] shrink-0 font-bold">HD Antigo:</span>
-                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                    <div class="space-y-2 text-xs">
+                                        <!-- HD Antigo -->
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-zinc-400 font-bold">HD Antigo:</span>
+                                                <span class="text-red-400 font-bold">80s (Gargalo Mecânico)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
                                                 <div class="absolute left-0 top-0 bottom-0 bg-red-500/80 w-[85%]"></div>
-                                                <span class="relative z-10 text-white font-bold text-[11px]">80s (Gargalo Mecânico)</span>
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-24 text-brand text-[11px] shrink-0 font-bold">NVMe Tuning:</span>
-                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
-                                                <div class="absolute left-0 top-0 bottom-0 bg-brand w-[45%]"></div>
-                                                <span class="relative z-10 text-black font-bold text-[11px]">12s (Boot Instantâneo)</span>
+                                        <!-- NVMe Tuning -->
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-brand font-bold">NVMe Tuning:</span>
+                                                <span class="text-brand font-black">12s (Boot Instantâneo)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-brand w-[15%]"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Item 2: Temperatura CPU -->
-                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2">
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2.5">
                                     <div class="flex justify-between items-center text-xs">
                                         <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="flame" class="w-3.5 h-3.5 text-brand"></i> Temperatura em Estresse (AIDA64)</span>
                                         <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5">-18°C ESTÁVEL</span>
                                     </div>
-                                    <div class="space-y-1.5 text-xs">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-24 text-zinc-400 text-[11px] shrink-0 font-bold">Original:</span>
-                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                    <div class="space-y-2 text-xs">
+                                        <!-- Original -->
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-zinc-400 font-bold">Original:</span>
+                                                <span class="text-red-400 font-bold">94°C (Thermal Throttling)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
                                                 <div class="absolute left-0 top-0 bottom-0 bg-red-500/80 w-[94%]"></div>
-                                                <span class="relative z-10 text-white font-bold text-[11px]">94°C (Thermal Throttling)</span>
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-24 text-brand text-[11px] shrink-0 font-bold">Com Delid:</span>
-                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                        <!-- Com Delid -->
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-brand font-bold">Com Delid & Tuning:</span>
+                                                <span class="text-brand font-black">76°C (Pasta Térmica Premium)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
                                                 <div class="absolute left-0 top-0 bottom-0 bg-brand w-[76%]"></div>
-                                                <span class="relative z-10 text-black font-bold text-[11px]">76°C (Pasta Térmica Premium)</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Item 3: Velocidade Web -->
-                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2">
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2.5">
                                     <div class="flex justify-between items-center text-xs">
                                         <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="gauge" class="w-3.5 h-3.5 text-brand"></i> Performance Web (Lighthouse)</span>
                                         <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5">SCORE MÁXIMO</span>
                                     </div>
-                                    <div class="space-y-1.5 text-xs">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-24 text-zinc-400 text-[11px] shrink-0 font-bold">Site Lento:</span>
-                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                    <div class="space-y-2 text-xs">
+                                        <!-- Site Lento -->
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-zinc-400 font-bold">Site Convencional:</span>
+                                                <span class="text-red-400 font-bold">42/100 (Perdendo Vendas)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
                                                 <div class="absolute left-0 top-0 bottom-0 bg-red-500/80 w-[42%]"></div>
-                                                <span class="relative z-10 text-white font-bold text-[11px]">42/100 (Perdendo Vendas)</span>
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-24 text-brand text-[11px] shrink-0 font-bold">IF Engine:</span>
-                                            <div class="flex-1 bg-black h-6 border border-zinc-800 relative overflow-hidden flex items-center px-2.5">
+                                        <!-- IF Engine -->
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-brand font-bold">IF Web Engine:</span>
+                                                <span class="text-brand font-black">100/100 (Instantâneo)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
                                                 <div class="absolute left-0 top-0 bottom-0 bg-brand w-[100%]"></div>
-                                                <span class="relative z-10 text-black font-bold text-[11px]">100/100 (Instantâneo)</span>
                                             </div>
                                         </div>
                                     </div>
