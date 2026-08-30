@@ -1454,10 +1454,12 @@
                                 <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
                                     Tirar Dúvida
                                 </a>
+                                ${(isPronto || isEntregue) ? `
                                 <button onclick="downloadWarrantyPDF()" class="px-6 py-3.5 bg-zinc-800 hover:bg-white hover:text-black border-2 border-zinc-600 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2">
                                     <i data-lucide="download" class="w-4 h-4"></i>
                                     Garantia CDC
                                 </button>
+                                ` : ''}
                             </div>
                         </div>
                     `;
@@ -2651,6 +2653,13 @@
         // =====================================================================
         function downloadWarrantyPDF() {
             const wo = currentWorkOrder || currentWorkOrderData;
+            if (!wo) return;
+            const s = (wo.status || '').toLowerCase();
+            const isReady = s.includes('pronto') || s.includes('entregue') || s.includes('concluido');
+            if (!isReady) {
+                alert('⚠️ O Certificado de Garantia Legal CDC 90D só é emitido oficialmente após a conclusão do serviço (Status: Pronto ou Entregue).');
+                return;
+            }
             const osNum = escapeHtml(formatOSNumber(wo?.os_number || '1053'));
             const clientName = escapeHtml(wo?.client_name || wo?.customer_name || wo?.client_first_name || 'Cliente');
             const brand = wo?.device_brand || 'Equipamento';
