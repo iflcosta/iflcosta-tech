@@ -1838,6 +1838,16 @@ Qualquer dúvida, estou à disposição!
 
         // Sanitizador XSS Rigoroso
         
+        function generateUUIDToken() {
+            if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+                return crypto.randomUUID();
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
         function generateNextOSNumber() {
             const now = new Date();
             const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -4486,7 +4496,7 @@ Qualquer dúvida, estou à disposição!
             }
 
             const nextOSNum = generateNextOSNumber();
-            const token = 'tok-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5);
+            const token = generateUUIDToken();
 
             const newOS = {
                 id: 'wo-' + Date.now(),
@@ -4533,17 +4543,28 @@ Qualquer dúvida, estou à disposição!
                 localStorage.setItem('if_tech_clients', JSON.stringify(currentClientsList));
             } catch(err) {}
 
-            // Sincronização assíncrona com Supabase se disponível
+            // Sincronização atômica profissional com Supabase
             if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.from('work_orders').insert([{
-                    os_number: nextOSNum,
-                    device_brand: deviceType,
-                    device_model: model,
-                    reported_defect: defect,
-                    status: 'Triagem',
-                    total_amount: 0,
-                    public_tracking_token: token
-                }]).then(() => {}).catch(() => {});
+                supabaseClient.rpc('rpc_create_work_order_atomic', {
+                    p_client_name: name,
+                    p_client_whatsapp: phone,
+                    p_service_type: serviceType || 'Hardware_Reparo',
+                    p_device_brand: deviceType || 'Equipamento',
+                    p_device_model: model || 'Hardware',
+                    p_reported_defect: defect || 'Entrada em triagem técnica',
+                    p_pickup_fee: (channel === 'Leva-e-Traz' ? 30.00 : 0.00),
+                    p_items: []
+                }).then(({ data, error }) => {
+                    if (error) {
+                        console.warn("Aviso na gravação Supabase (fallback local ativo):", error);
+                    } else if (data && data.public_tracking_token) {
+                        newOS.public_tracking_token = data.public_tracking_token;
+                        if (data.work_order_id) newOS.id = data.work_order_id;
+                        try { localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); } catch(e){}
+                    }
+                }).catch(e => {
+                    console.warn("Aviso de rede Supabase:", e);
+                });
             }
 
             closeIntakeModal();
@@ -5459,7 +5480,7 @@ IF Tech // Engenharia de Hardware`;
             }
 
             const nextOSNum = generateNextOSNumber();
-            const token = 'tok-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5);
+            const token = generateUUIDToken();
 
             let partsCost = 0;
             let partsSale = 0;
