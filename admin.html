@@ -1873,6 +1873,43 @@ Qualquer dúvida, estou à disposição!
             return `${prefix}${nextSeq}`;
         }
 
+        function sendWhatsAppMessage(phone, message) {
+            if (!phone) {
+                showToast('Telefone do cliente não informado.', 'warning');
+                return;
+            }
+            const clean = phone.replace(/\D/g, '');
+            const targetPhone = clean.startsWith('55') ? clean : ('55' + clean);
+            const encoded = encodeURIComponent(message);
+            const waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${encoded}`;
+            
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(message);
+                }
+            } catch(e) {}
+
+            window.open(waUrl, '_blank');
+            showToast('✓ Abrindo conversa no WhatsApp...', 'success');
+        }
+
+        function openWhatsAppNotificationModal(wo, type) {
+            if (!wo) wo = selectedWorkOrder;
+            if (!wo) return;
+            const link = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
+            let msg = '';
+            if (type === 'orcamento') {
+                const totalVal = parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
+                msg = `Olá ${wo.client_name || 'Cliente'}! O laudo técnico e orçamento da sua OS #${formatOSNumber(wo.os_number)} estão prontos (Total: R$ ${totalVal}).\n\nAcesse o link seguro para conferir o laudo e aprovar online:\n🔗 ${link}\n\nQualquer dúvida, estamos à disposição!`;
+            } else if (type === 'sinal') {
+                const partsVal = parseFloat(wo.total_parts || 0).toFixed(2).replace('.', ',');
+                msg = `Olá ${wo.client_name || 'Cliente'}! Segue o link para conferência e quitação do sinal de peças da OS #${formatOSNumber(wo.os_number)} (Valor: R$ ${partsVal}):\n🔗 ${link}\n\nApós o Pix, o status avança automaticamente na bancada!`;
+            } else {
+                msg = `Olá ${wo.client_name || 'Cliente'}! Acompanhe o andamento da sua OS #${formatOSNumber(wo.os_number)} em tempo real pelo nosso portal:\n🔗 ${link}`;
+            }
+            sendWhatsAppMessage(wo.client_whatsapp || wo.customer_phone || wo.phone, msg);
+        }
+
         function formatOSNumber(num) {
             if (!num) {
                 const now = new Date();
@@ -4599,6 +4636,13 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
         }
 
+        function handleOpenOSWhatsApp() {
+            if (!selectedWorkOrder) return;
+            const wo = selectedWorkOrder;
+            const link = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
+            const msg = `Olá ${wo.client_name || 'Cliente'}! Acompanhe o andamento da sua OS #${formatOSNumber(wo.os_number)} em tempo real pelo nosso portal oficial:\n\n🔗 ${link}\n\nQualquer dúvida, estamos à disposição!`;
+            sendWhatsAppMessage(wo.client_whatsapp || wo.customer_phone, msg);
+        }
         function closeOSDetailModal() {
             document.getElementById('os-detail-modal')?.classList.add('hidden');
         }
