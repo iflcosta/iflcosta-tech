@@ -4553,7 +4553,9 @@ Qualquer dúvida, estou à disposição!
                     p_device_model: model || 'Hardware',
                     p_reported_defect: defect || 'Entrada em triagem técnica',
                     p_pickup_fee: (channel === 'Leva-e-Traz' ? 30.00 : 0.00),
-                    p_items: []
+                    p_items: [],
+                    p_device_serial: serial || '',
+                    p_device_access_pin: pin || ''
                 }).then(({ data, error }) => {
                     if (error) {
                         console.warn("Aviso na gravação Supabase (fallback local ativo):", error);
