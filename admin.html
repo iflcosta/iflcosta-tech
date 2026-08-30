@@ -5323,8 +5323,113 @@ Qualquer dúvida, estou à disposição!
             const defaultVal = select ? select.value : 'GAMER_MID';
             handleBuildProfileChange(defaultVal);
         }
-        function setupAdminRealtime() {}
-        function loadSupabaseData() {}
+        function setupAdminRealtime() {
+            const client = getSupabase() || supabaseClient;
+            if (!client) return;
+            try {
+                client.channel('admin_live_sync')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'work_orders' }, () => {
+                        loadSupabaseData();
+                    })
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'clients' }, () => {
+                        loadSupabaseData();
+                    })
+                    .subscribe();
+            } catch(e) {
+                console.warn("Aviso na subscrição Realtime:", e);
+            }
+        }
+
+        async function loadSupabaseData() {
+            const client = getSupabase() || supabaseClient;
+            if (!client) return;
+
+            try {
+                // 1. Carregar Ordens de Serviço do Supabase
+                const { data: woData, error: woError } = await client
+                    .from('work_orders')
+                    .select('*, clients(*), work_order_items(*)')
+                    .order('created_at', { ascending: false });
+
+                if (!woError && Array.isArray(woData) && woData.length > 0) {
+                    currentWorkOrders = woData.map(w => {
+                        const cli = w.clients || {};
+                        return {
+                            id: w.id,
+                            os_number: w.os_number,
+                            client_name: cli.name || w.client_name || 'Cliente',
+                            client_whatsapp: cli.whatsapp || w.client_whatsapp || '',
+                            acquisition_channel: w.acquisition_channel || (w.is_pickup_delivery ? 'Leva-e-Traz' : 'Balcão'),
+                            service_type: w.service_type || 'Hardware_Reparo',
+                            device_brand: w.device_brand || 'Equipamento',
+                            device_model: w.device_model || 'Hardware',
+                            device_serial: w.device_serial || '',
+                            device_pin: w.device_access_pin || '',
+                            reported_defect: w.reported_defect || '',
+                            technical_diagnosis: w.technical_diagnosis || '',
+                            status: w.status || 'Triagem',
+                            total_labor: parseFloat(w.total_labor || 0),
+                            total_parts: parseFloat(w.total_parts || 0),
+                            total_amount: parseFloat(w.total_amount || w.total_order || (parseFloat(w.total_labor || 0) + parseFloat(w.total_parts || 0))),
+                            parts_deposit_paid: w.parts_deposit_paid || false,
+                            parts_deposit_status: w.parts_deposit_status || (w.parts_deposit_paid ? 'CONFIRMED' : 'PENDING'),
+                            items: w.work_order_items || [],
+                            public_tracking_token: w.public_tracking_token,
+                            created_at: w.created_at,
+                            updated_at: w.updated_at
+                        };
+                    });
+                    try { localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); } catch(e){}
+                    renderKanbanBoard(currentWorkOrders);
+                    renderFinancialDashboard(currentWorkOrders);
+                }
+
+                // 2. Carregar Clientes do CRM
+                const { data: cliData, error: cliError } = await client
+                    .from('clients')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (!cliError && Array.isArray(cliData) && cliData.length > 0) {
+                    currentClientsList = cliData.map(c => ({
+                        id: c.id,
+                        name: c.name,
+                        whatsapp: c.whatsapp,
+                        phone: c.whatsapp,
+                        document: c.document || '',
+                        address: c.street ? `${c.street}, ${c.number || 'S/N'} - ${c.neighborhood || 'Centro'}` : 'Bragança Paulista',
+                        orders_count: currentWorkOrders.filter(w => w.client_whatsapp === c.whatsapp).length,
+                        total_spent: currentWorkOrders.filter(w => w.client_whatsapp === c.whatsapp).reduce((sum, w) => sum + (parseFloat(w.total_amount) || 0), 0),
+                        created_at: c.created_at
+                    }));
+                    try { localStorage.setItem('if_tech_clients', JSON.stringify(currentClientsList)); } catch(e){}
+                    if (typeof filterClientsTable === 'function') filterClientsTable();
+                }
+
+                // 3. Carregar Projetos de Software
+                const { data: swData, error: swError } = await client
+                    .from('software_projects')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (!swError && Array.isArray(swData) && swData.length > 0) {
+                    currentSoftwareProjects = swData;
+                    try { localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects)); } catch(e){}
+                    if (typeof renderSoftwareProjectsDashboard === 'function') renderSoftwareProjectsDashboard();
+                }
+
+                // 4. Carregar Chamados e Contratos MSP
+                const { data: mspData, error: mspError } = await client
+                    .from('msp_contracts')
+                    .select('*');
+                if (!mspError && Array.isArray(mspData) && mspData.length > 0) {
+                    currentMSPContracts = mspData;
+                    try { localStorage.setItem('if_tech_msp_contracts', JSON.stringify(currentMSPContracts)); } catch(e){}
+                    if (typeof renderMSPDashboard === 'function') renderMSPDashboard();
+                }
+            } catch (err) {
+                console.warn("Aviso ao carregar dados do Supabase:", err);
+            }
+        }
         function closeModal() { closeAllModals(); }
 
         // =====================================================================
