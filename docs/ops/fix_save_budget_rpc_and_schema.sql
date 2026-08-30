@@ -129,13 +129,11 @@ BEGIN
     -- 1. Localizar Ordem de Serviço
     IF p_work_order_id IS NOT NULL THEN
         SELECT * INTO v_wo FROM public.work_orders WHERE id = p_work_order_id LIMIT 1;
-    END IF;
-
-    IF v_wo.id IS NULL AND p_os_number IS NOT NULL THEN
+    ELSIF p_os_number IS NOT NULL THEN
         SELECT * INTO v_wo FROM public.work_orders WHERE os_number = p_os_number LIMIT 1;
     END IF;
 
-    IF v_wo.id IS NULL THEN
+    IF v_wo IS NULL OR NOT FOUND THEN
         RETURN jsonb_build_object(
             'success', false, 
             'error', 'Ordem de Serviço não localizada pelos identificadores informados.'
