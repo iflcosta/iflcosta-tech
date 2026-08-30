@@ -1753,11 +1753,14 @@
                 let approvedOk = false;
                 const client = getSupabase();
 
+                const isUuid = (t) => typeof t === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(t);
+                const validToken = isUuid(token) ? token : (currentWorkOrderData && currentWorkOrderData.public_tracking_token ? currentWorkOrderData.public_tracking_token : token);
+
                 // 1. Tentar via Supabase RPC se disponível
-                if (client) {
+                if (client && validToken) {
                     try {
                         const { data, error } = await client.rpc('rpc_advance_work_order_status_by_token', {
-                            p_token: token,
+                            p_token: validToken,
                             p_new_status: 'Aprovado_Pelo_Cliente'
                         });
                         if (!error && data && data.success) approvedOk = true;
