@@ -2275,6 +2275,13 @@ Nossa equipe técnica já recebeu o alerta e o cronômetro SLA de 2h foi iniciad
             handleSearch(osVal, phoneVal);
         });
 
+        // Sincronização Cross-Tab em Tempo Real (Cockpit /app <-> Portal /status)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'if_tech_work_orders' && activeTrackingQuery) {
+                handleSearch(activeTrackingQuery, activeTrackingPhone, true);
+            }
+        });
+
         // Verificação de Parâmetros na URL
         window.addEventListener("DOMContentLoaded", () => {
             if (window.lucide) lucide.createIcons();
