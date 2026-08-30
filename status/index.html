@@ -1595,122 +1595,8 @@
             }
         }
 
-        // Dicionário de Demonstração / Fallback Enriquecido
-        const defaultMockLookup = {
-            "1053": {
-                os_number: 1053,
-                public_tracking_token: "tok-1053-dell-inspiron",
-                device_brand: "Notebook Dell",
-                device_model: "Inspiron 15 3520",
-                client_first_name: "Carlos",
-                client_name: "Carlos Eduardo Santos",
-                client_whatsapp: "(11) 99542-1053",
-                is_pickup_delivery: false,
-                status: "Triagem",
-                reported_defect: "Equipamento não liga, não acende LEDs e não dá vídeo ao pressionar botão power. [Checklist: Sem riscos na tela, Carregador original entregue, Parafusos originais intactos] [Acessórios: Fonte Carregador Dell 65W] [Avarias: Pequena marca de uso na carcaça superior]",
-                technical_diagnosis: "Equipamento acolhido na bancada técnica. Realizando inspeção de circuito primário de alimentação e trilhas de 3.3V/5V.",
-                entry_at: new Date().toISOString(),
-                total_parts: 0,
-                total_labor: 0,
-                total_order: 0,
-                items: []
-            },
-            "1050": {
-                os_number: 1050,
-                public_tracking_token: "tok-1050-dell-inspiron",
-                device_brand: "Notebook Dell",
-                device_model: "Inspiron 15",
-                client_first_name: "Carlos",
-                client_name: "Carlos Silva",
-                client_whatsapp: "(11) 99542-1050",
-                is_pickup_delivery: false,
-                status: "Orcamento_Aguardando_Aprovacao",
-                reported_defect: "Não dá vídeo e bipa 3 vezes ao ligar. [Checklist: Display intacto, Teclado OK] [Acessórios: Fonte Original]",
-                technical_diagnosis: "Curto-circuito identificado no VRM de alimentação da memória RAM e necessidade de troca de capacitor cerâmico SMD.",
-                entry_at: new Date().toISOString(),
-                total_parts: 180.00,
-                total_labor: 220.00,
-                total_order: 400.00,
-                parts_deposit_paid: false,
-                items: [
-                    { item_type: "Part", description: "Módulo de Memória RAM DDR4 16GB 3200MHz", unit_price: 180.00, quantity: 1 },
-                    { item_type: "Labor", description: "Reparo de Trilha de Placa e Troca de SMD", unit_price: 220.00, quantity: 1 }
-                ]
-            },
-            "1049": {
-                os_number: 1049,
-                public_tracking_token: "tok-1049-desktop-office",
-                device_brand: "Desktop",
-                device_model: "Upgrade PC Escritório",
-                client_first_name: "Mariana",
-                client_name: "Mariana Costa",
-                client_whatsapp: "(11) 99542-1049",
-                is_pickup_delivery: true,
-                status: "Orcamento_Aguardando_Aprovacao",
-                reported_defect: "Lentidão generalizada. Upgrade de SSD e RAM solicitado. [Checklist: Gabinete sem avarias] [Acessórios: Cabo de Força]",
-                technical_diagnosis: "Disco rígido mecânico com 100% de uso contínuo (Gargalo de I/O). Recomendada substituição imediata por NVMe Gen4.",
-                entry_at: new Date(Date.now() - 86400000).toISOString(),
-                total_parts: 420.00,
-                total_labor: 140.00,
-                total_order: 560.00,
-                parts_deposit_paid: false,
-                items: [
-                    { item_type: "Part", description: "SSD NVMe Kingston 1TB Gen4", unit_price: 320.00, quantity: 1 },
-                    { item_type: "Part", description: "Memória RAM Kingston Fury 16GB DDR4", unit_price: 100.00, quantity: 1 },
-                    { item_type: "Labor", description: "Mão de Obra de Instalação, Clonagem e Otimização Win 11", unit_price: 140.00, quantity: 1 }
-                ]
-            },
-            "1048": {
-                os_number: 1048,
-                public_tracking_token: "tok-1048-pc-gamer-custom",
-                device_brand: "Custom Build IF Tech",
-                device_model: "PC Gamer Ryzen 5 7600 + RTX 4060",
-                client_first_name: "Lucas M.",
-                client_name: "Lucas Martins",
-                client_whatsapp: "(11) 99542-1048",
-                is_pickup_delivery: true,
-                status: "Na_Bancada",
-                reported_defect: "Montagem de Setup Gamer de Alta Performance [Checklist: Todas as caixas lacradas]",
-                technical_diagnosis: "Montagem de componentes homologados com aplicação de pasta térmica Kryonaut e cable management militar.",
-                entry_at: new Date(Date.now() - 172800000).toISOString(),
-                total_parts: 7070.00,
-                total_labor: 285.00,
-                total_order: 7355.00,
-                parts_deposit_paid: true,
-                stress_test_aida64_temp_max: 62.5,
-                stress_test_furmark_temp_max: 67.0,
-                stress_test_crystaldisk_health: "100% OK",
-                stress_test_boot_time_seconds: 9.4,
-                items: [
-                    { item_type: "Part", description: "AMD Ryzen 5 7600 (6C/12T, 5.1GHz Turbo, AM5)", unit_price: 1390.00, quantity: 1 },
-                    { item_type: "Part", description: "ASUS TUF Gaming B650M-Plus Wi-Fi DDR5", unit_price: 1250.00, quantity: 1 },
-                    { item_type: "Part", description: "Corsair Vengeance 32GB (2x16GB) DDR5 6000MHz CL30", unit_price: 890.00, quantity: 1 },
-                    { item_type: "Part", description: "SSD Kingston Fury Renegade 1TB NVMe Gen4 (7.300 MB/s)", unit_price: 590.00, quantity: 1 },
-                    { item_type: "Part", description: "Gigabyte GeForce RTX 4060 Gaming OC 8GB GDDR6", unit_price: 2190.00, quantity: 1 },
-                    { item_type: "Part", description: "MSI MAG A650BN 650W 80 Plus Bronze", unit_price: 320.00, quantity: 1 },
-                    { item_type: "Part", description: "Montech Sky Two Glass + 4 Fans ARGB", unit_price: 440.00, quantity: 1 },
-                    { item_type: "Labor", description: "Montagem de Precisão & Cable Management Militar", unit_price: 285.00, quantity: 1 }
-                ]
-            },
-            "082601": {
-                os_number: "082601",
-                public_tracking_token: "tok-082601-dell-inspiron",
-                device_brand: "Notebook Dell",
-                device_model: "Inspiron 15 3000 Series",
-                client_first_name: "Carlos",
-                client_name: "Carlos Eduardo Silva",
-                client_whatsapp: "(11) 99542-9542",
-                is_pickup_delivery: false,
-                status: "Triagem",
-                reported_defect: "Equipamento não liga, não acende LEDs e não dá vídeo. [Checklist: Display íntegro, Sem carregador] [Acessórios: Nenhum]",
-                technical_diagnosis: "Equipamento acolhido na bancada técnica. Realizando inspeção eletrônica de entrada.",
-                entry_at: new Date().toISOString(),
-                total_parts: 0,
-                total_labor: 0,
-                total_order: 0,
-                items: []
-            }
-        };
+        // Dicionário de Lookups Reais (Zero Mock)
+        const defaultMockLookup = {};
 
         // =========================================================================
         // APROVAÇÃO DE ORÇAMENTO PELO CLIENTE (1-CLIQUE SEGURO VIA TOKEN)
@@ -2489,13 +2375,11 @@
                     } catch (e) {}
                 }
 
-                if (!foundProject) {
+                if (!foundProject && defaultMockSoftwareProjects.length > 0) {
                     foundProject = defaultMockSoftwareProjects.find(p => 
                         p.project_code.toUpperCase() === upperQuery || 
-                        p.client_token === cleanQuery ||
-                        (upperQuery.includes("01") && p.project_code.includes("001")) ||
-                        (upperQuery.includes("02") && p.project_code.includes("002"))
-                    ) || defaultMockSoftwareProjects[0];
+                        p.client_token === cleanQuery
+                    );
                 }
 
                 if (foundProject) {
