@@ -5533,14 +5533,29 @@ IF Tech // Engenharia de Hardware`;
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-zinc-600 font-mono">Nenhum cliente encontrado para este filtro.</td></tr>`;
             } else {
-                tbody.innerHTML = filtered.map(c => `
+                tbody.innerHTML = filtered.map(c => {
+                    const cPhone = (c.whatsapp || c.phone || '').replace(/\D/g, '');
+                    const cName = (c.name || '').trim().toLowerCase();
+                    const cOrders = (currentWorkOrders || []).filter(o => {
+                        const oPhone = (o.client_whatsapp || o.customer_phone || '').replace(/\D/g, '');
+                        const oName = (o.client_name || o.customer_name || '').trim().toLowerCase();
+                        if (cPhone && oPhone && cPhone === oPhone) return true;
+                        if (cName && oName && (oName === cName || oName.includes(cName.split(' ')[0]))) return true;
+                        return false;
+                    });
+                    const realOrdersCount = cOrders.length;
+                    const realTotalSpent = cOrders.reduce((acc, o) => acc + (parseFloat(o.total_amount) || 0), 0);
+                    const isB2B = realOrdersCount >= 3 || (c.channel === 'Corporativo');
+
+                    return `
                     <tr class="border-b border-zinc-900 hover:bg-zinc-900/50">
                         <td class="py-3 px-3 font-bold text-white">${escapeHtml(c.name)}</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 text-[10px] font-bold ${c.orders_count >= 3 ? 'bg-purple-950 text-purple-400 border border-purple-800' : 'bg-cyan-950 text-cyan-400 border border-cyan-800'}">${c.orders_count >= 3 ? 'B2B / Corporativo' : 'B2C / Consumidor'}</span></td>
-                        <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.phone)}</td>
+                        <td class="py-3 px-3"><span class="px-2 py-0.5 text-[10px] font-bold ${isB2B ? 'bg-purple-950 text-purple-400 border border-purple-800' : 'bg-cyan-950 text-cyan-400 border border-cyan-800'}">${isB2B ? 'B2B / Corporativo' : 'B2C / Consumidor'}</span></td>
+                        <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.whatsapp || c.phone || '-')}</td>
                         <td class="py-3 px-3 text-zinc-400 font-mono">Bragança Paulista</td>
-                        <td class="py-3 px-3 text-center text-brand font-bold">${c.orders_count}</td>
-                        <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${c.total_spent.toFixed(2).replace('.', ',')}</td>
+                        <td class="py-3 px-3 text-center text-brand font-bold font-mono">${realOrdersCount}</td>
+                        <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${realTotalSpent.toFixed(2).replace('.', ',')}</td>`;
+                }).join('');
                         <td class="py-3 px-3 text-center">
                             <button type="button" onclick="openClientDetailModal('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-brand/40 text-brand hover:bg-brand hover:text-black font-bold uppercase text-[10px] mr-1">
                                 Ver Dossiê
@@ -5561,7 +5576,7 @@ IF Tech // Engenharia de Hardware`;
 
             if (totalCliEl) totalCliEl.textContent = currentClientsList.length;
             if (totalLtvEl) {
-                const totalLTV = currentClientsList.reduce((acc, c) => acc + (c.total_spent || 0), 0);
+                const totalLTV = (currentWorkOrders || []).reduce((acc, o) => acc + (parseFloat(o.total_amount) || 0), 0);
                 totalLtvEl.textContent = 'R$ ' + totalLTV.toFixed(2).replace('.', ',');
             }
             if (totalB2CEl) totalB2CEl.textContent = currentClientsList.filter(c => c.orders_count < 3).length;
