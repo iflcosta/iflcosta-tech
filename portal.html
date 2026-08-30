@@ -631,10 +631,22 @@
         // Sanitizador XSS Rigoroso
         
         function formatOSNumber(num) {
-            if (!num) return '082601';
-            const s = num.toString().trim();
-            if (s.length >= 6) return s;
-            return s.padStart(6, '0');
+            if (!num) {
+                const now = new Date();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yy = String(now.getFullYear()).slice(-2);
+                return `${mm}${yy}001`;
+            }
+            const s = String(num).trim();
+            if (s.length === 7) return s;
+            if (s.length === 6) return s.padStart(7, '0');
+            if (s.length < 6) {
+                const now = new Date();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yy = String(now.getFullYear()).slice(-2);
+                return `${mm}${yy}${s.padStart(3, '0')}`;
+            }
+            return s.padStart(7, '0');
         }
 
         function escapeHtml(str) {

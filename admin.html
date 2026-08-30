@@ -1838,11 +1838,48 @@ Qualquer dúvida, estou à disposição!
 
         // Sanitizador XSS Rigoroso
         
+        function generateNextOSNumber() {
+            const now = new Date();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yy = String(now.getFullYear()).slice(-2);
+            const prefix = `${mm}${yy}`; // ex: '0826'
+            
+            const thisMonthOrders = currentWorkOrders.filter(o => {
+                const s = String(o.os_number || '').trim().padStart(7, '0');
+                return s.startsWith(prefix);
+            });
+
+            if (thisMonthOrders.length === 0) {
+                return `${prefix}001`;
+            }
+
+            const maxSeq = Math.max(...thisMonthOrders.map(o => {
+                const s = String(o.os_number || '').trim().padStart(7, '0');
+                const seq = parseInt(s.slice(4)) || 0;
+                return seq;
+            }));
+
+            const nextSeq = String(maxSeq + 1).padStart(3, '0');
+            return `${prefix}${nextSeq}`;
+        }
+
         function formatOSNumber(num) {
-            if (!num) return '082601';
-            const s = num.toString().trim();
-            if (s.length >= 6) return s;
-            return s.padStart(6, '0');
+            if (!num) {
+                const now = new Date();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yy = String(now.getFullYear()).slice(-2);
+                return `${mm}${yy}001`;
+            }
+            const s = String(num).trim();
+            if (s.length === 7) return s;
+            if (s.length === 6) return s.padStart(7, '0');
+            if (s.length < 6) {
+                const now = new Date();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yy = String(now.getFullYear()).slice(-2);
+                return `${mm}${yy}${s.padStart(3, '0')}`;
+            }
+            return s.padStart(7, '0');
         }
 
         function escapeHtml(str) {
@@ -2649,19 +2686,19 @@ Qualquer dúvida, estou à disposição!
 
                 const isLevaTraz = wo.requires_delivery || (wo.acquisition_channel === 'Leva-e-Traz') || (wo.is_pickup_delivery);
                 const channelBadge = isLevaTraz 
-                    ? '<span class="px-1.5 py-0.2 bg-brand/10 border border-brand/40 text-brand text-[9px] font-bold" title="Origem: Coleta em Domicílio">🚗 Leva-e-Traz</span>' 
-                    : '<span class="px-1.5 py-0.2 bg-cyan-950 border border-cyan-800 text-cyan-400 text-[9px] font-bold" title="Origem: Entrega Presencial no Balcão">📍 Balcão</span>';
+                    ? '<span class="px-1.5 py-0.5 bg-brand/10 border border-brand/40 text-brand text-[8px] font-bold uppercase tracking-wider whitespace-nowrap" title="Origem: Coleta em Domicílio">🚗 Leva-e-Traz</span>' 
+                    : '<span class="px-1.5 py-0.5 bg-cyan-950 border border-cyan-800 text-cyan-400 text-[8px] font-bold uppercase tracking-wider whitespace-nowrap" title="Origem: Entrega Presencial no Balcão">📍 Balcão</span>';
 
                 if (s.includes('triagem')) {
                     cT++;
                     card.className += " border-2 border-brand hover:bg-zinc-800";
                     card.innerHTML = `
-                        <div class="flex justify-between items-start mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-brand font-black">#${formatOSNumber(wo.os_number || '1050')}</span>
+                        <div class="flex items-center justify-between gap-1 mb-2">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="text-brand font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
                                 ${channelBadge}
                             </div>
-                            <span class="text-[10px] text-zinc-500">${new Date(wo.created_at || Date.now()).toLocaleDateString('pt-BR')}</span>
+                            <span class="text-[9px] text-zinc-500 font-mono whitespace-nowrap flex-shrink-0">${new Date(wo.created_at || Date.now()).toLocaleDateString('pt-BR')}</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Em análise na bancada.')}</p>
@@ -2675,12 +2712,12 @@ Qualquer dúvida, estou à disposição!
                     cO++;
                     card.className += " border-yellow-800/80 hover:border-yellow-400";
                     card.innerHTML = `
-                        <div class="flex justify-between items-start mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-yellow-400 font-bold">#${formatOSNumber(wo.os_number || '1049')}</span>
+                        <div class="flex items-center justify-between gap-1 mb-2">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="text-yellow-400 font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
                                 ${channelBadge}
                             </div>
-                            <span class="text-[10px] text-zinc-500">Proposta</span>
+                            <span class="text-[9px] text-zinc-500 font-mono whitespace-nowrap flex-shrink-0">${new Date(wo.created_at || Date.now()).toLocaleDateString('pt-BR')}</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Orçamento gerado.')}</p>
@@ -2694,12 +2731,12 @@ Qualquer dúvida, estou à disposição!
                     cB++;
                     card.className += " border-cyan-800/80 hover:border-cyan-400";
                     card.innerHTML = `
-                        <div class="flex justify-between items-start mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-cyan-400 font-bold">#${formatOSNumber(wo.os_number || '1048')}</span>
+                        <div class="flex items-center justify-between gap-1 mb-2">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="text-cyan-400 font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
                                 ${channelBadge}
                             </div>
-                            <span class="text-[10px] text-brand">Sinal OK</span>
+                            <span class="text-[9px] text-cyan-400 font-mono whitespace-nowrap flex-shrink-0">Sinal OK</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Em montagem/reparo.')}</p>
@@ -2713,12 +2750,12 @@ Qualquer dúvida, estou à disposição!
                     cQ++;
                     card.className += " border-brand hover:bg-zinc-800";
                     card.innerHTML = `
-                        <div class="flex justify-between items-start mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-brand font-bold">#${formatOSNumber(wo.os_number || '1047')}</span>
+                        <div class="flex items-center justify-between gap-1 mb-2">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="text-brand font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
                                 ${channelBadge}
                             </div>
-                            <span class="text-[10px] text-brand animate-pulse">Rodando QA</span>
+                            <span class="text-[9px] text-brand font-mono whitespace-nowrap flex-shrink-0 animate-pulse">QA 15min</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Testes de Estresse Térmico.')}</p>
@@ -2732,12 +2769,12 @@ Qualquer dúvida, estou à disposição!
                     cP++;
                     card.className += " border-zinc-600 hover:border-brand";
                     card.innerHTML = `
-                        <div class="flex justify-between items-start mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-white font-bold">#${formatOSNumber(wo.os_number || '1046')}</span>
+                        <div class="flex items-center justify-between gap-1 mb-2">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="text-white font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
                                 ${channelBadge}
                             </div>
-                            <span class="text-[10px] text-brand">Pronto</span>
+                            <span class="text-[9px] text-brand font-mono whitespace-nowrap flex-shrink-0">Pronto ✓</span>
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
                         <p class="text-zinc-400 text-[11px] line-clamp-2">${escapeHtml(wo.reported_defect || 'Pronto para retirada.')}</p>
@@ -4448,7 +4485,7 @@ Qualquer dúvida, estou à disposição!
                 return;
             }
 
-            const nextOSNum = currentWorkOrders.length > 0 ? (Math.max(...currentWorkOrders.map(o => parseInt(o.os_number) || 1045)) + 1) : 1051;
+            const nextOSNum = generateNextOSNumber();
             const token = 'tok-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5);
 
             const newOS = {
@@ -5421,7 +5458,7 @@ IF Tech // Engenharia de Hardware`;
                 return;
             }
 
-            const nextOSNum = currentWorkOrders.length > 0 ? (Math.max(...currentWorkOrders.map(o => o.os_number || 1045)) + 1) : 1051;
+            const nextOSNum = generateNextOSNumber();
             const token = 'tok-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5);
 
             let partsCost = 0;
