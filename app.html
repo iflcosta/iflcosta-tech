@@ -5554,8 +5554,7 @@ IF Tech // Engenharia de Hardware`;
                         <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.whatsapp || c.phone || '-')}</td>
                         <td class="py-3 px-3 text-zinc-400 font-mono">Bragança Paulista</td>
                         <td class="py-3 px-3 text-center text-brand font-bold font-mono">${realOrdersCount}</td>
-                        <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${realTotalSpent.toFixed(2).replace('.', ',')}</td>`;
-                }).join('');
+                        <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${realTotalSpent.toFixed(2).replace('.', ',')}</td>
                         <td class="py-3 px-3 text-center">
                             <button type="button" onclick="openClientDetailModal('${c.id}')" class="px-2.5 py-1 bg-zinc-900 border border-brand/40 text-brand hover:bg-brand hover:text-black font-bold uppercase text-[10px] mr-1">
                                 Ver Dossiê
@@ -5565,7 +5564,8 @@ IF Tech // Engenharia de Hardware`;
                             </button>
                         </td>
                     </tr>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             // Atualizar contadores do CRM
