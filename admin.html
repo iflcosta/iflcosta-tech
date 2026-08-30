@@ -5210,76 +5210,60 @@ Qualquer dúvida, estou à disposição!
             const modal = document.getElementById('client-detail-modal');
             if (!modal) return;
 
-            // Coletar OSs ativas e históricas deste cliente
-            const activeOrders = (currentWorkOrders || []).filter(o => 
-                (o.client_name && o.client_name.toLowerCase().includes(client.name.toLowerCase().split(' ')[0])) ||
-                (o.client_whatsapp && client.phone && o.client_whatsapp.replace(/\D/g, '') === client.phone.replace(/\D/g, ''))
-            );
+            const clientCleanPhone = (client.phone || client.whatsapp || '').replace(/\D/g, '');
+            const clientFirstName = (client.name || '').toLowerCase().split(' ')[0];
 
-            let mockHistory = [];
-            if (client.id === 'cli-02' || client.name.includes('Roberto')) {
-                mockHistory = [
-                    { os: '1041', title: 'Workstation Dell XPS - Troca de Pasta Térmica Arctic MX-4 & Desoxidação', date: 'Há 5 dias', value: 280.00, status: 'Pronto / Entregue' },
-                    { os: '1032', title: 'Upgrade SSD Kingston 1TB NVMe + Clonagem Windows 11 Pro', date: 'Há 3 semanas', value: 650.00, status: 'Pronto / Entregue' },
-                    { os: '1015', title: 'Montagem Setup Alta Performance para Consultório Médico', date: 'Há 2 meses', value: 6200.00, status: 'Pronto / Entregue' },
-                    { os: '0988', title: 'Infraestrutura de Rede Gigabit & Backup Local UrBackup', date: 'Há 4 meses', value: 1200.00, status: 'Pronto / Entregue' },
-                    { os: '0942', title: 'Substituição de Fonte 650W 80 Plus Bronze + Cable Management', date: 'Há 6 meses', value: 570.00, status: 'Pronto / Entregue' }
-                ];
-            } else if (client.id === 'cli-01' || client.name.includes('Lucas')) {
-                mockHistory = [
-                    { os: '1039', title: 'Setup Gamer RTX 4060 - Montagem Completa e Otimização AIDA64', date: 'Há 12 dias', value: 3850.00, status: 'Pronto / Entregue' },
-                    { os: '1010', title: 'Upgrade Memória RAM Corsair 16GB 3200MHz DDR4', date: 'Há 2 meses', value: 350.00, status: 'Pronto / Entregue' }
-                ];
-            } else {
-                mockHistory = [
-                    { os: '1043', title: 'Notebook Acer Aspire 5 - Reparo de Carcaça e Troca de Teclado', date: 'Há 8 dias', value: 415.00, status: 'Pronto / Entregue' }
-                ];
-            }
+            // Coletar APENAS OSs reais deste cliente (100% dados reais do banco)
+            const activeOrders = (currentWorkOrders || []).filter(o => {
+                const oPhone = (o.client_whatsapp || o.customer_phone || '').replace(/\D/g, '');
+                const oName = (o.client_name || '').toLowerCase();
+                const phoneMatch = clientCleanPhone && oPhone && (oPhone.includes(clientCleanPhone) || clientCleanPhone.includes(oPhone));
+                const nameMatch = clientFirstName && oName.includes(clientFirstName);
+                return phoneMatch || nameMatch;
+            });
 
-            const liveHistory = activeOrders.map(o => ({
+            const realHistory = activeOrders.map(o => ({
                 os: formatOSNumber(o.os_number),
+                rawWO: o,
                 title: `${o.device_brand || 'Hardware'} ${o.device_model || ''} - ${o.reported_defect || 'Serviço de Bancada'}`,
                 date: new Date(o.created_at || Date.now()).toLocaleDateString('pt-BR'),
                 value: parseFloat(o.total_amount || 0),
                 status: (o.status || 'Em Execução').replace(/_/g, ' ')
             }));
 
-            // Evitar duplicatas por número de OS
-            const seenOS = new Set();
-            const combinedHistory = [];
-            [...liveHistory, ...mockHistory].forEach(item => {
-                const num = String(item.os);
-                if (!seenOS.has(num)) {
-                    seenOS.add(num);
-                    combinedHistory.push(item);
-                }
-            });
-
-            const totalOrders = Math.max(client.orders_count || 0, combinedHistory.length);
-            const totalLTV = combinedHistory.reduce((acc, h) => acc + (parseFloat(h.value) || 0), 0) || client.total_spent || 0;
+            const totalOrders = realHistory.length;
+            const totalLTV = realHistory.reduce((acc, h) => acc + (parseFloat(h.value) || 0), 0);
 
             document.getElementById('cdetail-name').textContent = client.name;
-            document.getElementById('cdetail-phone').textContent = client.phone;
+            document.getElementById('cdetail-phone').textContent = client.phone || client.whatsapp || '-';
             document.getElementById('cdetail-ltv').textContent = 'R$ ' + totalLTV.toFixed(2).replace('.', ',');
-            document.getElementById('cdetail-orders-count').textContent = totalOrders + ' OSs no Histórico';
+            document.getElementById('cdetail-orders-count').textContent = totalOrders + (totalOrders === 1 ? ' OS no Histórico' : ' OSs no Histórico');
 
             const historyList = document.getElementById('cdetail-history-list');
             if (historyList) {
-                historyList.innerHTML = combinedHistory.map(h => `
-                    <div class="p-3 bg-zinc-900 border border-zinc-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
-                        <div>
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <span class="px-1.5 py-0.2 bg-brand text-black font-black text-[10px]">OS #${h.os}</span>
-                                <strong class="text-white font-bold">${escapeHtml(h.title)}</strong>
+                if (realHistory.length === 0) {
+                    historyList.innerHTML = `
+                        <div class="p-6 bg-zinc-950 border border-zinc-800 text-center text-zinc-500 font-mono text-xs">
+                            Nenhuma Ordem de Serviço registrada para este cliente até o momento.
+                        </div>
+                    `;
+                } else {
+                    historyList.innerHTML = realHistory.map(h => `
+                        <div class="p-3 bg-zinc-900 border border-zinc-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
+                            <div>
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <span class="px-1.5 py-0.2 bg-brand text-black font-black text-[10px]">OS #${h.os}</span>
+                                    <strong class="text-white font-bold">${escapeHtml(h.title)}</strong>
+                                </div>
+                                <span class="text-zinc-500 text-[10px]">${h.date} • ${h.status} • Garantia CDC 90D</span>
                             </div>
-                            <span class="text-zinc-500 text-[10px]">${h.date} • ${h.status} • Garantia CDC 90D</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-brand font-mono font-bold text-sm">R$ ${(parseFloat(h.value) || 0).toFixed(2).replace('.', ',')}</span>
+                                <button type="button" onclick="printThermalCustomerReceipt()" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold uppercase">Recibo</button>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-brand font-mono font-bold text-sm">R$ ${(parseFloat(h.value) || 0).toFixed(2).replace('.', ',')}</span>
-                            <button type="button" onclick="printThermalCustomerReceipt()" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold uppercase">Recibo</button>
-                        </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
 
             modal.classList.remove('hidden');
