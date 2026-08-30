@@ -1873,41 +1873,70 @@ Qualquer dúvida, estou à disposição!
             return `${prefix}${nextSeq}`;
         }
 
-        function sendWhatsAppMessage(phone, message) {
-            if (!phone) {
-                showToast('Telefone do cliente não informado.', 'warning');
-                return;
+        function getCleanPhoneForWhatsApp(phone) {
+            if (!phone) return '';
+            let clean = String(phone).replace(/\D/g, '');
+            if (!clean) return '';
+            if (clean.startsWith('55') && (clean.length === 12 || clean.length === 13)) {
+                return clean.slice(2);
             }
-            const clean = phone.replace(/\D/g, '');
-            const targetPhone = clean.startsWith('55') ? clean : ('55' + clean);
-            const encoded = encodeURIComponent(message);
-            const waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${encoded}`;
-            
+            return clean;
+        }
+
+        function sendWhatsAppMessage(phone, message) {
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(message);
+                    navigator.clipboard.writeText(message).catch(() => {});
                 }
             } catch(e) {}
 
+            const cleanPhone = getCleanPhoneForWhatsApp(phone);
+            if (!cleanPhone) {
+                showToast('✓ Mensagem copiada para o clipboard! (Telefone não cadastrado)', 'info');
+                return;
+            }
+
+            const encoded = encodeURIComponent(message);
+            const waUrl = `https://api.whatsapp.com/send?phone=55${cleanPhone}&text=${encoded}`;
             window.open(waUrl, '_blank');
-            showToast('✓ Abrindo conversa no WhatsApp...', 'success');
+            showToast('✓ Abrindo WhatsApp e mensagem copiada!', 'success');
         }
 
-        function openWhatsAppNotificationModal(wo, type) {
-            if (!wo) wo = selectedWorkOrder;
+        function openWhatsAppNotificationModal(wo, type = 'orcamento') {
+            wo = wo || selectedWorkOrder;
             if (!wo) return;
+            const osNum = formatOSNumber(wo.os_number);
+            const clientName = wo.client_name || 'Cliente';
             const link = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
+            const totalVal = parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
+            const partsVal = parseFloat(wo.total_parts || 0).toFixed(2).replace('.', ',');
+            const partsValNum = parseFloat(wo.total_parts || 0);
+
             let msg = '';
-            if (type === 'orcamento') {
-                const totalVal = parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
-                msg = `Olá ${wo.client_name || 'Cliente'}! O laudo técnico e orçamento da sua OS #${formatOSNumber(wo.os_number)} estão prontos (Total: R$ ${totalVal}).\n\nAcesse o link seguro para conferir o laudo e aprovar online:\n🔗 ${link}\n\nQualquer dúvida, estamos à disposição!`;
-            } else if (type === 'sinal') {
-                const partsVal = parseFloat(wo.total_parts || 0).toFixed(2).replace('.', ',');
-                msg = `Olá ${wo.client_name || 'Cliente'}! Segue o link para conferência e quitação do sinal de peças da OS #${formatOSNumber(wo.os_number)} (Valor: R$ ${partsVal}):\n🔗 ${link}\n\nApós o Pix, o status avança automaticamente na bancada!`;
+            if (type === 'orcamento' || type === 'laudo') {
+                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSua proposta técnica e laudo para a *OS #${osNum}* estão prontos!\n🔧 *Valor Total:* R$ ${totalVal}${partsValNum > 0 ? ` (Sinal de Peças: R$ ${partsVal})` : ''}\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 ${link}\n\nQualquer dúvida, estamos à disposição!\n*IF Tech // Engenharia de Hardware*`;
+            } else if (type === 'sinal' || type === 'pix') {
+                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSegue o link Pix para aprovação e faturamento da sua *OS #${osNum}*:\n💰 *Sinal de Peças:* R$ ${partsVal} • *Total:* R$ ${totalVal}\n\n🔗 *Acesse para pagar via Pix e acompanhar o laudo em tempo real:*\n👉 ${link}\n\n*IF Tech // Engenharia de Hardware*`;
+            } else if (type === 'pronto') {
+                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSeu equipamento da *OS #${osNum}* está *PRONTO* para retirada!\n📋 *Confira o laudo final de testes:*\n👉 ${link}\n\nEstamos te aguardando no laboratório!\n*IF Tech // Laboratório*`;
             } else {
-                msg = `Olá ${wo.client_name || 'Cliente'}! Acompanhe o andamento da sua OS #${formatOSNumber(wo.os_number)} em tempo real pelo nosso portal:\n🔗 ${link}`;
+                const statusStr = (wo.status || 'Triagem').replace(/_/g, ' ');
+                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nAtualização sobre o seu equipamento (*OS #${osNum}*):\n📊 *Status Atual:* ${statusStr}\n\n🔗 *Acompanhe o laudo técnico em tempo real:*\n👉 ${link}\n\nQualquer dúvida, estamos à disposição!\n*IF Tech // Laboratório*`;
             }
-            sendWhatsAppMessage(wo.client_whatsapp || wo.customer_phone || wo.phone, msg);
+
+            const previewEl = document.getElementById('whatsapp-msg-preview');
+            if (previewEl) previewEl.textContent = msg;
+
+            const phone = wo.client_whatsapp || wo.customer_phone || wo.phone || '';
+            const cleanPhone = getCleanPhoneForWhatsApp(phone);
+            const wppLink = document.getElementById('modal-wpp-link');
+            if (wppLink) {
+                wppLink.href = cleanPhone 
+                    ? `https://api.whatsapp.com/send?phone=55${cleanPhone}&text=${encodeURIComponent(msg)}` 
+                    : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            }
+
+            sendWhatsAppMessage(phone, msg);
         }
 
         function formatOSNumber(num) {
@@ -2237,6 +2266,10 @@ Qualquer dúvida, estou à disposição!
                 toast.classList.add('opacity-0', 'translate-x-4');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        function showScanNotification(message, type = 'success') {
+            showToast(message, type);
         }
 
         function setMobileKanbanCol(colName) {
@@ -3913,13 +3946,9 @@ Qualquer dúvida, estou à disposição!
         function copySoftwareMagicLink() {
             if (!activeSoftwareProject) return;
             const url = `https://iflcosta.tech/status?prj=${activeSoftwareProject.project_code}&token=${activeSoftwareProject.client_token}`;
-            const msg = `Olá! Acompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n${url}\n\nAmbiente de demonstração, métricas Lighthouse e aprovação de entregas integrados.`;
+            const msg = `Olá ${activeSoftwareProject.client_name || ''}! 👋\nAcompanhe o desenvolvimento em tempo real do seu projeto *${activeSoftwareProject.title}* na IF Tech através do link:\n\n👉 ${url}\n\nAmbiente de demonstração, métricas Lighthouse e homologação integrados.\n*IF Tech // Engenharia de Software*`;
             
-            navigator.clipboard.writeText(msg).then(() => {
-                alert("Magic Link de Software copiado para a Área de Transferência!");
-            }).catch(() => {
-                prompt("Copie a mensagem de acompanhamento:", msg);
-            });
+            sendWhatsAppMessage(activeSoftwareProject.client_whatsapp, msg);
         }
 
         // =====================================================================
@@ -4202,9 +4231,16 @@ Qualquer dúvida, estou à disposição!
 
         function copyMSPClientLink(token) {
             const url = `https://iflcosta.tech/status?token=${token}`;
-            navigator.clipboard.writeText(url).then(() => {
-                showScanNotification("✓ Link do Portal B2B da Empresa copiado!", "success");
-            });
+            const contract = currentMSPContracts.find(c => c.client_token === token);
+            if (contract && contract.contact_whatsapp) {
+                const msg = `Olá ${contract.contact_name || ''}! 👋\nAcesse o portal corporativo da *${contract.company_name}* para gestão de chamados e inventário de TI:\n\n👉 ${url}\n\n*IF Tech // Suporte Corporativo & MSP*`;
+                sendWhatsAppMessage(contract.contact_whatsapp, msg);
+            } else {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url).catch(() => {});
+                }
+                showToast("✓ Link do Portal B2B copiado para o clipboard!", "success");
+            }
         }
 
         // Modais de Gestão MSP
@@ -4581,8 +4617,9 @@ Qualquer dúvida, estou à disposição!
             } catch(err) {}
 
             // Sincronização atômica profissional com Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.rpc('rpc_create_work_order_atomic', {
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                client.rpc('rpc_create_work_order_atomic', {
                     p_client_name: name,
                     p_client_whatsapp: phone,
                     p_service_type: serviceType || 'Hardware_Reparo',
@@ -4704,12 +4741,19 @@ Qualquer dúvida, estou à disposição!
             } catch(e){}
 
             // Sincronização Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.from('work_orders').update({
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const query = client.from('work_orders').update({
                     status: newStatus,
                     parts_deposit_paid: selectedWorkOrder.parts_deposit_paid || false,
                     parts_deposit_status: selectedWorkOrder.parts_deposit_status || 'PENDING'
-                }).eq('os_number', parseInt(selectedWorkOrder.os_number)).then(() => {}).catch(() => {});
+                });
+                if (isUuid(selectedWorkOrder.id)) {
+                    query.eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+                } else if (selectedWorkOrder.os_number) {
+                    query.eq('os_number', parseInt(selectedWorkOrder.os_number, 10)).then(() => {}).catch(() => {});
+                }
             }
 
             showToast('✓ OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' avançou para ' + newStatus.replace(/_/g, ' '), 'success');
@@ -4894,21 +4938,52 @@ Qualquer dúvida, estou à disposição!
             selectedWorkOrder.total_parts_cost = partsCostTotal;
             selectedWorkOrder.total_amount = total;
             selectedWorkOrder.status = 'Orcamento_Aguardando_Aprovacao';
+            selectedWorkOrder.parts_deposit_required = partsTotal;
+            selectedWorkOrder.parts_deposit_paid = (partsTotal === 0);
+            selectedWorkOrder.parts_deposit_status = (partsTotal === 0 ? 'CONFIRMED' : 'PENDING');
 
-            // Persistência local segura
+            // Persistência local imediata (Zero-Lag UI)
             try {
                 localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
             } catch(err) {}
 
-            // Sincronização Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.from('work_orders').update({
-                    status: 'Orcamento_Aguardando_Aprovacao',
-                    technical_diagnosis: diagnosisText,
-                    total_labor: labor,
-                    total_parts: partsTotal,
-                    total_amount: total
-                }).eq('os_number', parseInt(selectedWorkOrder.os_number)).then(() => {}).catch(() => {});
+            // Sincronização Supabase via RPC Atômica com Fallback Inteligente
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const validId = isUuid(selectedWorkOrder.id) ? selectedWorkOrder.id : null;
+                const validOsNum = parseInt(selectedWorkOrder.os_number, 10) || null;
+
+                // 1. Tenta RPC Primária Atômica rpc_save_budget_atomic
+                client.rpc('rpc_save_budget_atomic', {
+                    p_os_number: validOsNum,
+                    p_work_order_id: validId,
+                    p_service_type: serviceType,
+                    p_technical_diagnosis: diagnosisText,
+                    p_total_labor: labor,
+                    p_total_parts: partsTotal,
+                    p_items: partsList,
+                    p_status: 'Orcamento_Aguardando_Aprovacao'
+                }).then(({ data, error }) => {
+                    if (error) {
+                        console.warn("RPC rpc_save_budget_atomic falhou, tentando fallback rpc_update_work_order_budget...", error);
+                        // 2. Fallback para rpc_update_work_order_budget
+                        if (validOsNum) {
+                            client.rpc('rpc_update_work_order_budget', {
+                                p_os_number: validOsNum,
+                                p_service_type: serviceType,
+                                p_diagnosis: diagnosisText,
+                                p_items: partsList
+                            }).catch(() => {});
+                        }
+                    } else if (data && data.public_tracking_token) {
+                        selectedWorkOrder.public_tracking_token = data.public_tracking_token;
+                        if (data.work_order_id) selectedWorkOrder.id = data.work_order_id;
+                        try { localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); } catch(e){}
+                    }
+                }).catch(err => {
+                    console.warn("Erro de rede ao salvar orçamento no Supabase:", err);
+                });
             }
 
             closeBudgetModal();
@@ -5033,20 +5108,17 @@ Qualquer dúvida, estou à disposição!
 
         function copyAsaasPixForWhatsApp(wo) {
             wo = wo || selectedWorkOrder;
-            if (!wo) return;
-            const link = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
-            const msg = `Olá ${wo.client_name}! Seu laudo técnico da OS #${formatOSNumber(wo.os_number)} está pronto. Acesse o portal para aprovar e acompanhar o serviço em tempo real:
-
-${link}
-
-IF Tech // Engenharia de Hardware`;
-            navigator.clipboard.writeText(msg).then(() => {
-                showToast('✓ Mensagem copiada com sucesso para o WhatsApp!', 'success');
-            });
+            if (!wo) {
+                showToast('Nenhuma OS selecionada.', 'warning');
+                return;
+            }
+            openWhatsAppNotificationModal(wo, 'sinal');
         }
 
         function copyWppText() {
-            copyAsaasPixForWhatsApp();
+            if (selectedWorkOrder) {
+                openWhatsAppNotificationModal(selectedWorkOrder, 'orcamento');
+            }
         }
 
         function adminSimulateAsaasPayment(wo) {
@@ -5061,12 +5133,22 @@ IF Tech // Engenharia de Hardware`;
             } catch(e){}
 
             // Sincronização Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.from('work_orders').update({
-                    status: 'Na_Bancada',
-                    parts_deposit_paid: true,
-                    parts_deposit_status: 'CONFIRMED'
-                }).eq('id', wo.id).then(() => {}).catch(() => {});
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const asaasId = wo.asaas_payment_id || ('pay_mock_' + wo.os_number);
+                client.rpc('rpc_confirm_asaas_payment', {
+                    p_asaas_payment_id: asaasId,
+                    p_paid_value: parseFloat(wo.total_parts || 0)
+                }).catch(() => {
+                    const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                    const query = client.from('work_orders').update({
+                        status: 'Na_Bancada',
+                        parts_deposit_paid: true,
+                        parts_deposit_status: 'CONFIRMED'
+                    });
+                    if (isUuid(wo.id)) query.eq('id', wo.id).then(() => {}).catch(() => {});
+                    else if (wo.os_number) query.eq('os_number', parseInt(wo.os_number, 10)).then(() => {}).catch(() => {});
+                });
             }
 
             showToast('✓ Sinal Asaas confirmado! OS movida para 03. Na Bancada.', 'success');
@@ -5075,9 +5157,13 @@ IF Tech // Engenharia de Hardware`;
             renderFinancialDashboard(currentWorkOrders);
         }
 
-        function sendWhatsAppStatusUpdate() {
-            if (!selectedWorkOrder) return;
-            copyAsaasPixForWhatsApp(selectedWorkOrder);
+        function sendWhatsAppStatusUpdate(wo) {
+            wo = wo || selectedWorkOrder;
+            if (!wo) {
+                showToast('Nenhuma OS selecionada.', 'warning');
+                return;
+            }
+            openWhatsAppNotificationModal(wo, 'status');
         }
 
         // =====================================================================
