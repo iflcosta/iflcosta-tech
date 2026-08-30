@@ -1442,6 +1442,7 @@
                         <label class="text-[10px] text-zinc-400 font-bold uppercase">Mover p/ Coluna:</label>
                         <select id="detail-status-select" onchange="handleManualStatusChange(this.value)" class="sm:col-span-2 bg-zinc-900 border border-zinc-700 px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-brand">
                             <option value="Triagem">01. Triagem (Diagnóstico)</option>
+                            <option value="Orcamento_Aguardando_Aprovacao">02. Orçamento (Aguardando Aprovação)</option>
                             <option value="Diagnostico_Concluido">02. Orçamento (Diagnóstico Concluído)</option>
                             <option value="Aguardando_Sinal_Peca">02. Aguardando Sinal de Peças</option>
                             <option value="Peca_Encomendada">02. Peça Encomendada (Sinal Quitado)</option>
@@ -2573,7 +2574,7 @@ Qualquer dúvida, estou à disposição!
             let swGross = 0;
             if (typeof currentSoftwareProjects !== 'undefined' && Array.isArray(currentSoftwareProjects)) {
                 currentSoftwareProjects.forEach(p => {
-                    swGross += parseFloat(p.contract_value || (p.price_model === 'SW-01' ? 2450 : 3800));
+                    swGross += parseFloat(p.total_budget || p.contract_value || (p.price_model === 'SW-01' ? 2450 : 3800));
                 });
             } else {
                 swGross = 0.00;
@@ -2840,7 +2841,7 @@ Qualquer dúvida, estou à disposição!
                         </div>
                     `;
                     colQA.appendChild(card);
-                } else {
+                } else if (s.includes('pronto') || (!s.includes('entregue') && !s.includes('cancelad') && !s.includes('recusad'))) {
                     cP++;
                     card.className += " border-zinc-600 hover:border-brand";
                     card.innerHTML = `
@@ -4700,7 +4701,7 @@ Qualquer dúvida, estou à disposição!
                 `;
             } else if (s.includes('bancada')) {
                 buttonsHtml = `
-                    <button type="button" onclick="advanceOSStatus('Testes_QA')" class="px-4 py-2.5 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(234,179,8,0.3)]">
+                    <button type="button" onclick="advanceOSStatus('Teste_Estresse_QA')" class="px-4 py-2.5 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(234,179,8,0.3)]">
                         <i data-lucide="activity" class="w-4 h-4"></i> Mover para Testes de QA
                     </button>
                 `;
@@ -4726,7 +4727,7 @@ Qualquer dúvida, estou à disposição!
             selectedWorkOrder.status = newStatus;
             
             // Se avançar para Bancada, QA ou Pronto, quita o sinal de peças automaticamente
-            if (['Na_Bancada', 'Testes_QA', 'Pronto', 'Entregue'].includes(newStatus)) {
+            if (['Na_Bancada', 'Testes_QA', 'Teste_Estresse_QA', 'Pronto', 'Entregue'].includes(newStatus)) {
                 selectedWorkOrder.parts_deposit_paid = true;
                 selectedWorkOrder.parts_deposit_status = 'CONFIRMED';
             }
@@ -5012,10 +5013,27 @@ Qualquer dúvida, estou à disposição!
                 document: doc,
                 address: address,
                 orders_count: 0,
-                total_spent: 0.00
+                total_spent: 0.00,
+                created_at: new Date().toISOString()
             };
 
             currentClientsList.unshift(newClient);
+            try { localStorage.setItem('if_tech_clients', JSON.stringify(currentClientsList)); } catch(e){}
+
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                client.from('clients').insert({
+                    name: name,
+                    whatsapp: phone,
+                    document: doc || `TEMP-${Date.now()}`,
+                    street: address || 'Bragança Paulista',
+                    number: 'S/N',
+                    neighborhood: 'Centro',
+                    city: 'Bragança Paulista',
+                    state: 'SP'
+                }).then(() => {}).catch(() => {});
+            }
+
             closeClientModal();
             filterClientsTable();
             showToast('✓ Cliente ' + name + ' cadastrado com sucesso no CRM!', 'success');
@@ -5319,7 +5337,7 @@ Qualquer dúvida, estou à disposição!
 
         function handleUniversalBarcodeScan(code) {
             // 1. Verificar se é produto no PDV/Estoque
-            const prod = currentInventoryProducts.find(p => p.barcode === code || p.sku.toLowerCase() === code.toLowerCase());
+            const prod = currentInventoryProducts.find(p => (p.barcode && p.barcode === code) || (p.ean && p.ean === code) || (p.sku && p.sku.toLowerCase() === code.toLowerCase()));
             if (prod) {
                 switchTab('inventory');
                 switchInventorySubTab('pos');

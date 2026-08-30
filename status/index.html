@@ -1060,7 +1060,8 @@
             itemsList.forEach(it => {
                 const p = parseFloat(it.unit_price) || 0;
                 const q = parseInt(it.quantity) || 1;
-                if (it.item_type === 'Labor' || (it.description && it.description.toLowerCase().includes('mão'))) {
+                const isLabor = it.item_type === 'Labor' || (it.description && it.description.toLowerCase().includes('mão')) || (it.item_type && (it.item_type.toLowerCase().includes('labor') || it.item_type.toLowerCase().includes('servi')));
+                if (isLabor) {
                     computedLaborSum += p * q;
                 } else {
                     computedPartsSum += p * q;
@@ -1070,7 +1071,6 @@
             const totalLabor = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : computedLaborSum;
             const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (wo.total_amount ? parseFloat(wo.total_amount) : (totalParts + totalLabor));
             const hasParts = totalParts > 0;
-            const hasBudget = grandTotal > 0 || totalLabor > 0 || totalParts > 0 || itemsList.length > 0 || rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("peca");
 
             const isEntregue = rawStatus.includes("entregue") || (rawStatus.includes("finalizado") && !rawStatus.includes("diagnostico")) || rawStatus === "concluido" || rawStatus === "servico_concluido";
             const isPronto = (rawStatus.includes("pronto") || rawStatus.includes("retirada")) && !isEntregue;
@@ -1081,7 +1081,8 @@
             const isWaitingApproval = rawStatus.includes("aguardando") || rawStatus.includes("pendente") || rawStatus.includes("diagnostico_concluido") || rawStatus === "orcamento_disponivel";
             const isApproved = (rawStatus === 'orcamento_aprovado' || rawStatus.includes("aprovado") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || (hasParts && (rawStatus.includes("encomendada") || wo.parts_deposit_paid))) && !isWaitingApproval;
 
-            const isOrcamento = (hasBudget || rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || isApproved) && !isBancada && !isQA && !isPronto && !isEntregue;
+            const isExplicitTriagem = (rawStatus === 'triagem' || !rawStatus) && (totalLabor === 0 && totalParts === 0 && grandTotal === 0);
+            const isOrcamento = !isExplicitTriagem && (rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || (grandTotal > 0 && !rawStatus.includes("triagem")) || isApproved) && !isBancada && !isQA && !isPronto && !isEntregue;
             const isTriagem = !isOrcamento && !isBancada && !isQA && !isPronto && !isEntregue;
 
             if (isTriagem) {
@@ -1471,14 +1472,15 @@
                             const price = parseFloat(item.unit_price) || 0;
                             const qty = parseInt(item.quantity) || 1;
                             const itemTotal = price * qty;
-                            if (item.item_type === 'Labor') {
+                            const isLaborItem = item.item_type === 'Labor' || (item.description && item.description.toLowerCase().includes('mão')) || (item.item_type && (item.item_type.toLowerCase().includes('labor') || item.item_type.toLowerCase().includes('servi')));
+                            if (isLaborItem) {
                                 laborSum += itemTotal;
                             } else {
                                 partsSum += itemTotal;
                             }
 
                             const tr = document.createElement("tr");
-                            if (item.item_type === 'Labor') {
+                            if (isLaborItem) {
                                 tr.className = "bg-zinc-900/40";
                                 tr.innerHTML = `
                                     <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
@@ -1927,7 +1929,8 @@
 
             input.select();
             input.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(input.value).then(() => {
+            
+            const handleSuccess = () => {
                 if (btn) {
                     btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i> Copiado!`;
                     btn.className = "px-4 py-2 bg-white text-black font-mono font-bold text-xs uppercase transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]";
@@ -1938,9 +1941,25 @@
                         if (window.lucide) lucide.createIcons();
                     }, 2500);
                 }
-            }).catch(() => {
-                alert("Código Pix copiado para a área de transferência!");
-            });
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(input.value).then(handleSuccess).catch(() => {
+                    try {
+                        document.execCommand('copy');
+                        handleSuccess();
+                    } catch(e) {
+                        alert("Por favor, selecione e copie o código Pix manualmente.");
+                    }
+                });
+            } else {
+                try {
+                    document.execCommand('copy');
+                    handleSuccess();
+                } catch(e) {
+                    alert("Por favor, selecione e copie o código Pix manualmente.");
+                }
+            }
         }
 
         async function simulateAsaasPaymentSuccess() {
@@ -2715,7 +2734,35 @@
                 return;
             }
 
-            const ticketCode = 'TICK-2026-' + Math.floor(1000 + Math.random() * 9000);
+            const ticketCode = 'TICK-' + Date.now().toString().slice(-4);
+            const newTicket = {
+                id: 'tck-' + Date.now(),
+                ticket_code: ticketCode,
+                subject: subject,
+                description: desc,
+                priority: 'Alta',
+                status: 'Aberto',
+                origin: 'Portal_Cliente',
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const saved = JSON.parse(localStorage.getItem('if_tech_msp_tickets') || '[]');
+                saved.unshift(newTicket);
+                localStorage.setItem('if_tech_msp_tickets', JSON.stringify(saved));
+            } catch(err) {}
+
+            const client = getSupabase();
+            if (client) {
+                client.from('msp_tickets').insert({
+                    title: subject,
+                    description: desc,
+                    priority: 'Alta',
+                    status: 'Aberto',
+                    origin: 'Portal_Cliente'
+                }).then(() => {}).catch(() => {});
+            }
+
             alert(`✓ Chamado ${ticketCode} registrado com sucesso!\nNossa equipe técnica já recebeu o alerta e o cronômetro SLA de 2h foi iniciado.`);
             closePortalNewTicketModal();
         }

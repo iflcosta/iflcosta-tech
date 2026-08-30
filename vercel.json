@@ -8,6 +8,12 @@
     { "source": "/portal.html", "destination": "/status", "permanent": true },
     { "source": "/tracking", "destination": "/status", "permanent": true }
   ],
+  "rewrites": [
+    { "source": "/app", "destination": "/admin.html" },
+    { "source": "/status", "destination": "/portal.html" },
+    { "source": "/os/:id", "destination": "/portal.html" },
+    { "source": "/t/:token", "destination": "/portal.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
