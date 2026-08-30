@@ -2402,6 +2402,20 @@
             }
         }
 
+        // Gerenciamento Gracioso de Ciclo de Vida do WebSocket (bfcache)
+        window.addEventListener('pagehide', () => {
+            const client = getSupabase();
+            if (client && portalRealtimeChannel) {
+                try { client.removeChannel(portalRealtimeChannel); } catch(e){}
+            }
+        });
+
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted && activeTrackingQuery) {
+                handleSearch(activeTrackingQuery, activeTrackingPhone, true);
+            }
+        });
+
         // =========================================================================
         // BUSCA PRINCIPAL COM RATE LIMITING, MAGIC LINK & FALLBACK
         // =========================================================================
