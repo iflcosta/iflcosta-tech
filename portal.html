@@ -1060,23 +1060,29 @@
             itemsList.forEach(it => {
                 const p = parseFloat(it.unit_price) || 0;
                 const q = parseInt(it.quantity) || 1;
-                if (it.item_type === 'Labor') {
+                if (it.item_type === 'Labor' || (it.description && it.description.toLowerCase().includes('mão'))) {
                     computedLaborSum += p * q;
                 } else {
                     computedPartsSum += p * q;
                 }
             });
             const totalParts = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : computedPartsSum;
-            const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (computedPartsSum + computedLaborSum);
+            const totalLabor = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : computedLaborSum;
+            const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (wo.total_amount ? parseFloat(wo.total_amount) : (totalParts + totalLabor));
             const hasParts = totalParts > 0;
-            const isApproved = rawStatus.includes("aprovad") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || (hasParts && (rawStatus.includes("encomendada") || wo.parts_deposit_paid));
+            const hasBudget = grandTotal > 0 || totalLabor > 0 || totalParts > 0 || itemsList.length > 0 || rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("peca");
 
             const isEntregue = rawStatus.includes("entregue") || (rawStatus.includes("finalizado") && !rawStatus.includes("diagnostico")) || rawStatus === "concluido" || rawStatus === "servico_concluido";
             const isPronto = (rawStatus.includes("pronto") || rawStatus.includes("retirada")) && !isEntregue;
             const isQA = (rawStatus.includes("qa") || rawStatus.includes("teste") || rawStatus.includes("estresse")) && !isPronto && !isEntregue;
             const isBancada = (rawStatus === 'na_bancada' || (rawStatus.includes("bancada") && !rawStatus.includes("fila")) || rawStatus.includes("execucao") || rawStatus.includes("montagem")) && !isQA && !isPronto && !isEntregue;
-            const isOrcamento = (rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || rawStatus.includes("aprovad") || itemsList.length > 0) && !isBancada && !isQA && !isPronto && !isEntregue;
-            const isTriagem = (rawStatus.includes("triagem") || !rawStatus) && itemsList.length === 0 && !isOrcamento && !isBancada && !isQA && !isPronto && !isEntregue;
+            
+            // Tratamento preciso: 'orcamento_aguardando_aprovacao' é NÃO APROVADO (Aguardando Aprovação)
+            const isWaitingApproval = rawStatus.includes("aguardando") || rawStatus.includes("pendente") || rawStatus.includes("diagnostico_concluido") || rawStatus === "orcamento_disponivel";
+            const isApproved = (rawStatus === 'orcamento_aprovado' || rawStatus.includes("aprovado") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || (hasParts && (rawStatus.includes("encomendada") || wo.parts_deposit_paid))) && !isWaitingApproval;
+
+            const isOrcamento = (hasBudget || rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || isApproved) && !isBancada && !isQA && !isPronto && !isEntregue;
+            const isTriagem = !isOrcamento && !isBancada && !isQA && !isPronto && !isEntregue;
 
             if (isTriagem) {
                 if (statusBadgeText) statusBadgeText.textContent = "01. EM TRIAGEM & DIAGNÓSTICO";
