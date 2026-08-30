@@ -164,48 +164,48 @@
                         <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Progresso do Atendimento</span>
                         <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono text-xs">
                             <!-- Etapa 1 -->
-                            <div id="step-1" class="border-2 border-brand bg-brand/10 p-3 text-brand">
+                            <div id="step-1" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span>01. TRIAGEM</span>
-                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                    <span class="text-white">01. TRIAGEM</span>
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
-                                <span id="step-1-sub" class="text-[11px] text-zinc-400">Checklist & Fotos</span>
+                                <span id="step-1-sub" class="text-[11px] text-zinc-400 block font-sans">Checklist & Fotos</span>
                             </div>
 
                             <!-- Etapa 2 -->
-                            <div id="step-2" class="border-2 border-brand bg-brand/10 p-3 text-brand">
+                            <div id="step-2" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span>02. ORÇAMENTO</span>
-                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                    <span class="text-white">02. ORÇAMENTO</span>
+                                    <i data-lucide="file-text" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
-                                <span id="step-2-sub" class="text-[11px] text-zinc-400">Aprovado & Sinal Pago</span>
+                                <span id="step-2-sub" class="text-[11px] text-zinc-400 block font-sans">Aguardando Laudo</span>
                             </div>
 
                             <!-- Etapa 3 -->
-                            <div id="step-3" class="border-2 border-brand bg-brand/10 p-3 text-brand">
+                            <div id="step-3" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span>03. BANCADA</span>
-                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                    <span class="text-white">03. BANCADA</span>
+                                    <i data-lucide="wrench" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
-                                <span id="step-3-sub" class="text-[11px] text-zinc-400">Montagem & Cable Mgmt</span>
+                                <span id="step-3-sub" class="text-[11px] text-zinc-400 block font-sans">Reparo / Execução</span>
                             </div>
 
                             <!-- Etapa 4 -->
-                            <div id="step-4" class="border-2 border-brand bg-brand text-black p-3 animate-pulse">
+                            <div id="step-4" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span>04. TESTES QA</span>
-                                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                                    <span class="text-white">04. TESTES QA</span>
+                                    <i data-lucide="cpu" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
-                                <span id="step-4-sub" class="text-[11px] text-zinc-900 font-bold">AIDA64 / 15 Min</span>
+                                <span id="step-4-sub" class="text-[11px] text-zinc-400 block font-sans">Telemetria 15 Min</span>
                             </div>
 
                             <!-- Etapa 5 -->
-                            <div id="step-5" class="border-2 border-zinc-800 bg-zinc-900/50 p-3 text-zinc-500">
+                            <div id="step-5" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span>05. PRONTO</span>
-                                    <i data-lucide="package-check" class="w-4 h-4"></i>
+                                    <span class="text-white">05. PRONTO</span>
+                                    <i data-lucide="package-check" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
-                                <span id="step-5-sub" class="text-[11px]">Garantia 90D & Entrega</span>
+                                <span id="step-5-sub" class="text-[11px] text-zinc-400 block font-sans">Garantia CDC & Retirada</span>
                             </div>
                         </div>
                     </div>
@@ -784,15 +784,15 @@
             const step4Sub = document.getElementById("step-4-sub");
             const step5Sub = document.getElementById("step-5-sub");
 
-            // Reset padrão das etapas
+            // Reset padronizado de alto contraste (WCAG AA)
             [step1, step2, step3, step4, step5].forEach(s => {
-                if (s) s.className = "border-2 border-zinc-800 bg-zinc-900/40 p-3 text-zinc-500 transition-all";
+                if (s) s.className = "border-2 border-zinc-800 bg-zinc-900/70 p-3 text-zinc-300 transition-all";
             });
-            if (step1Sub) step1Sub.textContent = "Checklist & Fotos";
-            if (step2Sub) step2Sub.textContent = "Aguardando Laudo";
-            if (step3Sub) step3Sub.textContent = "Reparo / Execução";
-            if (step4Sub) step4Sub.textContent = "Telemetria 15 Min";
-            if (step5Sub) step5Sub.textContent = "Garantia CDC & Retirada";
+            if (step1Sub) { step1Sub.textContent = "Checklist & Fotos"; step1Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
+            if (step2Sub) { step2Sub.textContent = "Aguardando Laudo"; step2Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
+            if (step3Sub) { step3Sub.textContent = "Reparo / Execução"; step3Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
+            if (step4Sub) { step4Sub.textContent = "Telemetria 15 Min"; step4Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
+            if (step5Sub) { step5Sub.textContent = "Garantia CDC & Retirada"; step5Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
 
             const itemsList = wo.items || wo.work_order_items || [];
             let computedPartsSum = 0;
@@ -820,21 +820,21 @@
             if (isTriagem) {
                 if (statusBadgeText) statusBadgeText.textContent = "01. EM TRIAGEM & DIAGNÓSTICO";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                if (step1) step1.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse";
-                if (step1Sub) step1Sub.textContent = "Diagnóstico Inicial";
-                if (step2Sub) step2Sub.textContent = "Aguardando Laudo";
+                if (step1) step1.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(204,255,0,0.25)]";
+                if (step1Sub) { step1Sub.textContent = "Diagnóstico Inicial"; step1Sub.className = "text-[11px] text-zinc-950 font-bold block font-sans"; }
+                if (step2Sub) { step2Sub.textContent = "Aguardando Laudo"; step2Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
             } else if (isOrcamento) {
                 if (!hasParts) {
                     if (isApproved) {
                         if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO APROVADO • NA FILA DE BANCADA";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
                         if (step2) step2.className = "border-2 border-brand bg-brand text-black p-3 font-bold";
                         if (step2Sub) step2Sub.textContent = "Aprovado (Na Fila)";
                     } else {
                         if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO DISPONÍVEL PARA APROVAÇÃO";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
                         if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
                         if (step2Sub) step2Sub.textContent = "Aguardando Aprovação";
                     }
@@ -843,13 +843,13 @@
                     if (isSinalPago) {
                         if (statusBadgeText) statusBadgeText.textContent = "02. SINAL PAGO • PEÇA EM TRÂNSITO";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
                         if (step2) step2.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold";
                         if (step2Sub) step2Sub.textContent = "Peça em Trânsito";
                     } else {
                         if (statusBadgeText) statusBadgeText.textContent = "02. AGUARDANDO SINAL DE PEÇAS";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
                         if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
                         if (step2Sub) step2Sub.textContent = "Aguardando Sinal Pix";
                     }
@@ -857,7 +857,7 @@
             } else if (isBancada) {
                 if (statusBadgeText) statusBadgeText.textContent = "03. EM EXECUÇÃO NA BANCADA";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
                 if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
                 if (step3) step3.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold animate-pulse";
                 if (step2Sub) step2Sub.textContent = "Orçamento Aprovado ✓";
@@ -865,7 +865,7 @@
             } else if (isQA) {
                 if (statusBadgeText) statusBadgeText.textContent = "04. EM TESTES DE ESTRESSE QA";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/15 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                if (step1) step1.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
+                if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
                 if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
                 if (step3) step3.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
                 if (step4) step4.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse";
