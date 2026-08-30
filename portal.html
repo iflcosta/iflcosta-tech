@@ -20,7 +20,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
 
-    <!-- Supabase JS Client SDK -->
+    <!-- Supabase JS Client SDK & QRious -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -74,7 +74,7 @@
                                 <input 
                                     type="text" 
                                     id="search-input" 
-                                    placeholder="Ex: 082601" 
+                                    placeholder="Ex: 082601 ou 1053" 
                                     class="w-full bg-zinc-900 border-2 border-zinc-700 px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-brand transition-colors placeholder-zinc-500"
                                     required
                                 >
@@ -120,7 +120,7 @@
                 <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-3"></i>
                 <h3 class="text-xl font-extrabold text-white mb-2">Registro Não Localizado</h3>
                 <p class="text-zinc-400 text-sm max-w-md mx-auto mb-4">
-                    Não encontramos nenhuma OS ou projeto correspondente ao código digitado. Verifique o número ou solicite um link atualizado no WhatsApp.
+                    Não encontramos nenhuma OS ou projeto correspondente aos dados informados. Verifique o número ou solicite um link atualizado no WhatsApp.
                 </p>
                 <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20N%C3%A3o%20consegui%20localizar%20minha%20OS%20no%20portal." target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 text-white font-mono text-xs font-bold uppercase hover:bg-zinc-700 border border-zinc-600">
                     Falar com o Suporte <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
@@ -159,15 +159,15 @@
                         </div>
                     </div>
 
-                    <!-- LINHA DO TEMPO BRUTALISTA DA BANCADA -->
+                    <!-- LINHA DO TEMPO BRUTALISTA DA BANCADA (5 ETAPAS / ALTO CONTRASTE) -->
                     <div class="py-8 border-b-2 border-zinc-800">
                         <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Progresso do Atendimento</span>
                         <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono text-xs">
                             <!-- Etapa 1 -->
                             <div id="step-1" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span class="text-white">01. TRIAGEM</span>
-                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-zinc-400"></i>
+                                    <span id="step-1-title" class="font-black text-inherit">01. TRIAGEM</span>
+                                    <i id="step-1-icon" data-lucide="check-circle-2" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
                                 <span id="step-1-sub" class="text-[11px] text-zinc-400 block font-sans">Checklist & Fotos</span>
                             </div>
@@ -175,8 +175,8 @@
                             <!-- Etapa 2 -->
                             <div id="step-2" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span class="text-white">02. ORÇAMENTO</span>
-                                    <i data-lucide="file-text" class="w-4 h-4 text-zinc-400"></i>
+                                    <span id="step-2-title" class="font-black text-inherit">02. ORÇAMENTO</span>
+                                    <i id="step-2-icon" data-lucide="file-text" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
                                 <span id="step-2-sub" class="text-[11px] text-zinc-400 block font-sans">Aguardando Laudo</span>
                             </div>
@@ -184,8 +184,8 @@
                             <!-- Etapa 3 -->
                             <div id="step-3" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span class="text-white">03. BANCADA</span>
-                                    <i data-lucide="wrench" class="w-4 h-4 text-zinc-400"></i>
+                                    <span id="step-3-title" class="font-black text-inherit">03. BANCADA</span>
+                                    <i id="step-3-icon" data-lucide="wrench" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
                                 <span id="step-3-sub" class="text-[11px] text-zinc-400 block font-sans">Reparo / Execução</span>
                             </div>
@@ -193,8 +193,8 @@
                             <!-- Etapa 4 -->
                             <div id="step-4" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span class="text-white">04. TESTES QA</span>
-                                    <i data-lucide="cpu" class="w-4 h-4 text-zinc-400"></i>
+                                    <span id="step-4-title" class="font-black text-inherit">04. TESTES QA</span>
+                                    <i id="step-4-icon" data-lucide="cpu" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
                                 <span id="step-4-sub" class="text-[11px] text-zinc-400 block font-sans">Telemetria 15 Min</span>
                             </div>
@@ -202,8 +202,8 @@
                             <!-- Etapa 5 -->
                             <div id="step-5" class="border-2 border-zinc-800 bg-zinc-900/80 p-3 text-zinc-300 transition-all rounded-none">
                                 <div class="font-bold flex items-center justify-between mb-1">
-                                    <span class="text-white">05. PRONTO</span>
-                                    <i data-lucide="package-check" class="w-4 h-4 text-zinc-400"></i>
+                                    <span id="step-5-title" class="font-black text-inherit">05. PRONTO</span>
+                                    <i id="step-5-icon" data-lucide="package-check" class="w-4 h-4 text-zinc-400"></i>
                                 </div>
                                 <span id="step-5-sub" class="text-[11px] text-zinc-400 block font-sans">Garantia CDC & Retirada</span>
                             </div>
@@ -367,11 +367,9 @@
                     </div>
                 </div>
 
-
-
             </div>
 
-                        <!-- ================================================================= -->
+            <!-- ================================================================= -->
             <!-- 2. CONTAINER DINÂMICO: SOFTWARE & ENGENHARIA WEB (SPRINT 4)        -->
             <!-- ================================================================= -->
             <div id="sw-container" class="hidden space-y-8">
@@ -403,25 +401,25 @@
                     <div class="py-8 border-b-2 border-zinc-800">
                         <span class="text-zinc-500 font-mono text-xs font-bold uppercase tracking-widest block mb-4">Pipeline de Engenharia & Desenvolvimento</span>
                         <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono text-xs">
-                            <div id="sw-step-1" class="border-2 border-brand bg-brand/10 p-3 transition-colors">
+                            <div id="sw-step-1" class="border-2 border-brand bg-brand/10 p-3 transition-colors text-brand">
                                 <span class="text-[10px] text-zinc-400 block font-bold">01. ESCOPO</span>
-                                <strong class="text-brand text-xs block mt-0.5">Briefing & Arquitetura</strong>
+                                <strong class="text-inherit text-xs block mt-0.5">Briefing & Arquitetura</strong>
                             </div>
-                            <div id="sw-step-2" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                            <div id="sw-step-2" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors text-zinc-500">
                                 <span class="text-[10px] text-zinc-400 block font-bold">02. DESIGN</span>
-                                <strong class="text-zinc-300 text-xs block mt-0.5">UI/UX & Wireframes</strong>
+                                <strong class="text-inherit text-xs block mt-0.5">UI/UX & Wireframes</strong>
                             </div>
-                            <div id="sw-step-3" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                            <div id="sw-step-3" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors text-zinc-500">
                                 <span class="text-[10px] text-zinc-400 block font-bold">03. CÓDIGO</span>
-                                <strong class="text-zinc-300 text-xs block mt-0.5">Dev Frontend & Backend</strong>
+                                <strong class="text-inherit text-xs block mt-0.5">Dev Frontend & Backend</strong>
                             </div>
-                            <div id="sw-step-4" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                            <div id="sw-step-4" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors text-zinc-500">
                                 <span class="text-[10px] text-zinc-400 block font-bold">04. QA & TESTES</span>
-                                <strong class="text-zinc-300 text-xs block mt-0.5">Lighthouse >95 & Staging</strong>
+                                <strong class="text-inherit text-xs block mt-0.5">Lighthouse >95 & Staging</strong>
                             </div>
-                            <div id="sw-step-5" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors">
+                            <div id="sw-step-5" class="border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors text-zinc-500">
                                 <span class="text-[10px] text-zinc-400 block font-bold">05. HOMOLOGAÇÃO</span>
-                                <strong class="text-zinc-300 text-xs block mt-0.5">Aceite & Deploy Live</strong>
+                                <strong class="text-inherit text-xs block mt-0.5">Aceite & Deploy Live</strong>
                             </div>
                         </div>
                     </div>
@@ -495,13 +493,17 @@
                         </div>
                     </div>
 
-                    <!-- Ambiente de Staging & Botão de Homologação Formal -->
+                    <!-- Ambiente de Staging, Dúvidas e Botão de Homologação Formal -->
                     <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 font-mono">
                         <div>
                             <span class="text-xs text-zinc-400 block">Ambiente de Demonstração Ativo:</span>
                             <p class="text-sm text-white font-bold" id="sw-card-staging-url-text">preview.iflcosta.tech/...</p>
                         </div>
                         <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+                            <a id="sw-card-whatsapp-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20meu%20projeto%20de%20software." target="_blank" class="w-full sm:w-auto px-5 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-bold text-xs uppercase tracking-wider hover:border-brand text-center transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="message-square" class="w-4 h-4 text-brand"></i>
+                                Tirar Dúvida
+                            </a>
                             <a id="sw-card-staging-btn" href="#" target="_blank" class="w-full sm:w-auto px-6 py-3.5 bg-cyan-400 text-black font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)]">
                                 <i data-lucide="external-link" class="w-4 h-4"></i>
                                 Abrir Ambiente de Testes
@@ -608,8 +610,244 @@
         </div>
     </footer>
 
-    <!-- Lógica JavaScript de Interação com Supabase & Roteamento Dinâmico -->
+    <!-- BARRA FLUTUANTE DE APROVAÇÃO RÁPIDA NO CELULAR (THUMB ZONE) -->
+    <div id="mobile-sticky-bar" class="fixed bottom-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-t-2 border-brand p-3.5 sm:hidden hidden shadow-[0_-8px_20px_rgba(0,0,0,0.8)] safe-pb">
+        <div class="flex items-center justify-between gap-3">
+            <div>
+                <span class="text-[10px] font-mono text-zinc-400 block uppercase" id="sticky-label">Orçamento</span>
+                <strong class="text-base font-mono font-black text-brand" id="sticky-amount">R$ 0,00</strong>
+            </div>
+            <button id="sticky-approve-btn" onclick="document.getElementById('btn-approve-budget')?.click()" class="flex-1 px-4 py-3 bg-brand text-black font-mono font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.3)] animate-pulse min-h-[44px]">
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                <span>Aprovar Orçamento</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- MODAL DE PAGAMENTO ASAAS (PIX DINÂMICO & CARTÃO ATÉ 12X)      -->
+    <!-- ============================================================= -->
+    <div id="asaas-payment-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="bg-black border-2 border-brand w-full max-w-lg shadow-[8px_8px_0px_0px_rgba(204,255,0,0.5)] my-8 overflow-y-auto font-sans max-h-[90vh]">
+            
+            <!-- Header do Modal -->
+            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-6 bg-brand"></div>
+                    <div>
+                        <span class="text-[10px] font-mono font-bold text-brand uppercase tracking-widest block">CHECKOUT SEGURO // ASAAS</span>
+                        <h3 class="text-lg font-black text-white uppercase tracking-tight" id="pay-modal-title">Pagamento do Sinal das Peças</h3>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAsaasPaymentModal()" class="text-zinc-500 hover:text-white p-1 text-xl font-mono transition-colors">✕</button>
+            </div>
+
+            <!-- Conteúdo do Modal -->
+            <div class="p-6 space-y-6">
+
+                <!-- Card de Resumo do Valor -->
+                <div class="bg-zinc-900/90 border border-zinc-700 p-4 flex justify-between items-center font-mono">
+                    <div>
+                        <span class="text-zinc-400 text-xs block" id="pay-modal-desc-label">Sinal Obrigatório (100% das Peças):</span>
+                        <span class="text-xs text-zinc-500" id="pay-modal-os-ref">OS #1050 • Equipamento</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-2xl font-black text-brand" id="pay-modal-amount">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <!-- Seletor de Abas de Pagamento (Pix vs Cartão) -->
+                <div class="grid grid-cols-2 gap-2 font-mono text-xs font-bold">
+                    <button type="button" id="pay-tab-btn-pix" onclick="switchPayMethod('pix')" class="py-2.5 px-3 bg-brand text-black border-2 border-brand flex items-center justify-center gap-2 transition-colors uppercase">
+                        <i data-lucide="zap" class="w-4 h-4"></i> Pix Instantâneo
+                    </button>
+                    <button type="button" id="pay-tab-btn-card" onclick="switchPayMethod('card')" class="py-2.5 px-3 bg-zinc-900 text-zinc-400 border-2 border-zinc-800 hover:border-zinc-600 flex items-center justify-center gap-2 transition-colors uppercase">
+                        <i data-lucide="credit-card" class="w-4 h-4"></i> Cartão até 12x
+                    </button>
+                </div>
+
+                <!-- ABA 1: PIX DINÂMICO AUTOMÁTICO -->
+                <div id="pay-method-pix" class="space-y-4">
+                    <div class="text-center bg-zinc-950 border border-zinc-800 p-5 rounded-none">
+                        <p class="text-xs text-zinc-400 font-mono mb-3">Aponte a câmera do seu banco para o QR Code abaixo:</p>
+                        
+                        <!-- Canvas do QR Code Pix -->
+                        <div class="inline-block p-3 bg-white border-2 border-zinc-300 shadow-inner">
+                            <canvas id="asaas-pix-canvas" class="w-44 h-44 sm:w-48 sm:h-48 block"></canvas>
+                        </div>
+
+                        <!-- Timer de Expiração -->
+                        <div class="flex items-center justify-center gap-1.5 mt-3 text-zinc-400 font-mono text-[11px]">
+                            <i data-lucide="clock" class="w-3.5 h-3.5 text-yellow-400"></i>
+                            <span>Expira em: <strong class="text-yellow-400" id="pix-countdown-timer">29:59</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Código Copia e Cola -->
+                    <div>
+                        <label class="block text-zinc-400 font-mono text-xs font-bold uppercase mb-1.5 flex items-center justify-between">
+                            <span>Código Pix Copia e Cola:</span>
+                            <span class="text-[10px] text-zinc-500 font-normal">Chave Dinâmica Segura</span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="text" id="asaas-pix-copypaste-input" readonly value="Carregando chave Pix..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-zinc-300 font-mono text-xs focus:outline-none select-all truncate">
+                            <button type="button" onclick="copyAsaasPixCode()" id="btn-copy-pix" class="px-4 py-2 bg-brand text-black font-mono font-bold text-xs uppercase hover:bg-white transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Teste / Sandbox (Simular Confirmação Instantânea) -->
+                    <div class="pt-2 border-t border-zinc-800 flex items-center justify-between">
+                        <span class="text-[11px] font-mono text-zinc-500 flex items-center gap-1">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i> Conciliação automática 24/7
+                        </span>
+                        <button type="button" onclick="simulateAsaasPaymentSuccess()" class="px-2.5 py-1 bg-zinc-900 border border-brand/50 text-brand text-[10px] font-mono hover:bg-brand hover:text-black transition-colors uppercase font-bold">
+                            🧪 Simular Pagamento Pix (Teste)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ABA 2: CARTÃO DE CRÉDITO ATÉ 12X -->
+                <div id="pay-method-card" class="space-y-4 hidden font-mono text-xs">
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Número do Cartão:</label>
+                        <div class="relative">
+                            <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white focus:outline-none focus:border-brand">
+                            <i data-lucide="credit-card" class="w-4 h-4 absolute right-3 top-3 text-zinc-500"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Nome Impresso no Cartão:</label>
+                        <input type="text" id="card-holder" placeholder="NOME COMO ESTA NO CARTAO" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white uppercase focus:outline-none focus:border-brand">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-zinc-400 uppercase font-bold mb-1">Validade (MM/AA):</label>
+                            <input type="text" id="card-expiry" placeholder="12/28" maxlength="5" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white focus:outline-none focus:border-brand">
+                        </div>
+                        <div>
+                            <label class="block text-zinc-400 uppercase font-bold mb-1">CVV (Cód. Segurança):</label>
+                            <input type="password" id="card-cvv" placeholder="123" maxlength="4" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white focus:outline-none focus:border-brand">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Opções de Parcelamento:</label>
+                        <select id="card-installments-select" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-brand font-bold focus:outline-none focus:border-brand">
+                            <!-- Injetado dinamicamente com base no valor -->
+                        </select>
+                    </div>
+
+                    <button type="button" onclick="processAsaasCardPayment()" id="btn-submit-card" class="w-full py-3.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] mt-2">
+                        <i data-lucide="lock" class="w-4 h-4"></i> Pagar com Cartão com Segurança
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: ACEITE & HOMOLOGAÇÃO DIGITAL DE SOFTWARE (SPRINT 4)                -->
+    <!-- ========================================================================= -->
+    <div id="homologation-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 font-mono">
+        <div class="bg-zinc-950 border-2 border-brand w-full max-w-lg shadow-[0_0_40px_rgba(204,255,0,0.3)] p-6 space-y-4 text-xs max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-brand"></span>
+                    <h3 class="font-black text-sm text-white uppercase tracking-wider">Termo de Homologação & Aceite</h3>
+                </div>
+                <button type="button" onclick="closeHomologationModal()" class="text-zinc-500 hover:text-white font-bold text-base px-2">✕</button>
+            </div>
+
+            <p class="text-zinc-300 leading-relaxed">
+                Ao clicar em confirmar, você declara ter testado e validado o sistema/site no ambiente de Staging, aprovando o escopo contratado e liberando o deploy definitivo em produção.
+            </p>
+
+            <div class="space-y-3 bg-zinc-900/60 p-4 border border-zinc-800">
+                <div>
+                    <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Nome Completo do Responsável *</label>
+                    <input type="text" id="homologate-signer-name" placeholder="Ex: Roberto Silva" required class="w-full bg-black border border-zinc-700 p-2 text-white focus:outline-none focus:border-brand">
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">CPF ou CNPJ *</label>
+                    <input type="text" id="homologate-signer-doc" placeholder="Ex: 000.000.000-00" required class="w-full bg-black border border-zinc-700 p-2 text-white focus:outline-none focus:border-brand">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="closeHomologationModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:bg-zinc-800 transition-colors">Voltar</button>
+                <button type="button" onclick="confirmSoftwareHomologation()" class="px-6 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                    ✓ Homologar & Concluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: ABERTURA DE CHAMADO MSP B2B DO CLIENTE                             -->
+    <!-- ========================================================================= -->
+    <div id="portal-new-ticket-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-black border-2 border-yellow-400 w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(250,204,21,0.3)] max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
+                <div>
+                    <span class="text-yellow-400 text-[10px] font-bold uppercase block">// SERVICE DESK B2B • SLA 2H</span>
+                    <h3 class="text-base font-black text-white uppercase">Abrir Novo Chamado de Suporte</h3>
+                </div>
+                <button type="button" onclick="closePortalNewTicketModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
+            </div>
+            <form onsubmit="handlePortalSaveTicket(event)" class="space-y-4">
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Estação / Ativo (Opcional):</label>
+                    <input type="text" id="portal-ticket-device" placeholder="Ex: WS-FIN-01 ou Servidor Principal" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Severidade / Urgência:</label>
+                    <select id="portal-ticket-severity" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
+                        <option value="P3_Media">🟡 P3 - Média (Problema em 1 estação, trabalho continua - SLA 2h)</option>
+                        <option value="P1_Critica">🔴 P1 - Crítica (Servidor parado, empresa sem faturar - SLA 30m)</option>
+                        <option value="P2_Alta">🟠 P2 - Alta (Setor financeiro/vendas impactado - SLA 1h)</option>
+                        <option value="P4_Baixa">🟢 P4 - Baixa (Dúvida, instalação de software, melhoria)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Assunto / Resumo do Incidente *</label>
+                    <input type="text" id="portal-ticket-subject" required placeholder="Ex: Erro ao emitir NF-e ou Computador não liga" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
+                </div>
+                <div>
+                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Descrição Detalhada do Problema *</label>
+                    <textarea id="portal-ticket-desc" rows="3" required placeholder="Descreva o que está acontecendo e se apareceu alguma mensagem de erro..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400"></textarea>
+                </div>
+                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
+                    <button type="button" onclick="closePortalNewTicketModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-yellow-400 text-black font-black uppercase hover:bg-white transition-colors">🚀 Abrir Chamado Agora</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- LÓGICA JAVASCRIPT DE TELEMETRIA, CONTRASTE, CHECKOUT & REALTIME            -->
+    <!-- ========================================================================= -->
     <script>
+        // Variáveis de Estado Global e Rate Limiting
+        let activeTrackingQuery = '';
+        let activeTrackingPhone = '';
+        let searchAttempts = 0;
+        let lastSearchAttemptTime = 0;
+        let searchCooldownUntil = 0;
+        let portalRealtimeChannel = null;
+
+        let currentWorkOrder = null;
+        let currentWorkOrderData = null;
+        let currentPayingWO = null;
+        let pixCountdownInterval = null;
+        let activePayMethod = 'pix';
+        let currentLoadedSoftwareProject = null;
+
         // Configuração do Supabase Client
         const SUPABASE_URL = "https://togrnwxazuweuihlaljo.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZ3Jud3hhenV3ZXVpaGxhbGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNDYxMTMsImV4cCI6MjA5NDgyMjExM30.EH7EslfRQRoCbdbKxK0A07DZQ0Ich05KoRD1hddJA34";
@@ -628,8 +866,7 @@
             return supabaseClient;
         }
 
-        // Sanitizador XSS Rigoroso
-        
+        // Formatador Oficial de Número de OS (Padrão MMYYNNN)
         function formatOSNumber(num) {
             if (!num) {
                 const now = new Date();
@@ -649,6 +886,7 @@
             return s.padStart(7, '0');
         }
 
+        // Sanitizador XSS Rigoroso
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)
@@ -701,7 +939,7 @@
             `;
         }
 
-        // Elementos DOM
+        // Elementos DOM Principais
         const searchForm = document.getElementById("search-form");
         const searchInput = document.getElementById("search-input");
         const loadingState = document.getElementById("loading-state");
@@ -711,15 +949,58 @@
         const mspContainer = document.getElementById("msp-container");
 
         function hideAllContainers() {
-            loadingState.classList.add("hidden");
-            notFoundState.classList.add("hidden");
-            hwContainer.classList.add("hidden");
-            swContainer.classList.add("hidden");
-            mspContainer.classList.add("hidden");
+            if (loadingState) loadingState.classList.add("hidden");
+            if (notFoundState) notFoundState.classList.add("hidden");
+            if (hwContainer) hwContainer.classList.add("hidden");
+            if (swContainer) swContainer.classList.add("hidden");
+            if (mspContainer) mspContainer.classList.add("hidden");
+            const stickyBar = document.getElementById('mobile-sticky-bar');
+            if (stickyBar) stickyBar.classList.add('hidden');
         }
 
-        // Renderiza dados reais da OS no DOM com Sanitização XSS e Tratamento de Etapas
-        
+        // Gestor de Alto Contraste para o Stepper de 5 Etapas
+        function setStepVisual(stepNum, state, subText) {
+            const el = document.getElementById(`step-${stepNum}`);
+            const titleEl = document.getElementById(`step-${stepNum}-title`);
+            const subEl = document.getElementById(`step-${stepNum}-sub`);
+            const iconEl = document.getElementById(`step-${stepNum}-icon`);
+            if (!el) return;
+
+            if (subText && subEl) subEl.textContent = subText;
+
+            if (state === 'active-brand') {
+                el.className = "border-2 border-brand bg-brand text-black p-3 font-bold shadow-[0_0_15px_rgba(204,255,0,0.35)]";
+                if (titleEl) titleEl.className = "text-black font-black";
+                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-black";
+            } else if (state === 'active-yellow') {
+                el.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.35)]";
+                if (titleEl) titleEl.className = "text-black font-black";
+                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-black";
+            } else if (state === 'active-cyan') {
+                el.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(6,182,212,0.35)]";
+                if (titleEl) titleEl.className = "text-black font-black";
+                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-black";
+            } else if (state === 'completed') {
+                el.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold";
+                if (titleEl) titleEl.className = "text-brand font-black";
+                if (subEl) subEl.className = "text-[11px] text-zinc-300 block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-brand";
+            } else if (state === 'completed-full') {
+                el.className = "border-2 border-brand bg-brand/15 p-3 text-brand font-bold";
+                if (titleEl) titleEl.className = "text-brand font-black";
+                if (subEl) subEl.className = "text-[11px] text-zinc-300 block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-brand";
+            } else { // pending
+                el.className = "border-2 border-zinc-800 bg-zinc-900/70 p-3 text-zinc-300 transition-all";
+                if (titleEl) titleEl.className = "text-zinc-300 font-bold";
+                if (subEl) subEl.className = "text-[11px] text-zinc-400 block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-zinc-500";
+            }
+        }
+
         // Controle da Barra Flutuante Mobile (Thumb Zone)
         function updateMobileStickyBar(wo, isOrcamento, isApproved, grandTotal, hasParts) {
             const stickyBar = document.getElementById('mobile-sticky-bar');
@@ -736,9 +1017,7 @@
             }
         }
 
-        let currentWorkOrder = null;
-        let currentWorkOrderData = null;
-
+        // Renderiza dados reais da OS no DOM com Sanitização XSS e Tratamento de Etapas
         function renderWorkOrderData(wo) {
             if (!wo) return;
             currentWorkOrder = wo;
@@ -752,10 +1031,12 @@
                 ? "Atendimento Especializado com Leva-e-Traz" 
                 : "Atendimento Presencial na Bancada";
 
-            document.getElementById("hw-os-number").textContent = "#" + formatOSNumber(osNum);
-            document.getElementById("hw-device-title").textContent = `${escapeHtml(brand)} // ${escapeHtml(model)}`;
+            const osEl = document.getElementById("hw-os-number");
+            if (osEl) osEl.textContent = "#" + formatOSNumber(osNum);
             
-            // Atualização Dinâmica do Nome do Cliente
+            const titleEl = document.getElementById("hw-device-title");
+            if (titleEl) titleEl.textContent = `${escapeHtml(brand)} // ${escapeHtml(model)}`;
+            
             const clientNameEl = document.getElementById("hw-client-name");
             if (clientNameEl) {
                 clientNameEl.innerHTML = `Cliente: <strong class="text-zinc-200">${escapeHtml(clientName)}</strong> • ${deliveryText}`;
@@ -765,34 +1046,13 @@
             const dateStr = wo.entry_at || wo.created_at || new Date().toISOString();
             const dateObj = new Date(dateStr);
             const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            document.getElementById("hw-date").textContent = "Entrada: " + formattedDate;
+            const dateEl = document.getElementById("hw-date");
+            if (dateEl) dateEl.textContent = "Entrada: " + formattedDate;
 
             // Normalização de Status e Linha do Tempo (5 Etapas)
             const rawStatus = (wo.status || "Triagem").toLowerCase().replace(/\s+/g, '_');
             const statusBadgeText = document.getElementById("hw-status-text");
             const statusBadge = document.getElementById("hw-status-badge");
-
-            const step1 = document.getElementById("step-1");
-            const step2 = document.getElementById("step-2");
-            const step3 = document.getElementById("step-3");
-            const step4 = document.getElementById("step-4");
-            const step5 = document.getElementById("step-5");
-
-            const step1Sub = document.getElementById("step-1-sub");
-            const step2Sub = document.getElementById("step-2-sub");
-            const step3Sub = document.getElementById("step-3-sub");
-            const step4Sub = document.getElementById("step-4-sub");
-            const step5Sub = document.getElementById("step-5-sub");
-
-            // Reset padronizado de alto contraste (WCAG AA)
-            [step1, step2, step3, step4, step5].forEach(s => {
-                if (s) s.className = "border-2 border-zinc-800 bg-zinc-900/70 p-3 text-zinc-300 transition-all";
-            });
-            if (step1Sub) { step1Sub.textContent = "Checklist & Fotos"; step1Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
-            if (step2Sub) { step2Sub.textContent = "Aguardando Laudo"; step2Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
-            if (step3Sub) { step3Sub.textContent = "Reparo / Execução"; step3Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
-            if (step4Sub) { step4Sub.textContent = "Telemetria 15 Min"; step4Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
-            if (step5Sub) { step5Sub.textContent = "Garantia CDC & Retirada"; step5Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
 
             const itemsList = wo.items || wo.work_order_items || [];
             let computedPartsSum = 0;
@@ -807,6 +1067,7 @@
                 }
             });
             const totalParts = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : computedPartsSum;
+            const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (computedPartsSum + computedLaborSum);
             const hasParts = totalParts > 0;
             const isApproved = rawStatus.includes("aprovad") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || (hasParts && (rawStatus.includes("encomendada") || wo.parts_deposit_paid));
 
@@ -820,81 +1081,86 @@
             if (isTriagem) {
                 if (statusBadgeText) statusBadgeText.textContent = "01. EM TRIAGEM & DIAGNÓSTICO";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                if (step1) step1.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(204,255,0,0.25)]";
-                if (step1Sub) { step1Sub.textContent = "Diagnóstico Inicial"; step1Sub.className = "text-[11px] text-zinc-950 font-bold block font-sans"; }
-                if (step2Sub) { step2Sub.textContent = "Aguardando Laudo"; step2Sub.className = "text-[11px] text-zinc-400 block font-sans"; }
+                setStepVisual(1, 'active-brand', 'Diagnóstico Inicial');
+                setStepVisual(2, 'pending', 'Aguardando Laudo');
+                setStepVisual(3, 'pending', 'Reparo / Execução');
+                setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
             } else if (isOrcamento) {
                 if (!hasParts) {
                     if (isApproved) {
                         if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO APROVADO • NA FILA DE BANCADA";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
-                        if (step2) step2.className = "border-2 border-brand bg-brand text-black p-3 font-bold";
-                        if (step2Sub) step2Sub.textContent = "Aprovado (Na Fila)";
+                        setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                        setStepVisual(2, 'active-brand', 'Aprovado (Na Fila)');
+                        setStepVisual(3, 'pending', 'Reparo / Execução');
+                        setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                        setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
                     } else {
                         if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO DISPONÍVEL PARA APROVAÇÃO";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
-                        if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
-                        if (step2Sub) step2Sub.textContent = "Aguardando Aprovação";
+                        setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                        setStepVisual(2, 'active-yellow', 'Aguardando Aprovação');
+                        setStepVisual(3, 'pending', 'Reparo / Execução');
+                        setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                        setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
                     }
                 } else {
                     const isSinalPago = rawStatus.includes("encomendada") || wo.parts_deposit_paid;
                     if (isSinalPago) {
                         if (statusBadgeText) statusBadgeText.textContent = "02. SINAL PAGO • PEÇA EM TRÂNSITO";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
-                        if (step2) step2.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold";
-                        if (step2Sub) step2Sub.textContent = "Peça em Trânsito";
+                        setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                        setStepVisual(2, 'active-cyan', 'Peça em Trânsito');
+                        setStepVisual(3, 'pending', 'Reparo / Execução');
+                        setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                        setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
                     } else {
                         if (statusBadgeText) statusBadgeText.textContent = "02. AGUARDANDO SINAL DE PEÇAS";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-400/10 border-2 border-yellow-400 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                        if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
-                        if (step2) step2.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse";
-                        if (step2Sub) step2Sub.textContent = "Aguardando Sinal Pix";
+                        setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                        setStepVisual(2, 'active-yellow', 'Aguardando Sinal Pix');
+                        setStepVisual(3, 'pending', 'Reparo / Execução');
+                        setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                        setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
                     }
                 }
             } else if (isBancada) {
                 if (statusBadgeText) statusBadgeText.textContent = "03. EM EXECUÇÃO NA BANCADA";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
-                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                if (step3) step3.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold animate-pulse";
-                if (step2Sub) step2Sub.textContent = "Orçamento Aprovado ✓";
-                if (step3Sub) step3Sub.textContent = "Em Execução";
+                setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
+                setStepVisual(3, 'active-cyan', 'Em Execução');
+                setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
             } else if (isQA) {
                 if (statusBadgeText) statusBadgeText.textContent = "04. EM TESTES DE ESTRESSE QA";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/15 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                if (step1) { step1.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold"; if (step1Sub) step1Sub.className = "text-[11px] text-zinc-300 block font-sans"; }
-                if (step2) step2.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                if (step3) step3.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                if (step4) step4.className = "border-2 border-brand bg-brand text-black p-3 font-bold animate-pulse";
-                if (step2Sub) step2Sub.textContent = "Orçamento Aprovado ✓";
-                if (step3Sub) step3Sub.textContent = "Execução Concluída ✓";
-                if (step4Sub) step4Sub.textContent = "Rodando Testes";
+                setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
+                setStepVisual(3, 'completed', 'Execução Concluída ✓');
+                setStepVisual(4, 'active-brand', 'Rodando Testes');
+                setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
             } else if (isEntregue) {
                 if (statusBadgeText) statusBadgeText.textContent = "✓ 05. ENTREGUE • GARANTIA ATIVA CDC 90D";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand text-black border-2 border-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_0_15px_rgba(204,255,0,0.3)]";
-                [step1, step2, step3, step4, step5].forEach(s => {
-                    if (s) s.className = "border-2 border-brand bg-brand/15 p-3 text-brand font-bold";
-                });
-                if (step5) step5.className = "border-2 border-brand bg-brand text-black p-3 font-black";
-                if (step2Sub) step2Sub.textContent = "Orçamento Aprovado ✓";
-                if (step3Sub) step3Sub.textContent = "Execução Concluída ✓";
-                if (step4Sub) step4Sub.textContent = "QA Aprovado ✓";
-                if (step5Sub) step5Sub.textContent = "Garantia CDC Ativa";
+                setStepVisual(1, 'completed-full', 'Checklist & Fotos ✓');
+                setStepVisual(2, 'completed-full', 'Orçamento Aprovado ✓');
+                setStepVisual(3, 'completed-full', 'Execução Concluída ✓');
+                setStepVisual(4, 'completed-full', 'QA Aprovado ✓');
+                setStepVisual(5, 'active-brand', 'Garantia CDC Ativa');
             } else if (isPronto) {
                 if (statusBadgeText) statusBadgeText.textContent = "05. PRONTO PARA RETIRADA";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand text-black border-2 border-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 animate-pulse";
-                [step1, step2, step3, step4].forEach(s => {
-                    if (s) s.className = "border-2 border-brand bg-brand/10 p-3 text-brand font-bold";
-                });
-                if (step5) step5.className = "border-2 border-brand bg-brand text-black p-3 font-bold";
-                if (step2Sub) step2Sub.textContent = "Orçamento Aprovado ✓";
-                if (step3Sub) step3Sub.textContent = "Execução Concluída ✓";
-                if (step4Sub) step4Sub.textContent = "QA Aprovado ✓";
-                if (step5Sub) step5Sub.textContent = "Pronto p/ Retirada";
+                setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
+                setStepVisual(3, 'completed', 'Execução Concluída ✓');
+                setStepVisual(4, 'completed', 'QA Aprovado ✓');
+                setStepVisual(5, 'active-brand', 'Pronto p/ Retirada');
             }
+
+            // Atualiza barra mobile flutuante
+            updateMobileStickyBar(wo, isOrcamento, isApproved, hasParts ? totalParts : grandTotal, hasParts);
 
             // Telemetria Condicional (Elimina laudo térmico em Triagem/Máquina inoperante)
             const cpuEl = document.getElementById("hw-cpu-temp");
@@ -907,7 +1173,7 @@
             const ssdSub = document.getElementById("hw-ssd-sub");
             const bootSub = document.getElementById("hw-boot-sub");
 
-            if (isQA || isPronto) {
+            if (isQA || isPronto || isEntregue) {
                 if (cpuEl) cpuEl.textContent = wo.stress_test_aida64_temp_max ? `${wo.stress_test_aida64_temp_max} °C` : "61.2 °C";
                 if (gpuEl) gpuEl.textContent = wo.stress_test_furmark_temp_max ? `${wo.stress_test_furmark_temp_max} °C` : "64.0 °C";
                 if (ssdEl) ssdEl.textContent = wo.stress_test_crystaldisk_health || "100% OK";
@@ -971,7 +1237,7 @@
                                 <div class="text-xs font-mono text-zinc-400">
                                     <span class="text-white font-bold">Investimento Inicial: R$ 0,00</span> • O orçamento formal será publicado neste link para sua aprovação prévia.
                                 </div>
-                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20OS%20${osNum}." target="_blank" class="px-5 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" class="px-5 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
                                     <i data-lucide="message-square" class="w-3.5 h-3.5 text-brand"></i>
                                     Falar com o Técnico
                                 </a>
@@ -999,7 +1265,7 @@
                             </div>
                         `;
                         actionButtonHtml = `
-                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20deixar%20meu%20feedback%20sobre%20a%20OS%20${formatOSNumber(osNum)}." target="_blank" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20deixar%20meu%20feedback%20sobre%20a%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
                                 <i data-lucide="star" class="w-4 h-4"></i> Avaliar no Google / Suporte
                             </a>
                         `;
@@ -1017,7 +1283,7 @@
                             </div>
                         `;
                         actionButtonHtml = `
-                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vi%20que%20minha%20OS%20${formatOSNumber(osNum)}%20est%C3%A1%20pronta%20para%20retirada." target="_blank" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vi%20que%20minha%20OS%20${encodeURIComponent(formatOSNumber(osNum))}%20est%C3%A1%20pronta%20para%20retirada." target="_blank" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
                                 <i data-lucide="package-check" class="w-4 h-4"></i> Combinar Retirada / Entrega
                             </a>
                         `;
@@ -1087,7 +1353,7 @@
                                 </div>
                             `;
                             actionButtonHtml = `
-                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token)}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
+                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token || wo.id || String(osNum))}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
                                     <i data-lucide="check-circle" class="w-4 h-4"></i> Aprovar Orçamento & Solicitar Peças
                                 </button>
                             `;
@@ -1108,8 +1374,8 @@
                                 </div>
                             `;
                             actionButtonHtml = `
-                                <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center justify-center gap-2">
-                                    <i data-lucide="clock" class="w-4 h-4"></i> Aprovado (Na Fila de Bancada)
+                                <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center gap-2">
+                                    <i data-lucide="check-check" class="w-4 h-4"></i> Aprovado (Na Fila de Bancada)
                                 </div>
                             `;
                         } else {
@@ -1123,7 +1389,7 @@
                                 </div>
                             `;
                             actionButtonHtml = `
-                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token)}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
+                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token || wo.id || String(osNum))}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
                                     <i data-lucide="check-circle" class="w-4 h-4"></i> Aprovar Orçamento & Autorizar Início
                                 </button>
                             `;
@@ -1177,19 +1443,14 @@
                             </div>
 
                             <div id="hw-action-buttons" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                                ${!isApproved ? `
-                                    <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token)}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
-                                        <i data-lucide="check-circle" class="w-4 h-4"></i>
-                                        ${hasParts ? 'Aprovar Orçamento & Solicitar Peças' : 'Aprovar Orçamento & Autorizar Início'}
-                                    </button>
-                                ` : `
-                                    <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center gap-2">
-                                        <i data-lucide="check-check" class="w-4 h-4"></i> Orçamento Aprovado
-                                    </div>
-                                `}
-                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%20${osNum}." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
+                                ${actionButtonHtml}
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
                                     Tirar Dúvida
                                 </a>
+                                <button onclick="downloadWarrantyPDF()" class="px-6 py-3.5 bg-zinc-800 hover:bg-white hover:text-black border-2 border-zinc-600 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-2">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                    Garantia CDC
+                                </button>
                             </div>
                         </div>
                     `;
@@ -1202,10 +1463,12 @@
 
                         itemsList.forEach(item => {
                             const price = parseFloat(item.unit_price) || 0;
+                            const qty = parseInt(item.quantity) || 1;
+                            const itemTotal = price * qty;
                             if (item.item_type === 'Labor') {
-                                laborSum += price;
+                                laborSum += itemTotal;
                             } else {
-                                partsSum += price;
+                                partsSum += itemTotal;
                             }
 
                             const tr = document.createElement("tr");
@@ -1214,30 +1477,28 @@
                                 tr.innerHTML = `
                                     <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
                                     <td class="py-3 px-3 text-zinc-300">${escapeHtml(item.description)}</td>
-                                    <td class="py-3 px-3 text-right font-bold text-brand">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                                    <td class="py-3 px-3 text-right font-bold text-brand">R$ ${itemTotal.toFixed(2).replace('.', ',')}</td>
                                 `;
                             } else {
                                 tr.innerHTML = `
                                     <td class="py-3 px-3 font-bold text-white">${escapeHtml(item.item_type || 'Componente')}</td>
                                     <td class="py-3 px-3 text-zinc-200">${escapeHtml(item.description)}</td>
-                                    <td class="py-3 px-3 text-right font-bold text-white">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                                    <td class="py-3 px-3 text-right font-bold text-white">R$ ${itemTotal.toFixed(2).replace('.', ',')}</td>
                                 `;
                             }
                             tbody.appendChild(tr);
                         });
 
-
-
-                        const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum);
                         const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
                         const laborDisplay = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
+                        const grandTotalDisplay = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsDisplay + laborDisplay);
 
                         const pEl = document.getElementById("hw-parts-total");
                         const lEl = document.getElementById("hw-labor-total");
                         const gEl = document.getElementById("hw-grand-total");
                         if (pEl) pEl.textContent = "R$ " + partsDisplay.toFixed(2).replace('.', ',');
                         if (lEl) lEl.textContent = "R$ " + laborDisplay.toFixed(2).replace('.', ',');
-                        if (gEl) gEl.textContent = "R$ " + grandTotal.toFixed(2).replace('.', ',');
+                        if (gEl) gEl.textContent = "R$ " + grandTotalDisplay.toFixed(2).replace('.', ',');
                     }
                 }
             }
@@ -1328,64 +1589,116 @@
         const defaultMockLookup = {
             "1053": {
                 os_number: 1053,
+                public_tracking_token: "tok-1053-dell-inspiron",
                 device_brand: "Notebook Dell",
                 device_model: "Inspiron 15 3520",
                 client_first_name: "Carlos",
+                client_name: "Carlos Eduardo Santos",
+                client_whatsapp: "(11) 99542-1053",
                 is_pickup_delivery: false,
                 status: "Triagem",
-                reported_defect: "Equipamento não liga, não acende LEDs e não dá vídeo ao pressionar botão power. Cliente necessita com urgência para trabalho.",
+                reported_defect: "Equipamento não liga, não acende LEDs e não dá vídeo ao pressionar botão power. [Checklist: Sem riscos na tela, Carregador original entregue, Parafusos originais intactos] [Acessórios: Fonte Carregador Dell 65W] [Avarias: Pequena marca de uso na carcaça superior]",
+                technical_diagnosis: "Equipamento acolhido na bancada técnica. Realizando inspeção de circuito primário de alimentação e trilhas de 3.3V/5V.",
                 entry_at: new Date().toISOString(),
+                total_parts: 0,
+                total_labor: 0,
+                total_order: 0,
                 items: []
             },
             "1050": {
                 os_number: 1050,
+                public_tracking_token: "tok-1050-dell-inspiron",
                 device_brand: "Notebook Dell",
                 device_model: "Inspiron 15",
                 client_first_name: "Carlos",
+                client_name: "Carlos Silva",
+                client_whatsapp: "(11) 99542-1050",
                 is_pickup_delivery: false,
-                status: "Triagem",
-                reported_defect: "Não dá vídeo e bipa 3 vezes ao ligar. Cliente precisa urgente para trabalho.",
+                status: "Orcamento_Aguardando_Aprovacao",
+                reported_defect: "Não dá vídeo e bipa 3 vezes ao ligar. [Checklist: Display intacto, Teclado OK] [Acessórios: Fonte Original]",
+                technical_diagnosis: "Curto-circuito identificado no VRM de alimentação da memória RAM e necessidade de troca de capacitor cerâmico SMD.",
                 entry_at: new Date().toISOString(),
-                items: []
+                total_parts: 180.00,
+                total_labor: 220.00,
+                total_order: 400.00,
+                parts_deposit_paid: false,
+                items: [
+                    { item_type: "Part", description: "Módulo de Memória RAM DDR4 16GB 3200MHz", unit_price: 180.00, quantity: 1 },
+                    { item_type: "Labor", description: "Reparo de Trilha de Placa e Troca de SMD", unit_price: 220.00, quantity: 1 }
+                ]
             },
             "1049": {
                 os_number: 1049,
+                public_tracking_token: "tok-1049-desktop-office",
                 device_brand: "Desktop",
                 device_model: "Upgrade PC Escritório",
                 client_first_name: "Mariana",
+                client_name: "Mariana Costa",
+                client_whatsapp: "(11) 99542-1049",
                 is_pickup_delivery: true,
                 status: "Orcamento_Aguardando_Aprovacao",
-                reported_defect: "Lentidão generalizada. Upgrade de SSD e RAM solicitado.",
+                reported_defect: "Lentidão generalizada. Upgrade de SSD e RAM solicitado. [Checklist: Gabinete sem avarias] [Acessórios: Cabo de Força]",
+                technical_diagnosis: "Disco rígido mecânico com 100% de uso contínuo (Gargalo de I/O). Recomendada substituição imediata por NVMe Gen4.",
                 entry_at: new Date(Date.now() - 86400000).toISOString(),
                 total_parts: 420.00,
                 total_labor: 140.00,
                 total_order: 560.00,
+                parts_deposit_paid: false,
                 items: [
-                    { item_type: "Part", description: "SSD NVMe Kingston 1TB", unit_price: 320.00, quantity: 1 },
+                    { item_type: "Part", description: "SSD NVMe Kingston 1TB Gen4", unit_price: 320.00, quantity: 1 },
                     { item_type: "Part", description: "Memória RAM Kingston Fury 16GB DDR4", unit_price: 100.00, quantity: 1 },
-                    { item_type: "Labor", description: "Mão de Obra de Instalação e Otimização", unit_price: 140.00, quantity: 1 }
+                    { item_type: "Labor", description: "Mão de Obra de Instalação, Clonagem e Otimização Win 11", unit_price: 140.00, quantity: 1 }
                 ]
             },
             "1048": {
                 os_number: 1048,
+                public_tracking_token: "tok-1048-pc-gamer-custom",
                 device_brand: "Custom Build IF Tech",
                 device_model: "PC Gamer Ryzen 5 7600 + RTX 4060",
                 client_first_name: "Lucas M.",
+                client_name: "Lucas Martins",
+                client_whatsapp: "(11) 99542-1048",
                 is_pickup_delivery: true,
                 status: "Na_Bancada",
-                reported_defect: "Montagem de Setup Gamer de Alta Performance",
+                reported_defect: "Montagem de Setup Gamer de Alta Performance [Checklist: Todas as caixas lacradas]",
+                technical_diagnosis: "Montagem de componentes homologados com aplicação de pasta térmica Kryonaut e cable management militar.",
                 entry_at: new Date(Date.now() - 172800000).toISOString(),
-                total_parts: 3580.00,
+                total_parts: 7070.00,
                 total_labor: 285.00,
-                total_order: 3865.00,
+                total_order: 7355.00,
+                parts_deposit_paid: true,
                 stress_test_aida64_temp_max: 62.5,
                 stress_test_furmark_temp_max: 67.0,
+                stress_test_crystaldisk_health: "100% OK",
                 stress_test_boot_time_seconds: 9.4,
                 items: [
-                    { item_type: "Part", description: "Processador AMD Ryzen 5 7600 (AM5)", unit_price: 1390.00, quantity: 1 },
-                    { item_type: "Part", description: "Placa de Vídeo Gigabyte RTX 4060 8GB", unit_price: 2190.00, quantity: 1 },
-                    { item_type: "Labor", description: "Mão de Obra de Montagem de Alta Precisão", unit_price: 285.00, quantity: 1 }
+                    { item_type: "Part", description: "AMD Ryzen 5 7600 (6C/12T, 5.1GHz Turbo, AM5)", unit_price: 1390.00, quantity: 1 },
+                    { item_type: "Part", description: "ASUS TUF Gaming B650M-Plus Wi-Fi DDR5", unit_price: 1250.00, quantity: 1 },
+                    { item_type: "Part", description: "Corsair Vengeance 32GB (2x16GB) DDR5 6000MHz CL30", unit_price: 890.00, quantity: 1 },
+                    { item_type: "Part", description: "SSD Kingston Fury Renegade 1TB NVMe Gen4 (7.300 MB/s)", unit_price: 590.00, quantity: 1 },
+                    { item_type: "Part", description: "Gigabyte GeForce RTX 4060 Gaming OC 8GB GDDR6", unit_price: 2190.00, quantity: 1 },
+                    { item_type: "Part", description: "MSI MAG A650BN 650W 80 Plus Bronze", unit_price: 320.00, quantity: 1 },
+                    { item_type: "Part", description: "Montech Sky Two Glass + 4 Fans ARGB", unit_price: 440.00, quantity: 1 },
+                    { item_type: "Labor", description: "Montagem de Precisão & Cable Management Militar", unit_price: 285.00, quantity: 1 }
                 ]
+            },
+            "082601": {
+                os_number: "082601",
+                public_tracking_token: "tok-082601-dell-inspiron",
+                device_brand: "Notebook Dell",
+                device_model: "Inspiron 15 3000 Series",
+                client_first_name: "Carlos",
+                client_name: "Carlos Eduardo Silva",
+                client_whatsapp: "(11) 99542-9542",
+                is_pickup_delivery: false,
+                status: "Triagem",
+                reported_defect: "Equipamento não liga, não acende LEDs e não dá vídeo. [Checklist: Display íntegro, Sem carregador] [Acessórios: Nenhum]",
+                technical_diagnosis: "Equipamento acolhido na bancada técnica. Realizando inspeção eletrônica de entrada.",
+                entry_at: new Date().toISOString(),
+                total_parts: 0,
+                total_labor: 0,
+                total_order: 0,
+                items: []
             }
         };
 
@@ -1418,7 +1731,6 @@
             const btn = document.getElementById('btn-approve-budget');
             const stickyBtn = document.getElementById('sticky-approve-btn');
             
-            const originalText = btn ? btn.innerHTML : '';
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = `<span class="animate-pulse flex items-center justify-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Confirmando Aprovação...</span>`;
@@ -1463,14 +1775,12 @@
                 }
 
                 if (approvedOk) {
-                    // Re-renderiza os dados atualizados com o novo status
                     if (activeTrackingQuery) {
                         await handleSearch(activeTrackingQuery, activeTrackingPhone, true);
                     } else if (token) {
                         await handleSearch(token, '', true);
                     }
                 } else {
-                    // Se não encontrou para atualizar, re-renderiza com status de aprovação
                     if (currentWorkOrderData) {
                         currentWorkOrderData.status = 'Aprovado_Pelo_Cliente';
                         renderWorkOrderData(currentWorkOrderData);
@@ -1489,10 +1799,6 @@
         // =========================================================================
         // MOTOR FINANCEIRO ASAAS // PIX DINÂMICO & CARTÃO ATÉ 12X (IF TECH)
         // =========================================================================
-        let currentPayingWO = null;
-        let pixCountdownInterval = null;
-        let activePayMethod = 'pix';
-
         function switchPayMethod(method) {
             activePayMethod = method;
             const pixSection = document.getElementById('pay-method-pix');
@@ -1501,15 +1807,15 @@
             const cardTabBtn = document.getElementById('pay-tab-btn-card');
 
             if (method === 'pix') {
-                pixSection.classList.remove('hidden');
-                cardSection.classList.add('hidden');
-                pixTabBtn.className = "py-2.5 px-3 bg-brand text-black border-2 border-brand flex items-center justify-center gap-2 transition-colors uppercase font-bold";
-                cardTabBtn.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 border-2 border-zinc-800 hover:border-zinc-600 flex items-center justify-center gap-2 transition-colors uppercase font-bold";
+                if (pixSection) pixSection.classList.remove('hidden');
+                if (cardSection) cardSection.classList.add('hidden');
+                if (pixTabBtn) pixTabBtn.className = "py-2.5 px-3 bg-brand text-black border-2 border-brand flex items-center justify-center gap-2 transition-colors uppercase font-bold";
+                if (cardTabBtn) cardTabBtn.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 border-2 border-zinc-800 hover:border-zinc-600 flex items-center justify-center gap-2 transition-colors uppercase font-bold";
             } else {
-                pixSection.classList.add('hidden');
-                cardSection.classList.remove('hidden');
-                cardTabBtn.className = "py-2.5 px-3 bg-brand text-black border-2 border-brand flex items-center justify-center gap-2 transition-colors uppercase font-bold";
-                pixTabBtn.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 border-2 border-zinc-800 hover:border-zinc-600 flex items-center justify-center gap-2 transition-colors uppercase font-bold";
+                if (pixSection) pixSection.classList.add('hidden');
+                if (cardSection) cardSection.classList.remove('hidden');
+                if (cardTabBtn) cardTabBtn.className = "py-2.5 px-3 bg-brand text-black border-2 border-brand flex items-center justify-center gap-2 transition-colors uppercase font-bold";
+                if (pixTabBtn) pixTabBtn.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 border-2 border-zinc-800 hover:border-zinc-600 flex items-center justify-center gap-2 transition-colors uppercase font-bold";
             }
             if (window.lucide) lucide.createIcons();
         }
@@ -1534,12 +1840,16 @@
             
             const hasParts = totalParts > 0;
             const payAmount = (hasParts && !forceTotal) ? totalParts : grandTotal;
-            const payTitle = (hasParts && !forceTotal) ? "Sinal das Peças (100% Componentes)" : "Pagamento Total da Ordem de Serviço";
 
-            document.getElementById('pay-modal-title').textContent = (hasParts && !forceTotal) ? "Sinal das Peças // Asaas Pix" : "Pagamento da OS // Asaas";
-            document.getElementById('pay-modal-desc-label').textContent = (hasParts && !forceTotal) ? "Sinal Obrigatório das Peças:" : "Valor Total do Serviço:";
-            document.getElementById('pay-modal-os-ref').textContent = `OS #${formatOSNumber(wo.os_number)} • ${(wo.device_brand || 'Equipamento')} ${(wo.device_model || '')}`;
-            document.getElementById('pay-modal-amount').textContent = 'R$ ' + payAmount.toFixed(2).replace('.', ',');
+            const titleEl = document.getElementById('pay-modal-title');
+            const descLabelEl = document.getElementById('pay-modal-desc-label');
+            const osRefEl = document.getElementById('pay-modal-os-ref');
+            const amountEl = document.getElementById('pay-modal-amount');
+
+            if (titleEl) titleEl.textContent = (hasParts && !forceTotal) ? "Sinal das Peças // Asaas Pix" : "Pagamento da OS // Asaas";
+            if (descLabelEl) descLabelEl.textContent = (hasParts && !forceTotal) ? "Sinal Obrigatório das Peças:" : "Valor Total do Serviço:";
+            if (osRefEl) osRefEl.textContent = `OS #${formatOSNumber(wo.os_number)} • ${(wo.device_brand || 'Equipamento')} ${(wo.device_model || '')}`;
+            if (amountEl) amountEl.textContent = 'R$ ' + payAmount.toFixed(2).replace('.', ',');
 
             // 1. Gerar Chave Pix Dinâmica (EMV BR Code)
             const simulatedPixPayload = `00020101021226880014br.gov.bcb.pix2566pix.asaas.com/qr/stat/v2/c994827104${wo.os_number}520400005303986540${payAmount.toFixed(2)}5802BR5915IF TECH SOLUTIONS6016BRAGANCA PAULIST62070503***6304${Math.floor(1000 + Math.random() * 9000)}`;
@@ -1549,9 +1859,10 @@
             if (inputCopy) inputCopy.value = pixCode;
 
             // 2. Renderizar QR Code no Canvas
-            if (window.QRious) {
+            const canvasEl = document.getElementById('asaas-pix-canvas');
+            if (window.QRious && canvasEl) {
                 new QRious({
-                    element: document.getElementById('asaas-pix-canvas'),
+                    element: canvasEl,
                     value: pixCode,
                     size: 200,
                     level: 'H'
@@ -1621,6 +1932,8 @@
                         if (window.lucide) lucide.createIcons();
                     }, 2500);
                 }
+            }).catch(() => {
+                alert("Código Pix copiado para a área de transferência!");
             });
         }
 
@@ -1629,7 +1942,7 @@
             const wo = currentPayingWO;
 
             const client = getSupabase();
-            const asaasId = wo.asaas_payment_id || `pay_mock_${wo.os_number}_${Date.now()}`;
+            const asaasId = wo.asaas_payment_id || `pay_mock_${wo.os_number || Date.now()}_${Date.now()}`;
 
             // Fechar modal
             closeAsaasPaymentModal();
@@ -1637,16 +1950,43 @@
             // Exibir Toast de Sucesso
             const toast = document.createElement('div');
             toast.className = "fixed top-8 left-1/2 -translate-x-1/2 z-[999999] px-6 py-4 bg-black border-2 border-brand text-brand font-mono font-bold text-sm shadow-[0_0_30px_rgba(204,255,0,0.5)] flex items-center gap-3 animate-bounce";
-            toast.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 text-brand"></i> <span>✓ PAGAMENTO CONFIRMADO! Sinal de Peças recebido via Asaas.</span>`;
+            toast.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 text-brand"></i> <span>✓ PAGAMENTO CONFIRMADO! Recebido via Asaas Fintech.</span>`;
             document.body.appendChild(toast);
             if (window.lucide) lucide.createIcons();
 
-            // Atualização persistente local imediata
+            // Software Project handling
+            if (wo.is_software && currentLoadedSoftwareProject) {
+                const proj = currentLoadedSoftwareProject;
+                if (wo.is_step1) {
+                    proj.kickoff_deposit_paid = true;
+                } else {
+                    proj.final_delivery_paid = true;
+                }
+                try {
+                    const saved = localStorage.getItem('if_tech_software_projects');
+                    if (saved) {
+                        let projects = JSON.parse(saved);
+                        const idx = projects.findIndex(p => p.id === proj.id || p.project_code === proj.project_code);
+                        if (idx >= 0) {
+                            projects[idx] = { ...projects[idx], kickoff_deposit_paid: proj.kickoff_deposit_paid, final_delivery_paid: proj.final_delivery_paid };
+                            localStorage.setItem('if_tech_software_projects', JSON.stringify(projects));
+                        }
+                    }
+                } catch(e) {}
+
+                setTimeout(() => {
+                    toast.remove();
+                    renderSoftwareProjectData(proj);
+                }, 1500);
+                return;
+            }
+
+            // Hardware Work Order handling
             try {
                 const rawOrders = localStorage.getItem('if_tech_work_orders');
                 if (rawOrders) {
                     const orders = JSON.parse(rawOrders);
-                    const target = orders.find(o => String(o.os_number) === String(wo.os_number) || o.id === wo.id || o.public_tracking_token === wo.public_tracking_token);
+                    const target = orders.find(o => String(o.os_number) === String(wo.os_number) || o.id === wo.id || (o.public_tracking_token && o.public_tracking_token === wo.public_tracking_token));
                     if (target) {
                         target.parts_deposit_paid = true;
                         target.parts_deposit_status = 'CONFIRMED';
@@ -1676,8 +2016,10 @@
                     await handleSearch(activeTrackingQuery, activeTrackingPhone, true);
                 } else if (wo.public_tracking_token) {
                     await handleSearch(wo.public_tracking_token, '', true);
+                } else if (wo.os_number) {
+                    await handleSearch(String(wo.os_number), '', true);
                 }
-            }, 1800);
+            }, 1500);
         }
 
         function processAsaasCardPayment() {
@@ -1702,9 +2044,8 @@
             }, 2000);
         }
 
-
         function submitTrackingForm() {
-            const osVal = document.getElementById('search-input').value.trim();
+            const osVal = document.getElementById('search-input')?.value.trim() || '';
             const phoneVal = document.getElementById('search-phone') ? document.getElementById('search-phone').value.trim() : '';
             handleSearch(osVal, phoneVal);
         }
@@ -1712,8 +2053,6 @@
         // =====================================================================
         // SPRINT 4: RENDERIZADOR DO PORTAL DO CLIENTE DE SOFTWARE (50/50 & QA)
         // =====================================================================
-        let currentLoadedSoftwareProject = null;
-
         const defaultMockSoftwareProjects = [
             {
                 id: "sw-mock-01",
@@ -1771,39 +2110,48 @@
             if (!proj) return;
             currentLoadedSoftwareProject = proj;
 
-            document.getElementById('sw-card-code').textContent = proj.project_code || 'PRJ-2026-001';
-            document.getElementById('sw-card-title').textContent = proj.title || 'Projeto de Software';
+            const codeEl = document.getElementById('sw-card-code');
+            const titleEl = document.getElementById('sw-card-title');
+            const clientEl = document.getElementById('sw-card-client');
+            const serviceEl = document.getElementById('sw-card-service');
+            const deliveryEl = document.getElementById('sw-card-delivery');
+            const statusBadgeText = document.getElementById('sw-card-status-text');
+
+            if (codeEl) codeEl.textContent = proj.project_code || 'PRJ-2026-001';
+            if (titleEl) titleEl.textContent = proj.title || 'Projeto de Software';
             
             const clientName = proj.client?.name || proj.client_name || 'Cliente';
-            document.getElementById('sw-card-client').textContent = clientName;
-            document.getElementById('sw-card-service').textContent = proj.service_code || 'SW-01';
+            if (clientEl) clientEl.textContent = clientName;
+            if (serviceEl) serviceEl.textContent = proj.service_code || 'SW-01';
             
-            if (proj.estimated_delivery_date) {
+            if (proj.estimated_delivery_date && deliveryEl) {
                 const d = new Date(proj.estimated_delivery_date);
-                document.getElementById('sw-card-delivery').textContent = 'Previsão de Entrega: ' + d.toLocaleDateString('pt-BR');
+                deliveryEl.textContent = 'Previsão de Entrega: ' + d.toLocaleDateString('pt-BR');
             }
 
             // Status Badge & Stepper
             const status = proj.status || 'Briefing';
-            const badgeText = document.getElementById('sw-card-status-text');
-            if (badgeText) {
-                if (status === 'Briefing') badgeText.textContent = '01. BRIEFING & ESCOPO';
-                else if (status === 'Em_Desenvolvimento') badgeText.textContent = '02. EM DESENVOLVIMENTO';
-                else if (status === 'Em_QA') badgeText.textContent = '03. TESTES QA & LIGHTHOUSE';
-                else if (status === 'Homologacao_Cliente') badgeText.textContent = '04. HOMOLOGAÇÃO CLIENTE';
-                else if (status === 'Concluido') badgeText.textContent = '✓ 05. CONCLUÍDO & ENTREGUE';
-                else badgeText.textContent = status;
+            if (statusBadgeText) {
+                if (status === 'Briefing') statusBadgeText.textContent = '01. BRIEFING & ESCOPO';
+                else if (status === 'Em_Desenvolvimento') statusBadgeText.textContent = '02. EM DESENVOLVIMENTO';
+                else if (status === 'Em_QA') statusBadgeText.textContent = '03. TESTES QA & LIGHTHOUSE';
+                else if (status === 'Homologacao_Cliente') statusBadgeText.textContent = '04. HOMOLOGAÇÃO CLIENTE';
+                else if (status === 'Concluido') statusBadgeText.textContent = '✓ 05. CONCLUÍDO & ENTREGUE';
+                else statusBadgeText.textContent = status;
             }
 
             // Stepper Styling (5 steps)
             const stepOrder = ['Briefing', 'Em_Desenvolvimento', 'Em_QA', 'Homologacao_Cliente', 'Concluido'];
-            const currentIdx = stepOrder.indexOf(status);
+            const currentIdx = Math.max(0, stepOrder.indexOf(status));
 
             for (let i = 1; i <= 5; i++) {
                 const stepEl = document.getElementById(`sw-step-${i}`);
                 if (!stepEl) continue;
-                if (currentIdx >= (i - 1)) {
-                    stepEl.className = "border-2 border-brand bg-brand/10 p-3 transition-colors text-brand";
+                const stepIdx = i - 1;
+                if (stepIdx === currentIdx && status !== 'Concluido') {
+                    stepEl.className = "border-2 border-brand bg-brand text-black p-3 transition-colors font-bold shadow-[0_0_15px_rgba(204,255,0,0.3)]";
+                } else if (stepIdx < currentIdx || (status === 'Concluido' && stepIdx <= currentIdx)) {
+                    stepEl.className = "border-2 border-brand/50 bg-brand/10 p-3 transition-colors text-brand font-bold";
                 } else {
                     stepEl.className = "border-2 border-zinc-800 bg-zinc-950 p-3 transition-colors text-zinc-500";
                 }
@@ -1818,9 +2166,13 @@
             // Budget & 50/50 Milestones
             const total = parseFloat(proj.total_budget || 0);
             const half = total / 2;
-            document.getElementById('sw-card-total-budget').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
-            document.getElementById('sw-card-ms1-val').textContent = 'R$ ' + half.toFixed(2).replace('.', ',');
-            document.getElementById('sw-card-ms2-val').textContent = 'R$ ' + half.toFixed(2).replace('.', ',');
+            const totalBudgetEl = document.getElementById('sw-card-total-budget');
+            const ms1ValEl = document.getElementById('sw-card-ms1-val');
+            const ms2ValEl = document.getElementById('sw-card-ms2-val');
+
+            if (totalBudgetEl) totalBudgetEl.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+            if (ms1ValEl) ms1ValEl.textContent = 'R$ ' + half.toFixed(2).replace('.', ',');
+            if (ms2ValEl) ms2ValEl.textContent = 'R$ ' + half.toFixed(2).replace('.', ',');
 
             const isMs1Paid = !!proj.kickoff_deposit_paid;
             const isMs2Paid = !!proj.final_delivery_paid || status === 'Concluido';
@@ -1828,39 +2180,57 @@
             const ms1Badge = document.getElementById('sw-card-ms1-badge');
             const ms1Btn = document.getElementById('sw-card-ms1-btn');
             if (isMs1Paid) {
-                ms1Badge.className = "px-2 py-0.5 bg-brand text-black font-black text-[10px]";
-                ms1Badge.textContent = "PAGO (Pix)";
+                if (ms1Badge) {
+                    ms1Badge.className = "px-2 py-0.5 bg-brand text-black font-black text-[10px]";
+                    ms1Badge.textContent = "PAGO (Pix)";
+                }
                 if (ms1Btn) ms1Btn.classList.add('hidden');
             } else {
-                ms1Badge.className = "px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]";
-                ms1Badge.textContent = "PENDENTE";
+                if (ms1Badge) {
+                    ms1Badge.className = "px-2 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-800 font-bold text-[10px]";
+                    ms1Badge.textContent = "PENDENTE";
+                }
                 if (ms1Btn) ms1Btn.classList.remove('hidden');
             }
 
             const ms2Badge = document.getElementById('sw-card-ms2-badge');
             const ms2Btn = document.getElementById('sw-card-ms2-btn');
             if (isMs2Paid) {
-                ms2Badge.className = "px-2 py-0.5 bg-brand text-black font-black text-[10px]";
-                ms2Badge.textContent = "QUITADO";
+                if (ms2Badge) {
+                    ms2Badge.className = "px-2 py-0.5 bg-brand text-black font-black text-[10px]";
+                    ms2Badge.textContent = "QUITADO";
+                }
                 if (ms2Btn) ms2Btn.classList.add('hidden');
             } else {
-                ms2Badge.className = "px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[10px]";
-                ms2Badge.textContent = "AGUARDANDO VALIDAÇÃO";
+                if (ms2Badge) {
+                    ms2Badge.className = "px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[10px]";
+                    ms2Badge.textContent = "AGUARDANDO VALIDAÇÃO";
+                }
                 if (ms2Btn) ms2Btn.classList.remove('hidden');
             }
 
             // Lighthouse Scores
-            document.getElementById('sw-card-lh-perf').textContent = proj.lighthouse_performance_score || 99;
-            document.getElementById('sw-card-lh-seo').textContent = proj.lighthouse_seo_score || 100;
-            document.getElementById('sw-card-lh-bp').textContent = proj.lighthouse_best_practices_score || 100;
-            document.getElementById('sw-card-lh-acc').textContent = proj.lighthouse_accessibility_score || 96;
+            const lhPerf = document.getElementById('sw-card-lh-perf');
+            const lhSeo = document.getElementById('sw-card-lh-seo');
+            const lhBp = document.getElementById('sw-card-lh-bp');
+            const lhAcc = document.getElementById('sw-card-lh-acc');
+
+            if (lhPerf) lhPerf.textContent = proj.lighthouse_performance_score || 99;
+            if (lhSeo) lhSeo.textContent = proj.lighthouse_seo_score || 100;
+            if (lhBp) lhBp.textContent = proj.lighthouse_best_practices_score || 100;
+            if (lhAcc) lhAcc.textContent = proj.lighthouse_accessibility_score || 96;
 
             // Staging Link
             const stagingUrl = proj.staging_url || 'https://preview.iflcosta.tech/demo';
             const stagingTextEl = document.getElementById('sw-card-staging-url-text');
             const stagingBtnEl = document.getElementById('sw-card-staging-btn');
+            const whatsappBtnEl = document.getElementById('sw-card-whatsapp-btn');
+
             if (stagingTextEl) stagingTextEl.textContent = stagingUrl.replace(/^https?:\/\//, '');
             if (stagingBtnEl) stagingBtnEl.href = stagingUrl;
+            if (whatsappBtnEl) {
+                whatsappBtnEl.href = `https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20projeto%20${encodeURIComponent(proj.project_code || '')}.`;
+            }
 
             // Homologation Certificate & Button
             const certBox = document.getElementById('sw-homologation-cert-box');
@@ -1962,6 +2332,9 @@
                 device_model: proj.title,
                 total_parts: half,
                 total_order: half,
+                is_software: true,
+                is_step1: isStep1,
+                project_code: proj.project_code,
                 pix_copy_paste: `00020101021226880014br.gov.bcb.pix2566pix.asaas.com/qr/stat/v2/sw_${proj.project_code}520400005303986540${half.toFixed(2)}5802BR5915IF TECH SOLUTIONS6016BRAGANCA PAULIST62070503***6304ABCD`
             };
 
@@ -1972,7 +2345,38 @@
             if (labelEl) labelEl.textContent = isStep1 ? 'Sinal Obrigatório de Início:' : 'Quitação Final de Homologação:';
         }
 
-        // Função de Busca com Dupla Confirmação (OS + WhatsApp, Token ou Projeto de Software)
+        // =========================================================================
+        // CANAL REALTIME SUPABASE (ATUALIZAÇÃO AUTOMÁTICA EM TEMPO REAL)
+        // =========================================================================
+        function setupPortalRealtime(orderId) {
+            if (!orderId) return;
+            const client = getSupabase();
+            if (!client || typeof client.channel !== 'function') return;
+
+            try {
+                if (portalRealtimeChannel) {
+                    client.removeChannel(portalRealtimeChannel);
+                }
+                portalRealtimeChannel = client.channel(`portal_order_${orderId}`)
+                    .on('postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'work_orders',
+                        filter: `id=eq.${orderId}`
+                    }, (payload) => {
+                        if (payload && payload.new && activeTrackingQuery) {
+                            handleSearch(activeTrackingQuery, activeTrackingPhone, true);
+                        }
+                    })
+                    .subscribe();
+            } catch(e) {
+                console.warn("Assinatura de canal Realtime:", e);
+            }
+        }
+
+        // =========================================================================
+        // BUSCA PRINCIPAL COM RATE LIMITING, MAGIC LINK & FALLBACK
+        // =========================================================================
         async function handleSearch(query, phone = '', isSilent = false) {
             if (!query) return;
 
@@ -1986,7 +2390,7 @@
             // Monitoramento de frequência (Rate Limiting no Frontend)
             if (now - lastSearchAttemptTime < 30000) {
                 searchAttempts++;
-                if (searchAttempts >= 6) {
+                if (searchAttempts >= 8) {
                     searchCooldownUntil = now + 15000;
                     searchAttempts = 0;
                     alert("⚠️ Limite temporário de segurança atingido. Aguarde 15 segundos antes de nova busca.");
@@ -2002,7 +2406,7 @@
 
             if (!isSilent) {
                 hideAllContainers();
-                loadingState.classList.remove("hidden");
+                if (loadingState) loadingState.classList.remove("hidden");
             }
 
             const cleanQuery = query.trim();
@@ -2051,19 +2455,20 @@
                 }
 
                 if (foundProject) {
-                    loadingState.classList.add("hidden");
+                    if (loadingState) loadingState.classList.add("hidden");
                     renderSoftwareProjectData(foundProject);
-                    swContainer.classList.remove("hidden");
+                    if (swContainer) swContainer.classList.remove("hidden");
                     window.scrollTo({ top: swContainer.offsetTop - 100, behavior: 'smooth' });
                     if (window.lucide) lucide.createIcons();
                     return;
                 }
             }
 
+            // 2. VERIFICAÇÃO DE TI GERENCIADA (MSP B2B)
             if (upperQuery.includes("MSP") || upperQuery.includes("EMPRESA") || upperQuery.includes("CLINICA")) {
                 setTimeout(() => {
-                    loadingState.classList.add("hidden");
-                    mspContainer.classList.remove("hidden");
+                    if (loadingState) loadingState.classList.add("hidden");
+                    if (mspContainer) mspContainer.classList.remove("hidden");
                     window.scrollTo({ top: mspContainer.offsetTop - 100, behavior: 'smooth' });
                     if (window.lucide) lucide.createIcons();
                 }, 150);
@@ -2071,14 +2476,9 @@
             }
 
             const client = getSupabase();
-            if (!client) {
-                loadingState.classList.add("hidden");
-                notFoundState.classList.remove("hidden");
-                return;
-            }
 
-            // 2. BUSCA DIRETA POR TOKEN UUID (Magic Link do WhatsApp ou colar token no campo)
-            const isUUIDToken = (cleanQuery.includes("-") && cleanQuery.length >= 30) || (cleanQuery.startsWith("tok-"));
+            // 3. BUSCA DIRETA POR TOKEN UUID (Magic Link do WhatsApp ou colar token no campo)
+            const isUUIDToken = (cleanQuery.includes("-") && cleanQuery.length >= 25) || (cleanQuery.startsWith("tok-"));
             if (isUUIDToken && client) {
                 try {
                     const { data, error } = await client.rpc('rpc_track_work_order', {
@@ -2086,10 +2486,10 @@
                     });
 
                     if (!error && data && data.found) {
-                        loadingState.classList.add("hidden");
+                        if (loadingState) loadingState.classList.add("hidden");
                         renderWorkOrderData(data);
                         if (data.id) setupPortalRealtime(data.id);
-                        hwContainer.classList.remove("hidden");
+                        if (hwContainer) hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
                         return;
@@ -2099,7 +2499,7 @@
                 }
             }
 
-            // 3. BUSCA POR NÚMERO DA OS + CONFIRMAÇÃO DE TELEFONE (2FA) VIA SUPABASE
+            // 4. BUSCA POR NÚMERO DA OS + CONFIRMAÇÃO DE TELEFONE (2FA) VIA SUPABASE
             const num = parseInt(cleanQuery.replace(/\D/g, ''));
             if (!isNaN(num) && num > 0 && client) {
                 try {
@@ -2110,10 +2510,10 @@
                     });
 
                     if (!error && data && data.found) {
-                        loadingState.classList.add("hidden");
+                        if (loadingState) loadingState.classList.add("hidden");
                         renderWorkOrderData(data);
                         if (data.id) setupPortalRealtime(data.id);
-                        hwContainer.classList.remove("hidden");
+                        if (hwContainer) hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
                         return;
@@ -2123,18 +2523,17 @@
                 }
             }
 
-            // 4. FALLBACK EM TEMPO REAL: BUSCA EM ARMAZENAMENTO LOCAL (LOCALSTORAGE / MEMÓRIA DO COCKPIT)
+            // 5. FALLBACK LOCALSTORAGE (COCKPIT LOCAL STORAGE SYNC)
             try {
                 const localOrdersRaw = localStorage.getItem('if_tech_work_orders');
                 if (localOrdersRaw) {
                     const localOrders = JSON.parse(localOrdersRaw);
                     const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
                     const match = localOrders.find(o => {
-                        const matchNum = num && (parseInt(o.os_number) === num);
-                        const matchTok = o.public_tracking_token && (o.public_tracking_token === cleanQuery || o.id === cleanQuery);
+                        const matchNum = num && (parseInt(o.os_number) === num || String(o.os_number) === cleanQuery);
+                        const matchTok = (o.public_tracking_token && (o.public_tracking_token === cleanQuery || o.id === cleanQuery)) || (o.id && o.id === cleanQuery);
                         if (!matchNum && !matchTok) return false;
                         
-                        // Validação 2FA de telefone se fornecido
                         if (cleanPhone && o.client_whatsapp) {
                             const oPhone = o.client_whatsapp.replace(/\D/g, '');
                             return oPhone.endsWith(cleanPhone) || oPhone === cleanPhone || cleanPhone.length < 4;
@@ -2149,7 +2548,9 @@
                             os_number: match.os_number,
                             public_tracking_token: match.public_tracking_token || match.id || String(match.os_number),
                             status: match.status || 'Triagem',
-                            client_first_name: (match.client_name || 'Cliente').split(' ')[0],
+                            client_first_name: (match.client_name || match.customer_name || 'Cliente').split(' ')[0],
+                            client_name: match.client_name || match.customer_name || 'Cliente',
+                            client_whatsapp: match.client_whatsapp || '',
                             device_brand: match.device_brand || 'Notebook',
                             device_model: match.device_model || 'Equipamento',
                             device_serial: match.device_serial || '',
@@ -2158,7 +2559,7 @@
                             items: match.items || [],
                             total_parts: match.total_parts || 0,
                             total_labor: match.total_labor || 0,
-                            total_amount: match.total_amount || 0,
+                            total_order: match.total_order || match.total_amount || 0,
                             requires_parts_deposit: Boolean(match.total_parts > 0),
                             parts_deposit_amount: match.total_parts || 0,
                             parts_deposit_status: match.parts_deposit_status || 'PENDING',
@@ -2166,9 +2567,9 @@
                             created_at: match.created_at || new Date().toISOString()
                         };
 
-                        loadingState.classList.add("hidden");
+                        if (loadingState) loadingState.classList.add("hidden");
                         renderWorkOrderData(formattedData);
-                        hwContainer.classList.remove("hidden");
+                        if (hwContainer) hwContainer.classList.remove("hidden");
                         window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
                         if (window.lucide) lucide.createIcons();
                         return;
@@ -2178,81 +2579,117 @@
                 console.warn("Erro ao buscar em fallback local:", localErr);
             }
 
-            // Não encontrado
-            loadingState.classList.add("hidden");
-            notFoundState.classList.remove("hidden");
+            // 6. FALLBACK MOCK DATA (DEMONSTRAÇÃO & OFFLINE)
+            const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
+            let mockMatch = defaultMockLookup[cleanQuery] || (num ? defaultMockLookup[String(num)] : null) || defaultMockLookup[formatOSNumber(cleanQuery)];
+            if (!mockMatch && isUUIDToken) {
+                mockMatch = Object.values(defaultMockLookup).find(m => m.public_tracking_token === cleanQuery);
+            }
+
+            if (mockMatch) {
+                if (!cleanPhone || !mockMatch.client_whatsapp || mockMatch.client_whatsapp.replace(/\D/g, '').endsWith(cleanPhone) || cleanPhone.length < 4) {
+                    if (loadingState) loadingState.classList.add("hidden");
+                    renderWorkOrderData(mockMatch);
+                    if (hwContainer) hwContainer.classList.remove("hidden");
+                    window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                    if (window.lucide) lucide.createIcons();
+                    return;
+                }
+            }
+
+            // 7. Não encontrado
+            if (loadingState) loadingState.classList.add("hidden");
+            if (notFoundState) notFoundState.classList.remove("hidden");
             window.scrollTo({ top: notFoundState.offsetTop - 100, behavior: 'smooth' });
             if (window.lucide) lucide.createIcons();
         }
 
-        // Controle de Rate Limiting e Anti-Hammering no Frontend do Portal
-        let searchAttempts = 0;
-        let lastSearchAttemptTime = 0;
-        let searchCooldownUntil = 0;
-
-        // Submissão do Formulário com Validação de WhatsApp
         // =====================================================================
-        // SPRINT 5 & CDC: FUNÇÕES DO PORTAL DO CLIENTE & TERMO DE GARANTIA
+        // SPRINT 5 & CDC: GERAÇÃO DO CERTIFICADO DE GARANTIA CDC 90 DIAS
         // =====================================================================
         function downloadWarrantyPDF() {
-            const osNum = escapeHtml(currentWorkOrder?.os_number || '082601');
-            const clientName = escapeHtml(currentWorkOrder?.client_name || currentWorkOrder?.customer_name || 'Cliente');
-            const device = escapeHtml((currentWorkOrder?.device_brand || 'Equipamento') + ' ' + (currentWorkOrder?.device_model || ''));
+            const wo = currentWorkOrder || currentWorkOrderData;
+            const osNum = escapeHtml(formatOSNumber(wo?.os_number || '1053'));
+            const clientName = escapeHtml(wo?.client_name || wo?.customer_name || wo?.client_first_name || 'Cliente');
+            const brand = wo?.device_brand || 'Equipamento';
+            const model = wo?.device_model || '';
+            const device = escapeHtml(`${brand} ${model}`.trim());
             const dateStr = escapeHtml(new Date().toLocaleDateString('pt-BR'));
+            const authHash = `SHA256-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            const printWindow = window.open('', '_blank', 'width=700,height=800');
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Certificado de Garantia // IF Tech OS #${osNum}</title>
-                    <style>
-                        body { font-family: monospace; font-size: 12px; margin: 30px; color: #000; line-height: 1.5; }
-                        .header { border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 20px; }
-                        .title { font-size: 18px; font-weight: bold; }
-                        .section { margin-bottom: 16px; }
-                        .bold { font-weight: bold; }
-                        .border-box { border: 1px solid #000; padding: 12px; margin-top: 15px; }
-                        .footer { margin-top: 30px; text-align: center; font-size: 10px; border-top: 1px solid #000; padding-top: 8px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <div class="title">IF TECH // TECH SOLUTIONS</div>
-                        <div>CERTIFICADO DE CUSTÓDIA & GARANTIA TÉCNICA CDC 90 DIAS</div>
-                        <div>ORDEM DE SERVIÇO: #${osNum} • DATA: ${dateStr}</div>
-                    </div>
+            const printWindow = window.open('', '_blank', 'width=750,height=850');
+            if (!printWindow) {
+                alert("Por favor, permita popups neste navegador para visualizar e imprimir o Certificado de Garantia.");
+                return;
+            }
 
-                    <div class="section">
-                        <div><strong>TITULAR DO EQUIPAMENTO:</strong> ${clientName}</div>
-                        <div><strong>EQUIPAMENTO / MODELO:</strong> ${device}</div>
-                        <div><strong>GARANTIA LEGAL:</strong> 90 (noventa) dias nos termos do Art. 26 do Código de Defesa do Consumidor (Lei 8.078/90).</div>
-                    </div>
+            printWindow.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificado de Garantia // IF Tech OS #${osNum}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Courier New', Courier, monospace; font-size: 12px; margin: 30px; color: #000; line-height: 1.5; background: #fff; }
+        .header { border-bottom: 3px solid #000; padding-bottom: 12px; margin-bottom: 20px; }
+        .title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+        .subtitle { font-size: 13px; font-weight: bold; margin-top: 2px; }
+        .meta { font-size: 11px; margin-top: 4px; }
+        .section { margin-bottom: 16px; }
+        .bold { font-weight: bold; }
+        .border-box { border: 2px solid #000; padding: 14px; margin-top: 15px; background: #fafafa; }
+        .footer { margin-top: 36px; text-align: center; font-size: 10px; border-top: 2px solid #000; padding-top: 10px; }
+        .badge { display: inline-block; background: #000; color: #fff; padding: 2px 6px; font-size: 10px; font-weight: bold; }
+        @media print {
+            body { margin: 15mm; }
+            button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">IF TECH // TECH SOLUTIONS</div>
+        <div class="subtitle">CERTIFICADO DE CUSTÓDIA & GARANTIA TÉCNICA CDC 90 DIAS</div>
+        <div class="meta">ORDEM DE SERVIÇO: <strong>#${osNum}</strong> • EMISSÃO: <strong>${dateStr}</strong> • <span class="badge">LEI 8.078/90</span></div>
+    </div>
 
-                    <div class="border-box">
-                        <div class="bold">TERMOS DE GARANTIA & CONDIÇÕES:</div>
-                        <ol style="margin: 8px 0; padding-left: 20px; font-size: 11px;">
-                            <li>A garantia cobre exclusivamente os serviços executados e as peças substituídas descritas no Laudo Técnico da OS #${osNum}.</li>
-                            <li>A violação do lacre de segurança, presença de umidade, quedas físicas ou intervenções de terceiros anulam imediatamente a garantia.</li>
-                            <li>Peças novas com garantia estendida de fabricante (ex: SSDs e Memórias 1 a 3 anos) possuem cobertura RMA intermediada pela IF Tech.</li>
-                        </ol>
-                    </div>
+    <div class="section">
+        <div><strong>TITULAR DO EQUIPAMENTO:</strong> ${clientName}</div>
+        <div><strong>EQUIPAMENTO / MODELO:</strong> ${device}</div>
+        <div><strong>GARANTIA LEGAL:</strong> 90 (noventa) dias nos termos do Art. 26, inciso II, do Código de Defesa do Consumidor (Lei 8.078/90).</div>
+    </div>
 
-                    <div style="margin-top: 40px; display: flex; justify-content: space-between;">
-                        <div style="text-align: center; width: 45%;">
-                            <div style="border-top: 1px solid #000; padding-top: 4px;">IF Tech Soluções Tecnológicas<br/>Responsável Técnico</div>
-                        </div>
-                        <div style="text-align: center; width: 45%;">
-                            <div style="border-top: 1px solid #000; padding-top: 4px;">Assinatura do Cliente<br/>${clientName}</div>
-                        </div>
-                    </div>
+    <div class="border-box">
+        <div class="bold">TERMOS DE GARANTIA & CONDIÇÕES LEGAIS (CDC):</div>
+        <ol style="margin: 8px 0; padding-left: 20px; font-size: 11px; line-height: 1.6;">
+            <li>A garantia técnica cobre integralmente os serviços executados e componentes substituídos descritos no Laudo Técnico da Ordem de Serviço #${osNum}.</li>
+            <li>A inviolabilidade do selo de segurança da IF Tech é pré-requisito para acionamento de garantia. Abertura por terceiros anula a cobertura técnica.</li>
+            <li>Quedas físicas, danos elétricos externos por oscilação de rede, curto-circuito atmosférico ou contato com líquidos excluem a garantia legal.</li>
+            <li>Componentes novos fornecidos pela IF Tech mantêm adicionalmente a garantia contratual estendida do fabricante homologado (12 a 36 meses).</li>
+        </ol>
+    </div>
 
-                    <div class="footer">
-                        HASH DE AUTENTICIDADE DIGITAL: SHA256-${Date.now().toString(36).toUpperCase()}<br/>
-                        IF TECH // BRAGANÇA PAULISTA - SP • iflcosta.tech
-                    </div>
-                </body>
-                </html>
-            `);
+    <div style="margin-top: 45px; display: flex; justify-content: space-between;">
+        <div style="text-align: center; width: 45%;">
+            <div style="border-top: 1.5px solid #000; padding-top: 6px; font-size: 11px;">
+                <strong>IF Tech Soluções Tecnológicas</strong><br/>
+                Responsável Técnico & Engenharia
+            </div>
+        </div>
+        <div style="text-align: center; width: 45%;">
+            <div style="border-top: 1.5px solid #000; padding-top: 6px; font-size: 11px;">
+                <strong>Assinatura do Titular</strong><br/>
+                ${clientName}
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        HASH DE AUTENTICIDADE DIGITAL: <strong>${authHash}</strong><br/>
+        IF TECH // SISTEMA DE TELEMETRIA & CUSTÓDIA • BRAGANÇA PAULISTA - SP • iflcosta.tech • (11) 91969-1542
+    </div>
+</body>
+</html>`);
             printWindow.document.close();
             printWindow.focus();
             setTimeout(() => { printWindow.print(); }, 500);
@@ -2266,8 +2703,6 @@
             e.preventDefault();
             const subject = document.getElementById('portal-ticket-subject')?.value.trim();
             const desc = document.getElementById('portal-ticket-desc')?.value.trim();
-            const severity = document.getElementById('portal-ticket-severity')?.value || 'P3_Media';
-            const device = document.getElementById('portal-ticket-device')?.value || '';
 
             if (!subject || !desc) {
                 alert('Por favor, preencha o assunto e a descrição do incidente.');
@@ -2275,259 +2710,41 @@
             }
 
             const ticketCode = 'TICK-2026-' + Math.floor(1000 + Math.random() * 9000);
-            alert(`✓ Chamado ${ticketCode} registrado com sucesso!
-Nossa equipe técnica já recebeu o alerta e o cronômetro SLA de 2h foi iniciado.`);
+            alert(`✓ Chamado ${ticketCode} registrado com sucesso!\nNossa equipe técnica já recebeu o alerta e o cronômetro SLA de 2h foi iniciado.`);
             closePortalNewTicketModal();
         }
 
-        searchForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const osVal = searchInput.value.trim();
-            const phoneVal = document.getElementById('search-phone') ? document.getElementById('search-phone').value.trim() : '';
-            handleSearch(osVal, phoneVal);
-        });
+        if (searchForm) {
+            searchForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const osVal = searchInput?.value.trim() || '';
+                const phoneVal = document.getElementById('search-phone') ? document.getElementById('search-phone').value.trim() : '';
+                handleSearch(osVal, phoneVal);
+            });
+        }
 
         // Sincronização Cross-Tab em Tempo Real (Cockpit /app <-> Portal /status)
         window.addEventListener('storage', (e) => {
-            if (e.key === 'if_tech_work_orders' && activeTrackingQuery) {
+            if ((e.key === 'if_tech_work_orders' || e.key === 'if_tech_software_projects') && activeTrackingQuery) {
                 handleSearch(activeTrackingQuery, activeTrackingPhone, true);
             }
         });
 
-        // Verificação de Parâmetros na URL
+        // Verificação de Parâmetros na URL no Carregamento
         window.addEventListener("DOMContentLoaded", () => {
             if (window.lucide) lucide.createIcons();
 
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get("token") || urlParams.get("prj") || urlParams.get("os") || urlParams.get("id");
+            const phone = urlParams.get("phone") || urlParams.get("tel") || "";
             
             if (token) {
-                searchInput.value = token;
-                handleSearch(token);
+                if (searchInput) searchInput.value = token;
+                const phoneEl = document.getElementById('search-phone');
+                if (phone && phoneEl) phoneEl.value = phone;
+                handleSearch(token, phone);
             }
         });
     </script>
-
-    <!-- BARRA FLUTUANTE DE APROVAÇÃO RÁPIDA NO CELULAR (THUMB ZONE) -->
-    <div id="mobile-sticky-bar" class="fixed bottom-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-t-2 border-brand p-3.5 sm:hidden hidden shadow-[0_-8px_20px_rgba(0,0,0,0.8)] safe-pb">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <span class="text-[10px] font-mono text-zinc-400 block uppercase" id="sticky-label">Orçamento</span>
-                <strong class="text-base font-mono font-black text-brand" id="sticky-amount">R$ 0,00</strong>
-            </div>
-            <button id="sticky-approve-btn" onclick="document.getElementById('btn-approve-budget')?.click()" class="flex-1 px-4 py-3 bg-brand text-black font-mono font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.3)] animate-pulse min-h-[44px]">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span>Aprovar Orçamento</span>
-            </button>
-        </div>
-    </div>
-
-
-    <!-- ============================================================= -->
-    <!-- MODAL DE PAGAMENTO ASAAS (PIX DINÂMICO & CARTÃO ATÉ 12X)      -->
-    <!-- ============================================================= -->
-    <div id="asaas-payment-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        <div class="bg-black border-2 border-brand w-full max-w-lg shadow-[8px_8px_0px_0px_rgba(204,255,0,0.5)] my-8 overflow-y-auto font-sans max-h-[90vh]">
-            
-            <!-- Header do Modal -->
-            <div class="bg-zinc-950 p-5 border-b-2 border-zinc-800 flex justify-between items-center">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-6 bg-brand"></div>
-                    <div>
-                        <span class="text-[10px] font-mono font-bold text-brand uppercase tracking-widest block">CHECKOUT SEGURO // ASAAS</span>
-                        <h3 class="text-lg font-black text-white uppercase tracking-tight" id="pay-modal-title">Pagamento do Sinal das Peças</h3>
-                    </div>
-                </div>
-                <button type="button" onclick="closeAsaasPaymentModal()" class="text-zinc-500 hover:text-white p-1 text-xl font-mono transition-colors">✕</button>
-            </div>
-
-            <!-- Conteúdo do Modal -->
-            <div class="p-6 space-y-6">
-
-                <!-- Card de Resumo do Valor -->
-                <div class="bg-zinc-900/90 border border-zinc-700 p-4 flex justify-between items-center font-mono">
-                    <div>
-                        <span class="text-zinc-400 text-xs block" id="pay-modal-desc-label">Sinal Obrigatório (100% das Peças):</span>
-                        <span class="text-xs text-zinc-500" id="pay-modal-os-ref">OS #1050 • Equipamento</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-2xl font-black text-brand" id="pay-modal-amount">R$ 0,00</span>
-                    </div>
-                </div>
-
-                <!-- Seletor de Abas de Pagamento (Pix vs Cartão) -->
-                <div class="grid grid-cols-2 gap-2 font-mono text-xs font-bold">
-                    <button type="button" id="pay-tab-btn-pix" onclick="switchPayMethod('pix')" class="py-2.5 px-3 bg-brand text-black border-2 border-brand flex items-center justify-center gap-2 transition-colors uppercase">
-                        <i data-lucide="zap" class="w-4 h-4"></i> Pix Instantâneo
-                    </button>
-                    <button type="button" id="pay-tab-btn-card" onclick="switchPayMethod('card')" class="py-2.5 px-3 bg-zinc-900 text-zinc-400 border-2 border-zinc-800 hover:border-zinc-600 flex items-center justify-center gap-2 transition-colors uppercase">
-                        <i data-lucide="credit-card" class="w-4 h-4"></i> Cartão até 12x
-                    </button>
-                </div>
-
-                <!-- ABA 1: PIX DINÂMICO AUTOMÁTICO -->
-                <div id="pay-method-pix" class="space-y-4">
-                    <div class="text-center bg-zinc-950 border border-zinc-800 p-5 rounded-none">
-                        <p class="text-xs text-zinc-400 font-mono mb-3">Aponte a câmera do seu banco para o QR Code abaixo:</p>
-                        
-                        <!-- Canvas do QR Code Pix -->
-                        <div class="inline-block p-3 bg-white border-2 border-zinc-300 shadow-inner">
-                            <canvas id="asaas-pix-canvas" class="w-44 h-44 sm:w-48 sm:h-48 block"></canvas>
-                        </div>
-
-                        <!-- Timer de Expiração -->
-                        <div class="flex items-center justify-center gap-1.5 mt-3 text-zinc-400 font-mono text-[11px]">
-                            <i data-lucide="clock" class="w-3.5 h-3.5 text-yellow-400"></i>
-                            <span>Expira em: <strong class="text-yellow-400" id="pix-countdown-timer">29:59</strong></span>
-                        </div>
-                    </div>
-
-                    <!-- Código Copia e Cola -->
-                    <div>
-                        <label class="block text-zinc-400 font-mono text-xs font-bold uppercase mb-1.5 flex items-center justify-between">
-                            <span>Código Pix Copia e Cola:</span>
-                            <span class="text-[10px] text-zinc-500 font-normal">Chave Dinâmica Segura</span>
-                        </label>
-                        <div class="flex gap-2">
-                            <input type="text" id="asaas-pix-copypaste-input" readonly value="Carregando chave Pix..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-zinc-300 font-mono text-xs focus:outline-none select-all truncate">
-                            <button type="button" onclick="copyAsaasPixCode()" id="btn-copy-pix" class="px-4 py-2 bg-brand text-black font-mono font-bold text-xs uppercase hover:bg-white transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Botão de Teste / Sandbox (Simular Confirmação Instantânea) -->
-                    <div class="pt-2 border-t border-zinc-800 flex items-center justify-between">
-                        <span class="text-[11px] font-mono text-zinc-500 flex items-center gap-1">
-                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i> Confirmação automática 24/7
-                        </span>
-                        <button type="button" onclick="simulateAsaasPaymentSuccess()" class="px-2.5 py-1 bg-zinc-900 border border-brand/50 text-brand text-[10px] font-mono hover:bg-brand hover:text-black transition-colors uppercase font-bold">
-                            🧪 Simular Pagamento Pix (Teste)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- ABA 2: CARTÃO DE CRÉDITO ATÉ 12X -->
-                <div id="pay-method-card" class="space-y-4 hidden font-mono text-xs">
-                    <div>
-                        <label class="block text-zinc-400 uppercase font-bold mb-1">Número do Cartão:</label>
-                        <div class="relative">
-                            <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white focus:outline-none focus:border-brand">
-                            <i data-lucide="credit-card" class="w-4 h-4 absolute right-3 top-3 text-zinc-500"></i>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-zinc-400 uppercase font-bold mb-1">Nome Impresso no Cartão:</label>
-                        <input type="text" id="card-holder" placeholder="NOME COMO ESTA NO CARTAO" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white uppercase focus:outline-none focus:border-brand">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-zinc-400 uppercase font-bold mb-1">Validade (MM/AA):</label>
-                            <input type="text" id="card-expiry" placeholder="12/28" maxlength="5" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white focus:outline-none focus:border-brand">
-                        </div>
-                        <div>
-                            <label class="block text-zinc-400 uppercase font-bold mb-1">CVV (Cód. Segurança):</label>
-                            <input type="password" id="card-cvv" placeholder="123" maxlength="4" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white focus:outline-none focus:border-brand">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-zinc-400 uppercase font-bold mb-1">Opções de Parcelamento:</label>
-                        <select id="card-installments-select" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-brand font-bold focus:outline-none focus:border-brand">
-                            <!-- Injetado dinamicamente com base no valor -->
-                        </select>
-                    </div>
-
-                    <button type="button" onclick="processAsaasCardPayment()" id="btn-submit-card" class="w-full py-3.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] mt-2">
-                        <i data-lucide="lock" class="w-4 h-4"></i> Pagar com Cartão com Segurança
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ========================================================================= -->
-    <!-- MODAL: ACEITE & HOMOLOGAÇÃO DIGITAL DE SOFTWARE (SPRINT 4)                -->
-    <!-- ========================================================================= -->
-    <div id="homologation-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden flex items-center justify-center p-4 font-mono">
-        <div class="bg-zinc-950 border-2 border-brand w-full max-w-lg shadow-[0_0_40px_rgba(204,255,0,0.3)] p-6 space-y-4 text-xs max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 bg-brand"></span>
-                    <h3 class="font-black text-sm text-white uppercase tracking-wider">Termo de Homologação & Aceite</h3>
-                </div>
-                <button type="button" onclick="closeHomologationModal()" class="text-zinc-500 hover:text-white font-bold text-base px-2">✕</button>
-            </div>
-
-            <p class="text-zinc-300 leading-relaxed">
-                Ao clicar em confirmar, você declara ter testado e validado o sistema/site no ambiente de Staging, aprovando o escopo contratado e liberando o deploy definitivo em produção.
-            </p>
-
-            <div class="space-y-3 bg-zinc-900/60 p-4 border border-zinc-800">
-                <div>
-                    <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Nome Completo do Responsável *</label>
-                    <input type="text" id="homologate-signer-name" placeholder="Ex: Roberto Silva" required class="w-full bg-black border border-zinc-700 p-2 text-white focus:outline-none focus:border-brand">
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">CPF ou CNPJ *</label>
-                    <input type="text" id="homologate-signer-doc" placeholder="Ex: 000.000.000-00" required class="w-full bg-black border border-zinc-700 p-2 text-white focus:outline-none focus:border-brand">
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-2">
-                <button type="button" onclick="closeHomologationModal()" class="px-4 py-2 bg-zinc-900 text-zinc-400 font-bold uppercase hover:bg-zinc-800 transition-colors">Voltar</button>
-                <button type="button" onclick="confirmSoftwareHomologation()" class="px-6 py-2 bg-brand text-black font-black uppercase hover:bg-white transition-colors shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                    ✓ Homologar & Concluir
-                </button>
-            </div>
-        </div>
-    </div>
-    
-
-    <!-- Modal: Abrir Chamado no Portal do Cliente -->
-    <!-- MODAL: ABERTURA DE CHAMADO MSP B2B DO CLIENTE -->
-    <div id="portal-new-ticket-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-yellow-400 w-full max-w-lg p-6 font-mono text-xs shadow-[8px_8px_0px_0px_rgba(250,204,21,0.3)] max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
-                <div>
-                    <span class="text-yellow-400 text-[10px] font-bold uppercase block">// SERVICE DESK B2B • SLA 2H</span>
-                    <h3 class="text-base font-black text-white uppercase">Abrir Novo Chamado de Suporte</h3>
-                </div>
-                <button type="button" onclick="closePortalNewTicketModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
-            </div>
-            <form onsubmit="handlePortalSaveTicket(event)" class="space-y-4">
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Estação / Ativo (Opcional):</label>
-                    <input type="text" id="portal-ticket-device" placeholder="Ex: WS-FIN-01 ou Servidor Principal" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Severidade / Urgência:</label>
-                    <select id="portal-ticket-severity" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
-                        <option value="P3_Media">🟡 P3 - Média (Problema em 1 estação, trabalho continua - SLA 2h)</option>
-                        <option value="P1_Critica">🔴 P1 - Crítica (Servidor parado, empresa sem faturar - SLA 30m)</option>
-                        <option value="P2_Alta">🟠 P2 - Alta (Setor financeiro/vendas impactado - SLA 1h)</option>
-                        <option value="P4_Baixa">🟢 P4 - Baixa (Dúvida, instalação de software, melhoria)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Assunto / Resumo do Incidente *</label>
-                    <input type="text" id="portal-ticket-subject" required placeholder="Ex: Erro ao emitir NF-e ou Computador não liga" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400">
-                </div>
-                <div>
-                    <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Descrição Detalhada do Problema *</label>
-                    <textarea id="portal-ticket-desc" rows="3" required placeholder="Descreva o que está acontecendo e se apareceu alguma mensagem de erro..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-yellow-400"></textarea>
-                </div>
-                <div class="pt-3 border-t border-zinc-800 flex justify-end gap-2">
-                    <button type="button" onclick="closePortalNewTicketModal()" class="px-4 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-yellow-400 text-black font-black uppercase hover:bg-white transition-colors">🚀 Abrir Chamado Agora</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
 </body>
 </html>

@@ -4553,36 +4553,15 @@ Qualquer dúvida, estou à disposição!
                 total_parts: 0.00,
                 items: [],
                 public_tracking_token: token,
-                created_at: new Date().toISOString()
-            };
-
             currentWorkOrders.unshift(newOS);
             try {
                 localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
             } catch(err) {}
 
-            // Atualiza CRM de Clientes
-            const existingClient = currentClientsList.find(c => c.whatsapp && c.whatsapp === phone);
-            if (existingClient) {
-                existingClient.orders_count = (existingClient.orders_count || 0) + 1;
-            } else {
-                currentClientsList.unshift({
-                    id: 'cli-' + Date.now(),
-                    name: name,
-                    whatsapp: phone,
-                    channel: channel,
-                    orders_count: 1,
-                    total_spent: 0.00,
-                    created_at: new Date().toISOString()
-                });
-            }
-            try {
-                localStorage.setItem('if_tech_clients', JSON.stringify(currentClientsList));
-            } catch(err) {}
-
             // Sincronização atômica profissional com Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.rpc('rpc_create_work_order_atomic', {
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                client.rpc('rpc_create_work_order_atomic', {
                     p_client_name: name,
                     p_client_whatsapp: phone,
                     p_service_type: serviceType || 'Hardware_Reparo',
@@ -4628,7 +4607,9 @@ Qualquer dúvida, estou à disposição!
 
             const portalLink = document.getElementById('detail-portal-link');
             if (portalLink) {
-                portalLink.href = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
+                const link = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
+                portalLink.href = link;
+                portalLink.textContent = link;
             }
 
             renderDetailActionButtons(wo);
@@ -4636,13 +4617,14 @@ Qualquer dúvida, estou à disposição!
             if (window.lucide) lucide.createIcons();
         }
 
-        function handleOpenOSWhatsApp() {
+        function sendWhatsAppPortalLink() {
             if (!selectedWorkOrder) return;
             const wo = selectedWorkOrder;
             const link = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
             const msg = `Olá ${wo.client_name || 'Cliente'}! Acompanhe o andamento da sua OS #${formatOSNumber(wo.os_number)} em tempo real pelo nosso portal oficial:\n\n🔗 ${link}\n\nQualquer dúvida, estamos à disposição!`;
             sendWhatsAppMessage(wo.client_whatsapp || wo.customer_phone, msg);
         }
+
         function closeOSDetailModal() {
             document.getElementById('os-detail-modal')?.classList.add('hidden');
         }
@@ -4704,12 +4686,19 @@ Qualquer dúvida, estou à disposição!
             } catch(e){}
 
             // Sincronização Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.from('work_orders').update({
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const query = client.from('work_orders').update({
                     status: newStatus,
                     parts_deposit_paid: selectedWorkOrder.parts_deposit_paid || false,
                     parts_deposit_status: selectedWorkOrder.parts_deposit_status || 'PENDING'
-                }).eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+                });
+                if (isUuid(selectedWorkOrder.id)) {
+                    query.eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+                } else if (selectedWorkOrder.os_number) {
+                    query.eq('os_number', parseInt(selectedWorkOrder.os_number, 10)).then(() => {}).catch(() => {});
+                }
             }
 
             showToast('✓ OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' avançou para ' + newStatus.replace(/_/g, ' '), 'success');
@@ -4894,21 +4883,52 @@ Qualquer dúvida, estou à disposição!
             selectedWorkOrder.total_parts_cost = partsCostTotal;
             selectedWorkOrder.total_amount = total;
             selectedWorkOrder.status = 'Orcamento_Aguardando_Aprovacao';
+            selectedWorkOrder.parts_deposit_required = partsTotal;
+            selectedWorkOrder.parts_deposit_paid = (partsTotal === 0);
+            selectedWorkOrder.parts_deposit_status = (partsTotal === 0 ? 'CONFIRMED' : 'PENDING');
 
-            // Persistência local segura
+            // Persistência local imediata (Zero-Lag UI)
             try {
                 localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
             } catch(err) {}
 
-            // Sincronização Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.from('work_orders').update({
-                    status: 'Orcamento_Aguardando_Aprovacao',
-                    technical_diagnosis: diagnosisText,
-                    total_labor: labor,
-                    total_parts: partsTotal,
-                    total_amount: total
-                }).eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+            // Sincronização Supabase via RPC Atômica com Fallback Inteligente
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const validId = isUuid(selectedWorkOrder.id) ? selectedWorkOrder.id : null;
+                const validOsNum = parseInt(selectedWorkOrder.os_number, 10) || null;
+
+                // 1. Tenta RPC Primária Atômica rpc_save_budget_atomic
+                client.rpc('rpc_save_budget_atomic', {
+                    p_os_number: validOsNum,
+                    p_work_order_id: validId,
+                    p_service_type: serviceType,
+                    p_technical_diagnosis: diagnosisText,
+                    p_total_labor: labor,
+                    p_total_parts: partsTotal,
+                    p_items: partsList,
+                    p_status: 'Orcamento_Aguardando_Aprovacao'
+                }).then(({ data, error }) => {
+                    if (error) {
+                        console.warn("RPC rpc_save_budget_atomic falhou, tentando fallback rpc_update_work_order_budget...", error);
+                        // 2. Fallback para rpc_update_work_order_budget
+                        if (validOsNum) {
+                            client.rpc('rpc_update_work_order_budget', {
+                                p_os_number: validOsNum,
+                                p_service_type: serviceType,
+                                p_diagnosis: diagnosisText,
+                                p_items: partsList
+                            }).catch(() => {});
+                        }
+                    } else if (data && data.public_tracking_token) {
+                        selectedWorkOrder.public_tracking_token = data.public_tracking_token;
+                        if (data.work_order_id) selectedWorkOrder.id = data.work_order_id;
+                        try { localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); } catch(e){}
+                    }
+                }).catch(err => {
+                    console.warn("Erro de rede ao salvar orçamento no Supabase:", err);
+                });
             }
 
             closeBudgetModal();
@@ -4968,13 +4988,6 @@ Qualquer dúvida, estou à disposição!
                     </style>
                 </head>
                 <body>
-                    <div class="text-center bold border-b">
-                        <div style="font-size: 16px;">IF TECH // BANCADA</div>
-                        <div style="font-size: 10px;">ORDEM DE SERVIÇO #${formatOSNumber(wo.os_number)}</div>
-                    </div>
-                    <div><strong>Cliente:</strong> ${escapeHtml(wo.client_name || '')}</div>
-                    <div><strong>Aparelho:</strong> ${escapeHtml(wo.device_brand || '')} ${escapeHtml(wo.device_model || '')}</div>
-                    <div><strong>Defeito:</strong> ${escapeHtml(wo.reported_defect || '')}</div>
                     <div class="text-center" style="margin-top: 8px; font-size: 9px;">
                         Rastreamento: iflcosta.tech/status<br/>
                         Bragança Paulista - SP
@@ -5061,12 +5074,22 @@ IF Tech // Engenharia de Hardware`;
             } catch(e){}
 
             // Sincronização Supabase
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                supabaseClient.from('work_orders').update({
-                    status: 'Na_Bancada',
-                    parts_deposit_paid: true,
-                    parts_deposit_status: 'CONFIRMED'
-                }).eq('id', wo.id).then(() => {}).catch(() => {});
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const asaasId = wo.asaas_payment_id || ('pay_mock_' + wo.os_number);
+                client.rpc('rpc_confirm_asaas_payment', {
+                    p_asaas_payment_id: asaasId,
+                    p_paid_value: parseFloat(wo.total_parts || 0)
+                }).catch(() => {
+                    const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                    const query = client.from('work_orders').update({
+                        status: 'Na_Bancada',
+                        parts_deposit_paid: true,
+                        parts_deposit_status: 'CONFIRMED'
+                    });
+                    if (isUuid(wo.id)) query.eq('id', wo.id).then(() => {}).catch(() => {});
+                    else if (wo.os_number) query.eq('os_number', parseInt(wo.os_number, 10)).then(() => {}).catch(() => {});
+                });
             }
 
             showToast('✓ Sinal Asaas confirmado! OS movida para 03. Na Bancada.', 'success');
