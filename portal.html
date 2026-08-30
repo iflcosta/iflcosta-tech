@@ -1353,7 +1353,7 @@
                                 </div>
                             `;
                             actionButtonHtml = `
-                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token || wo.id || String(osNum))}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
+                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token || wo.id || (osNum + \'\'))}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
                                     <i data-lucide="check-circle" class="w-4 h-4"></i> Aprovar Orçamento & Solicitar Peças
                                 </button>
                             `;
@@ -1389,7 +1389,7 @@
                                 </div>
                             `;
                             actionButtonHtml = `
-                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token || wo.id || String(osNum))}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
+                                <button onclick="handleApproveBudget('${escapeHtml(wo.public_tracking_token || wo.id || (osNum + \'\'))}')" id="btn-approve-budget" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(204,255,0,0.4)] animate-pulse">
                                     <i data-lucide="check-circle" class="w-4 h-4"></i> Aprovar Orçamento & Autorizar Início
                                 </button>
                             `;
