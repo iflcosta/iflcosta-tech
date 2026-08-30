@@ -1761,7 +1761,7 @@
                     try {
                         const { data, error } = await client.rpc('rpc_advance_work_order_status_by_token', {
                             p_token: validToken,
-                            p_new_status: 'Aprovado_Pelo_Cliente'
+                            p_new_status: 'Aprovado_Fila_Bancada'
                         });
                         if (!error && data && data.success) approvedOk = true;
                     } catch(rpcErr) {
@@ -1776,7 +1776,7 @@
                         const orders = JSON.parse(rawOrders);
                         const target = orders.find(o => o.public_tracking_token === token || String(o.os_number) === String(token) || o.id === token);
                         if (target) {
-                            target.status = 'Aprovado_Pelo_Cliente';
+                            target.status = 'Aprovado_Fila_Bancada';
                             localStorage.setItem('if_tech_work_orders', JSON.stringify(orders));
                             approvedOk = true;
                         }
@@ -1793,14 +1793,14 @@
                     }
                 } else {
                     if (currentWorkOrderData) {
-                        currentWorkOrderData.status = 'Aprovado_Pelo_Cliente';
+                        currentWorkOrderData.status = 'Aprovado_Fila_Bancada';
                         renderWorkOrderData(currentWorkOrderData);
                     }
                 }
             } catch (err) {
                 console.error("Erro ao aprovar orçamento:", err);
                 if (currentWorkOrderData) {
-                    currentWorkOrderData.status = 'Aprovado_Pelo_Cliente';
+                    currentWorkOrderData.status = 'Aprovado_Fila_Bancada';
                     renderWorkOrderData(currentWorkOrderData);
                 }
             }

@@ -2791,11 +2791,12 @@ Qualquer dúvida, estou à disposição!
                     colTriagem.appendChild(card);
                 } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('diagnostico') || s.includes('encomendada') || s.includes('fila') || s.includes('aprovad')) {
                     cO++;
-                    card.className += " border-yellow-800/80 hover:border-yellow-400";
+                    const isAprovadoFila = s.includes('aprovad') || s.includes('fila') || s.includes('encomendada');
+                    card.className += isAprovadoFila ? " border-brand/80 hover:border-brand" : " border-yellow-800/80 hover:border-yellow-400";
                     card.innerHTML = `
                         <div class="flex items-center justify-between gap-1 mb-2">
                             <div class="flex items-center gap-1.5 min-w-0">
-                                <span class="text-yellow-400 font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
+                                <span class="${isAprovadoFila ? 'text-brand' : 'text-yellow-400'} font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
                                 ${channelBadge}
                             </div>
                             <span class="text-[9px] text-zinc-500 font-mono whitespace-nowrap flex-shrink-0">${new Date(wo.created_at || Date.now()).toLocaleDateString('pt-BR')}</span>
@@ -2804,7 +2805,7 @@ Qualquer dúvida, estou à disposição!
                         <p class="text-zinc-300 text-[11px] line-clamp-2 font-sans">${escapeHtml(wo.reported_defect || 'Orçamento gerado.')}</p>
                         <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
                             <span class="text-zinc-400">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
-                            <span class="text-yellow-400 font-bold">Aguardando</span>
+                            <span class="${isAprovadoFila ? 'text-brand font-bold animate-pulse' : 'text-yellow-400 font-bold'}">${isAprovadoFila ? '2B: Fila (Aprovado)' : '2A: Aguardando'}</span>
                         </div>
                     `;
                     colOrcamento.appendChild(card);
