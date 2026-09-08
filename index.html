@@ -211,9 +211,17 @@
                     <span>Soluções</span>
                     <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
                 </a>
+                <a href="#diagnostico" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-400 hover:text-brand hover:bg-zinc-900/60 px-3 py-2.5 pl-6 border-b border-zinc-800/60 transition-colors text-xs">
+                    <span class="flex items-center gap-2"><span class="text-brand">↳</span> Diagnóstico 1-Clique</span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-zinc-700"></i>
+                </a>
                 <a href="#garantias" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
                     <span>Garantias</span>
                     <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
+                </a>
+                <a href="#comparativo" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-400 hover:text-brand hover:bg-zinc-900/60 px-3 py-2.5 pl-6 border-b border-zinc-800/60 transition-colors text-xs">
+                    <span class="flex items-center gap-2"><span class="text-brand">↳</span> Comparativo de Mercado</span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-zinc-700"></i>
                 </a>
                 <a href="#provas" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
                     <span>Resultados</span>
@@ -221,6 +229,10 @@
                 </a>
                 <a href="#processo" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
                     <span>Processo</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
+                </a>
+                <a href="#faq" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
+                    <span>Dúvidas Frequentes (FAQ)</span>
                     <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
                 </a>
             </div>
@@ -416,7 +428,7 @@
         </section>
 
         <!-- Seletor Interativo de Diagnóstico no WhatsApp (Zero Fricção) -->
-        <section class="py-20 sm:py-24 bg-black border-b-2 border-zinc-800 font-mono relative">
+        <section id="diagnostico" class="py-20 sm:py-24 bg-black border-b-2 border-zinc-800 font-mono relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-12 text-center sm:text-left">
                     <span class="text-brand text-xs sm:text-sm font-bold uppercase mb-2 block">[ DIAGNÓSTICO RÁPIDO // 1 CLIQUE ]</span>
@@ -549,7 +561,7 @@
         </section>
 
         <!-- Tabela Comparativa de Autoridade: Assistência Tradicional vs IF Tech -->
-        <section class="py-20 sm:py-24 bg-black border-b-2 border-zinc-800 font-mono">
+        <section id="comparativo" class="py-20 sm:py-24 bg-black border-b-2 border-zinc-800 font-mono">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-12 text-center sm:text-left">
                     <span class="text-brand text-xs sm:text-sm font-bold uppercase mb-2 block">[ TRANSPARÊNCIA & ENGENHARIA ]</span>
@@ -781,7 +793,7 @@
         </section>
 
         <!-- FAQ Brutalista (Dúvidas Frequentes) -->
-        <section class="py-20 sm:py-24 bg-dark border-b-2 border-zinc-800">
+        <section id="faq" class="py-20 sm:py-24 bg-dark border-b-2 border-zinc-800">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-12 text-center sm:text-left">
                     <span class="text-brand font-mono text-xs sm:text-sm font-bold uppercase mb-2 block">[ Dúvidas Frequentes ]</span>
@@ -819,7 +831,7 @@
         </section>
 
         <!-- CTA Final Brutalista Híbrido -->
-        <section class="py-20 sm:py-24 bg-brand text-black text-center">
+        <section id="contato" class="py-20 sm:py-24 bg-brand text-black text-center">
             <div class="max-w-4xl mx-auto px-4">
                 <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
                     Performance para seu hardware.<br class="hidden sm:inline"> Estabilidade para a TI da sua empresa.
@@ -837,17 +849,29 @@
 
     <!-- Footer Brutalista -->
     <footer class="bg-dark border-t-2 border-zinc-800 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
-                <div class="w-3 h-6 bg-brand"></div>
-                IF Tech
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 pb-8 border-b border-zinc-800/80">
+                <div class="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                    <div class="w-3 h-6 bg-brand"></div>
+                    IF Tech
+                </div>
+                <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wider text-zinc-400">
+                    <a href="#solucoes" class="hover:text-brand transition-colors">Soluções</a>
+                    <a href="#diagnostico" class="hover:text-brand transition-colors">Diagnóstico</a>
+                    <a href="#garantias" class="hover:text-brand transition-colors">Garantias</a>
+                    <a href="#comparativo" class="hover:text-brand transition-colors">Comparativo</a>
+                    <a href="#provas" class="hover:text-brand transition-colors">Resultados</a>
+                    <a href="#processo" class="hover:text-brand transition-colors">Processo</a>
+                    <a href="#faq" class="hover:text-brand transition-colors">FAQ</a>
+                    <a href="/status" class="text-brand font-bold hover:underline">Acompanhar OS</a>
+                </div>
+                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="text-white hover:text-brand font-bold uppercase text-sm tracking-widest transition-colors font-mono">
+                    [ (11) 91969-1542 ]
+                </a>
             </div>
-            <div class="font-mono text-zinc-500 text-sm text-center">
+            <div class="pt-6 text-center font-mono text-zinc-500 text-xs">
                 &copy; 2025 IF Tech &bull; Bragança Paulista - SP &bull; Todos os direitos reservados.
             </div>
-            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="text-white hover:text-brand font-bold uppercase text-sm tracking-widest transition-colors font-mono">
-                [ (11) 91969-1542 ]
-            </a>
         </div>
     </footer>
 
