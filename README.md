@@ -26,6 +26,8 @@ Toda a lógica de negócios, tarefas concluídas e o ecossistema operacional int
 - [Script de Migração do Supabase](docs/ops/supabase_migration_v1.sql): Script DDL executado no projeto `togrnwxazuweuihlaljo`.
 - [Procedimentos Operacionais (SOP)](docs/ops/STANDARD_OPERATING_PROCEDURES.md): Checklist de bancada, ciclo de orçamento, testes de estresse e onboarding MSP.
 - [Templates de Comunicação](docs/ops/COMMUNICATION_TEMPLATES.md): Modelos de WhatsApp e PDF para orçamentos, aprovações, notificações de conclusão e contratos B2B.
+- [Blueprint do Espaço Físico (Lab & HQ)](docs/ops/PHYSICAL_LAB_BLUEPRINT.md): Planta baixa, zoneamento operacional, Kanban físico (Tote Box), metodologia 5S, protocolos de limpeza, infraestrutura de formatação em massa (KVM/PXE) e especificação de mobiliário/equipamentos.
+- [Ideias de Melhoria Contínua](docs/ops/CONTINUOUS_IMPROVEMENT_IDEAS.md): 19 ideias concretas para elevar profissionalismo, fluxo, CX e automação — priorizadas por Quick Win / Médio Prazo / Estratégico.
 
 ---
 

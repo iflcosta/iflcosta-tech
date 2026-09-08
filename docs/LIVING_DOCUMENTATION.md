@@ -313,3 +313,4 @@ advanceOSStatus(Entregue) -> Supabase .update({status: Entregue})
 5. Ao criar novo status: atualizar enum SQL + select HTML + kanban board + portal stepper
 6. Ao criar nova RPC: documentar aqui na Secao 5
 7. Ao adicionar persistencia Supabase: atualizar a coluna Supabase na Secao 3
+8. Para alteracoes no layout fisico, fluxos presenciais, 5S ou Kanban fisico: consultar docs/ops/PHYSICAL_LAB_BLUEPRINT.md (Imagens e renders oficiais salvos em assets/img/lab/).
