@@ -1937,7 +1937,12 @@ Qualquer dúvida, estou à disposição!
                     : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
             }
 
-            sendWhatsAppMessage(phone, msg);
+            // Exibir modal para revisão e disparo consciente do operador
+            const modalEl = document.getElementById('whatsapp-modal');
+            if (modalEl) {
+                modalEl.classList.remove('hidden');
+                if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+            }
         }
 
         function formatOSNumber(num) {
@@ -2847,7 +2852,7 @@ Qualquer dúvida, estou à disposição!
                         </div>
                     `;
                     colQA.appendChild(card);
-                } else if (s.includes('pronto') || (!s.includes('entregue') && !s.includes('cancelad') && !s.includes('recusad'))) {
+                } else if (s.includes('pronto')) {
                     cP++;
                     card.className += " border-zinc-600 hover:border-brand";
                     card.innerHTML = `
@@ -3216,6 +3221,23 @@ Qualquer dúvida, estou à disposição!
             });
 
             saveInventoryStorage();
+
+            // Sincronização Supabase para baixa de estoque
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                posCart.forEach(cartItem => {
+                    const prod = currentInventoryProducts.find(p => p.id === cartItem.id || p.sku === cartItem.sku);
+                    if (prod) {
+                        client.from('products')
+                            .update({ current_stock: prod.current_stock, updated_at: new Date().toISOString() })
+                            .match({ sku: prod.sku })
+                            .then(({ error }) => {
+                                if (error) console.warn(`Aviso ao atualizar estoque de ${prod.sku} no Supabase:`, error);
+                            }).catch(err => console.warn("Exceção ao atualizar estoque no Supabase:", err));
+                    }
+                });
+            }
+
             showScanNotification(`✓ Venda ${saleNumber} concluída com sucesso! Lucro: R$ ${profit.toFixed(2).replace('.', ',')}`, 'success');
 
             // 3. Limpar carrinho e atualizar UI
@@ -3436,6 +3458,27 @@ Qualquer dúvida, estou à disposição!
             });
 
             saveInventoryStorage();
+
+            // Sincronização Supabase
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const prodPayload = {
+                    sku: sku,
+                    name: name,
+                    category: cat,
+                    brand: brand,
+                    cost_price: cost,
+                    selling_price: price,
+                    current_stock: existingIdx >= 0 ? currentInventoryProducts[existingIdx].current_stock : qty,
+                    reserved_stock: 0,
+                    min_stock: 2,
+                    ean: ean || null
+                };
+                client.from('products').upsert(prodPayload, { onConflict: 'sku' }).then(({ error }) => {
+                    if (error) console.warn("Aviso ao sincronizar produto no Supabase:", error);
+                }).catch(err => console.warn("Exceção ao sincronizar produto no Supabase:", err));
+            }
+
             closeNewProductModal();
             showScanNotification(`✓ Produto "${name}" (${sku}) cadastrado e salvo com sucesso!`, 'success');
             renderInventoryCatalogTable();
@@ -4410,6 +4453,29 @@ Qualquer dúvida, estou à disposição!
 
             currentMSPTickets.unshift(newT);
             saveMSPStorage();
+
+            // Sincronização Supabase se disponível
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                client.from('msp_tickets').insert({
+                    ticket_number: num,
+                    contract_id: cId && cId.includes('-') && cId.length > 20 ? cId : null,
+                    company_name: contract ? contract.company_name : "Empresa",
+                    device_id: devId && devId.includes('-') && devId.length > 20 ? devId : null,
+                    device_tag: dev ? dev.device_tag : "Suporte Geral",
+                    opened_by_name: requester,
+                    opened_by_whatsapp: wpp,
+                    title: title,
+                    description: desc,
+                    category: "Suporte_Estacao",
+                    severity: severity,
+                    status: "Aberto",
+                    sla_due_at: newT.sla_due_at
+                }).then(({ error }) => {
+                    if (error) console.warn("Aviso ao salvar ticket MSP no Supabase:", error);
+                }).catch(err => console.warn("Exceção ao salvar ticket MSP no Supabase:", err));
+            }
+
             closeNewMSPTicketModal();
             renderMSPDashboard();
             showScanNotification(`✓ Chamado ${num} aberto com SLA de ${slaHours}h!`, 'success');
@@ -5135,8 +5201,33 @@ Qualquer dúvida, estou à disposição!
         }
 
         function copyWppText() {
-            if (selectedWorkOrder) {
-                openWhatsAppNotificationModal(selectedWorkOrder, 'orcamento');
+            const previewEl = document.getElementById('whatsapp-msg-preview');
+            const text = previewEl ? previewEl.textContent.trim() : '';
+            if (!text) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('✓ Mensagem copiada para a área de transferência!', 'success');
+                }).catch(() => {
+                    copyTextFallback(text);
+                });
+            } else {
+                copyTextFallback(text);
+            }
+        }
+
+        function copyTextFallback(text) {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('✓ Mensagem copiada!', 'success');
+            } catch(e) {
+                showToast('Aperte Ctrl+C para copiar a mensagem', 'info');
             }
         }
 
@@ -5410,6 +5501,29 @@ Qualquer dúvida, estou à disposição!
                     currentMSPContracts = mspData;
                     try { localStorage.setItem('if_tech_msp_contracts', JSON.stringify(currentMSPContracts)); } catch(e){}
                     if (typeof renderMSPDashboard === 'function') renderMSPDashboard();
+                }
+
+                // 5. Carregar Produtos e Estoque do Supabase
+                const { data: prodData, error: prodError } = await client
+                    .from('products')
+                    .select('*')
+                    .order('name');
+                if (!prodError && Array.isArray(prodData) && prodData.length > 0) {
+                    currentInventoryProducts = prodData;
+                    try { localStorage.setItem('if_tech_inventory_products', JSON.stringify(currentInventoryProducts)); } catch(e){}
+                    if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable();
+                    if (typeof renderPOSGrid === 'function') renderPOSGrid();
+                }
+
+                // 6. Carregar Tickets MSP do Supabase
+                const { data: ticketData, error: ticketError } = await client
+                    .from('msp_tickets')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (!ticketError && Array.isArray(ticketData) && ticketData.length > 0) {
+                    currentMSPTickets = ticketData;
+                    try { localStorage.setItem('if_tech_msp_tickets', JSON.stringify(currentMSPTickets)); } catch(e){}
+                    if (typeof renderMSPTicketsKanban === 'function') renderMSPTicketsKanban();
                 }
             } catch (err) {
                 console.warn("Aviso ao carregar dados do Supabase:", err);

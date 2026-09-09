@@ -1081,9 +1081,8 @@
             const isWaitingApproval = rawStatus.includes("aguardando") || rawStatus.includes("pendente") || rawStatus.includes("diagnostico_concluido") || rawStatus === "orcamento_disponivel";
             const isApproved = (rawStatus === 'orcamento_aprovado' || rawStatus.includes("aprovado") || rawStatus.includes("fila") || rawStatus.includes("bancada") || rawStatus.includes("qa") || rawStatus.includes("pronto") || rawStatus.includes("entregue") || (hasParts && (rawStatus.includes("encomendada") || wo.parts_deposit_paid))) && !isWaitingApproval;
 
-            const isExplicitTriagem = (rawStatus === 'triagem' || !rawStatus) && (totalLabor === 0 && totalParts === 0 && grandTotal === 0);
-            const isOrcamento = !isExplicitTriagem && (rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || (grandTotal > 0 && !rawStatus.includes("triagem")) || isApproved) && !isBancada && !isQA && !isPronto && !isEntregue;
-            const isTriagem = !isOrcamento && !isBancada && !isQA && !isPronto && !isEntregue;
+            const isTriagem = (rawStatus === 'triagem' || rawStatus.includes('triagem') || !rawStatus) && !isBancada && !isQA && !isPronto && !isEntregue;
+            const isOrcamento = !isTriagem && (rawStatus.includes("orcamento") || rawStatus.includes("diagnostico") || rawStatus.includes("sinal") || rawStatus.includes("fila") || rawStatus.includes("encomendada") || isApproved) && !isBancada && !isQA && !isPronto && !isEntregue;
 
             if (isTriagem) {
                 if (statusBadgeText) statusBadgeText.textContent = "01. EM TRIAGEM & DIAGNÓSTICO";
@@ -1094,7 +1093,18 @@
                 setStepVisual(4, 'pending', 'Telemetria 15 Min');
                 setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
             } else if (isOrcamento) {
-                if (!hasParts) {
+                const isPecaEncomendada = rawStatus.includes("encomendada");
+                const isSinalPago = isPecaEncomendada || (hasParts && wo.parts_deposit_paid);
+
+                if (isPecaEncomendada) {
+                    if (statusBadgeText) statusBadgeText.textContent = "02. SINAL PAGO • PEÇA EM TRÂNSITO";
+                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                    setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                    setStepVisual(2, 'active-cyan', 'Peça em Trânsito');
+                    setStepVisual(3, 'pending', 'Reparo / Execução');
+                    setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                    setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
+                } else if (!hasParts) {
                     if (isApproved) {
                         if (statusBadgeText) statusBadgeText.textContent = "02. ORÇAMENTO APROVADO • NA FILA DE BANCADA";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/10 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
@@ -1113,7 +1123,6 @@
                         setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
                     }
                 } else {
-                    const isSinalPago = rawStatus.includes("encomendada") || wo.parts_deposit_paid;
                     if (isSinalPago) {
                         if (statusBadgeText) statusBadgeText.textContent = "02. SINAL PAGO • PEÇA EM TRÂNSITO";
                         if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
