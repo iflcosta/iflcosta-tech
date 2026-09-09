@@ -5504,7 +5504,7 @@ Qualquer dúvida, estou à disposição!
                     .select('*, clients(*), work_order_items(*)')
                     .order('created_at', { ascending: false });
 
-                if (!woError && Array.isArray(woData) && woData.length > 0) {
+                if (!woError && Array.isArray(woData)) {
                     currentWorkOrders = woData.map(w => {
                         const cli = w.clients || {};
                         return {
@@ -5543,7 +5543,7 @@ Qualquer dúvida, estou à disposição!
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                if (!cliError && Array.isArray(cliData) && cliData.length > 0) {
+                if (!cliError && Array.isArray(cliData)) {
                     currentClientsList = cliData.map(c => ({
                         id: c.id,
                         name: c.name,
@@ -5564,7 +5564,7 @@ Qualquer dúvida, estou à disposição!
                     .from('software_projects')
                     .select('*')
                     .order('created_at', { ascending: false });
-                if (!swError && Array.isArray(swData) && swData.length > 0) {
+                if (!swError && Array.isArray(swData)) {
                     currentSoftwareProjects = swData;
                     try { localStorage.setItem('if_tech_software_projects', JSON.stringify(currentSoftwareProjects)); } catch(e){}
                     if (typeof renderSoftwareProjectsDashboard === 'function') renderSoftwareProjectsDashboard();
@@ -5574,7 +5574,7 @@ Qualquer dúvida, estou à disposição!
                 const { data: mspData, error: mspError } = await client
                     .from('msp_contracts')
                     .select('*');
-                if (!mspError && Array.isArray(mspData) && mspData.length > 0) {
+                if (!mspError && Array.isArray(mspData)) {
                     currentMSPContracts = mspData;
                     try { localStorage.setItem('if_tech_msp_contracts', JSON.stringify(currentMSPContracts)); } catch(e){}
                     if (typeof renderMSPDashboard === 'function') renderMSPDashboard();
@@ -5585,7 +5585,7 @@ Qualquer dúvida, estou à disposição!
                     .from('products')
                     .select('*')
                     .order('name');
-                if (!prodError && Array.isArray(prodData) && prodData.length > 0) {
+                if (!prodError && Array.isArray(prodData)) {
                     currentInventoryProducts = prodData;
                     try { localStorage.setItem('if_tech_inventory_products', JSON.stringify(currentInventoryProducts)); } catch(e){}
                     if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable();
@@ -5598,7 +5598,7 @@ Qualquer dúvida, estou à disposição!
                     .select('*')
                     .order('created_at', { ascending: false })
                     .limit(100);
-                if (!kardexError && Array.isArray(kardexData) && kardexData.length > 0) {
+                if (!kardexError && Array.isArray(kardexData)) {
                     kardexMovements = kardexData.map(k => ({
                         date: k.created_at,
                         type: k.movement_type,
@@ -5618,7 +5618,7 @@ Qualquer dúvida, estou à disposição!
                     .from('msp_tickets')
                     .select('*')
                     .order('created_at', { ascending: false });
-                if (!ticketError && Array.isArray(ticketData) && ticketData.length > 0) {
+                if (!ticketError && Array.isArray(ticketData)) {
                     currentMSPTickets = ticketData;
                     try { localStorage.setItem('if_tech_msp_tickets', JSON.stringify(currentMSPTickets)); } catch(e){}
                     if (typeof renderMSPTicketsKanban === 'function') renderMSPTicketsKanban();
