@@ -1500,155 +1500,173 @@
         <!-- ============================================================= -->
     <!-- MODAL DEDICADO: ELABORAÇÃO DE ORÇAMENTO & LAUDO TÉCNICO DE OS -->
     <!-- ============================================================= -->
-    <div id="budget-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-4xl p-6 sm:p-8 relative font-mono shadow-[8px_8px_0px_0px_rgba(204,255,0,0.35)] max-h-[90vh] overflow-y-auto">
-            <button onclick="closeBudgetModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <div class="flex items-center gap-2 mb-1">
-                <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
-                <span class="text-brand text-xs font-bold uppercase tracking-wider">[ BANCADA // ELABORAÇÃO DE ORÇAMENTO & LAUDO ]</span>
-            </div>
-
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b-2 border-zinc-800 pb-4 mb-6">
+    <div id="budget-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-black border-2 border-brand w-full max-w-4xl flex flex-col max-h-[92vh] font-mono shadow-[8px_8px_0px_0px_rgba(204,255,0,0.35)] overflow-hidden">
+            
+            <!-- HEADER (FIXO NO TOPO - NUNCA ROLA) -->
+            <div class="p-4 sm:p-6 border-b-2 border-zinc-800 shrink-0 relative bg-zinc-950 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
+                        <span class="text-brand text-xs font-bold uppercase tracking-wider">[ BANCADA // ELABORAÇÃO DE ORÇAMENTO & LAUDO ]</span>
+                    </div>
                     <h3 class="text-xl sm:text-2xl font-extrabold text-white" id="budget-modal-title">Orçamento da OS #1001</h3>
                     <p class="text-xs text-zinc-400 mt-0.5" id="budget-modal-client-info">Cliente: - • WhatsApp: -</p>
                 </div>
-                <span class="px-3 py-1 bg-yellow-950/80 border border-yellow-500 text-yellow-400 text-xs font-bold uppercase">
-                    Etapa: 02. Orçamento
-                </span>
+                <div class="flex items-center gap-2">
+                    <span class="px-3 py-1 bg-yellow-950/80 border border-yellow-500 text-yellow-400 text-xs font-bold uppercase">
+                        Etapa: 02. Orçamento
+                    </span>
+                    <button type="button" onclick="closeBudgetModal()" class="text-zinc-400 hover:text-white p-1">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
             </div>
 
-            <form id="budget-modal-form" onsubmit="handleSaveBudgetFromModal(event)" class="space-y-6 text-xs">
-                <!-- Defeito de Entrada Relatado -->
-                <div class="bg-zinc-950 border border-zinc-800 p-3.5">
-                    <span class="text-zinc-500 text-[10px] uppercase font-bold block mb-1">Defeito Relatado na Entrada:</span>
-                    <p class="text-zinc-300 font-sans text-xs sm:text-sm" id="budget-modal-defect-text">-</p>
-                </div>
-
-                <!-- Categoria do Serviço -->
-                <div>
-                    <label class="block text-zinc-400 uppercase font-bold mb-1">Categoria do Serviço *</label>
-                    <select id="budget-modal-service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand">
-                        <option value="Hardware_Reparo">🔧 Reparo Eletrônico de Placa-Mãe (Break-Fix)</option>
-                        <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica (Thermal Grizzly)</option>
-                        <option value="Hardware_Upgrade">⚡ Upgrade de Componentes (SSD / RAM / GPU)</option>
-                        <option value="Troca_Tela_Teclado">🖥️ Troca de Display LCD / Teclado / Carcaça</option>
-                        <option value="Formatacao_Software">💻 Formatação Limpa & Otimização Windows 11 PRO</option>
-                    </select>
-                </div>
-
-                <!-- Bloco de Laudo Técnico com Presets -->
-                <div class="bg-zinc-950 border-2 border-zinc-800 p-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <label class="text-brand font-bold uppercase flex items-center gap-1.5">
-                            <i data-lucide="microscope" class="w-4 h-4"></i> Laudo Técnico, Causa Raiz & Escopo Coberto (CDC 90D)
-                        </label>
-                        <span class="text-[10px] text-zinc-400">Limita a garantia jurídica ao reparo executado</span>
+            <!-- CORPO ROLÁVEL (flex-1 overflow-y-auto) -->
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 text-xs">
+                <form id="budget-modal-form" onsubmit="handleSaveBudgetFromModal(event, false)" class="space-y-6">
+                    <!-- Defeito de Entrada Relatado -->
+                    <div class="bg-zinc-950 border border-zinc-800 p-3.5">
+                        <span class="text-zinc-500 text-[10px] uppercase font-bold block mb-1">Defeito Relatado na Entrada:</span>
+                        <p class="text-zinc-300 font-sans text-xs sm:text-sm" id="budget-modal-defect-text">-</p>
                     </div>
 
-                    <!-- Presets Rápidos de 1 Clique -->
-                    <div class="flex flex-wrap gap-1.5 pt-1">
-                        <span class="text-[10px] text-zinc-500 py-1 uppercase font-bold">Presets:</span>
-                        <button type="button" onclick="injectModalDiagnosisPreset('curto_19v')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                            ⚡ Curto Linha 19V
-                        </button>
-                        <button type="button" onclick="injectModalDiagnosisPreset('limpeza_mx4')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                            ❄️ Limpeza + Thermal Grizzly
-                        </button>
-                        <button type="button" onclick="injectModalDiagnosisPreset('upgrade_nvme')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                            💾 Upgrade SSD NVMe
-                        </button>
-                        <button type="button" onclick="injectModalDiagnosisPreset('tela_lcd')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                            🖥️ Troca de Display LCD
-                        </button>
-                        <button type="button" onclick="injectModalDiagnosisPreset('desoxidacao')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
-                            💧 Desoxidação Química
-                        </button>
+                    <!-- Categoria do Serviço -->
+                    <div>
+                        <label class="block text-zinc-400 uppercase font-bold mb-1">Categoria do Serviço *</label>
+                        <select id="budget-modal-service-type" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand">
+                            <option value="Hardware_Reparo">🔧 Reparo Eletrônico de Placa-Mãe (Break-Fix)</option>
+                            <option value="Limpeza_Preventiva">🧼 Limpeza Preventiva & Pasta Térmica (Thermal Grizzly)</option>
+                            <option value="Hardware_Upgrade">⚡ Upgrade de Componentes (SSD / RAM / GPU)</option>
+                            <option value="Troca_Tela_Teclado">🖥️ Troca de Display LCD / Teclado / Carcaça</option>
+                            <option value="Formatacao_Software">💻 Formatação Limpa & Otimização Windows 11 PRO</option>
+                        </select>
                     </div>
 
-                    <textarea id="budget-modal-diagnosis" rows="3" placeholder="Descreva a causa raiz identificada e a solução técnica aplicada..." class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand leading-relaxed"></textarea>
-                </div>
-
-                <!-- Tabela de Peças & Hardware -->
-                <div class="border-2 border-zinc-800 bg-zinc-950 p-4">
-                    <div class="flex justify-between items-center mb-3">
-                        <div>
-                            <span class="text-brand font-bold uppercase text-xs block">[ Peças & Componentes Necessários ]</span>
-                            <span class="text-[10px] text-zinc-500 font-sans">O cliente não vê custo nem lucro, apenas o valor final de venda.</span>
+                    <!-- Bloco de Laudo Técnico com Presets -->
+                    <div class="bg-zinc-950 border-2 border-zinc-800 p-4 space-y-3">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <label class="text-brand font-bold uppercase flex items-center gap-1.5">
+                                <i data-lucide="microscope" class="w-4 h-4"></i> Laudo Técnico, Causa Raiz & Escopo Coberto (CDC 90D)
+                            </label>
+                            <span class="text-[10px] text-zinc-400">Limita a garantia jurídica ao reparo executado</span>
                         </div>
-                        <button type="button" onclick="addModalBudgetPartRow()" class="px-3 py-1.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1">
-                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Peça
-                        </button>
+
+                        <!-- Presets Rápidos de 1 Clique -->
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] text-zinc-500 py-1 uppercase font-bold">Presets:</span>
+                            <button type="button" onclick="injectModalDiagnosisPreset('curto_19v')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                ⚡ Curto Linha 19V
+                            </button>
+                            <button type="button" onclick="injectModalDiagnosisPreset('limpeza_mx4')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                ❄️ Limpeza + Thermal Grizzly
+                            </button>
+                            <button type="button" onclick="injectModalDiagnosisPreset('upgrade_nvme')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                💾 Upgrade SSD NVMe
+                            </button>
+                            <button type="button" onclick="injectModalDiagnosisPreset('tela_lcd')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                🖥️ Troca de Display LCD
+                            </button>
+                            <button type="button" onclick="injectModalDiagnosisPreset('desoxidacao')" class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 text-[11px] font-mono transition-colors">
+                                💧 Desoxidação Química
+                            </button>
+                        </div>
+
+                        <textarea id="budget-modal-diagnosis" rows="3" placeholder="Descreva a causa raiz identificada e a solução técnica aplicada..." class="w-full bg-zinc-900 border border-zinc-700 p-3 text-white font-sans text-xs sm:text-sm focus:outline-none focus:border-brand leading-relaxed"></textarea>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse font-mono">
-                            <thead>
-                                <tr class="border-b border-zinc-800 text-zinc-400">
-                                    <th class="py-2 px-2">Tipo</th>
-                                    <th class="py-2 px-2">Descrição da Peça</th>
-                                    <th class="py-2 px-2 w-28">Custo Real (R$)</th>
-                                    <th class="py-2 px-2 w-28">Valor Venda (R$)</th>
-                                    <th class="py-2 px-2 w-24 text-right">Lucro Real</th>
-                                    <th class="py-2 px-2 w-10"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="budget-modal-parts-tbody" class="divide-y divide-zinc-900">
-                                <!-- Injetado dinamicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    <!-- Tabela de Peças & Hardware -->
+                    <div class="border-2 border-zinc-800 bg-zinc-950 p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <div>
+                                <span class="text-brand font-bold uppercase text-xs block">[ Peças & Componentes Necessários ]</span>
+                                <span class="text-[10px] text-zinc-500 font-sans">O cliente não vê custo nem lucro, apenas o valor final de venda.</span>
+                            </div>
+                            <button type="button" onclick="addModalBudgetPartRow()" class="px-3 py-1.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Adicionar Peça
+                            </button>
+                        </div>
 
-                <!-- Mão de Obra do Reparo -->
-                <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono">
-                    <label class="block text-brand font-bold uppercase mb-1.5">Mão de Obra do Reparo / Serviço (R$)</label>
-                    <input type="number" step="0.01" id="budget-modal-labor" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-lg font-bold focus:outline-none focus:border-brand">
-                    <span class="text-[10px] text-zinc-500 block mt-1">Valor da engenharia técnica cobrado do cliente.</span>
-                </div>
-
-                <!-- Resumo Consolidado & Lucro Real -->
-                <div class="bg-black border-2 border-brand p-4 font-mono">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
-                        <div>
-                            <span class="text-zinc-500 text-[10px] block mb-1">SINAL PEÇAS (100%)</span>
-                            <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-parts-total">R$ 0,00</strong>
-                        </div>
-                        <div>
-                            <span class="text-zinc-500 text-[10px] block mb-1">SALDO M.O. (ENTREGA)</span>
-                            <strong class="text-lg sm:text-xl text-brand font-black" id="budget-modal-labor-total">R$ 0,00</strong>
-                        </div>
-                        <div>
-                            <span class="text-zinc-500 text-[10px] block mb-1">TOTAL DO CLIENTE</span>
-                            <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-grand-total">R$ 0,00</strong>
-                        </div>
-                        <div class="bg-brand/10 border border-brand/40 p-2">
-                            <span class="text-brand text-[10px] font-bold block mb-0.5">LUCRO REAL GESTOR</span>
-                            <strong class="text-base sm:text-lg text-brand font-black" id="budget-modal-net-profit">R$ 0,00</strong>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse font-mono">
+                                <thead>
+                                    <tr class="border-b border-zinc-800 text-zinc-400">
+                                        <th class="py-2 px-2">Tipo</th>
+                                        <th class="py-2 px-2">Descrição da Peça</th>
+                                        <th class="py-2 px-2 w-28">Custo Real (R$)</th>
+                                        <th class="py-2 px-2 w-28">Valor Venda (R$)</th>
+                                        <th class="py-2 px-2 w-24 text-right">Lucro Real</th>
+                                        <th class="py-2 px-2 w-10"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="budget-modal-parts-tbody" class="divide-y divide-zinc-900">
+                                    <!-- Injetado dinamicamente -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rodapé Fixo / Sticky com Botões de Ação Sempre Visíveis -->
-                <div class="sticky bottom-0 -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 bg-zinc-950/95 backdrop-blur-md p-4 sm:p-5 border-t-2 border-brand flex flex-col sm:flex-row justify-between items-center gap-3 z-30 font-mono shadow-[0_-8px_20px_rgba(0,0,0,0.8)]">
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="text-zinc-400">Total Cliente:</span>
-                        <strong class="text-brand text-sm font-black" id="budget-sticky-total">R$ 0,00</strong>
+                    <!-- Mão de Obra do Reparo -->
+                    <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono">
+                        <label class="block text-brand font-bold uppercase mb-1.5">Mão de Obra do Reparo / Serviço (R$)</label>
+                        <input type="number" step="0.01" id="budget-modal-labor" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-lg font-bold focus:outline-none focus:border-brand">
+                        <span class="text-[10px] text-zinc-500 block mt-1">Valor da engenharia técnica cobrado do cliente.</span>
                     </div>
-                    <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-                        <button type="button" onclick="closeBudgetModal()" class="px-4 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800 text-xs">
-                            Cancelar
-                        </button>
-                        <button type="submit" id="btn-save-budget-modal" class="px-6 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white flex items-center justify-center gap-2 text-xs shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] transition-all cursor-pointer">
-                            <i data-lucide="check-circle" class="w-4 h-4 text-black"></i>
-                            <span>Salvar Orçamento & Emitir Proposta</span>
-                        </button>
+
+                    <!-- Resumo Consolidado & Lucro Real -->
+                    <div class="bg-black border-2 border-brand p-4 font-mono">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
+                            <div>
+                                <span class="text-zinc-500 text-[10px] block mb-1">SINAL PEÇAS (100%)</span>
+                                <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-parts-total">R$ 0,00</strong>
+                            </div>
+                            <div>
+                                <span class="text-zinc-500 text-[10px] block mb-1">SALDO M.O. (ENTREGA)</span>
+                                <strong class="text-lg sm:text-xl text-brand font-black" id="budget-modal-labor-total">R$ 0,00</strong>
+                            </div>
+                            <div>
+                                <span class="text-zinc-500 text-[10px] block mb-1">TOTAL DO CLIENTE</span>
+                                <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-grand-total">R$ 0,00</strong>
+                            </div>
+                            <div class="bg-brand/10 border border-brand/40 p-2">
+                                <span class="text-brand text-[10px] font-bold block mb-0.5">LUCRO REAL GESTOR</span>
+                                <strong class="text-base sm:text-lg text-brand font-black" id="budget-modal-net-profit">R$ 0,00</strong>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- RODAPÉ FIXO (SHRINK-0 - PERMANENTEMENTE VISÍVEL NA TELA SEM PRECISAR ROLAR) -->
+            <div class="shrink-0 bg-zinc-950 border-t-2 border-brand p-3.5 sm:p-5 flex flex-col sm:flex-row justify-between items-center gap-3 z-30 font-mono shadow-[0_-8px_20px_rgba(0,0,0,0.8)]">
+                <div class="flex items-center gap-4 text-xs w-full sm:w-auto justify-between sm:justify-start">
+                    <div>
+                        <span class="text-zinc-400 text-[10px] block uppercase font-bold">Total do Cliente</span>
+                        <strong class="text-brand text-base sm:text-lg font-black" id="budget-sticky-total">R$ 0,00</strong>
+                    </div>
+                    <div class="border-l border-zinc-800 pl-4">
+                        <span class="text-zinc-500 text-[10px] block uppercase font-bold">Lucro Líquido Real</span>
+                        <strong class="text-white text-sm sm:text-base font-bold" id="budget-sticky-profit">R$ 0,00</strong>
                     </div>
                 </div>
-            </form>
+                
+                <!-- BOTÕES DE AÇÃO CLAROS: CANCELAR, ENVIAR PROPOSTA E CONFIRMAR ORÇAMENTO APROVADO -->
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto justify-end">
+                    <button type="button" onclick="closeBudgetModal()" class="px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800 text-xs transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="button" onclick="handleSaveBudgetFromModal(event, false)" id="btn-save-proposal-modal" class="px-4 py-2.5 bg-zinc-800 border border-brand/40 text-white font-bold uppercase tracking-wider hover:bg-zinc-700 flex items-center justify-center gap-1.5 text-xs transition-all cursor-pointer">
+                        <i data-lucide="send" class="w-4 h-4 text-brand"></i>
+                        <span>Salvar & Enviar Proposta (WhatsApp)</span>
+                    </button>
+                    <button type="button" onclick="handleSaveBudgetFromModal(event, true)" id="btn-confirm-budget-modal" class="px-5 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white flex items-center justify-center gap-1.5 text-xs shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] transition-all cursor-pointer">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-black"></i>
+                        <span>✓ Confirmar Orçamento (Aprovado)</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -4795,7 +4813,8 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('detail-device-title').textContent = (wo.device_brand || '') + ' // ' + (wo.device_model || '');
             document.getElementById('detail-client-name').textContent = wo.client_name || 'Cliente';
             document.getElementById('detail-client-phone').textContent = wo.client_whatsapp || '-';
-            document.getElementById('detail-device-title').textContent = wo.reported_defect || '-';
+            const defectEl = document.getElementById('detail-defect-text');
+            if (defectEl) defectEl.textContent = wo.reported_defect || '-';
             document.getElementById('detail-status-badge').textContent = (wo.status || 'Triagem').replace(/_/g, ' ');
             document.getElementById('detail-total-amount').textContent = 'R$ ' + parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
 
@@ -4833,33 +4852,81 @@ Qualquer dúvida, estou à disposição!
                         <i data-lucide="calculator" class="w-4 h-4"></i> Elaborar Orçamento & Laudo
                     </button>
                 `;
-            } else if (s.includes('orcamento') || s.includes('sinal') || s.includes('aprovad')) {
+            } else if (s.includes('orcamento')) {
                 buttonsHtml = `
-                    <button type="button" onclick="advanceOSStatus('Na_Bancada')" class="px-4 py-2.5 bg-cyan-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.3)]">
-                        <i data-lucide="play" class="w-4 h-4"></i> Iniciar Reparo na Bancada
+                    <button type="button" onclick="actionBudgetFromOS()" class="px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase text-xs hover:bg-zinc-800 transition-colors flex items-center justify-center gap-1.5">
+                        <i data-lucide="edit-3" class="w-4 h-4 text-brand"></i> Revisar / Editar Orçamento
+                    </button>
+                    <button type="button" onclick="confirmBudgetApprovalFromOS()" class="px-4 py-2.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-black"></i> ✓ Confirmar Aprovação do Orçamento
+                    </button>
+                `;
+            } else if (s.includes('sinal') || s.includes('aprovad')) {
+                buttonsHtml = `
+                    <button type="button" onclick="advanceOSStatus('Na_Bancada')" class="px-4 py-2.5 bg-cyan-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.3)]">
+                        <i data-lucide="play" class="w-4 h-4"></i> Iniciar Reparo na Bancada (Sinal OK)
+                    </button>
+                    <button type="button" onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase text-xs hover:bg-zinc-800 transition-colors flex items-center justify-center gap-1">
+                        <i data-lucide="eye" class="w-3.5 h-3.5 text-brand"></i> Ver Orçamento
                     </button>
                 `;
             } else if (s.includes('bancada')) {
                 buttonsHtml = `
-                    <button type="button" onclick="advanceOSStatus('Teste_Estresse_QA')" class="px-4 py-2.5 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(234,179,8,0.3)]">
+                    <button type="button" onclick="advanceOSStatus('Teste_Estresse_QA')" class="px-4 py-2.5 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(234,179,8,0.3)]">
                         <i data-lucide="activity" class="w-4 h-4"></i> Mover para Testes de QA
                     </button>
                 `;
             } else if (s.includes('qa') || s.includes('teste')) {
                 buttonsHtml = `
-                    <button type="button" onclick="advanceOSStatus('Pronto')" class="px-4 py-2.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                    <button type="button" onclick="advanceOSStatus('Pronto')" class="px-4 py-2.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
                         <i data-lucide="check-circle" class="w-4 h-4"></i> Concluir e Avisar Cliente (Pronto)
                     </button>
                 `;
             } else if (s.includes('pronto')) {
                 buttonsHtml = `
-                    <button type="button" onclick="advanceOSStatus('Entregue')" class="px-4 py-2.5 bg-zinc-900 border border-brand text-brand font-black uppercase text-xs hover:bg-brand hover:text-black transition-colors flex items-center gap-1.5">
+                    <button type="button" onclick="advanceOSStatus('Entregue')" class="px-4 py-2.5 bg-zinc-900 border border-brand text-brand font-black uppercase text-xs hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-1.5">
                         <i data-lucide="package-check" class="w-4 h-4"></i> Entregar ao Cliente / Quitar
                     </button>
                 `;
             }
 
             container.innerHTML = buttonsHtml;
+        }
+
+        function confirmBudgetApprovalFromOS() {
+            if (!selectedWorkOrder) return;
+            const partsTotal = parseFloat(selectedWorkOrder.total_parts || 0) || 0;
+            const nextStatus = partsTotal > 0 ? 'Aguardando_Sinal_Peca' : 'Na_Bancada';
+
+            selectedWorkOrder.status = nextStatus;
+            if (partsTotal === 0) {
+                selectedWorkOrder.parts_deposit_paid = true;
+                selectedWorkOrder.parts_deposit_status = 'CONFIRMED';
+            }
+
+            try {
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
+            } catch(e) {}
+
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const query = client.from('work_orders').update({
+                    status: nextStatus,
+                    parts_deposit_paid: selectedWorkOrder.parts_deposit_paid || false,
+                    parts_deposit_status: selectedWorkOrder.parts_deposit_status || 'PENDING'
+                });
+                if (isUuid(selectedWorkOrder.id)) {
+                    query.eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+                } else if (selectedWorkOrder.os_number) {
+                    query.eq('os_number', parseInt(selectedWorkOrder.os_number, 10)).then(() => {}).catch(() => {});
+                }
+            }
+
+            showToast('✓ Orçamento da OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' CONFIRMADO! Avançado para ' + nextStatus.replace(/_/g, ' '), 'success');
+            closeOSDetailModal();
+            renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
         }
 
         function advanceOSStatus(newStatus) {
@@ -4912,6 +4979,12 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('budget-modal-title').textContent = 'Orçamento da OS #' + formatOSNumber(wo.os_number);
             document.getElementById('budget-modal-client-info').textContent = 'Cliente: ' + (wo.client_name || '-') + ' • WhatsApp: ' + (wo.client_whatsapp || '-');
             document.getElementById('budget-modal-defect-text').textContent = wo.reported_defect || '-';
+
+            const diagInput = document.getElementById('budget-modal-diagnosis');
+            if (diagInput) diagInput.value = wo.technical_diagnosis || '';
+
+            const serviceSelect = document.getElementById('budget-modal-service-type');
+            if (serviceSelect && wo.service_type) serviceSelect.value = wo.service_type;
 
             const tbody = document.getElementById('budget-modal-parts-tbody');
             if (tbody) {
@@ -5027,10 +5100,15 @@ Qualquer dúvida, estou à disposição!
             if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
             if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+
+            const stickyTotalEl = document.getElementById('budget-sticky-total');
+            if (stickyTotalEl) stickyTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
+            const stickyProfitEl = document.getElementById('budget-sticky-profit');
+            if (stickyProfitEl) stickyProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
         }
 
-        function handleSaveBudgetFromModal(e) {
-            e.preventDefault();
+        function handleSaveBudgetFromModal(e, approveDirectly = false) {
+            if (e && e.preventDefault) e.preventDefault();
             if (!selectedWorkOrder) return;
 
             const laborInput = document.getElementById('budget-modal-labor');
@@ -5065,6 +5143,9 @@ Qualquer dúvida, estou à disposição!
             });
 
             const total = labor + partsTotal;
+            const targetStatus = approveDirectly 
+                ? (partsTotal > 0 ? 'Aguardando_Sinal_Peca' : 'Na_Bancada')
+                : 'Orcamento_Aguardando_Aprovacao';
 
             selectedWorkOrder.service_type = serviceType;
             selectedWorkOrder.technical_diagnosis = diagnosisText;
@@ -5073,9 +5154,9 @@ Qualquer dúvida, estou à disposição!
             selectedWorkOrder.total_parts = partsTotal;
             selectedWorkOrder.total_parts_cost = partsCostTotal;
             selectedWorkOrder.total_amount = total;
-            selectedWorkOrder.status = 'Orcamento_Aguardando_Aprovacao';
+            selectedWorkOrder.status = targetStatus;
             selectedWorkOrder.parts_deposit_required = partsTotal;
-            selectedWorkOrder.parts_deposit_paid = (partsTotal === 0);
+            selectedWorkOrder.parts_deposit_paid = approveDirectly ? (partsTotal === 0) : (partsTotal === 0);
             selectedWorkOrder.parts_deposit_status = (partsTotal === 0 ? 'CONFIRMED' : 'PENDING');
 
             // Persistência local imediata (Zero-Lag UI)
@@ -5099,18 +5180,22 @@ Qualquer dúvida, estou à disposição!
                     p_total_labor: labor,
                     p_total_parts: partsTotal,
                     p_items: partsList,
-                    p_status: 'Orcamento_Aguardando_Aprovacao'
+                    p_status: targetStatus
                 }).then(({ data, error }) => {
                     if (error) {
-                        console.warn("RPC rpc_save_budget_atomic falhou, tentando fallback rpc_update_work_order_budget...", error);
-                        // 2. Fallback para rpc_update_work_order_budget
+                        console.warn("RPC rpc_save_budget_atomic falhou, tentando fallback direto...", error);
                         if (validOsNum) {
-                            client.rpc('rpc_update_work_order_budget', {
-                                p_os_number: validOsNum,
-                                p_service_type: serviceType,
-                                p_diagnosis: diagnosisText,
-                                p_items: partsList
-                            }).catch(() => {});
+                            client.from('work_orders').update({
+                                service_type: serviceType,
+                                technical_diagnosis: diagnosisText,
+                                total_labor: labor,
+                                total_parts: partsTotal,
+                                total_amount: total,
+                                status: targetStatus,
+                                parts_deposit_required: partsTotal,
+                                parts_deposit_paid: selectedWorkOrder.parts_deposit_paid,
+                                parts_deposit_status: selectedWorkOrder.parts_deposit_status
+                            }).eq('os_number', validOsNum).catch(() => {});
                         }
                     } else if (data && data.public_tracking_token) {
                         selectedWorkOrder.public_tracking_token = data.public_tracking_token;
@@ -5125,12 +5210,15 @@ Qualquer dúvida, estou à disposição!
             closeBudgetModal();
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
-            showToast('✓ Orçamento da OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' gerado com sucesso!', 'success');
 
-            // Abrir modal de WhatsApp com Magic Link para o cliente aprovar
-            setTimeout(() => {
-                openWhatsAppNotificationModal(selectedWorkOrder, 'orcamento');
-            }, 300);
+            if (approveDirectly) {
+                showToast('✓ Orçamento da OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' CONFIRMADO e APROVADO! OS avançada para ' + targetStatus.replace(/_/g, ' '), 'success');
+            } else {
+                showToast('✓ Orçamento da OS #' + formatOSNumber(selectedWorkOrder.os_number) + ' salvo! Abrindo WhatsApp com proposta...', 'success');
+                setTimeout(() => {
+                    openWhatsAppNotificationModal(selectedWorkOrder, 'orcamento');
+                }, 300);
+            }
         }
 
         let activeClientId = null;
