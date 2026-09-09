@@ -209,11 +209,10 @@ advanceOSStatus(Entregue) -> Supabase .update({status: Entregue})
 - work_order_items: Itens de peca/mao de obra vinculados a OS
 - work_order_photos: Fotos do checklist
 
-### Estoque/PDV
-- inventory_products: Catalogo de produtos
-- inventory_movements: Kardex de movimentacoes
-- pos_sales: Vendas PDV
-- pos_sale_items: Itens de cada venda
+### Estoque/PDV (Sincronizado Supabase em 2026-09-08)
+- products: Catalogo de produtos, estoque atual, precos, SKU e EAN
+- inventory_movements: Kardex auditavel de movimentacoes (Entradas, Saidas PDV, Ajustes)
+- pos_sales: Vendas PDV com numero de cupom, forma de pagamento, totais e itens JSONB
 
 ### Software
 - software_projects: Projetos web/software
@@ -229,7 +228,7 @@ advanceOSStatus(Entregue) -> Supabase .update({status: Entregue})
 - msp_snitch: Dead Man Snitch (monitoramento)
 
 ### Financeiro
-- financial_ledger: Lancamentos contabeis (DRE)
+- financial_ledger: Lancamentos contabeis (DRE integrada com OS e PDV)
 - nps_surveys: Pesquisa de satisfacao
 
 ---
@@ -247,15 +246,15 @@ advanceOSStatus(Entregue) -> Supabase .update({status: Entregue})
 
 ---
 
-## 8. BUGS CONSOLIDADOS (21 bugs encontrados em 2026-08-30)
+## 8. BUGS CONSOLIDADOS (Atualizado em 2026-09-08)
 
 ### Severidade CRITICO (4)
-| ID | Modulo | Resumo |
-|----|--------|--------|
-| CK-004 | CRM | handleSaveClient() nao sincroniza com Supabase |
-| CK-005 | PDV | processPOSCheckout() nao faz baixa em cloud |
-| CK-006 | Estoque | handleSaveNewProduct() so grava em localStorage |
-| CK-009 | MSP | handleSaveNewMSPTicket() nao persiste em Supabase |
+| ID | Modulo | Resumo | Status |
+|----|--------|--------|--------|
+| CK-004 | CRM | handleSaveClient() nao sincroniza com Supabase | RESOLVIDO (commit efa2733) |
+| CK-005 | PDV | processPOSCheckout() nao faz baixa em cloud | RESOLVIDO (2026-09-08) |
+| CK-006 | Estoque | handleSaveNewProduct() so grava em localStorage | RESOLVIDO (2026-09-08) |
+| CK-009 | MSP | handleSaveNewMSPTicket() nao persiste em Supabase | RESOLVIDO (2026-09-08) |
 
 ### Severidade ALTO (6)
 | ID | Modulo | Resumo |

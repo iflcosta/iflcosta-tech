@@ -12,3 +12,10 @@ tailwindcss3.exe
 .DS_Store
 Thumbs.db
 scratch/
+__pycache__/
+*.pyc
+apps/life-ops/build/
+apps/life-ops/dist/
+*.db
+
+

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrossel Post 3 - IF Tech</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #050507;
+            font-family: 'Inter', sans-serif;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .slide-container {
+            width: 1080px;
+            height: 1350px;
+            background-color: #0A0A0C;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #27272A;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 80px 72px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Subtle technical grid background */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Header Component */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #27272A;
+            padding-bottom: 24px;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-symbol {
+            width: 48px;
+            height: 48px;
+            background-color: #C084FC;
+            color: #0A0A0C;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%);
+            box-shadow: 0 0 20px rgba(192, 132, 252, 0.4);
+        }
+
+        .brand-name {
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #FFFFFF;
+        }
+
+        .brand-cat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #A1A1AA;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .slide-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 800;
+            background-color: #18181B;
+            border: 1.5px solid #3F3F46;
+            color: #C084FC;
+            padding: 10px 18px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* Footer Component */
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #27272A;
+            padding-top: 24px;
+        }
+
+        .footer-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #71717A;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #C084FC;
+            box-shadow: 0 0 8px #C084FC;
+        }
+
+        .swipe-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 800;
+            color: #C084FC;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .swipe-arrow {
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        /* Typography Presets */
+        .title-hero {
+            font-size: 56px;
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        .title-hero span.purple {
+            color: #C084FC;
+        }
+
+        .title-section {
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+        }
+
+        .title-section span.purple {
+            color: #C084FC;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: rgba(192, 132, 252, 0.1);
+            border: 1.5px solid #C084FC;
+            color: #C084FC;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 800;
+            padding: 8px 18px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+
+        .tag-pill.red {
+            background-color: rgba(248, 113, 113, 0.1);
+            border-color: #F87171;
+            color: #F87171;
+        }
+
+        /* Cards & Blocks */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .tech-card {
+            background-color: #121215;
+            border: 1.5px solid #27272A;
+            padding: 22px 26px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .tech-card.highlight {
+            border-color: #C084FC;
+            background-color: #17101c;
+        }
+
+        .card-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 800;
+            color: #C084FC;
+            background-color: #18181B;
+            border: 1.5px solid #3F3F46;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-num.red {
+            color: #F87171;
+            border-color: rgba(248, 113, 113, 0.5);
+            background-color: #1f1414;
+        }
+
+        .card-body h3 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-body p {
+            font-size: 16px;
+            line-height: 1.45;
+            color: #A1A1AA;
+        }
+
+        /* Slide 4 Table */
+        .telemetry-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background-color: #121215;
+            border: 2px solid #27272A;
+        }
+
+        .telemetry-table th {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 18px 20px;
+            text-align: left;
+            border-bottom: 2px solid #27272A;
+            background-color: #18181B;
+            color: #A1A1AA;
+        }
+
+        .telemetry-table th.col-after {
+            color: #C084FC;
+        }
+
+        .telemetry-table td {
+            padding: 22px 20px;
+            font-size: 18px;
+            border-bottom: 1px solid #27272A;
+        }
+
+        .telemetry-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .metric-title {
+            font-weight: 700;
+            color: #FFFFFF;
+            font-size: 18px;
+        }
+
+        .metric-desc {
+            font-size: 13px;
+            color: #71717A;
+            margin-top: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .val-bad {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #F87171;
+            background-color: rgba(248, 113, 113, 0.12);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            padding: 6px 14px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .val-good {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            color: #C084FC;
+            background-color: rgba(192, 132, 252, 0.12);
+            border: 1px solid rgba(192, 132, 252, 0.4);
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        /* Slide 5 CTA Box */
+        .cta-box {
+            background-color: #121215;
+            border: 2px solid #C084FC;
+            padding: 38px 36px;
+            margin-top: 24px;
+            position: relative;
+            box-shadow: 0 0 35px rgba(192, 132, 252, 0.15);
+        }
+
+        .cta-btn {
+            background-color: #C084FC;
+            color: #0A0A0C;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            padding: 22px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+            box-shadow: 4px 4px 0px #FFFFFF;
+        }
+
+        .guarantee-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .guarantee-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #D4D4D8;
+            background-color: #18181B;
+            border: 1px solid #27272A;
+            padding: 14px 16px;
+        }
+
+        .guarantee-icon {
+            color: #C084FC;
+            font-size: 18px;
+        }
+
+        /* Safe Zone Calibrator for Slide 1 */
+        .cover-safe-zone {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            padding: 40px 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== SLIDE 1 (SAFE ZONE RECALIBRADA) ==================== -->
+    <div id="slide-1" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">TI Gerenciada B2B (MSP)</div>
+                    </div>
+                </div>
+                <!-- Canto direito limpo de textos importantes -->
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div class="cover-safe-zone">
+                <div class="tag-pill">Segurança & Continuidade de Negócios</div>
+                <h1 class="title-hero">
+                    Se sua empresa<br>
+                    parar por 1 dia<br>
+                    por falha de TI,<br>
+                    <span class="purple">quanto você perde?</span>
+                </h1>
+
+                <div style="margin-top: 36px; border-left: 3px solid #C084FC; padding-left: 24px;">
+                    <p style="font-size: 20px; line-height: 1.5; color: #D4D4D8; font-weight: 500;">
+                        Mais de <strong style="color: #C084FC; font-weight: 800;">60% das empresas</strong> que sofrem perda irreversível de dados fecham as portas em menos de 6 meses por prejuízos operacionais.
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot"></div>
+                    BRAGANÇA PAULISTA & REGIÃO
+                </div>
+                <div class="swipe-indicator">
+                    DESLIZE <span class="swipe-arrow">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 2 ==================== -->
+    <div id="slide-2" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Riscos da TI Reativa</div>
+                    </div>
+                </div>
+                <div class="slide-counter">02 / 05</div>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <div class="tag-pill red">O Perigo do "Apagador de Incêndios"</div>
+                <h2 class="title-section">
+                    Por que chamar técnico só<br>
+                    <span style="color: #F87171;">quando quebra é um risco?</span>
+                </h2>
+
+                <div class="card-grid">
+                    <div class="tech-card">
+                        <div class="card-num red">01</div>
+                        <div class="card-body">
+                            <h3>Paradas Críticas sem Aviso</h3>
+                            <p>Servidores e máquinas do faturamento travam no dia de fechamento, gerando prejuízos imediatos.</p>
+                        </div>
+                    </div>
+
+                    <div class="tech-card">
+                        <div class="card-num red">02</div>
+                        <div class="card-body">
+                            <h3>Backups Fantasmas ou Inexistentes</h3>
+                            <p>Muitas empresas acham que têm backup, mas nunca testaram a restauração de certificados e bancos de dados.</p>
+                        </div>
+                    </div>
+
+                    <div class="tech-card">
+                        <div class="card-num red">03</div>
+                        <div class="card-body">
+                            <h3>Lentidão Diária da Equipe</h3>
+                            <p>Funcionários perdem até 40 minutos por dia esperando arquivos abrirem em computadores sem manutenção.</p>
+                        </div>
+                    </div>
+
+                    <div class="tech-card">
+                        <div class="card-num red">04</div>
+                        <div class="card-body">
+                            <h3>Vulnerabilidade a Ransomware</h3>
+                            <p>Falta de antivírus corporativo gerenciado e portas de rede abertas colocam seus dados em risco de sequestro.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot"></div>
+                    DIAGNÓSTICO DE RISCO
+                </div>
+                <div class="swipe-indicator">
+                    DESLIZE <span class="swipe-arrow">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 3 ==================== -->
+    <div id="slide-3" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Operação MSP Proativa</div>
+                    </div>
+                </div>
+                <div class="slide-counter">03 / 05</div>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <div class="tag-pill">Padrão IF Tech de Gestão</div>
+                <h2 class="title-section">
+                    Como blindamos a TI<br>
+                    <span class="purple">da sua empresa:</span>
+                </h2>
+
+                <div class="card-grid">
+                    <div class="tech-card highlight">
+                        <div class="card-num">01</div>
+                        <div class="card-body">
+                            <h3>Monitoramento Contínuo 24/7</h3>
+                            <p>Identificamos discos falhando, temperaturas altas e sobrecarga de rede antes que a máquina trave.</p>
+                        </div>
+                    </div>
+
+                    <div class="tech-card highlight">
+                        <div class="card-num">02</div>
+                        <div class="card-body">
+                            <h3>Rotina de Backup 3-2-1 em Nuvem</h3>
+                            <p>Espelhamento automático diário e criptografado de arquivos e certificados com teste de restauração.</p>
+                        </div>
+                    </div>
+
+                    <div class="tech-card highlight">
+                        <div class="card-num">03</div>
+                        <div class="card-body">
+                            <h3>Suporte com SLA Prioritário</h3>
+                            <p>Atendimento remoto ágil e visitas presenciais emergenciais em Bragança Paulista sem burocracia.</p>
+                        </div>
+                    </div>
+
+                    <div class="tech-card highlight">
+                        <div class="card-num">04</div>
+                        <div class="card-body">
+                            <h3>Manutenção Preventiva Periódica</h3>
+                            <p>Revisão programada de hardware e limpeza de software para manter 100% de produtividade da equipe.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot"></div>
+                    GESTÃO SILENCIOSA & PROATIVA
+                </div>
+                <div class="swipe-indicator">
+                    DESLIZE <span class="swipe-arrow">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 4 ==================== -->
+    <div id="slide-4" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Economia & Eficiência</div>
+                    </div>
+                </div>
+                <div class="slide-counter">04 / 05</div>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <div class="tag-pill">Comparativo de Custos</div>
+                <h2 class="title-section">
+                    Funcionário CLT vs.<br>
+                    <span class="purple">TI Gerenciada IF Tech:</span>
+                </h2>
+
+                <table class="telemetry-table">
+                    <thead>
+                        <tr>
+                            <th>Critério</th>
+                            <th>Técnico CLT</th>
+                            <th class="col-after">MSP IF Tech</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="metric-title">Custo Mensal</div>
+                                <div class="metric-desc">Salário + Encargos + Férias</div>
+                            </td>
+                            <td><span class="val-bad">R$ 3.500+ / mês</span></td>
+                            <td><span class="val-good">A partir R$ 69,90/máq</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="metric-title">Disponibilidade</div>
+                                <div class="metric-desc">Cobertura e monitoramento</div>
+                            </td>
+                            <td><span class="val-bad">44h/sem (Falta/Férias)</span></td>
+                            <td><span class="val-good">24/7 Contínuo</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="metric-title">Modelo de Atuação</div>
+                                <div class="metric-desc">Forma de resolução de falhas</div>
+                            </td>
+                            <td><span class="val-bad">Reativo (Apaga fogo)</span></td>
+                            <td><span class="val-good">Proativo (Anti-falhas)</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="metric-title">Corpo Técnico</div>
+                                <div class="metric-desc">Expertise e ferramentas</div>
+                            </td>
+                            <td><span class="val-bad">1 pessoa isolada</span></td>
+                            <td><span class="val-good">Equipe Especializada</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 28px; background-color: #121215; border-left: 3px solid #C084FC; padding: 18px 24px;">
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #D4D4D8;">
+                        🏢 Um departamento de TI completo cuidando da sua empresa por uma fração do custo de uma contratação.
+                    </span>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot"></div>
+                    PREVISIBILIDADE & REDUÇÃO DE CUSTO
+                </div>
+                <div class="swipe-indicator">
+                    DESLIZE <span class="swipe-arrow">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 5 ==================== -->
+    <div id="slide-5" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Contratos Corporativos</div>
+                    </div>
+                </div>
+                <div class="slide-counter">05 / 05</div>
+            </div>
+
+            <div style="margin: auto 0;">
+                <div class="tag-pill">Proteja sua operação hoje</div>
+                <h2 class="title-hero" style="font-size: 54px;">
+                    Tenha a TI da sua empresa<br>
+                    sob controle<br>
+                    <span class="purple">e sem sustos.</span>
+                </h2>
+
+                <div class="guarantee-grid">
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon">🔒</span>
+                        Backup 3-2-1 em Nuvem
+                    </div>
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon">⚡</span>
+                        SLA Prioritário em Bragança
+                    </div>
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon">🛡️</span>
+                        Antivírus Corporativo
+                    </div>
+                    <div class="guarantee-item">
+                        <span class="guarantee-icon">📊</span>
+                        Relatórios Mensais de Saúde
+                    </div>
+                </div>
+
+                <div class="cta-box">
+                    <p style="font-size: 18px; color: #D4D4D8; line-height: 1.5; font-weight: 500;">
+                        Descubra onde sua infraestrutura está vulnerável. Agende uma auditoria preventiva gratuita para sua empresa.
+                    </p>
+                    <div class="cta-btn">
+                        <span>Agendar Auditoria no WhatsApp</span>
+                        <span>→</span>
+                    </div>
+                    <p style="text-align: center; margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #71717A;">
+                        Link direto na bio do perfil @ifl.tech
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot"></div>
+                    BRAGANÇA PAULISTA & REGIÃO
+                </div>
+                <div class="brand-badge">
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #C084FC;">IFLCOSTA.TECH</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
