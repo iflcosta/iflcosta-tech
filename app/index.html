@@ -360,11 +360,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-1.5">Nome do Cliente *</label>
-                                <input type="text" id="client-name" placeholder="Ex: Lucas Mendes" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                                <input type="text" id="client-name" placeholder="Ex: Nome do Cliente" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
                             </div>
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-1.5">WhatsApp do Cliente *</label>
-                                <input type="text" id="client-phone" placeholder="Ex: (11) 99999-8888" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
+                                <input type="text" id="client-phone" placeholder="Ex: (11) 90000-0000" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
                             </div>
                             <div>
                                 <label class="block text-zinc-400 uppercase font-bold mb-1.5">Perfil do Setup Gamer / Pro *</label>
@@ -570,7 +570,7 @@
                     <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-brand transition-colors">
                         <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">RECEITA LIQUIDADA (50/50)</div>
                         <div class="text-xl sm:text-2xl font-black text-brand" id="sw-stat-collected-val">R$ 0,00</div>
-                        <div class="text-[10px] text-brand/80 mt-1" id="sw-stat-collected-pct">0% Recebido Asaas</div>
+                        <div class="text-[10px] text-brand/80 mt-1" id="sw-stat-collected-pct">0% Liquidado</div>
                     </div>
                     <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-yellow-500 transition-colors">
                         <div class="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1">TIMESHEET HORAS EXTRAS</div>
@@ -1376,7 +1376,7 @@
                 <div>
                     <span class="text-brand text-[10px] font-bold uppercase block">[ Gestão da Bancada // IF Tech ]</span>
                     <h3 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2">
-                        <span id="detail-os-num">#1050</span> - <span id="detail-device-title" class="text-zinc-200">Notebook Dell</span>
+                        <span id="detail-os-num">#---</span> - <span id="detail-device-title" class="text-zinc-200">-</span>
                     </h3>
                 </div>
                 <button onclick="closeOSDetailModal()" class="text-zinc-500 hover:text-white p-1"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -1387,11 +1387,11 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-black border border-zinc-800 p-4">
                     <div>
                         <span class="text-zinc-500 uppercase block text-[10px] font-bold">Cliente</span>
-                        <strong id="detail-client-name" class="text-white text-sm">Lucas Oliveira</strong>
+                        <strong id="detail-client-name" class="text-white text-sm">-</strong>
                     </div>
                     <div>
                         <span class="text-zinc-500 uppercase block text-[10px] font-bold">WhatsApp</span>
-                        <strong id="detail-client-phone" class="text-brand text-sm">(11) 99999-8888</strong>
+                        <strong id="detail-client-phone" class="text-brand text-sm">-</strong>
                     </div>
                     <div>
                         <span class="text-zinc-500 uppercase block text-[10px] font-bold">Status Atual</span>
@@ -1403,26 +1403,63 @@
                     </div>
                 </div>
 
-                <!-- Card de Faturamento Asaas & Conciliação Pix/Cartão -->
-                <div id="detail-asaas-payment-card" class="bg-zinc-950 border border-zinc-800 p-4 font-mono text-xs space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-zinc-400 font-bold uppercase flex items-center gap-1.5">
-                            <i data-lucide="credit-card" class="w-4 h-4 text-brand"></i> Gateway Asaas (Faturamento):
+                <!-- Card de Pagamento Manual & Ferramentas Pix (IF Tech) -->
+                <div id="detail-payment-card" class="bg-zinc-950 border border-zinc-800 p-4 font-mono text-xs space-y-3">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                        <span class="text-zinc-300 font-bold uppercase flex items-center gap-1.5">
+                            <i data-lucide="dollar-sign" class="w-4 h-4 text-brand"></i> Controle Financeiro & Pagamento Manual:
                         </span>
-                        <span id="detail-asaas-status-badge" class="px-2.5 py-1 text-[10px] font-black uppercase bg-zinc-900 border border-zinc-700 text-zinc-300">Carregando...</span>
-                    </div>
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-zinc-900">
-                        <div class="text-zinc-400 text-[11px]" id="detail-asaas-amount-info">
-                            Sinal Peças: <strong class="text-white" id="detail-asaas-parts-val">R$ 0,00</strong> • Total OS: <strong class="text-brand" id="detail-asaas-total-val">R$ 0,00</strong>
-                        </div>
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="copyAsaasPixForWhatsApp()" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-brand/40 text-brand text-[11px] font-bold uppercase flex items-center gap-1">
-                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Link Pix p/ WhatsApp
-                            </button>
-                            <button type="button" onclick="adminSimulateAsaasPayment()" class="px-2.5 py-1.5 bg-brand text-black hover:bg-white text-[11px] font-black uppercase flex items-center gap-1">
-                                <i data-lucide="check" class="w-3.5 h-3.5"></i> Confirmar Pix (Teste)
-                            </button>
+                            <span id="detail-payment-method-badge" class="px-2 py-0.5 text-[10px] font-mono font-bold uppercase bg-zinc-900 border border-zinc-700 text-zinc-300">
+                                Método: <span id="detail-payment-method-val" class="text-white">A Definir</span>
+                            </span>
+                            <span id="detail-payment-status-badge" class="px-2.5 py-0.5 text-[10px] font-black uppercase bg-yellow-950 border border-yellow-700 text-yellow-400">
+                                Pendente
+                            </span>
                         </div>
+                    </div>
+
+                    <!-- Breakdown de Valores & Seleção de Método -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-zinc-900">
+                        <div class="space-y-1">
+                            <div class="text-zinc-400 text-[11px]">
+                                Sinal Peças: <strong class="text-white" id="detail-pay-parts-val">R$ 0,00</strong> • Total OS: <strong class="text-brand" id="detail-pay-total-val">R$ 0,00</strong>
+                            </div>
+                            <div class="text-[10px] text-zinc-500 flex items-center gap-1">
+                                <span>Chave Pix:</span>
+                                <code class="text-brand font-mono">ianpietrinho@gmail.com</code>
+                                <span class="text-zinc-600">(Ian Pietro // IF Tech)</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 sm:justify-end">
+                            <label class="text-zinc-400 text-[10px] uppercase font-bold">Forma:</label>
+                            <select id="detail-payment-method-select" onchange="updateSelectedWorkOrderPaymentMethod(this.value)" class="bg-zinc-900 border border-zinc-700 text-white text-[11px] px-2 py-1 focus:border-brand outline-none font-mono">
+                                <option value="Pix">Pix</option>
+                                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                <option value="Cartão de Débito">Cartão de Débito</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                                <option value="Transferência TED/DOC">Transferência TED/DOC</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Ações Rápidas de Pagamento & Pix -->
+                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-zinc-900">
+                        <button type="button" onclick="markManualPartsDepositPaid()" id="btn-mark-deposit-paid" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-yellow-600/60 text-yellow-400 text-[11px] font-bold uppercase flex items-center gap-1 transition-colors">
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Sinal Peças Pago
+                        </button>
+                        <button type="button" onclick="markManualFullPaymentPaid()" id="btn-mark-full-paid" class="px-2.5 py-1.5 bg-brand text-black hover:bg-white text-[11px] font-black uppercase flex items-center gap-1 transition-colors">
+                            <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Quitar OS Integral
+                        </button>
+                        <button type="button" onclick="copyOfficialPixKey()" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 text-[11px] font-bold uppercase flex items-center gap-1 transition-colors">
+                            <i data-lucide="copy" class="w-3.5 h-3.5 text-brand"></i> Copiar Chave Pix
+                        </button>
+                        <button type="button" onclick="copyPixCopiaEColaAdmin()" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-brand/40 text-brand text-[11px] font-bold uppercase flex items-center gap-1 transition-colors">
+                            <i data-lucide="qr-code" class="w-3.5 h-3.5"></i> Copiar Pix Copia e Cola
+                        </button>
+                        <button type="button" onclick="sendPixBillingWhatsApp()" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-emerald-600/60 text-emerald-400 text-[11px] font-bold uppercase flex items-center gap-1 transition-colors">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i> Cobrança WhatsApp
+                        </button>
                     </div>
                 </div>
 
@@ -1430,9 +1467,7 @@
                 <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3">
                     <div>
                         <span class="text-yellow-400 font-bold uppercase block text-[11px] mb-1">Defeito Informado pelo Cliente:</span>
-                        <p id="detail-defect-text" class="text-white font-sans text-xs sm:text-sm font-semibold leading-relaxed">
-                            Não dá vídeo e bipa 3 vezes ao ligar.
-                        </p>
+                        <p id="detail-defect-text" class="text-white font-sans text-xs sm:text-sm font-semibold leading-relaxed">-</p>
                     </div>
 
                     <!-- Checklist Visual Tags / Boxes -->
@@ -1510,7 +1545,7 @@
                         <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
                         <span class="text-brand text-xs font-bold uppercase tracking-wider">[ BANCADA // ELABORAÇÃO DE ORÇAMENTO & LAUDO ]</span>
                     </div>
-                    <h3 class="text-xl sm:text-2xl font-extrabold text-white" id="budget-modal-title">Orçamento da OS #1001</h3>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-white" id="budget-modal-title">Orçamento da OS #---</h3>
                     <p class="text-xs text-zinc-400 mt-0.5" id="budget-modal-client-info">Cliente: - • WhatsApp: -</p>
                 </div>
                 <div class="flex items-center gap-2">
@@ -1688,11 +1723,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">Nome do Cliente *</label>
-                        <input type="text" id="intake-client-name" placeholder="Ex: Carlos Eduardo" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
+                        <input type="text" id="intake-client-name" placeholder="Ex: Nome do Cliente" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-brand">
                     </div>
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">WhatsApp do Cliente *</label>
-                        <input type="text" id="intake-client-phone" placeholder="Ex: (11) 98888-7777" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
+                        <input type="text" id="intake-client-phone" placeholder="Ex: (11) 90000-0000" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
                     </div>
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">Origem do Atendimento *</label>
@@ -1828,17 +1863,7 @@
                 Copie a mensagem formatada abaixo e envie no WhatsApp do cliente com o link mágico da proposta:
             </p>
 
-            <div class="bg-black border border-zinc-800 p-4 text-xs text-zinc-300 font-mono whitespace-pre-wrap mb-6" id="whatsapp-msg-preview">
-Olá Lucas! 👋
-Aqui é da *IF Tech*.
-
-Sua proposta técnica para a *OS #1051* está pronta com peças de alta durabilidade e laudo de estresse incluso!
-
-📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*
-👉 https://iflcosta.tech/status?os=1051
-
-Qualquer dúvida, estou à disposição!
-            </div>
+            <div class="bg-black border border-zinc-800 p-4 text-xs text-zinc-300 font-mono whitespace-pre-wrap mb-6" id="whatsapp-msg-preview">Gerando mensagem personalizada para o cliente...</div>
 
             <div class="flex flex-col sm:flex-row gap-3 justify-end">
                 <button onclick="copyWppText()" class="px-5 py-3 bg-zinc-800 text-white text-xs font-bold uppercase hover:bg-zinc-700 transition-colors border border-zinc-700 flex items-center justify-center gap-2">
@@ -3787,7 +3812,7 @@ Qualquer dúvida, estou à disposição!
             document.getElementById('sw-stat-total-budget').textContent = 'R$ ' + totalBudgetSum.toFixed(2).replace('.', ',');
             document.getElementById('sw-stat-collected-val').textContent = 'R$ ' + collectedSum.toFixed(2).replace('.', ',');
             const collectedPct = totalBudgetSum > 0 ? Math.round((collectedSum / totalBudgetSum) * 100) : 0;
-            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Recebido Asaas`;
+            document.getElementById('sw-stat-collected-pct').textContent = `${collectedPct}% Liquidado`;
 
             document.getElementById('sw-stat-timesheet-val').textContent = 'R$ ' + totalTsVal.toFixed(2).replace('.', ',');
             document.getElementById('sw-stat-timesheet-hours').textContent = `${totalTsHours.toFixed(1)}h @ R$ 130/h`;
@@ -3947,7 +3972,7 @@ Qualquer dúvida, estou à disposição!
                     <div class="p-3 bg-zinc-900 border ${proj.kickoff_deposit_paid ? 'border-brand/40' : 'border-yellow-500/40'} space-y-2">
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-white uppercase text-[11px]">Milestone 1 // Entrada 50%</span>
-                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
+                            ${proj.kickoff_deposit_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO (PIX)</span>' : '<span class="px-2 py-0.5 bg-yellow-950 text-yellow-400 font-bold text-[9px]">PENDENTE</span>'}
                         </div>
                         <div class="text-sm font-black ${proj.kickoff_deposit_paid ? 'text-brand' : 'text-yellow-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
                         <button type="button" onclick="toggleKickoffPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
@@ -3957,7 +3982,7 @@ Qualquer dúvida, estou à disposição!
                     <div class="p-3 bg-zinc-900 border ${proj.final_delivery_paid ? 'border-brand/40' : 'border-zinc-700'} space-y-2">
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-white uppercase text-[11px]">Milestone 2 // Homologação 50%</span>
-                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO ASAAS</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
+                            ${proj.final_delivery_paid ? '<span class="px-2 py-0.5 bg-brand text-black font-black text-[9px]">PAGO (PIX)</span>' : '<span class="px-2 py-0.5 bg-zinc-800 text-zinc-400 font-bold text-[9px]">AGUARDA ACEITE</span>'}
                         </div>
                         <div class="text-sm font-black ${proj.final_delivery_paid ? 'text-brand' : 'text-zinc-400'}">R$ ${half.toFixed(2).replace('.', ',')}</div>
                         <button type="button" onclick="toggleFinalPayment('${proj.id}')" class="w-full py-1.5 bg-zinc-800 hover:bg-white hover:text-black text-zinc-300 font-bold uppercase text-[10px] transition-colors">
@@ -4660,11 +4685,11 @@ Qualquer dúvida, estou à disposição!
             const t = activeMSPTicket;
             
             // Criar uma OS física de bancada vinculada ao chamado
-            const osNum = Math.floor(1050 + Math.random() * 900);
-            const token = `tok-b2b-${Date.now()}`;
+            const osNum = generateNextOSNumber();
+            const token = generateUUIDToken();
             
             const newCardObj = {
-                id: token,
+                id: 'wo-' + Date.now(),
                 os_number: osNum,
                 public_tracking_token: token,
                 status: 'Triagem',
@@ -4674,6 +4699,9 @@ Qualquer dúvida, estou à disposição!
                 client_name: `${t.company_name} (${t.opened_by_name})`,
                 client_whatsapp: t.opened_by_whatsapp,
                 total_amount: 0.00,
+                total_labor: 0.00,
+                total_parts: 0.00,
+                items: [],
                 created_at: new Date().toISOString()
             };
 
@@ -4685,7 +4713,7 @@ Qualquer dúvida, estou à disposição!
             renderMSPDashboard();
             renderKanbanBoard(currentWorkOrders);
             
-            showScanNotification(`⚡ Chamado ${t.ticket_number} transferido com sucesso para a OS #${osNum} na Bancada!`, 'success');
+            showScanNotification(`⚡ Chamado ${t.ticket_number} transferido com sucesso para a OS #${formatOSNumber(osNum)} na Bancada!`, 'success');
         }
 
 // =====================================================================
@@ -4804,6 +4832,57 @@ Qualquer dúvida, estou à disposição!
             showToast('✓ OS #' + formatOSNumber(nextOSNum) + ' aberta com sucesso na Triagem!', 'success');
         }
 
+        function updateOSDetailPaymentCard(wo) {
+            if (!wo) return;
+            const partsVal = parseFloat(wo.total_parts || 0);
+            const totalVal = parseFloat(wo.total_amount || 0);
+
+            const partsEl = document.getElementById('detail-pay-parts-val');
+            const totalEl = document.getElementById('detail-pay-total-val');
+            if (partsEl) partsEl.textContent = 'R$ ' + partsVal.toFixed(2).replace('.', ',');
+            if (totalEl) totalEl.textContent = 'R$ ' + totalVal.toFixed(2).replace('.', ',');
+
+            const methodValEl = document.getElementById('detail-payment-method-val');
+            const methodSelectEl = document.getElementById('detail-payment-method-select');
+            const currentMethod = wo.payment_method || 'Pix';
+            if (methodValEl) methodValEl.textContent = currentMethod;
+            if (methodSelectEl) methodSelectEl.value = currentMethod;
+
+            const statusBadgeEl = document.getElementById('detail-payment-status-badge');
+            const isFullPaid = (wo.payment_status === 'PAID') || ((wo.status || '').toLowerCase().includes('pronto') && wo.is_paid);
+            const isDepositPaid = wo.parts_deposit_paid || wo.parts_deposit_status === 'CONFIRMED';
+
+            if (statusBadgeEl) {
+                if (isFullPaid) {
+                    statusBadgeEl.className = "px-2.5 py-0.5 text-[10px] font-black uppercase bg-emerald-950 border border-emerald-600 text-emerald-400";
+                    statusBadgeEl.textContent = "Total Quitado";
+                } else if (isDepositPaid) {
+                    statusBadgeEl.className = "px-2.5 py-0.5 text-[10px] font-black uppercase bg-brand/20 border border-brand text-brand";
+                    statusBadgeEl.textContent = "Sinal Peças Pago";
+                } else {
+                    statusBadgeEl.className = "px-2.5 py-0.5 text-[10px] font-black uppercase bg-yellow-950 border border-yellow-700 text-yellow-400";
+                    statusBadgeEl.textContent = "Pendente";
+                }
+            }
+
+            const btnDeposit = document.getElementById('btn-mark-deposit-paid');
+            const btnFull = document.getElementById('btn-mark-full-paid');
+            if (btnDeposit) {
+                if (isDepositPaid || isFullPaid || partsVal <= 0) {
+                    btnDeposit.classList.add('opacity-50', 'pointer-events-none');
+                } else {
+                    btnDeposit.classList.remove('opacity-50', 'pointer-events-none');
+                }
+            }
+            if (btnFull) {
+                if (isFullPaid) {
+                    btnFull.classList.add('opacity-50', 'pointer-events-none');
+                } else {
+                    btnFull.classList.remove('opacity-50', 'pointer-events-none');
+                }
+            }
+        }
+
         function openOSDetailModal(wo) {
             selectedWorkOrder = wo;
             const modal = document.getElementById('os-detail-modal');
@@ -4823,6 +4902,7 @@ Qualquer dúvida, estou à disposição!
                 portalLink.href = 'https://iflcosta.tech/status?token=' + (wo.public_tracking_token || wo.os_number);
             }
 
+            updateOSDetailPaymentCard(wo);
             renderDetailActionButtons(wo);
             modal.classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
@@ -5004,7 +5084,7 @@ Qualquer dúvida, estou à disposição!
 
             const laborInput = document.getElementById('budget-modal-labor');
             if (laborInput) {
-                laborInput.value = wo.total_labor !== undefined && wo.total_labor !== null ? parseFloat(wo.total_labor).toFixed(2) : '150.00';
+                laborInput.value = wo.total_labor !== undefined && wo.total_labor !== null ? parseFloat(wo.total_labor).toFixed(2) : '0.00';
             }
 
             recalcModalBudgetTotals();
@@ -5268,8 +5348,11 @@ Qualquer dúvida, estou à disposição!
         }
 
         function printThermalDeviceLabel(wo) {
-            wo = wo || selectedWorkOrder || currentWorkOrders[0];
-            if (!wo) return;
+            wo = wo || selectedWorkOrder;
+            if (!wo) {
+                showToast('Selecione uma Ordem de Serviço para imprimir a etiqueta', 'warning');
+                return;
+            }
 
             const printWindow = window.open('', '_blank', 'width=380,height=500');
             printWindow.document.write(`
@@ -5308,8 +5391,11 @@ Qualquer dúvida, estou à disposição!
         }
 
         function printThermalCustomerReceipt(wo) {
-            wo = wo || selectedWorkOrder || currentWorkOrders[0];
-            if (!wo) return;
+            wo = wo || selectedWorkOrder;
+            if (!wo) {
+                showToast('Selecione uma Ordem de Serviço para imprimir o recibo', 'warning');
+                return;
+            }
 
             const printWindow = window.open('', '_blank', 'width=380,height=600');
             printWindow.document.write(`
@@ -5347,14 +5433,198 @@ Qualquer dúvida, estou à disposição!
             setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
         }
 
-        function copyAsaasPixForWhatsApp(wo) {
+        // =========================================================================
+        // MOTOR DE PAGAMENTO MANUAL & GERADOR PIX EMV (IF TECH)
+        // Chave Oficial: ianpietrinho@gmail.com (Ian Pietro // IF Tech)
+        // =========================================================================
+        function crc16Pix(str) {
+            let crc = 0xFFFF;
+            for (let c = 0; c < str.length; c++) {
+                crc ^= str.charCodeAt(c) << 8;
+                for (let i = 0; i < 8; i++) {
+                    if (crc & 0x8000) {
+                        crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+                    } else {
+                        crc = (crc << 1) & 0xFFFF;
+                    }
+                }
+            }
+            let hex = crc.toString(16).toUpperCase();
+            while (hex.length < 4) hex = '0' + hex;
+            return hex;
+        }
+
+        function generatePixPayload(key, name, city, amount, txid = '***') {
+            let res = '000201';
+            const gui = '0014br.gov.bcb.pix';
+            const cleanKey = (key || 'ianpietrinho@gmail.com').trim();
+            const pixKey = '01' + String(cleanKey.length).padStart(2, '0') + cleanKey;
+            const mai = gui + pixKey;
+            res += '26' + String(mai.length).padStart(2, '0') + mai;
+            res += '52040000';
+            res += '5303986';
+            if (amount && parseFloat(amount) > 0) {
+                const amtStr = parseFloat(amount).toFixed(2);
+                res += '54' + String(amtStr.length).padStart(2, '0') + amtStr;
+            }
+            res += '5802BR';
+            const cleanName = (name || 'IAN PIETRO').trim().substring(0, 25).toUpperCase();
+            res += '59' + String(cleanName.length).padStart(2, '0') + cleanName;
+            const cleanCity = (city || 'BRAGANCA PAUL').trim().substring(0, 15).toUpperCase();
+            res += '60' + String(cleanCity.length).padStart(2, '0') + cleanCity;
+            const cleanTxid = (txid || '***').replace(/[^a-zA-Z0-9]/g, '').substring(0, 25) || '***';
+            const sub62 = '05' + String(cleanTxid.length).padStart(2, '0') + cleanTxid;
+            res += '62' + String(sub62.length).padStart(2, '0') + sub62;
+            const toCrc = res + '6304';
+            return toCrc + crc16Pix(toCrc);
+        }
+
+        function copyOfficialPixKey() {
+            const key = 'ianpietrinho@gmail.com';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(key).then(() => {
+                    showToast('✓ Chave Pix copiada: ianpietrinho@gmail.com (Ian Pietro)', 'success');
+                }).catch(() => {
+                    copyTextFallback(key);
+                });
+            } else {
+                copyTextFallback(key);
+            }
+        }
+
+        function copyPixCopiaEColaAdmin(wo) {
             wo = wo || selectedWorkOrder;
             if (!wo) {
                 showToast('Nenhuma OS selecionada.', 'warning');
                 return;
             }
-            openWhatsAppNotificationModal(wo, 'sinal');
+            const partsVal = parseFloat(wo.total_parts || 0);
+            const totalVal = parseFloat(wo.total_amount || 0);
+            const isDepositPending = partsVal > 0 && !wo.parts_deposit_paid && wo.parts_deposit_status !== 'CONFIRMED';
+            const amount = isDepositPending ? partsVal : (totalVal > 0 ? totalVal : partsVal);
+            const osNum = formatOSNumber(wo.os_number || '0000');
+            const code = generatePixPayload('ianpietrinho@gmail.com', 'IAN PIETRO', 'BRAGANCA PAUL', amount, 'OS' + osNum);
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showToast(`✓ Pix Copia e Cola (R$ ${amount.toFixed(2).replace('.', ',')}) copiado com sucesso!`, 'success');
+                }).catch(() => {
+                    copyTextFallback(code);
+                });
+            } else {
+                copyTextFallback(code);
+            }
         }
+
+        function sendPixBillingWhatsApp(wo) {
+            wo = wo || selectedWorkOrder;
+            if (!wo) {
+                showToast('Nenhuma OS selecionada.', 'warning');
+                return;
+            }
+            const partsVal = parseFloat(wo.total_parts || 0);
+            const totalVal = parseFloat(wo.total_amount || 0);
+            const isDepositPending = partsVal > 0 && !wo.parts_deposit_paid && wo.parts_deposit_status !== 'CONFIRMED';
+            const amount = isDepositPending ? partsVal : (totalVal > 0 ? totalVal : partsVal);
+            const osNum = formatOSNumber(wo.os_number || '0000');
+            const token = wo.public_tracking_token || wo.os_number;
+            const link = `https://iflcosta.tech/status?token=${token}`;
+
+            const msg = `Olá ${wo.client_name || 'Cliente'}! 👋\nAqui é da *IF Tech*.\n\n` +
+                `Segue a cobrança referente à *OS #${osNum}* (${wo.device_brand || 'Equipamento'} ${wo.device_model || ''}):\n\n` +
+                `💵 *Valor:* R$ ${amount.toFixed(2).replace('.', ',')} ${isDepositPending ? '(Sinal de Peças)' : '(Total da OS)'}\n` +
+                `🔑 *Chave Pix (E-mail):* ianpietrinho@gmail.com\n` +
+                `👤 *Favorecido:* Ian Pietro // IF Tech\n` +
+                `📍 *Praça:* Bragança Paulista - SP\n\n` +
+                `📋 *Acompanhe os detalhes pelo link:* \n🔗 ${link}\n\n` +
+                `Após efetuar o Pix, por favor envie o comprovante aqui para liberação.`;
+
+            sendWhatsAppMessage(wo.client_whatsapp, msg);
+        }
+
+        function updateSelectedWorkOrderPaymentMethod(method) {
+            if (!selectedWorkOrder) return;
+            selectedWorkOrder.payment_method = method;
+            const methodValEl = document.getElementById('detail-payment-method-val');
+            if (methodValEl) methodValEl.textContent = method;
+
+            try {
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
+            } catch(e) {}
+
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const query = client.from('work_orders').update({ payment_method: method });
+                if (isUuid(selectedWorkOrder.id)) query.eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+                else if (selectedWorkOrder.os_number) query.eq('os_number', parseInt(selectedWorkOrder.os_number, 10)).then(() => {}).catch(() => {});
+            }
+            showToast(`Forma de pagamento: ${method}`, 'info');
+        }
+
+        function markManualPartsDepositPaid(wo) {
+            wo = wo || selectedWorkOrder;
+            if (!wo) return;
+            wo.parts_deposit_paid = true;
+            wo.parts_deposit_status = 'CONFIRMED';
+            if ((wo.status || '').toLowerCase().includes('triagem') || (wo.status || '').toLowerCase().includes('orcamento')) {
+                wo.status = 'Na_Bancada';
+            }
+
+            try { 
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); 
+            } catch(e){}
+
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const updateData = {
+                    parts_deposit_paid: true,
+                    parts_deposit_status: 'CONFIRMED',
+                    status: wo.status
+                };
+                const query = client.from('work_orders').update(updateData);
+                if (isUuid(wo.id)) query.eq('id', wo.id).then(() => {}).catch(() => {});
+                else if (wo.os_number) query.eq('os_number', parseInt(wo.os_number, 10)).then(() => {}).catch(() => {});
+            }
+
+            updateOSDetailPaymentCard(wo);
+            renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
+            showToast('✓ Sinal de Peças confirmado como PAGO! OS na Bancada.', 'success');
+        }
+
+        function markManualFullPaymentPaid(wo) {
+            wo = wo || selectedWorkOrder;
+            if (!wo) return;
+            wo.payment_status = 'PAID';
+            wo.is_paid = true;
+            wo.parts_deposit_paid = true;
+            wo.parts_deposit_status = 'CONFIRMED';
+
+            try { 
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); 
+            } catch(e){}
+
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const updateData = {
+                    payment_status: 'PAID',
+                    parts_deposit_paid: true,
+                    parts_deposit_status: 'CONFIRMED'
+                };
+                const query = client.from('work_orders').update(updateData);
+                if (isUuid(wo.id)) query.eq('id', wo.id).then(() => {}).catch(() => {});
+                else if (wo.os_number) query.eq('os_number', parseInt(wo.os_number, 10)).then(() => {}).catch(() => {});
+            }
+
+            updateOSDetailPaymentCard(wo);
+            renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
+            showToast(`✓ OS #${formatOSNumber(wo.os_number)} marcada como TOTALMENTE QUITADA!`, 'success');
+        }
+
 
         function copyWppText() {
             const previewEl = document.getElementById('whatsapp-msg-preview');
@@ -5385,42 +5655,6 @@ Qualquer dúvida, estou à disposição!
             } catch(e) {
                 showToast('Aperte Ctrl+C para copiar a mensagem', 'info');
             }
-        }
-
-        function adminSimulateAsaasPayment(wo) {
-            wo = wo || selectedWorkOrder;
-            if (!wo) return;
-            wo.parts_deposit_paid = true;
-            wo.parts_deposit_status = 'CONFIRMED';
-            wo.status = 'Na_Bancada';
-
-            try { 
-                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders)); 
-            } catch(e){}
-
-            // Sincronização Supabase
-            const client = getSupabase() || supabaseClient;
-            if (client) {
-                const asaasId = wo.asaas_payment_id || ('pay_mock_' + wo.os_number);
-                client.rpc('rpc_confirm_asaas_payment', {
-                    p_asaas_payment_id: asaasId,
-                    p_paid_value: parseFloat(wo.total_parts || 0)
-                }).catch(() => {
-                    const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-                    const query = client.from('work_orders').update({
-                        status: 'Na_Bancada',
-                        parts_deposit_paid: true,
-                        parts_deposit_status: 'CONFIRMED'
-                    });
-                    if (isUuid(wo.id)) query.eq('id', wo.id).then(() => {}).catch(() => {});
-                    else if (wo.os_number) query.eq('os_number', parseInt(wo.os_number, 10)).then(() => {}).catch(() => {});
-                });
-            }
-
-            showToast('✓ Sinal Asaas confirmado! OS movida para 03. Na Bancada.', 'success');
-            closeOSDetailModal();
-            renderKanbanBoard(currentWorkOrders);
-            renderFinancialDashboard(currentWorkOrders);
         }
 
         function sendWhatsAppStatusUpdate(wo) {
@@ -6185,7 +6419,7 @@ Qualquer dúvida, estou à disposição!
                         <td class="py-3 px-3 font-bold text-white">${escapeHtml(c.name)}</td>
                         <td class="py-3 px-3"><span class="px-2 py-0.5 text-[10px] font-bold ${isB2B ? 'bg-purple-950 text-purple-400 border border-purple-800' : 'bg-cyan-950 text-cyan-400 border border-cyan-800'}">${isB2B ? 'B2B / Corporativo' : 'B2C / Consumidor'}</span></td>
                         <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.whatsapp || c.phone || '-')}</td>
-                        <td class="py-3 px-3 text-zinc-400 font-mono">Bragança Paulista</td>
+                        <td class="py-3 px-3 text-zinc-400 font-mono">${escapeHtml(c.city || c.address_city || 'Bragança Paulista')}</td>
                         <td class="py-3 px-3 text-center text-brand font-bold font-mono">${realOrdersCount}</td>
                         <td class="py-3 px-3 text-right font-black text-white font-mono">R$ ${realTotalSpent.toFixed(2).replace('.', ',')}</td>
                         <td class="py-3 px-3 text-center">
@@ -6241,19 +6475,19 @@ Qualquer dúvida, estou à disposição!
                 <span style="font-size: 8.5px; display: block;">Laboratório de Engenharia & Hardware</span>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #000; padding: 3px 0;">
-                <span style="font-size: 20px; font-weight: 900;" id="lbl-os-number">#082601</span>
-                <span style="font-size: 9px; font-weight: bold;" id="lbl-date">26/08/2026</span>
+                <span style="font-size: 20px; font-weight: 900;" id="lbl-os-number">#---</span>
+                <span style="font-size: 9px; font-weight: bold;" id="lbl-date">--/--/----</span>
             </div>
             <div style="text-align: left; font-size: 9.5px; line-height: 1.35; padding: 4px 0;">
-                <div><strong>CLIENTE:</strong> <span id="lbl-client-name">João</span></div>
-                <div><strong>TEL:</strong> <span id="lbl-client-phone">(11) 91969-1542</span></div>
-                <div><strong>APARELHO:</strong> <span id="lbl-device">Notebook Acer</span></div>
+                <div><strong>CLIENTE:</strong> <span id="lbl-client-name">-</span></div>
+                <div><strong>TEL:</strong> <span id="lbl-client-phone">-</span></div>
+                <div><strong>APARELHO:</strong> <span id="lbl-device">-</span></div>
                 <div><strong>SERIAL:</strong> <span id="lbl-serial">Não informado</span></div>
                 <div style="background: #000; color: #fff; padding: 1px 3px; margin: 2px 0; display: inline-block;">
                     <strong>PIN/SENHA:</strong> <span id="lbl-pin">Sem senha</span>
                 </div>
                 <div style="border-top: 1px dashed #000; padding-top: 3px; margin-top: 3px;">
-                    <strong>DEFEITO:</strong> <span id="lbl-defect">Não liga</span>
+                    <strong>DEFEITO:</strong> <span id="lbl-defect">-</span>
                 </div>
             </div>
             <div style="border-top: 1.5px solid #000; padding-top: 4px; display: flex; align-items: center; justify-content: space-between;">
@@ -6282,23 +6516,23 @@ Qualquer dúvida, estou à disposição!
             <!-- Dados da OS e Entrada -->
             <div style="background: #f0f0f0; border: 1px solid #000; padding: 4px; margin-bottom: 6px; text-align: center;">
                 <strong style="font-size: 11px;">COMPROVANTE DE CUSTÓDIA TÉCNICA</strong><br>
-                <span style="font-size: 18px; font-weight: 900;" id="rec-os-number">#082601</span>
-                <span style="font-size: 9px; display: block;" id="rec-date-time">26/08/2026 00:23</span>
+                <span style="font-size: 18px; font-weight: 900;" id="rec-os-number">#---</span>
+                <span style="font-size: 9px; display: block;" id="rec-date-time">--/--/---- --:--</span>
             </div>
 
             <!-- Dados do Cliente e Equipamento -->
             <div style="border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 5px; font-size: 9.5px;">
-                <div><strong>CLIENTE:</strong> <span id="rec-client-name">João da Silva</span></div>
-                <div><strong>WHATSAPP:</strong> <span id="rec-client-phone">(11) 91969-1542</span></div>
-                <div><strong>EQUIPAMENTO:</strong> <span id="rec-device">Notebook Acer Aspire 5</span></div>
-                <div><strong>Nº SÉRIE/TAG:</strong> <span id="rec-serial">NXKM4AL...</span></div>
-                <div><strong>ACESSÓRIOS:</strong> <span id="rec-accessories">Fonte original</span></div>
+                <div><strong>CLIENTE:</strong> <span id="rec-client-name">-</span></div>
+                <div><strong>WHATSAPP:</strong> <span id="rec-client-phone">-</span></div>
+                <div><strong>EQUIPAMENTO:</strong> <span id="rec-device">-</span></div>
+                <div><strong>Nº SÉRIE/TAG:</strong> <span id="rec-serial">-</span></div>
+                <div><strong>ACESSÓRIOS:</strong> <span id="rec-accessories">-</span></div>
             </div>
 
             <!-- Diagnóstico & Valor Inicial -->
             <div style="border-bottom: 1.5px solid #000; padding-bottom: 5px; margin-bottom: 6px; font-size: 9.5px;">
                 <div><strong>DEFEITO RELATADO:</strong></div>
-                <div style="font-style: italic; padding: 2px 0;" id="rec-defect">Não liga / Sem sinal</div>
+                <div style="font-style: italic; padding: 2px 0;" id="rec-defect">-</div>
                 <div style="margin-top: 3px; font-weight: bold;">
                     VALOR INICIAL: R$ 0,00 (Entrada p/ Triagem)
                 </div>
@@ -6499,11 +6733,11 @@ Qualquer dúvida, estou à disposição!
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">Cliente / Empresa *</label>
-                        <input type="text" id="sw-form-client-name" required placeholder="Ex: Imobiliária Vista Bragança" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
+                        <input type="text" id="sw-form-client-name" required placeholder="Ex: Nome da Empresa ou Cliente" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
                     </div>
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase text-[10px] mb-1">WhatsApp do Responsável *</label>
-                        <input type="text" id="sw-form-client-whatsapp" required placeholder="Ex: (11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
+                        <input type="text" id="sw-form-client-whatsapp" required placeholder="Ex: (11) 90000-0000" class="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-cyan-400">
                     </div>
                 </div>
 
@@ -6583,7 +6817,7 @@ Qualquer dúvida, estou à disposição!
         <div class="bg-zinc-950 border-2 border-cyan-400 w-full max-w-4xl shadow-[0_0_40px_rgba(6,182,212,0.4)] my-8 max-h-[90vh]">
             <div class="p-5 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <span class="px-2.5 py-1 bg-cyan-400 text-black font-black text-xs uppercase" id="sw-detail-code">PRJ-2026-001</span>
+                    <span class="px-2.5 py-1 bg-cyan-400 text-black font-black text-xs uppercase" id="sw-detail-code">PRJ-XXXX-XXX</span>
                     <h3 class="font-black text-sm sm:text-base text-white uppercase tracking-wider" id="sw-detail-title">Nome do Projeto</h3>
                 </div>
                 <button type="button" onclick="closeSoftwareProjectDetail()" class="text-zinc-500 hover:text-white font-bold text-lg px-2">✕</button>
@@ -6594,8 +6828,8 @@ Qualquer dúvida, estou à disposição!
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-zinc-900/80 p-4 border border-zinc-800">
                     <div>
                         <span class="text-zinc-500 uppercase text-[10px] block">Cliente Contratante:</span>
-                        <strong class="text-white text-sm" id="sw-detail-client">Nome do Cliente</strong>
-                        <span class="text-zinc-400 block text-[11px]" id="sw-detail-whatsapp">(11) 99999-9999</span>
+                        <strong class="text-white text-sm" id="sw-detail-client">-</strong>
+                        <span class="text-zinc-400 block text-[11px]" id="sw-detail-whatsapp">-</span>
                     </div>
                     <div>
                         <span class="text-zinc-500 uppercase text-[10px] block">Orçamento & Contrato:</span>
@@ -6627,11 +6861,11 @@ Qualquer dúvida, estou à disposição!
                     </button>
                 </div>
 
-                <!-- Milestones 50/50 & Faturamento Asaas -->
+                <!-- Milestones 50/50 & Quitação Pix -->
                 <div class="bg-black border border-zinc-800 p-4 space-y-3">
                     <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
                         <h4 class="font-bold text-white uppercase text-xs flex items-center gap-1.5 text-cyan-400">
-                            <i data-lucide="credit-card" class="w-4 h-4"></i> Faturamento 50/50 & Milestones Asaas
+                            <i data-lucide="credit-card" class="w-4 h-4"></i> Faturamento 50/50 & Quitação Pix
                         </h4>
                         <span class="text-zinc-500 text-[10px]">Trava de Liberação de Código</span>
                     </div>
@@ -6723,7 +6957,7 @@ Qualquer dúvida, estou à disposição!
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="sm:col-span-2">
                         <label class="block text-zinc-400 uppercase font-bold mb-1">Razão Social / Nome da Empresa:*</label>
-                        <input type="text" id="msp-form-company-name" required placeholder="Ex: Clínica São Francisco / Advocacia Silva" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-purple-500">
+                        <input type="text" id="msp-form-company-name" required placeholder="Ex: Nome da Empresa / Razão Social" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-sm focus:outline-none focus:border-purple-500">
                     </div>
                     <div>
                         <label class="block text-zinc-400 uppercase font-bold mb-1">CNPJ (Opcional):</label>
@@ -6740,11 +6974,11 @@ Qualquer dúvida, estou à disposição!
                     </div>
                     <div>
                         <label class="block text-zinc-400 uppercase font-bold mb-1">Nome do Gestor / Contato:*</label>
-                        <input type="text" id="msp-form-contact-name" required placeholder="Ex: Dr. Roberto / Camila" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
+                        <input type="text" id="msp-form-contact-name" required placeholder="Ex: Nome do Responsável" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
                     </div>
                     <div>
                         <label class="block text-zinc-400 uppercase font-bold mb-1">WhatsApp do Gestor:*</label>
-                        <input type="text" id="msp-form-contact-whatsapp" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
+                        <input type="text" id="msp-form-contact-whatsapp" required placeholder="(11) 90000-0000" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-purple-500">
                     </div>
                     <div>
                         <label class="block text-zinc-400 uppercase font-bold mb-1">Mensalidade (MRR R$):*</label>
@@ -6851,11 +7085,11 @@ Qualquer dúvida, estou à disposição!
                     </div>
                     <div>
                         <label class="block text-zinc-400 uppercase font-bold mb-1">Nome do Solicitante:*</label>
-                        <input type="text" id="msp-ticket-form-name" required placeholder="Ex: Roberto Oliveira" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                        <input type="text" id="msp-ticket-form-name" required placeholder="Ex: Nome do Solicitante" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
                     </div>
                     <div>
                         <label class="block text-zinc-400 uppercase font-bold mb-1">WhatsApp para Notificação:*</label>
-                        <input type="text" id="msp-ticket-form-whatsapp" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
+                        <input type="text" id="msp-ticket-form-whatsapp" required placeholder="(11) 90000-0000" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white focus:outline-none focus:border-yellow-400">
                     </div>
                     <div class="sm:col-span-2">
                         <label class="block text-zinc-400 uppercase font-bold mb-1">Severidade / SLA:*</label>
@@ -6961,12 +7195,12 @@ Qualquer dúvida, estou à disposição!
             <form id="new-client-form" onsubmit="handleSaveClient(event)" class="space-y-4">
                 <div>
                     <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">Nome Completo / Razão Social *</label>
-                    <input type="text" id="cli-name" required placeholder="Ex: Dr. Roberto Guimarães" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                    <input type="text" id="cli-name" required placeholder="Ex: Nome do Cliente" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">WhatsApp / Telefone *</label>
-                        <input type="text" id="cli-phone" required placeholder="(11) 98765-4321" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
+                        <input type="text" id="cli-phone" required placeholder="(11) 90000-0000" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white text-xs focus:outline-none focus:border-brand">
                     </div>
                     <div>
                         <label class="block text-zinc-400 font-bold mb-1 uppercase text-[10px]">CPF / CNPJ</label>
@@ -6991,22 +7225,22 @@ Qualquer dúvida, estou à disposição!
             <div class="flex justify-between items-center pb-3 border-b border-zinc-800 mb-4">
                 <div>
                     <span class="text-brand text-[10px] font-bold uppercase block">// CRM & HISTÓRICO LTV</span>
-                    <h3 class="text-base font-black text-white uppercase" id="cdetail-name">Dr. Roberto Guimarães</h3>
+                    <h3 class="text-base font-black text-white uppercase" id="cdetail-name">-</h3>
                 </div>
                 <button type="button" onclick="closeClientDetailModal()" class="text-zinc-500 hover:text-white font-bold text-base">✕</button>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-zinc-950 border border-zinc-800 mb-4">
                 <div>
                     <span class="text-zinc-500 text-[10px] uppercase block">WhatsApp:</span>
-                    <strong class="text-white" id="cdetail-phone">(11) 98765-4321</strong>
+                    <strong class="text-white" id="cdetail-phone">-</strong>
                 </div>
                 <div>
                     <span class="text-zinc-500 text-[10px] uppercase block">Total Gasto (LTV):</span>
-                    <strong class="text-brand" id="cdetail-ltv">R$ 8.900,00</strong>
+                    <strong class="text-brand" id="cdetail-ltv">R$ 0,00</strong>
                 </div>
                 <div>
                     <span class="text-zinc-500 text-[10px] uppercase block">Ordens de Serviço:</span>
-                    <strong class="text-cyan-400" id="cdetail-orders-count">5 OSs Concluídas</strong>
+                    <strong class="text-cyan-400" id="cdetail-orders-count">0 OSs</strong>
                 </div>
             </div>
             <div class="space-y-2">
