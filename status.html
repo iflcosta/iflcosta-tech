@@ -288,40 +288,11 @@
                 </div>
 
                 <!-- GALERIA DE FOTOS DA BANCADA (SUPABASE STORAGE) -->
-                <div class="bg-black border-2 border-zinc-800 p-6 sm:p-8">
+                <div id="hw-photo-section" class="bg-black border-2 border-zinc-800 p-6 sm:p-8 hidden">
                     <span class="text-brand font-mono text-xs font-bold uppercase block mb-1">[ Registro Visual de Bancada ]</span>
                     <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-6">Fotos do Equipamento</h3>
                     
                     <div id="hw-photo-gallery" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group relative">
-                            <div class="h-48 bg-zinc-800 flex items-center justify-center font-mono text-xs text-zinc-500 p-4 text-center">
-                                <i data-lucide="image" class="w-8 h-8 text-zinc-600 mb-2 block mx-auto"></i>
-                                [ Foto 1: Caixas Originais Lacradas ]
-                            </div>
-                            <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                                01 • Caixas e Lotes Originais
-                            </div>
-                        </div>
-
-                        <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group relative">
-                            <div class="h-48 bg-zinc-800 flex items-center justify-center font-mono text-xs text-zinc-500 p-4 text-center">
-                                <i data-lucide="image" class="w-8 h-8 text-zinc-600 mb-2 block mx-auto"></i>
-                                [ Foto 2: Cable Management Traseiro ]
-                            </div>
-                            <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                                02 • Gerenciamento de Cabos
-                            </div>
-                        </div>
-
-                        <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group relative">
-                            <div class="h-48 bg-zinc-800 flex items-center justify-center font-mono text-xs text-zinc-500 p-4 text-center">
-                                <i data-lucide="image" class="w-8 h-8 text-zinc-600 mb-2 block mx-auto"></i>
-                                [ Foto 3: Setup Ligado & Benchmark ]
-                            </div>
-                            <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                                03 • Teste de Estresse Final
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -874,6 +845,8 @@
             if (hwContainer) hwContainer.classList.add("hidden");
             if (swContainer) swContainer.classList.add("hidden");
             if (mspContainer) mspContainer.classList.add("hidden");
+            const photoSec = document.getElementById('hw-photo-section');
+            if (photoSec) photoSec.classList.add('hidden');
             const stickyBar = document.getElementById('mobile-sticky-bar');
             if (stickyBar) stickyBar.classList.add('hidden');
         }
@@ -1448,79 +1421,51 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // Renderizador da Galeria Contextual (Notebook vs PC Gamer)
+        // Renderizador de Fotos Reais da Bancada (Oculta 100% se não houver fotos)
         function renderPhotoGallery(wo) {
+            const photoSection = document.getElementById("hw-photo-section");
             const galleryContainer = document.getElementById("hw-photo-gallery");
-            if (!galleryContainer) return;
+            if (!photoSection) return;
 
-            const brand = (wo.device_brand || "").toLowerCase();
-            const model = (wo.device_model || "").toLowerCase();
-            const isNotebook = brand.includes("notebook") || brand.includes("dell") || model.includes("inspiron") || model.includes("thinkpad") || model.includes("macbook");
+            // Se a OS não tiver fotos reais cadastradas, oculta completamente a seção para o cliente!
+            const rawPhotos = wo.photos || wo.photo_urls || wo.images || wo.device_photos || [];
+            let photos = [];
+            if (Array.isArray(rawPhotos)) {
+                photos = rawPhotos.filter(Boolean);
+            } else if (typeof rawPhotos === 'string' && rawPhotos.trim()) {
+                try {
+                    const parsed = JSON.parse(rawPhotos);
+                    if (Array.isArray(parsed)) photos = parsed.filter(Boolean);
+                    else photos = [rawPhotos];
+                } catch(e) {
+                    photos = rawPhotos.split(',').map(s => s.trim()).filter(Boolean);
+                }
+            }
 
-            if (isNotebook) {
-                galleryContainer.innerHTML = `
-                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
-                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
-                            <i data-lucide="camera" class="w-8 h-8 text-zinc-600 mb-2"></i>
-                            <span>[ Foto 01: Inspeção Externa & Tampa ]</span>
-                        </div>
-                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                            01 • Registro Estético de Entrada
-                        </div>
-                    </div>
+            if (!photos || photos.length === 0) {
+                photoSection.classList.add("hidden");
+                if (galleryContainer) galleryContainer.innerHTML = "";
+                return;
+            }
 
-                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
-                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
-                            <i data-lucide="laptop" class="w-8 h-8 text-zinc-600 mb-2"></i>
-                            <span>[ Foto 02: Display, Teclado & Dobradiças ]</span>
+            // Se houver fotos reais cadastradas, exibe a seção e renderiza as imagens
+            photoSection.classList.remove("hidden");
+            if (galleryContainer) {
+                galleryContainer.innerHTML = photos.map((p, idx) => {
+                    const url = typeof p === 'string' ? p : (p.url || p.photo_url || '');
+                    const label = typeof p === 'object' && p.label ? p.label : `Foto 0${idx + 1} • Registro de Bancada`;
+                    return `
+                        <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
+                            <a href="${escapeHtml(url)}" target="_blank" class="block h-48 bg-zinc-950 flex items-center justify-center overflow-hidden">
+                                <img src="${escapeHtml(url)}" alt="${escapeHtml(label)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            </a>
+                            <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400 flex justify-between items-center">
+                                <span>${escapeHtml(label)}</span>
+                                <a href="${escapeHtml(url)}" target="_blank" class="text-brand hover:underline text-[10px]">Ampliar ↗</a>
+                            </div>
                         </div>
-                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                            02 • Verificação de Integridade Física
-                        </div>
-                    </div>
-
-                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
-                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
-                            <i data-lucide="barcode" class="w-8 h-8 text-zinc-600 mb-2"></i>
-                            <span>[ Foto 03: Service Tag / Nº de Série ]</span>
-                        </div>
-                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                            03 • Identificação e Tombamento
-                        </div>
-                    </div>
-                `;
-            } else {
-                galleryContainer.innerHTML = `
-                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
-                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
-                            <i data-lucide="package" class="w-8 h-8 text-zinc-600 mb-2"></i>
-                            <span>[ Foto 01: Caixas e Lacres Originais ]</span>
-                        </div>
-                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                            01 • Lotes de Peças Homologadas
-                        </div>
-                    </div>
-
-                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
-                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
-                            <i data-lucide="cpu" class="w-8 h-8 text-zinc-600 mb-2"></i>
-                            <span>[ Foto 02: Cable Management & Montagem ]</span>
-                        </div>
-                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                            02 • Roteamento e Fixação Militar
-                        </div>
-                    </div>
-
-                    <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
-                        <div class="h-44 bg-zinc-800/80 flex flex-col items-center justify-center font-mono text-xs text-zinc-400 p-4 text-center">
-                            <i data-lucide="activity" class="w-8 h-8 text-zinc-600 mb-2"></i>
-                            <span>[ Foto 03: Bancada de Testes de Estresse ]</span>
-                        </div>
-                        <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400">
-                            03 • Telemetria AIDA64 & FurMark
-                        </div>
-                    </div>
-                `;
+                    `;
+                }).join('');
             }
         }
 
