@@ -48,7 +48,7 @@
         </div>
     </header>
 
-    <main class="flex-grow py-8 sm:py-12">
+    <main class="flex-grow py-8 sm:py-12 pb-28 sm:pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Barra de Busca Rápida Brutalista -->
@@ -277,7 +277,7 @@
 
                         <!-- Botão Dinâmico de Ação -->
                         <div id="hw-action-buttons" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                            <a id="hw-doubt-btn" href="https://wa.me/5511974100909?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20atendimento." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
+                            <a id="hw-doubt-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20atendimento." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
                                 Tirar Dúvida
                             </a>
                             <button onclick="downloadWarrantyPDF()" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
@@ -573,69 +573,86 @@
             </div>
 
             <!-- Conteúdo do Modal -->
-            <div class="p-6 space-y-5">
+            <div class="p-5 sm:p-6 space-y-4 font-sans">
 
                 <!-- Card de Resumo do Valor -->
-                <div class="bg-zinc-900/90 border border-zinc-700 p-4 flex justify-between items-center font-mono">
+                <div class="bg-zinc-900/90 border-2 border-zinc-700 p-4 flex justify-between items-center font-mono">
                     <div>
                         <span class="text-zinc-400 text-xs block" id="pay-modal-desc-label">Valor a Pagar:</span>
-                        <span class="text-xs text-zinc-500" id="pay-modal-os-ref">OS #--- • Equipamento</span>
+                        <span class="text-xs text-zinc-400" id="pay-modal-os-ref">OS #--- • Equipamento</span>
                     </div>
                     <div class="text-right">
                         <span class="text-2xl font-black text-brand" id="pay-modal-amount">R$ 0,00</span>
                     </div>
                 </div>
 
-                <!-- Dados do Favorecido & Chave Oficial -->
-                <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono text-xs space-y-2">
-                    <div class="flex justify-between items-center">
-                        <span class="text-zinc-400 font-bold uppercase text-[10px]">Beneficiário / Favorecido:</span>
-                        <span class="text-white font-bold text-xs">IAN PIETRO // IF TECH</span>
+                <!-- 1. BLOCO PRIMÁRIO: CÓDIGO PIX COPIA E COLA (IDEAL NO CELULAR) -->
+                <div class="bg-zinc-950 border-2 border-brand/40 p-4 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-brand font-mono text-xs font-black uppercase flex items-center gap-1.5">
+                            <i data-lucide="zap" class="w-3.5 h-3.5 text-brand"></i>
+                            <span>1. Pix Copia e Cola (Recomendado no Celular)</span>
+                        </label>
+                        <span class="text-[10px] font-mono text-zinc-500 uppercase">EMV BR Code</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-zinc-400 font-bold uppercase text-[10px]">Instituição / Praça:</span>
-                        <span class="text-zinc-300 text-xs">Bragança Paulista - SP</span>
+                    <p class="text-[11px] text-zinc-400 font-mono">Copie o código abaixo e cole no aplicativo do seu banco (Opção "Pix Copia e Cola"):</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="pix-copypaste-input" readonly value="Carregando código Pix..." class="w-full bg-zinc-900 border-2 border-zinc-700 px-3 py-2.5 text-zinc-200 font-mono text-xs focus:outline-none select-all truncate min-h-[44px]">
+                        <button type="button" onclick="copyPixCode()" id="btn-copy-pix" class="w-full sm:w-auto px-5 py-3 bg-brand text-black font-mono font-black text-xs uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] min-h-[48px] cursor-pointer">
+                            <i data-lucide="copy" class="w-4 h-4"></i> Copiar Código
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. BLOCO DE AÇÃO IMEDIATA: ENVIAR COMPROVANTE WHATSAPP -->
+                <div class="bg-zinc-950 border border-emerald-500/40 p-3.5 space-y-2">
+                    <div class="flex items-center justify-between text-xs font-mono">
+                        <span class="text-zinc-300 font-bold uppercase flex items-center gap-1.5">
+                            <i data-lucide="send" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>2. Após transferir, confirme o envio:</span>
+                        </span>
+                    </div>
+                    <a id="btn-send-pix-proof" href="#" target="_blank" class="w-full py-3.5 bg-emerald-500 text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(0,255,100,0.3)] min-h-[48px]">
+                        <i data-lucide="message-square" class="w-4 h-4"></i> Enviar Comprovante no WhatsApp
+                    </a>
+                </div>
+
+                <!-- 3. BLOCO SECUNDÁRIO: QR CODE PIX (PARA OUTRO APARELHO) -->
+                <details class="bg-zinc-950 border border-zinc-800 p-3 group">
+                    <summary class="font-mono text-xs text-zinc-400 font-bold uppercase cursor-pointer hover:text-brand flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="qr-code" class="w-4 h-4 text-brand"></i>
+                            Ver QR Code (Escanear com a câmera de outro celular)
+                        </span>
+                        <span class="text-zinc-600 group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="pt-4 text-center">
+                        <p class="text-[11px] text-zinc-500 font-mono mb-3">Aponte a câmera do aplicativo do seu banco para pagar:</p>
+                        <div class="inline-block p-3 bg-white border-2 border-zinc-300 shadow-inner">
+                            <canvas id="pix-canvas" class="w-44 h-44 sm:w-48 sm:h-48 block"></canvas>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- 4. DADOS DO FAVORECIDO & CHAVE OFICIAL -->
+                <div class="bg-zinc-950 border border-zinc-900 p-3.5 font-mono text-xs space-y-2">
+                    <div class="flex justify-between items-center text-[11px]">
+                        <span class="text-zinc-500 uppercase font-bold">Favorecido Oficial:</span>
+                        <span class="text-white font-bold">IAN PIETRO // IF TECH</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[11px]">
+                        <span class="text-zinc-500 uppercase font-bold">Instituição / Cidade:</span>
+                        <span class="text-zinc-300">Bragança Paulista - SP</span>
                     </div>
                     <div class="pt-2 border-t border-zinc-900 flex justify-between items-center">
                         <div>
-                            <span class="text-zinc-400 text-[10px] uppercase font-bold block">Chave Pix (E-mail):</span>
-                            <span class="text-brand font-mono font-bold text-sm select-all">ianpietrinho@gmail.com</span>
+                            <span class="text-zinc-500 text-[10px] uppercase font-bold block">Chave Alternativa (E-mail):</span>
+                            <span class="text-brand font-mono font-bold text-xs select-all">ianpietrinho@gmail.com</span>
                         </div>
-                        <button type="button" onclick="copyPixKeyDirect()" id="btn-copy-pix-key" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-brand/50 text-brand text-[11px] font-bold uppercase transition-colors flex items-center gap-1">
+                        <button type="button" onclick="copyPixKeyDirect()" id="btn-copy-pix-key" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-brand/50 text-brand text-[11px] font-bold uppercase transition-colors flex items-center gap-1 min-h-[36px]">
                             <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Chave
                         </button>
                     </div>
-                </div>
-
-                <!-- QR Code Pix -->
-                <div class="text-center bg-zinc-950 border border-zinc-800 p-5">
-                    <p class="text-xs text-zinc-400 font-mono mb-3">Aponte a câmera do aplicativo do seu banco para o QR Code:</p>
-                    
-                    <div class="inline-block p-3 bg-white border-2 border-zinc-300 shadow-inner">
-                        <canvas id="pix-canvas" class="w-44 h-44 sm:w-48 sm:h-48 block"></canvas>
-                    </div>
-                </div>
-
-                <!-- Código Copia e Cola (EMV BR Code) -->
-                <div>
-                    <label class="block text-zinc-400 font-mono text-xs font-bold uppercase mb-1.5 flex items-center justify-between">
-                        <span>Código Pix Copia e Cola:</span>
-                        <span class="text-[10px] text-zinc-500 font-normal">EMV BR Code Dinâmico</span>
-                    </label>
-                    <div class="flex gap-2">
-                        <input type="text" id="pix-copypaste-input" readonly value="Carregando código Pix..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-zinc-300 font-mono text-xs focus:outline-none select-all truncate">
-                        <button type="button" onclick="copyPixCode()" id="btn-copy-pix" class="px-4 py-2 bg-brand text-black font-mono font-bold text-xs uppercase hover:bg-white transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Código
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Envio de Comprovante via WhatsApp -->
-                <div class="pt-2 border-t border-zinc-800 space-y-2">
-                    <p class="text-[11px] text-zinc-400 font-mono text-center">Após realizar a transferência, clique abaixo para enviar o comprovante:</p>
-                    <a id="btn-send-pix-proof" href="#" target="_blank" class="w-full py-3 bg-emerald-500 text-black font-mono font-black text-xs uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(0,255,100,0.3)]">
-                        <i data-lucide="send" class="w-4 h-4"></i> Enviar Comprovante no WhatsApp
-                    </a>
                 </div>
 
             </div>
@@ -872,6 +889,11 @@
                 if (titleEl) titleEl.className = "text-black font-black";
                 if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
                 if (iconEl) iconEl.className = "w-4 h-4 text-black";
+            } else if (state === 'active-amber') {
+                el.className = "border-2 border-amber-500 bg-amber-500 text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(245,158,11,0.35)]";
+                if (titleEl) titleEl.className = "text-black font-black";
+                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-black";
             } else if (state === 'active-cyan') {
                 el.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(6,182,212,0.35)]";
                 if (titleEl) titleEl.className = "text-black font-black";
@@ -1043,7 +1065,7 @@
                     if (statusBadge) statusBadge.className = "px-4 py-2 bg-amber-500/15 border-2 border-amber-500 text-amber-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 animate-pulse";
                     setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
                     setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
-                    setStepVisual(3, 'active-cyan', 'Aguardando Peça');
+                    setStepVisual(3, 'active-amber', 'Aguardando Peça');
                     setStepVisual(4, 'pending', 'Telemetria 15 Min');
                     setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
                 } else if (isPausadoCliente) {
@@ -1051,7 +1073,7 @@
                     if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-500/15 border-2 border-yellow-500 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 animate-pulse";
                     setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
                     setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
-                    setStepVisual(3, 'active-cyan', 'Aguarda Cliente');
+                    setStepVisual(3, 'active-yellow', 'Aguarda Cliente');
                     setStepVisual(4, 'pending', 'Telemetria 15 Min');
                     setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
                 } else {
@@ -1299,8 +1321,8 @@
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 bg-amber-500 text-black flex items-center justify-center font-black text-lg flex-shrink-0">📦</div>
                                             <div>
-                                                <h4 class="font-bold text-amber-400 text-sm sm:text-base uppercase tracking-tight">Equipamento em Bancada • Aguardando Peça</h4>
-                                                <p class="text-xs text-zinc-300">O equipamento foi aberto e preparado na bancada. O serviço está aguardando a chegada da peça/cabo para conclusão da montagem.</p>
+                                                <h4 class="font-bold text-amber-400 text-sm sm:text-base uppercase tracking-tight">Bancada de Engenharia • Aguardando Peça Homologada</h4>
+                                                <p class="text-xs text-zinc-300">Seu equipamento foi recebido, totalmente desmontado e preparado em nossa bancada antiestática (ESD). A montagem final aguarda a entrega da peça/cabo para conclusão dos testes. Nenhum valor adicional será cobrado além do orçado.</p>
                                             </div>
                                         </div>
                                         <span class="font-mono text-xs text-amber-400 font-black px-2.5 py-1 bg-amber-500/20 border border-amber-500 uppercase whitespace-nowrap animate-pulse">3B: Aguardando Peça</span>
@@ -1772,7 +1794,7 @@
             const proofBtn = document.getElementById('btn-send-pix-proof');
             if (proofBtn) {
                 const msg = `Olá Ian / IF Tech! Acabei de realizar o pagamento via Pix de R$ ${payAmount.toFixed(2).replace('.', ',')} referente à OS #${osNumStr}. Segue o comprovante em anexo:`;
-                proofBtn.href = `https://wa.me/5511974100909?text=${encodeURIComponent(msg)}`;
+                proofBtn.href = `https://wa.me/5511919691542?text=${encodeURIComponent(msg)}`;
             }
 
             modal.classList.remove('hidden');
@@ -1787,15 +1809,37 @@
         function copyPixKeyDirect() {
             const key = 'ianpietrinho@gmail.com';
             const btn = document.getElementById('btn-copy-pix-key');
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(key).then(() => {
-                    if (btn) btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i> Copiada!';
+            const onSuccess = () => {
+                if (btn) btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i> Copiada!';
+                if (window.lucide) lucide.createIcons();
+                if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+                setTimeout(() => {
+                    if (btn) btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Chave';
                     if (window.lucide) lucide.createIcons();
-                    setTimeout(() => {
-                        if (btn) btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Chave';
-                        if (window.lucide) lucide.createIcons();
-                    }, 2000);
+                }, 2000);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(key).then(onSuccess).catch(() => {
+                    try {
+                        const tempInput = document.createElement('input');
+                        tempInput.value = key;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempInput);
+                        onSuccess();
+                    } catch(e){}
                 });
+            } else {
+                try {
+                    const tempInput = document.createElement('input');
+                    tempInput.value = key;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
+                    onSuccess();
+                } catch(e){}
             }
         }
 
@@ -1803,16 +1847,33 @@
             const input = document.getElementById('pix-copypaste-input');
             const btn = document.getElementById('btn-copy-pix');
             if (!input) return;
+            input.focus();
             input.select();
             input.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(input.value).then(() => {
-                if (btn) btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i> Copiado!';
+            
+            const onSuccess = () => {
+                if (btn) btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copiado!';
                 if (window.lucide) lucide.createIcons();
+                if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
                 setTimeout(() => {
-                    if (btn) btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Código';
+                    if (btn) btn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i> Copiar Código';
                     if (window.lucide) lucide.createIcons();
                 }, 2000);
-            });
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(input.value).then(onSuccess).catch(() => {
+                    try {
+                        document.execCommand('copy');
+                        onSuccess();
+                    } catch(e) {}
+                });
+            } else {
+                try {
+                    document.execCommand('copy');
+                    onSuccess();
+                } catch(e) {}
+            }
         }
 
 

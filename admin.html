@@ -176,40 +176,40 @@
     <!-- Barra de Navegação de Abas do Cockpit (8 Abas Fluidas & 100% Visíveis) -->
     <nav class="bg-zinc-950 border-b-2 border-zinc-800 sticky top-16 sm:top-20 z-40">
         <div class="w-full max-w-[1680px] mx-auto px-2 sm:px-4">
-            <div class="flex items-center justify-between overflow-x-auto py-1 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider scroll-smooth gap-1 scrollbar-none no-scrollbar">
-                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-2 sm:px-2.5 py-2 text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="layout-grid" class="w-3.5 h-3.5 shrink-0"></i>
+            <div class="flex items-center justify-between overflow-x-auto py-1.5 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider scroll-smooth gap-1.5 scrollbar-none no-scrollbar">
+                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-3 sm:px-3.5 py-2.5 min-h-[44px] text-brand border-b-2 border-brand bg-brand/5 flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0 cursor-pointer">
+                    <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
                     <span>1. Bancada & OS</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-400 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+1</kbd>
                 </button>
-                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="wrench" class="w-3.5 h-3.5 shrink-0"></i>
+                <button onclick="switchTab('new-os')" id="tab-btn-new-os" class="tab-btn px-3 sm:px-3.5 py-2.5 min-h-[44px] text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0 cursor-pointer">
+                    <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i>
                     <span>2. Custom Build</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+2</kbd>
                 </button>
-                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="package" class="w-3.5 h-3.5 shrink-0 text-brand"></i>
+                <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-btn px-3 sm:px-3.5 py-2.5 min-h-[44px] text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0 cursor-pointer">
+                    <i data-lucide="package" class="w-4 h-4 shrink-0 text-brand"></i>
                     <span>3. Estoque & PDV</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+3</kbd>
                 </button>
-                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="users" class="w-3.5 h-3.5 shrink-0"></i>
+                <button onclick="switchTab('clients')" id="tab-btn-clients" class="tab-btn px-3 sm:px-3.5 py-2.5 min-h-[44px] text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0 cursor-pointer">
+                    <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
                     <span>4. Clientes & CRM</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+4</kbd>
                 </button>
-                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="code" class="w-3.5 h-3.5 shrink-0 text-cyan-400"></i>
+                <button onclick="switchTab('software')" id="tab-btn-software" class="tab-btn px-3 sm:px-3.5 py-2.5 min-h-[44px] text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0 cursor-pointer">
+                    <i data-lucide="code" class="w-4 h-4 shrink-0 text-cyan-400"></i>
                     <span>5. Software (50/50)</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+5</kbd>
                 </button>
-                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="shield" class="w-3.5 h-3.5 shrink-0 text-purple-400"></i>
+                <button onclick="switchTab('msp')" id="tab-btn-msp" class="tab-btn px-3 sm:px-3.5 py-2.5 min-h-[44px] text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0 cursor-pointer">
+                    <i data-lucide="shield" class="w-4 h-4 shrink-0 text-purple-400"></i>
                     <span>6. Contratos MSP</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+6</kbd>
                 </button>
 
-                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-2 sm:px-2.5 py-2 text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0">
-                    <i data-lucide="dollar-sign" class="w-3.5 h-3.5 shrink-0 text-yellow-400"></i>
+                <button onclick="switchTab('financial')" id="tab-btn-financial" class="tab-btn px-3 sm:px-3.5 py-2.5 min-h-[44px] text-zinc-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap transition-colors group flex-shrink-0 cursor-pointer">
+                    <i data-lucide="dollar-sign" class="w-4 h-4 shrink-0 text-yellow-400"></i>
                     <span>7. DRE 360°</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
@@ -5816,7 +5816,14 @@
             wo.parts_deposit_paid = true;
             wo.parts_deposit_status = 'CONFIRMED';
             if ((wo.status || '').toLowerCase().includes('triagem') || (wo.status || '').toLowerCase().includes('orcamento')) {
-                wo.status = 'Na_Bancada';
+                wo.status = 'Bancada_Aguardando_Peca';
+                const nowStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const note = `[${nowStr}] Sinal das peças confirmado via Pix. Componentes encomendados com fornecedor oficial. Aguardando entrega para montagem na bancada.`;
+                if (!wo.technical_diagnosis) {
+                    wo.technical_diagnosis = note;
+                } else if (!wo.technical_diagnosis.includes('Sinal das peças confirmado')) {
+                    wo.technical_diagnosis = `${wo.technical_diagnosis}\n\n${note}`;
+                }
             }
 
             try { 
@@ -5829,7 +5836,8 @@
                 const updateData = {
                     parts_deposit_paid: true,
                     parts_deposit_status: 'CONFIRMED',
-                    status: wo.status
+                    status: wo.status,
+                    technical_diagnosis: wo.technical_diagnosis || ''
                 };
                 const query = client.from('work_orders').update(updateData);
                 if (isUuid(wo.id)) query.eq('id', wo.id).then(() => {}).catch(() => {});
@@ -5837,9 +5845,11 @@
             }
 
             updateOSDetailPaymentCard(wo);
+            const notesEl = document.getElementById('detail-technical-notes');
+            if (notesEl && wo.technical_diagnosis) notesEl.value = wo.technical_diagnosis;
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
-            showToast('✓ Sinal de Peças confirmado como PAGO! OS na Bancada.', 'success');
+            showToast('✓ Sinal de Peças confirmado como PAGO! OS em 3B: Aguardando Peça.', 'success');
         }
 
         function markManualFullPaymentPaid(wo) {
