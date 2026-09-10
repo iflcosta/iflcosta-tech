@@ -1036,13 +1036,33 @@
                     }
                 }
             } else if (isBancada) {
-                if (statusBadgeText) statusBadgeText.textContent = "03. EM EXECUÇÃO NA BANCADA";
-                if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
-                setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
-                setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
-                setStepVisual(3, 'active-cyan', 'Em Execução');
-                setStepVisual(4, 'pending', 'Telemetria 15 Min');
-                setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
+                const isPausadoPeca = rawStatus.includes("peca") || rawStatus.includes("peça");
+                const isPausadoCliente = rawStatus.includes("cliente");
+                if (isPausadoPeca) {
+                    if (statusBadgeText) statusBadgeText.textContent = "03. NA BANCADA // PAUSADO: AGUARDANDO PEÇA";
+                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-amber-500/15 border-2 border-amber-500 text-amber-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 animate-pulse";
+                    setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                    setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
+                    setStepVisual(3, 'active-cyan', 'Aguardando Peça');
+                    setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                    setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
+                } else if (isPausadoCliente) {
+                    if (statusBadgeText) statusBadgeText.textContent = "03. NA BANCADA // PAUSADO: AGUARDA CLIENTE";
+                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-yellow-500/15 border-2 border-yellow-500 text-yellow-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 animate-pulse";
+                    setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                    setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
+                    setStepVisual(3, 'active-cyan', 'Aguarda Cliente');
+                    setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                    setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
+                } else {
+                    if (statusBadgeText) statusBadgeText.textContent = "03. EM EXECUÇÃO NA BANCADA";
+                    if (statusBadge) statusBadge.className = "px-4 py-2 bg-cyan-400/10 border-2 border-cyan-400 text-cyan-400 font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
+                    setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
+                    setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
+                    setStepVisual(3, 'active-cyan', 'Em Execução');
+                    setStepVisual(4, 'pending', 'Telemetria 15 Min');
+                    setStepVisual(5, 'pending', 'Garantia CDC & Retirada');
+                }
             } else if (isQA) {
                 if (statusBadgeText) statusBadgeText.textContent = "04. EM TESTES DE ESTRESSE QA";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand/15 border-2 border-brand text-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2";
@@ -1271,23 +1291,81 @@
                     } else {
                         // Sem peças (100% Serviço)
                         if (isApproved) {
-                            bannerHtml = `
-                                <div class="p-4 bg-brand/10 border-2 border-brand mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-brand text-black flex items-center justify-center font-black text-lg flex-shrink-0">✓</div>
-                                        <div>
-                                            <h4 class="font-bold text-brand text-sm sm:text-base uppercase tracking-tight">Orçamento Aprovado com Sucesso!</h4>
-                                            <p class="text-xs text-zinc-300">Seu equipamento está na fila de execução da bancada técnica. Pagamento 100% na entrega.</p>
+                            const isPausadoPeca = rawStatus.includes("peca") || rawStatus.includes("peça");
+                            const isPausadoCliente = rawStatus.includes("cliente");
+                            if (isBancada && isPausadoPeca) {
+                                bannerHtml = `
+                                    <div class="p-4 bg-amber-500/10 border-2 border-amber-500 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-amber-500 text-black flex items-center justify-center font-black text-lg flex-shrink-0">📦</div>
+                                            <div>
+                                                <h4 class="font-bold text-amber-400 text-sm sm:text-base uppercase tracking-tight">Equipamento em Bancada • Aguardando Peça</h4>
+                                                <p class="text-xs text-zinc-300">O equipamento foi aberto e preparado na bancada. O serviço está aguardando a chegada da peça/cabo para conclusão da montagem.</p>
+                                            </div>
                                         </div>
+                                        <span class="font-mono text-xs text-amber-400 font-black px-2.5 py-1 bg-amber-500/20 border border-amber-500 uppercase whitespace-nowrap animate-pulse">3B: Aguardando Peça</span>
                                     </div>
-                                    <span class="font-mono text-xs text-brand font-black px-2.5 py-1 bg-brand/20 border border-brand uppercase whitespace-nowrap">Aprovado • Na Fila</span>
-                                </div>
-                            `;
-                            actionButtonHtml = `
-                                <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center gap-2">
-                                    <i data-lucide="check-check" class="w-4 h-4"></i> Aprovado (Na Fila de Bancada)
-                                </div>
-                            `;
+                                `;
+                                actionButtonHtml = `
+                                    <div class="px-5 py-3 bg-amber-500/10 border-2 border-amber-500 text-amber-400 font-mono font-bold text-xs uppercase flex items-center gap-2">
+                                        <i data-lucide="package" class="w-4 h-4"></i> Na Bancada (Aguardando Entrega da Peça)
+                                    </div>
+                                `;
+                            } else if (isBancada && isPausadoCliente) {
+                                bannerHtml = `
+                                    <div class="p-4 bg-yellow-500/10 border-2 border-yellow-500 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-yellow-500 text-black flex items-center justify-center font-black text-lg flex-shrink-0">⏳</div>
+                                            <div>
+                                                <h4 class="font-bold text-yellow-400 text-sm sm:text-base uppercase tracking-tight">Equipamento em Bancada • Aguarda Cliente</h4>
+                                                <p class="text-xs text-zinc-300">Aguardando confirmação, dados adicionais ou resposta do cliente para dar continuidade aos testes.</p>
+                                            </div>
+                                        </div>
+                                        <span class="font-mono text-xs text-yellow-400 font-black px-2.5 py-1 bg-yellow-500/20 border border-yellow-500 uppercase whitespace-nowrap animate-pulse">3C: Aguarda Cliente</span>
+                                    </div>
+                                `;
+                                actionButtonHtml = `
+                                    <div class="px-5 py-3 bg-yellow-500/10 border-2 border-yellow-500 text-yellow-400 font-mono font-bold text-xs uppercase flex items-center gap-2">
+                                        <i data-lucide="user-check" class="w-4 h-4"></i> Na Bancada (Aguardando Cliente)
+                                    </div>
+                                `;
+                            } else if (isBancada) {
+                                bannerHtml = `
+                                    <div class="p-4 bg-cyan-500/10 border-2 border-cyan-500 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-cyan-500 text-black flex items-center justify-center font-black text-lg flex-shrink-0">⚡</div>
+                                            <div>
+                                                <h4 class="font-bold text-cyan-400 text-sm sm:text-base uppercase tracking-tight">Em Execução Ativa na Bancada</h4>
+                                                <p class="text-xs text-zinc-300">Seu equipamento está na bancada técnica passando pelo procedimento de montagem e reparo.</p>
+                                            </div>
+                                        </div>
+                                        <span class="font-mono text-xs text-cyan-400 font-black px-2.5 py-1 bg-cyan-500/20 border border-cyan-500 uppercase whitespace-nowrap animate-pulse">3A: Em Execução</span>
+                                    </div>
+                                `;
+                                actionButtonHtml = `
+                                    <div class="px-5 py-3 bg-cyan-500/10 border-2 border-cyan-500 text-cyan-400 font-mono font-bold text-xs uppercase flex items-center gap-2">
+                                        <i data-lucide="cpu" class="w-4 h-4"></i> Na Bancada (Montagem Ativa)
+                                    </div>
+                                `;
+                            } else {
+                                bannerHtml = `
+                                    <div class="p-4 bg-brand/10 border-2 border-brand mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-brand text-black flex items-center justify-center font-black text-lg flex-shrink-0">✓</div>
+                                            <div>
+                                                <h4 class="font-bold text-brand text-sm sm:text-base uppercase tracking-tight">Orçamento Aprovado com Sucesso!</h4>
+                                                <p class="text-xs text-zinc-300">Seu equipamento está na fila de execução da bancada técnica. Pagamento 100% na entrega.</p>
+                                            </div>
+                                        </div>
+                                        <span class="font-mono text-xs text-brand font-black px-2.5 py-1 bg-brand/20 border border-brand uppercase whitespace-nowrap">Aprovado • Na Fila</span>
+                                    </div>
+                                `;
+                                actionButtonHtml = `
+                                    <div class="px-5 py-3 bg-brand/10 border-2 border-brand text-brand font-mono font-bold text-xs uppercase flex items-center gap-2">
+                                        <i data-lucide="check-check" class="w-4 h-4"></i> Aprovado (Na Fila de Bancada)
+                                    </div>
+                                `;
+                            }
                         } else {
                             bannerHtml = `
                                 <div class="p-4 bg-zinc-900 border-2 border-zinc-700 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -1306,6 +1384,15 @@
                         }
                     }
 
+                    let laudoCardTitle = '[ 🔬 Laudo Técnico de Engenharia & Diagnóstico ]';
+                    if (isBancada && (rawStatus.includes('peca') || rawStatus.includes('peça'))) {
+                        laudoCardTitle = '[ 📦 Diário Técnico de Bancada // Aguardando Peça ]';
+                    } else if (isBancada && rawStatus.includes('cliente')) {
+                        laudoCardTitle = '[ ⏳ Diário Técnico de Bancada // Aguarda Cliente ]';
+                    } else if (isBancada) {
+                        laudoCardTitle = '[ ⚡ Diário de Bordo da Bancada // Em Execução ]';
+                    }
+
                     budgetCard.innerHTML = `
                         ${bannerHtml}
 
@@ -1314,7 +1401,7 @@
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-zinc-800 pb-3 mb-4">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
-                                    <span class="text-brand text-xs font-bold uppercase tracking-wider">[ 🔬 Laudo Técnico de Engenharia & Diagnóstico ]</span>
+                                    <span class="text-brand text-xs font-bold uppercase tracking-wider">${laudoCardTitle}</span>
                                 </div>
                                 <span class="text-[11px] text-zinc-400">Garantia Legal CDC: <strong class="text-white">90 Dias (Art. 26)</strong></span>
                             </div>

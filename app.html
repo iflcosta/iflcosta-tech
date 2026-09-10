@@ -1490,6 +1490,23 @@
                     </div>
                 </div>
 
+                <!-- Diário Técnico & Observações da Bancada (Rastreabilidade & Laudo) -->
+                <div class="bg-zinc-950 border border-zinc-800 p-4 space-y-3 font-mono text-xs">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-zinc-900">
+                        <span class="text-brand font-bold uppercase flex items-center gap-1.5 text-[11px]">
+                            <i data-lucide="clipboard-list" class="w-4 h-4"></i> Diário Técnico & Observações da Bancada
+                        </span>
+                        <span class="text-[10px] text-zinc-500 uppercase">Rastreabilidade // Atualiza Laudo no Portal</span>
+                    </div>
+                    <textarea id="detail-technical-notes" rows="3" placeholder="Ex: Equipamento aberto para upgrade. Constatada ausência do cabo flat SATA. Cliente ciente e efetuou compra no ML. Bancada pausada aguardando entrega..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-sans text-xs focus:outline-none focus:border-brand"></textarea>
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <span class="text-[10px] text-zinc-500">Salva na ordem de serviço e reflete no portal de rastreamento do cliente.</span>
+                        <button type="button" onclick="saveOSTechnicalNotes()" class="px-3.5 py-1.5 bg-brand text-black font-black uppercase text-[11px] hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i> Salvar Diário Técnico
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Ações Rápidas de Avanço de Etapa -->
                 <div class="border-2 border-zinc-800 p-4 bg-black space-y-3">
                     <span class="text-brand font-bold uppercase block text-[11px]">[ Ações & Transição de Etapa na Bancada ]</span>
@@ -1506,13 +1523,16 @@
                         <label class="text-[10px] text-zinc-400 font-bold uppercase">Mover p/ Coluna:</label>
                         <select id="detail-status-select" onchange="handleManualStatusChange(this.value)" class="sm:col-span-2 bg-zinc-900 border border-zinc-700 px-2.5 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-brand">
                             <option value="Triagem">01. Triagem (Diagnóstico)</option>
-                            <option value="Orcamento_Aguardando_Aprovacao">02. Orçamento (Aguardando Aprovação)</option>
+                            <option value="Orcamento_Aguardando_Aprovacao">02. Orçamento (2A: Aguardando Aprovação)</option>
                             <option value="Diagnostico_Concluido">02. Orçamento (Diagnóstico Concluído)</option>
-                            <option value="Aguardando_Sinal_Peca">02. Aguardando Sinal de Peças</option>
-                            <option value="Peca_Encomendada">02. Peça Encomendada (Sinal Quitado)</option>
-                            <option value="Na_Bancada">03. Na Bancada (Montagem/Reparo)</option>
+                            <option value="Aguardando_Sinal_Peca">02. Orçamento (Aguardando Sinal Peças)</option>
+                            <option value="Aprovado_Fila_Bancada">02. Orçamento (2B: Fila Aprovada)</option>
+                            <option value="Peca_Encomendada">02. Orçamento (Peça Encomendada)</option>
+                            <option value="Na_Bancada">03. Na Bancada (3A: Em Execução)</option>
+                            <option value="Bancada_Aguardando_Peca">03. Na Bancada (3B: Aguardando Peça)</option>
+                            <option value="Bancada_Aguardando_Cliente">03. Na Bancada (3C: Aguarda Cliente)</option>
                             <option value="Teste_Estresse_QA">04. Testes QA (FurMark/AIDA64)</option>
-                            <option value="Pronto">05. Pronto (Aguardando Retirada)</option>
+                            <option value="Pronto">05. Pronto (Retirada / Entrega)</option>
                             <option value="Entregue">✓ Entregue & Quitado</option>
                             <option value="Cancelado">✕ Cancelado</option>
                         </select>
@@ -2020,6 +2040,10 @@
                 } else {
                     msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSeu equipamento da *OS #${osNum}* foi 100% testado e está *PRONTO* para retirada!\n📋 *Confira o laudo final de testes:*\n👉 ${link}\n\nEstamos te aguardando no laboratório para retirada!\n*IF Tech // Laboratório*`;
                 }
+            } else if (type === 'aguardando_peca') {
+                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nAtualização sobre o seu equipamento (*OS #${osNum}*):\n🔧 Já abrimos e preparamos seu equipamento na bancada técnica.\n📦 O serviço está momentaneamente aguardando a chegada da peça necessária para a montagem final.\n\n📋 *Acompanhe os detalhes e o laudo técnico pelo link:*\n👉 ${link}\n\nAssim que o pacote for entregue, finalizamos imediatamente!\n*IF Tech // Bancada de Hardware*`;
+            } else if (type === 'aguarda_cliente') {
+                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nEstamos com o seu equipamento (*OS #${osNum}*) na bancada técnica e precisamos de uma confirmação sua para dar continuidade.\n\n📋 *Acesse o portal para conferir o laudo:*\n👉 ${link}\n\nPoderia nos responder por aqui assim que puder?\n*IF Tech // Bancada de Hardware*`;
             } else {
                 const statusStr = (wo.status || 'Triagem').replace(/_/g, ' ');
                 msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nAtualização sobre o seu equipamento (*OS #${osNum}*):\n📊 *Status Atual:* ${statusStr}\n\n🔗 *Acompanhe o laudo técnico em tempo real:*\n👉 ${link}\n\nQualquer dúvida, estamos à disposição!\n*IF Tech // Laboratório*`;
@@ -2048,6 +2072,10 @@
                         titleEl.textContent = `Cobrança Pix da OS #${osNum} // WhatsApp`;
                     } else if (type === 'pronto') {
                         titleEl.textContent = `Aviso: Equipamento Pronto // OS #${osNum}`;
+                    } else if (type === 'aguardando_peca') {
+                        titleEl.textContent = `Aviso: Aguardando Peça // OS #${osNum}`;
+                    } else if (type === 'aguarda_cliente') {
+                        titleEl.textContent = `Contato com Cliente // OS #${osNum}`;
                     } else {
                         titleEl.textContent = `Status da OS #${osNum} // WhatsApp`;
                     }
@@ -2928,20 +2956,41 @@
                     colOrcamento.appendChild(card);
                 } else if (s.includes('bancada')) {
                     cB++;
-                    card.className += " border-cyan-800/80 hover:border-cyan-400";
+                    const isPausadoPeca = s.includes('peca') || s.includes('peça');
+                    const isPausadoCliente = s.includes('cliente');
+                    
+                    let subStatusTag = '<span class="text-cyan-400 font-bold">3A: Na Bancada</span>';
+                    let statusTopRight = '<span class="text-[9px] text-cyan-400 font-mono whitespace-nowrap flex-shrink-0">3A: Execução</span>';
+                    let cardBorder = " border-cyan-800/80 hover:border-cyan-400";
+                    
+                    if (isPausadoPeca) {
+                        subStatusTag = '<span class="text-amber-400 font-bold animate-pulse">📦 3B: Aguardando Peça</span>';
+                        statusTopRight = '<span class="text-[9px] text-amber-400 font-mono font-bold whitespace-nowrap flex-shrink-0">Pausado (Peça)</span>';
+                        cardBorder = " border-amber-500/80 hover:border-amber-400 bg-amber-950/20";
+                    } else if (isPausadoCliente) {
+                        subStatusTag = '<span class="text-yellow-400 font-bold animate-pulse">⏳ 3C: Aguarda Cliente</span>';
+                        statusTopRight = '<span class="text-[9px] text-yellow-400 font-mono font-bold whitespace-nowrap flex-shrink-0">Pausado (Cliente)</span>';
+                        cardBorder = " border-yellow-500/80 hover:border-yellow-400 bg-yellow-950/20";
+                    }
+
+                    const defectDesc = wo.technical_diagnosis 
+                        ? `📝 ${escapeHtml(wo.technical_diagnosis)}` 
+                        : escapeHtml(wo.reported_defect || 'Em montagem/reparo.');
+
+                    card.className += cardBorder;
                     card.innerHTML = `
                         <div class="flex items-center justify-between gap-1 mb-2">
                             <div class="flex items-center gap-1.5 min-w-0">
-                                <span class="text-cyan-400 font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
+                                <span class="${isPausadoPeca ? 'text-amber-400' : (isPausadoCliente ? 'text-yellow-400' : 'text-cyan-400')} font-mono font-black text-xs tracking-tight">#${formatOSNumber(wo.os_number)}</span>
                                 ${deliveryBadge}
                             </div>
-                            <span class="text-[9px] text-cyan-400 font-mono whitespace-nowrap flex-shrink-0">Sinal OK</span>
+                            ${statusTopRight}
                         </div>
                         <h4 class="font-bold text-white mb-1 font-sans">${escapeHtml(wo.device_brand || 'Equipamento')} // ${escapeHtml(wo.device_model || 'Hardware')}</h4>
-                        <p class="text-zinc-300 text-[11px] line-clamp-2 font-sans">${escapeHtml(wo.reported_defect || 'Em montagem/reparo.')}</p>
+                        <p class="text-zinc-300 text-[11px] line-clamp-2 font-sans">${defectDesc}</p>
                         <div class="mt-2.5 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px]">
                             <span class="text-zinc-400">Total: R$ ${parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',')}</span>
-                            <span class="text-cyan-400 font-bold">Na Bancada</span>
+                            ${subStatusTag}
                         </div>
                     `;
                     colBancada.appendChild(card);
@@ -4991,6 +5040,41 @@
             showToast(newVal ? '🚗 Marcado: Entrega a Domicílio' : '🏠 Marcado: Retirada no Local', 'success');
         }
 
+        function saveOSTechnicalNotes() {
+            if (!selectedWorkOrder) return;
+            const noteText = document.getElementById('detail-technical-notes')?.value.trim() || '';
+            selectedWorkOrder.technical_diagnosis = noteText;
+
+            try {
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
+            } catch(e){}
+
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                const query = client.from('work_orders').update({
+                    technical_diagnosis: noteText
+                });
+                if (isUuid(selectedWorkOrder.id)) {
+                    query.eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
+                } else if (selectedWorkOrder.os_number) {
+                    query.eq('os_number', parseInt(selectedWorkOrder.os_number, 10)).then(() => {}).catch(() => {});
+                }
+            }
+
+            renderKanbanBoard(currentWorkOrders);
+            showToast('✓ Diário Técnico salvo com sucesso!', 'success');
+        }
+
+        function setBenchSubStatus(newSubStatus) {
+            if (!selectedWorkOrder) return;
+            advanceOSStatus(newSubStatus);
+            const subLabel = newSubStatus === 'Bancada_Aguardando_Peca' 
+                ? '3B: Aguardando Peça' 
+                : (newSubStatus === 'Bancada_Aguardando_Cliente' ? '3C: Aguarda Cliente' : '3A: Em Execução');
+            showToast(`✓ Sub-status atualizado: ${subLabel}`, 'success');
+        }
+
         function openOSDetailModal(wo) {
             selectedWorkOrder = wo;
             const modal = document.getElementById('os-detail-modal');
@@ -5004,6 +5088,12 @@
             if (defectEl) defectEl.textContent = wo.reported_defect || '-';
             document.getElementById('detail-status-badge').textContent = (wo.status || 'Triagem').replace(/_/g, ' ');
             document.getElementById('detail-total-amount').textContent = 'R$ ' + parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
+
+            const notesEl = document.getElementById('detail-technical-notes');
+            if (notesEl) notesEl.value = wo.technical_diagnosis || '';
+
+            const statusSelect = document.getElementById('detail-status-select');
+            if (statusSelect) statusSelect.value = wo.status || 'Triagem';
 
             const portalLink = document.getElementById('detail-portal-link');
             if (portalLink) {
@@ -5053,16 +5143,40 @@
             } else if (s.includes('sinal') || s.includes('aprovad')) {
                 buttonsHtml = `
                     <button type="button" onclick="advanceOSStatus('Na_Bancada')" class="px-4 py-2.5 bg-cyan-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.3)]">
-                        <i data-lucide="play" class="w-4 h-4"></i> Iniciar Reparo na Bancada (Sinal OK)
+                        <i data-lucide="play" class="w-4 h-4"></i> Iniciar Reparo (3A: Na Bancada)
+                    </button>
+                    <button type="button" onclick="advanceOSStatus('Bancada_Aguardando_Peca')" class="px-3.5 py-2.5 bg-zinc-900 border border-amber-600/60 text-amber-400 font-bold uppercase text-xs hover:bg-zinc-800 transition-colors flex items-center justify-center gap-1.5">
+                        <i data-lucide="package" class="w-4 h-4"></i> Mover p/ 3B: Aguardando Peça
                     </button>
                     <button type="button" onclick="actionBudgetFromOS()" class="px-3 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase text-xs hover:bg-zinc-800 transition-colors flex items-center justify-center gap-1">
                         <i data-lucide="eye" class="w-3.5 h-3.5 text-brand"></i> Ver Orçamento
                     </button>
                 `;
             } else if (s.includes('bancada')) {
+                const isPausadoPeca = s.includes('peca') || s.includes('peça');
+                const isPausadoCliente = s.includes('cliente');
+                const isEmExecucao = !isPausadoPeca && !isPausadoCliente;
+
                 buttonsHtml = `
+                    <div class="sm:col-span-2 flex flex-wrap items-center gap-1.5 p-2.5 bg-zinc-900 border border-zinc-800">
+                        <span class="text-[10px] text-zinc-400 font-bold uppercase mr-1 flex items-center gap-1">
+                            <i data-lucide="cpu" class="w-3.5 h-3.5 text-brand"></i> Sub-status Bancada:
+                        </span>
+                        <button type="button" onclick="setBenchSubStatus('Na_Bancada')" class="px-2.5 py-1 text-[11px] font-bold uppercase transition-colors flex items-center gap-1 ${isEmExecucao ? 'bg-cyan-400 text-black shadow-sm font-black' : 'bg-black text-zinc-400 hover:text-white border border-zinc-700'}">
+                            <i data-lucide="play" class="w-3 h-3"></i> 3A: Em Execução
+                        </button>
+                        <button type="button" onclick="setBenchSubStatus('Bancada_Aguardando_Peca')" class="px-2.5 py-1 text-[11px] font-bold uppercase transition-colors flex items-center gap-1 ${isPausadoPeca ? 'bg-amber-400 text-black shadow-sm font-black' : 'bg-black text-zinc-400 hover:text-amber-400 border border-zinc-700'}">
+                            <i data-lucide="package" class="w-3 h-3"></i> 3B: Aguardando Peça
+                        </button>
+                        <button type="button" onclick="setBenchSubStatus('Bancada_Aguardando_Cliente')" class="px-2.5 py-1 text-[11px] font-bold uppercase transition-colors flex items-center gap-1 ${isPausadoCliente ? 'bg-yellow-400 text-black shadow-sm font-black' : 'bg-black text-zinc-400 hover:text-yellow-400 border border-zinc-700'}">
+                            <i data-lucide="user-check" class="w-3 h-3"></i> 3C: Aguarda Cliente
+                        </button>
+                    </div>
                     <button type="button" onclick="advanceOSStatus('Teste_Estresse_QA')" class="px-4 py-2.5 bg-yellow-400 text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(234,179,8,0.3)]">
-                        <i data-lucide="activity" class="w-4 h-4"></i> Mover para Testes de QA
+                        <i data-lucide="activity" class="w-4 h-4"></i> Concluir Montagem & Ir p/ Testes QA
+                    </button>
+                    <button type="button" onclick="openWhatsAppNotificationModal(null, '${isPausadoPeca ? 'aguardando_peca' : (isPausadoCliente ? 'aguarda_cliente' : 'bancada')}')" class="px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-200 font-bold uppercase text-xs hover:bg-zinc-800 transition-colors flex items-center justify-center gap-1.5">
+                        <i data-lucide="message-square" class="w-4 h-4 text-brand"></i> ${isPausadoPeca ? 'Avisar sobre Peça (WhatsApp)' : (isPausadoCliente ? 'Pedir Dados / Senha (WhatsApp)' : 'Status Bancada (WhatsApp)')}
                     </button>
                 `;
             } else if (s.includes('qa') || s.includes('teste')) {
@@ -5084,6 +5198,7 @@
             }
 
             container.innerHTML = buttonsHtml;
+            if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
         }
 
         function confirmBudgetApprovalFromOS() {
