@@ -271,6 +271,7 @@
                         <div class="font-mono text-sm space-y-1">
                             <div class="text-zinc-400">Total das Peças (Sinal): <strong class="text-white" id="hw-parts-total">R$ 0,00</strong></div>
                             <div class="text-zinc-400">Saldo da Mão de Obra: <strong class="text-brand" id="hw-labor-total">R$ 0,00</strong></div>
+                            <div id="hw-pickup-row-static" class="text-zinc-400 hidden">Taxa Leva-e-Traz: <strong class="text-amber-400" id="hw-pickup-total-static">R$ 0,00</strong></div>
                             <div class="text-lg font-black text-white pt-1">Total Geral: <span class="text-brand" id="hw-grand-total">R$ 0,00</span></div>
                         </div>
 
@@ -1348,6 +1349,7 @@
                             <div class="font-mono text-sm space-y-1">
                                 <div class="text-zinc-400">Total das Peças (Sinal): <strong class="text-white" id="hw-parts-total">R$ 0,00</strong></div>
                                 <div class="text-zinc-400">Saldo da Mão de Obra: <strong class="text-brand" id="hw-labor-total">R$ 0,00</strong> (Pagar na Entrega)</div>
+                                <div id="hw-pickup-row" class="text-zinc-400 hidden">Taxa Leva-e-Traz (Coleta & Entrega): <strong class="text-amber-400" id="hw-pickup-total">R$ 0,00</strong></div>
                                 <div class="text-lg font-black text-white pt-1">Total Geral: <span class="text-brand" id="hw-grand-total">R$ 0,00</span></div>
                             </div>
 
@@ -1403,13 +1405,26 @@
 
                         const partsDisplay = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
                         const laborDisplay = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
-                        const grandTotalDisplay = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsDisplay + laborDisplay);
+                        const pickupDisplay = (wo.pickup_fee !== undefined && wo.pickup_fee !== null) ? parseFloat(wo.pickup_fee) : 0;
+                        const grandTotalDisplay = (wo.total_order !== undefined && wo.total_order !== null) 
+                            ? parseFloat(wo.total_order) 
+                            : (partsDisplay + laborDisplay + pickupDisplay);
 
                         const pEl = document.getElementById("hw-parts-total");
                         const lEl = document.getElementById("hw-labor-total");
+                        const pkEl = document.getElementById("hw-pickup-total");
+                        const pkRow = document.getElementById("hw-pickup-row");
                         const gEl = document.getElementById("hw-grand-total");
                         if (pEl) pEl.textContent = "R$ " + partsDisplay.toFixed(2).replace('.', ',');
                         if (lEl) lEl.textContent = "R$ " + laborDisplay.toFixed(2).replace('.', ',');
+                        if (pkEl && pkRow) {
+                            if (pickupDisplay > 0) {
+                                pkRow.classList.remove("hidden");
+                                pkEl.textContent = "R$ " + pickupDisplay.toFixed(2).replace('.', ',');
+                            } else {
+                                pkRow.classList.add("hidden");
+                            }
+                        }
                         if (gEl) gEl.textContent = "R$ " + grandTotalDisplay.toFixed(2).replace('.', ',');
                     }
                 }
@@ -1631,7 +1646,9 @@
             });
 
             const totalParts = (wo.total_parts !== undefined && wo.total_parts !== null) ? parseFloat(wo.total_parts) : partsSum;
-            const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (partsSum + laborSum + parseFloat(wo.pickup_fee || 0));
+            const totalLabor = (wo.total_labor !== undefined && wo.total_labor !== null) ? parseFloat(wo.total_labor) : laborSum;
+            const pickupFee = (wo.pickup_fee !== undefined && wo.pickup_fee !== null) ? parseFloat(wo.pickup_fee) : 0;
+            const grandTotal = (wo.total_order !== undefined && wo.total_order !== null) ? parseFloat(wo.total_order) : (totalParts + totalLabor + pickupFee);
             
             const hasParts = totalParts > 0;
             const payAmount = (hasParts && !forceTotal) ? totalParts : grandTotal;

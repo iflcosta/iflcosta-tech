@@ -189,7 +189,8 @@ CREATE OR REPLACE FUNCTION public.rpc_save_budget_atomic(
     p_total_labor DECIMAL DEFAULT 0.00,
     p_total_parts DECIMAL DEFAULT 0.00,
     p_items JSONB DEFAULT '[]'::jsonb,
-    p_status TEXT DEFAULT 'Orcamento_Aguardando_Aprovacao'
+    p_status TEXT DEFAULT 'Orcamento_Aguardando_Aprovacao',
+    p_pickup_fee DECIMAL DEFAULT NULL
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -203,6 +204,7 @@ DECLARE
     v_calc_labor DECIMAL(10,2) := 0.00;
     v_final_parts DECIMAL(10,2);
     v_final_labor DECIMAL(10,2);
+    v_final_pickup DECIMAL(10,2);
     v_final_total DECIMAL(10,2);
     v_service_enum os_service_type_enum;
     v_target_status os_status_enum;
@@ -210,13 +212,11 @@ DECLARE
 BEGIN
     IF p_work_order_id IS NOT NULL THEN
         SELECT * INTO v_wo FROM public.work_orders WHERE id = p_work_order_id LIMIT 1;
-    END IF;
-
-    IF v_wo.id IS NULL AND p_os_number IS NOT NULL THEN
+    ELSIF p_os_number IS NOT NULL THEN
         SELECT * INTO v_wo FROM public.work_orders WHERE os_number = p_os_number LIMIT 1;
     END IF;
 
-    IF v_wo.id IS NULL THEN
+    IF NOT FOUND OR v_wo.id IS NULL THEN
         RETURN jsonb_build_object(
             'success', false, 
             'error', 'Ordem de Serviço não localizada pelos identificadores informados.'
@@ -275,7 +275,13 @@ BEGIN
         v_final_labor := COALESCE(p_total_labor, 0.00);
     END IF;
 
-    v_final_total := v_final_parts + v_final_labor + COALESCE(v_wo.pickup_fee, 0.00);
+    IF p_pickup_fee IS NOT NULL THEN
+        v_final_pickup := p_pickup_fee;
+    ELSE
+        v_final_pickup := COALESCE(v_wo.pickup_fee, 0.00);
+    END IF;
+
+    v_final_total := v_final_parts + v_final_labor + v_final_pickup;
 
     BEGIN
         v_target_status := p_status::os_status_enum;
@@ -294,6 +300,8 @@ BEGIN
         status = v_target_status,
         total_parts = v_final_parts,
         total_labor = v_final_labor,
+        pickup_fee = v_final_pickup,
+        is_pickup_delivery = (v_final_pickup > 0 OR v_wo.is_pickup_delivery),
         total_amount = v_final_total,
         parts_deposit_required = v_final_parts,
         parts_deposit_paid = CASE WHEN v_final_parts = 0 THEN true ELSE false END,
@@ -309,6 +317,7 @@ BEGIN
         'status', v_target_status::TEXT,
         'total_parts', v_final_parts,
         'total_labor', v_final_labor,
+        'pickup_fee', v_final_pickup,
         'total_amount', v_final_total,
         'parts_deposit_required', v_final_parts,
         'parts_deposit_paid', (v_final_parts = 0),
@@ -427,12 +436,16 @@ BEGIN
         'reported_defect', wo.reported_defect,
         'technical_diagnosis', wo.technical_diagnosis,
         'is_pickup_delivery', wo.is_pickup_delivery,
+        'pickup_fee', COALESCE(wo.pickup_fee, 0.00),
         'total_parts', COALESCE(wo.total_parts, 0.00),
         'total_labor', COALESCE(wo.total_labor, 0.00),
+        'total_order', COALESCE(wo.total_order, wo.total_amount, 0.00),
         'total_amount', COALESCE(wo.total_amount, 0.00),
         'parts_deposit_paid', COALESCE(wo.parts_deposit_paid, false),
         'parts_deposit_status', CASE WHEN COALESCE(wo.parts_deposit_paid, false) THEN 'CONFIRMED' ELSE 'PENDING' END,
         'client_first_name', COALESCE(SPLIT_PART(c.name, ' ', 1), 'Cliente'),
+        'client_name', COALESCE(c.name, 'Cliente'),
+        'client_whatsapp', COALESCE(c.whatsapp, ''),
         'created_at', wo.created_at,
         'items', COALESCE((
             SELECT jsonb_agg(jsonb_build_object(

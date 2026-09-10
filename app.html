@@ -1642,16 +1642,29 @@
                         </div>
                     </div>
 
-                    <!-- Mão de Obra do Reparo -->
-                    <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono">
-                        <label class="block text-brand font-bold uppercase mb-1.5">Mão de Obra do Reparo / Serviço (R$)</label>
-                        <input type="number" step="0.01" id="budget-modal-labor" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-lg font-bold focus:outline-none focus:border-brand">
-                        <span class="text-[10px] text-zinc-500 block mt-1">Valor da engenharia técnica cobrado do cliente.</span>
+                    <!-- Bloco Financeiro: Mão de Obra & Taxa Leva-e-Traz -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Mão de Obra do Reparo -->
+                        <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono">
+                            <label class="block text-brand font-bold uppercase mb-1.5">Mão de Obra do Reparo / Serviço (R$)</label>
+                            <input type="number" step="0.01" id="budget-modal-labor" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-lg font-bold focus:outline-none focus:border-brand">
+                            <span class="text-[10px] text-zinc-500 block mt-1">Valor da engenharia técnica cobrado do cliente.</span>
+                        </div>
+
+                        <!-- Taxa de Logística / Leva-e-Traz -->
+                        <div class="bg-zinc-950 border border-zinc-800 p-4 font-mono">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="block text-amber-400 font-bold uppercase">Taxa Leva-e-Traz / Logística (R$)</label>
+                                <button type="button" onclick="document.getElementById('budget-modal-pickup').value='0.00'; recalcModalBudgetTotals();" class="text-[10px] text-zinc-400 hover:text-white underline cursor-pointer">Isentar Taxa (R$ 0,00)</button>
+                            </div>
+                            <input type="number" step="0.01" id="budget-modal-pickup" value="0.00" oninput="recalcModalBudgetTotals()" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white font-mono text-lg font-bold focus:outline-none focus:border-amber-400">
+                            <span class="text-[10px] text-zinc-500 block mt-1">Taxa de coleta/entrega. Se R$ 0,00, não incide acréscimo.</span>
+                        </div>
                     </div>
 
                     <!-- Resumo Consolidado & Lucro Real -->
                     <div class="bg-black border-2 border-brand p-4 font-mono">
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center sm:text-left">
                             <div>
                                 <span class="text-zinc-500 text-[10px] block mb-1">SINAL PEÇAS (100%)</span>
                                 <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-parts-total">R$ 0,00</strong>
@@ -1661,10 +1674,14 @@
                                 <strong class="text-lg sm:text-xl text-brand font-black" id="budget-modal-labor-total">R$ 0,00</strong>
                             </div>
                             <div>
+                                <span class="text-zinc-500 text-[10px] block mb-1">LEVA-E-TRAZ</span>
+                                <strong class="text-lg sm:text-xl text-amber-400 font-black" id="budget-modal-pickup-total">R$ 0,00</strong>
+                            </div>
+                            <div>
                                 <span class="text-zinc-500 text-[10px] block mb-1">TOTAL DO CLIENTE</span>
                                 <strong class="text-lg sm:text-xl text-white font-black" id="budget-modal-grand-total">R$ 0,00</strong>
                             </div>
-                            <div class="bg-brand/10 border border-brand/40 p-2">
+                            <div class="bg-brand/10 border border-brand/40 p-2 col-span-2 sm:col-span-1">
                                 <span class="text-brand text-[10px] font-bold block mb-0.5">LUCRO REAL GESTOR</span>
                                 <strong class="text-base sm:text-lg text-brand font-black" id="budget-modal-net-profit">R$ 0,00</strong>
                             </div>
@@ -1968,10 +1985,21 @@
             const totalVal = parseFloat(wo.total_amount || 0).toFixed(2).replace('.', ',');
             const partsVal = parseFloat(wo.total_parts || 0).toFixed(2).replace('.', ',');
             const partsValNum = parseFloat(wo.total_parts || 0);
+            const pickupVal = parseFloat(wo.pickup_fee || 0).toFixed(2).replace('.', ',');
+            const pickupValNum = parseFloat(wo.pickup_fee || 0);
+
+            let breakdownNote = '';
+            if (partsValNum > 0 && pickupValNum > 0) {
+                breakdownNote = ` (Sinal Peças: R$ ${partsVal} + Leva-e-Traz: R$ ${pickupVal})`;
+            } else if (partsValNum > 0) {
+                breakdownNote = ` (Sinal de Peças: R$ ${partsVal})`;
+            } else if (pickupValNum > 0) {
+                breakdownNote = ` (Inclui Leva-e-Traz: R$ ${pickupVal})`;
+            }
 
             let msg = '';
             if (type === 'orcamento' || type === 'laudo') {
-                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSua proposta técnica e laudo para a *OS #${osNum}* estão prontos!\n🔧 *Valor Total:* R$ ${totalVal}${partsValNum > 0 ? ` (Sinal de Peças: R$ ${partsVal})` : ''}\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 ${link}\n\nQualquer dúvida, estamos à disposição!\n*IF Tech // Engenharia de Hardware*`;
+                msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSua proposta técnica e laudo para a *OS #${osNum}* estão prontos!\n🔧 *Valor Total:* R$ ${totalVal}${breakdownNote}\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 ${link}\n\nQualquer dúvida, estamos à disposição!\n*IF Tech // Engenharia de Hardware*`;
             } else if (type === 'sinal' || type === 'pix') {
                 msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSegue o link Pix para aprovação e faturamento da sua *OS #${osNum}*:\n💰 *Sinal de Peças:* R$ ${partsVal} • *Total:* R$ ${totalVal}\n\n🔗 *Acesse para pagar via Pix e acompanhar o laudo em tempo real:*\n👉 ${link}\n\n*IF Tech // Engenharia de Hardware*`;
             } else if (type === 'pronto') {
@@ -5087,6 +5115,13 @@
                 laborInput.value = wo.total_labor !== undefined && wo.total_labor !== null ? parseFloat(wo.total_labor).toFixed(2) : '0.00';
             }
 
+            const pickupInput = document.getElementById('budget-modal-pickup');
+            if (pickupInput) {
+                pickupInput.value = wo.pickup_fee !== undefined && wo.pickup_fee !== null 
+                    ? parseFloat(wo.pickup_fee).toFixed(2) 
+                    : (wo.is_pickup_delivery ? '30.00' : '0.00');
+            }
+
             recalcModalBudgetTotals();
 
             modal.classList.remove('hidden');
@@ -5168,16 +5203,21 @@
 
             const laborInput = document.getElementById('budget-modal-labor');
             const labor = parseFloat(laborInput ? laborInput.value : 0) || 0;
-            const grandTotal = labor + partsTotal;
-            const netProfit = labor + (partsTotal - partsCostTotal);
+            const pickupInput = document.getElementById('budget-modal-pickup');
+            const pickup = parseFloat(pickupInput ? pickupInput.value : 0) || 0;
+
+            const grandTotal = labor + partsTotal + pickup;
+            const netProfit = labor + (partsTotal - partsCostTotal) + pickup;
 
             const partsTotalEl = document.getElementById('budget-modal-parts-total');
             const laborTotalEl = document.getElementById('budget-modal-labor-total');
+            const pickupTotalEl = document.getElementById('budget-modal-pickup-total');
             const grandTotalEl = document.getElementById('budget-modal-grand-total');
             const netProfitEl = document.getElementById('budget-modal-net-profit');
 
             if (partsTotalEl) partsTotalEl.textContent = 'R$ ' + partsTotal.toFixed(2).replace('.', ',');
             if (laborTotalEl) laborTotalEl.textContent = 'R$ ' + labor.toFixed(2).replace('.', ',');
+            if (pickupTotalEl) pickupTotalEl.textContent = 'R$ ' + pickup.toFixed(2).replace('.', ',');
             if (grandTotalEl) grandTotalEl.textContent = 'R$ ' + grandTotal.toFixed(2).replace('.', ',');
             if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
 
@@ -5193,6 +5233,8 @@
 
             const laborInput = document.getElementById('budget-modal-labor');
             const labor = parseFloat(laborInput ? laborInput.value : 0) || 0;
+            const pickupInput = document.getElementById('budget-modal-pickup');
+            const pickup = parseFloat(pickupInput ? pickupInput.value : 0) || 0;
             const diagnosisText = document.getElementById('budget-modal-diagnosis')?.value.trim() || 'Diagnóstico concluído pelo laboratório.';
             const serviceType = document.getElementById('budget-modal-service-type')?.value || 'Hardware_Reparo';
 
@@ -5222,7 +5264,7 @@
                 }
             });
 
-            const total = labor + partsTotal;
+            const total = labor + partsTotal + pickup;
             const targetStatus = approveDirectly 
                 ? (partsTotal > 0 ? 'Aguardando_Sinal_Peca' : 'Na_Bancada')
                 : 'Orcamento_Aguardando_Aprovacao';
@@ -5233,7 +5275,10 @@
             selectedWorkOrder.total_labor = labor;
             selectedWorkOrder.total_parts = partsTotal;
             selectedWorkOrder.total_parts_cost = partsCostTotal;
+            selectedWorkOrder.pickup_fee = pickup;
+            selectedWorkOrder.is_pickup_delivery = (pickup > 0) || selectedWorkOrder.is_pickup_delivery;
             selectedWorkOrder.total_amount = total;
+            selectedWorkOrder.total_order = total;
             selectedWorkOrder.status = targetStatus;
             selectedWorkOrder.parts_deposit_required = partsTotal;
             selectedWorkOrder.parts_deposit_paid = approveDirectly ? (partsTotal === 0) : (partsTotal === 0);
@@ -5260,7 +5305,8 @@
                     p_total_labor: labor,
                     p_total_parts: partsTotal,
                     p_items: partsList,
-                    p_status: targetStatus
+                    p_status: targetStatus,
+                    p_pickup_fee: pickup
                 }).then(({ data, error }) => {
                     if (error) {
                         console.warn("RPC rpc_save_budget_atomic falhou, tentando fallback direto...", error);
@@ -5270,6 +5316,8 @@
                                 technical_diagnosis: diagnosisText,
                                 total_labor: labor,
                                 total_parts: partsTotal,
+                                pickup_fee: pickup,
+                                is_pickup_delivery: (pickup > 0) || selectedWorkOrder.is_pickup_delivery,
                                 total_amount: total,
                                 status: targetStatus,
                                 parts_deposit_required: partsTotal,
