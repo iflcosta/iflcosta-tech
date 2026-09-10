@@ -1542,11 +1542,14 @@
                     <!-- Ações de Impressão Térmica Dual & Comunicação -->
                     <div class="pt-3 border-t border-zinc-800 flex flex-wrap gap-2 justify-between items-center text-xs">
                         <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="printThermalDeviceLabel()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
-                                <i data-lucide="tag" class="w-3.5 h-3.5 text-brand"></i> 🏷️ Imprimir Etiqueta (58mm)
+                            <button type="button" onclick="generateOSDigitalPDF()" class="px-3.5 py-2 bg-brand text-black hover:bg-white font-black uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] hover:-translate-y-0.5" title="Gerar Documento Oficial da OS em PDF (A4) para enviar ao cliente ou salvar">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 📄 Gerar PDF (Via A4)
                             </button>
-                            <button type="button" onclick="printThermalCustomerReceipt()" class="px-3 py-1.5 bg-brand text-black hover:bg-white font-black uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
-                                <i data-lucide="receipt" class="w-3.5 h-3.5"></i> 🧾 Imprimir Recibo (CDC 90D)
+                            <button type="button" onclick="printThermalCustomerReceipt()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5" title="Imprimir Cupom Térmico Estreito (Impressora 58mm)">
+                                <i data-lucide="receipt" class="w-3.5 h-3.5 text-brand"></i> 🧾 Recibo Térmico (58mm)
+                            </button>
+                            <button type="button" onclick="printThermalDeviceLabel()" class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5" title="Imprimir Etiqueta de Gabinete (58mm)">
+                                <i data-lucide="tag" class="w-3.5 h-3.5 text-zinc-400"></i> 🏷️ Etiqueta (58mm)
                             </button>
                         </div>
                         <div class="flex items-center gap-3">
@@ -5717,7 +5720,606 @@
             `);
             printWindow.document.close();
             printWindow.focus();
-            setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+            setTimeout(() => { printWindow.print(); }, 500);
+        }
+
+        // =========================================================================
+        // MOTOR DE GERAÇÃO DE PDF OFICIAL (VIA DIGITAL A4 // COMPROVANTE & LAUDO)
+        // Permite salvar como PDF, baixar arquivo direto (.pdf) e enviar no WhatsApp
+        // =========================================================================
+        function generateOSDigitalPDF(wo) {
+            wo = wo || selectedWorkOrder;
+            if (!wo) {
+                showToast('Selecione uma Ordem de Serviço para gerar o PDF', 'warning');
+                return;
+            }
+
+            const osNum = formatOSNumber(wo.os_number);
+            const createdDate = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+            const clientName = escapeHtml(wo.client_name || 'Cliente');
+            const rawPhone = String(wo.client_whatsapp || wo.client_phone || '');
+            const cleanPhone = rawPhone.replace(/\D/g, '');
+            const clientPhone = escapeHtml(rawPhone || 'Não informado');
+            const clientEmail = escapeHtml(wo.client_email || '-');
+            const clientCpf = escapeHtml(wo.client_cpf || wo.client_document || '-');
+            
+            const b = (wo.device_brand || '').trim();
+            const m = (wo.device_model || '').trim();
+            let devTitle = '';
+            if (b && m) {
+                devTitle = m.toLowerCase().includes(b.toLowerCase()) ? m : (b.toLowerCase() === 'notebook' || b.toLowerCase() === 'pc' ? `${b}: ${m}` : `${b} ${m}`);
+            } else {
+                devTitle = m || b || 'Equipamento em Análise';
+            }
+            const deviceTitle = escapeHtml(devTitle);
+            const deviceSerial = escapeHtml(wo.device_serial || 'Não informado / Em verificação');
+            const reportedDefect = escapeHtml(wo.reported_defect || 'Análise preventiva e verificação de bancada.');
+            const technicalDiagnosis = escapeHtml(wo.technical_diagnosis || 'Equipamento recepcionado em bancada técnica para testes de hardware e análise de componentes.');
+            
+            const statusRaw = (wo.status || 'Triagem').replace(/_/g, ' ');
+            const isDelivery = Boolean(wo.is_pickup_delivery || wo.requires_delivery || (wo.acquisition_channel === 'Leva-e-Traz') || (parseFloat(wo.pickup_fee || 0) > 0));
+            const entryType = isDelivery ? 'Logística Leva-e-Traz (Entrega)' : 'Atendimento Balcão / Local';
+
+            const totalAmount = parseFloat(wo.total_amount || 0);
+            const partsCost = parseFloat(wo.parts_cost || 0);
+            const pickupFee = parseFloat(wo.pickup_fee || 0);
+            let laborCost = parseFloat(wo.labor_cost || 0);
+            if (laborCost <= 0 && totalAmount > 0) {
+                laborCost = totalAmount - partsCost - pickupFee;
+                if (laborCost < 0) laborCost = totalAmount;
+            }
+            const depositAmount = parseFloat(wo.deposit_amount || 0);
+            const balanceDue = totalAmount - depositAmount > 0 ? totalAmount - depositAmount : 0;
+            const paymentStatus = wo.payment_status || (depositAmount >= totalAmount && totalAmount > 0 ? 'Quitado' : (depositAmount > 0 ? 'Sinal Pago' : 'Pendente'));
+
+            const trackingToken = wo.public_tracking_token || wo.os_number;
+            const trackingUrl = 'https://iflcosta.tech/status?token=' + trackingToken;
+            const authHash = 'SHA256-' + Date.now().toString(36).toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
+
+            const waMsg = encodeURIComponent(`Olá ${wo.client_name || 'Cliente'}! Segue o link para acompanhar sua Ordem de Serviço #${osNum} na IF Tech:\n\n💻 *Equipamento:* ${devTitle}\n📊 *Status:* ${statusRaw}\n💰 *Valor Total:* R$ ${totalAmount.toFixed(2).replace('.', ',')}\n\n🔗 *Acompanhe e acesse sua via digital em:* ${trackingUrl}\n\nIF Tech // Assistência e Engenharia`);
+
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert('Por favor, permita popups neste navegador para abrir a via em PDF.');
+                return;
+            }
+
+            printWindow.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS #${osNum} - IF Tech Soluções Tecnológicas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"><\/script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #121214;
+            color: #18181b;
+            line-height: 1.4;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .top-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: #09090b;
+            border-bottom: 2px solid #ccff00;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+        .toolbar-title {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn-action {
+            padding: 8px 16px;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+        .btn-download {
+            background: #ccff00;
+            color: #000;
+            box-shadow: 2px 2px 0px #fff;
+        }
+        .btn-download:hover {
+            background: #fff;
+            color: #000;
+        }
+        .btn-print {
+            background: #22d3ee;
+            color: #000;
+            box-shadow: 2px 2px 0px #fff;
+        }
+        .btn-print:hover {
+            background: #fff;
+            color: #000;
+        }
+        .btn-whatsapp {
+            background: #25d366;
+            color: #fff;
+        }
+        .btn-whatsapp:hover {
+            background: #1eb954;
+        }
+        .btn-close {
+            background: #27272a;
+            color: #a1a1aa;
+            border: 1px solid #3f3f46;
+        }
+        .btn-close:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        .page-wrapper {
+            padding: 24px 12px;
+            display: flex;
+            justify-content: center;
+        }
+        .a4-sheet {
+            background: #ffffff;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 14mm 16mm;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            color: #09090b;
+        }
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2.5px solid #09090b;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+        .doc-brand-title {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #09090b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .doc-brand-title span {
+            color: #65a30d;
+        }
+        .doc-brand-sub {
+            font-size: 10px;
+            font-weight: 600;
+            color: #52525b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+        .doc-brand-contact {
+            font-size: 9px;
+            color: #71717a;
+            margin-top: 3px;
+            line-height: 1.3;
+        }
+        .doc-os-box {
+            text-align: right;
+        }
+        .doc-os-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 900;
+            color: #09090b;
+            letter-spacing: -0.5px;
+        }
+        .doc-os-badge {
+            display: inline-block;
+            background: #09090b;
+            color: #ccff00;
+            padding: 2px 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+        .doc-os-meta {
+            font-size: 9px;
+            color: #52525b;
+            margin-top: 3px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .doc-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .doc-card {
+            border: 1.5px solid #09090b;
+            padding: 10px 12px;
+            background: #fafafa;
+        }
+        .doc-card-title {
+            font-size: 10px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #09090b;
+            border-bottom: 1px solid #e4e4e7;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+        }
+        .doc-row {
+            font-size: 10px;
+            margin-bottom: 3.5px;
+            display: flex;
+            align-items: baseline;
+        }
+        .doc-row strong {
+            color: #09090b;
+            width: 85px;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+        .doc-row span {
+            color: #27272a;
+        }
+        .doc-section {
+            border: 1.5px solid #09090b;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            background: #fff;
+        }
+        .doc-section-title {
+            font-size: 10px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #09090b;
+            border-bottom: 1px solid #e4e4e7;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+        }
+        .doc-text {
+            font-size: 10px;
+            color: #27272a;
+            line-height: 1.45;
+        }
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+        .doc-table th {
+            background: #09090b;
+            color: #fff;
+            padding: 5px 8px;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+        .doc-table th:last-child {
+            text-align: right;
+        }
+        .doc-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #e4e4e7;
+            color: #27272a;
+        }
+        .doc-table td:last-child {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+        .doc-total-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f4f4f5;
+            border: 1.5px solid #09090b;
+            padding: 8px 12px;
+            margin-top: 8px;
+        }
+        .doc-total-label {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .doc-total-val {
+            font-size: 16px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            color: #09090b;
+        }
+        .doc-payment-info {
+            font-size: 9px;
+            color: #52525b;
+            margin-top: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: space-between;
+        }
+        .doc-terms {
+            border: 1px solid #d4d4d8;
+            background: #fafafa;
+            padding: 8px 10px;
+            margin-bottom: 14px;
+            font-size: 8px;
+            color: #52525b;
+            line-height: 1.4;
+        }
+        .doc-terms-title {
+            font-weight: 800;
+            color: #18181b;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+        }
+        .doc-bottom-grid {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 14px;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px dashed #a1a1aa;
+        }
+        .qr-box {
+            text-align: center;
+        }
+        .qr-box canvas {
+            border: 1px solid #000;
+            padding: 2px;
+        }
+        .qr-caption {
+            font-size: 7.5px;
+            color: #71717a;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 2px;
+        }
+        .signature-col {
+            text-align: center;
+        }
+        .sig-line {
+            border-top: 1.5px solid #09090b;
+            padding-top: 4px;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #09090b;
+        }
+        .sig-sub {
+            font-size: 8px;
+            color: #71717a;
+            margin-top: 1px;
+        }
+        .doc-footer {
+            margin-top: 14px;
+            text-align: center;
+            font-size: 7.5px;
+            color: #71717a;
+            font-family: 'JetBrains Mono', monospace;
+            border-top: 1px solid #e4e4e7;
+            padding-top: 6px;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+            .page-wrapper { padding: 0 !important; }
+            .a4-sheet {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                min-height: auto !important;
+                padding: 10mm 12mm !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 8mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-toolbar no-print">
+        <div class="toolbar-title">
+            <span>IF TECH // ERP</span>
+            <span style="color: #71717a;">•</span>
+            <span>OS #${osNum} (Via Digital A4)</span>
+        </div>
+        <div class="toolbar-actions">
+            <button type="button" id="btn-download" onclick="downloadPDF()" class="btn-action btn-download">
+                📥 Baixar Arquivo PDF
+            </button>
+            <button type="button" onclick="window.print()" class="btn-action btn-print">
+                🖨️ Salvar como PDF / Imprimir
+            </button>
+            ${cleanPhone ? `<a href="https://wa.me/55${cleanPhone}?text=${waMsg}" target="_blank" class="btn-action btn-whatsapp">💬 Enviar no WhatsApp</a>` : ''}
+            <button type="button" onclick="window.close()" class="btn-action btn-close">
+                ✖ Fechar
+            </button>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div id="pdf-document" class="a4-sheet">
+            <div class="doc-header">
+                <div>
+                    <div class="doc-brand-title">
+                        IF TECH <span>//</span> SOLUTIONS
+                    </div>
+                    <div class="doc-brand-sub">
+                        Bancada de Precisão • Hardware • Upgrades • Engenharia de TI
+                    </div>
+                    <div class="doc-brand-contact">
+                        Bragança Paulista - SP • WhatsApp: (11) 97410-0909 / (11) 91969-1542<br/>
+                        E-mail: ianpietrinho@gmail.com • Web: iflcosta.tech
+                    </div>
+                </div>
+                <div class="doc-os-box">
+                    <div class="doc-os-number">ORDEM DE SERVIÇO #${osNum}</div>
+                    <div class="doc-os-badge">${statusRaw}</div>
+                    <div class="doc-os-meta">EMISSÃO: ${createdDate} • VIA DIGITAL</div>
+                </div>
+            </div>
+
+            <div class="doc-grid-2">
+                <div class="doc-card">
+                    <div class="doc-card-title">👤 DADOS DO CLIENTE / TITULAR</div>
+                    <div class="doc-row"><strong>Nome:</strong> <span>${clientName}</span></div>
+                    <div class="doc-row"><strong>WhatsApp:</strong> <span>${clientPhone}</span></div>
+                    <div class="doc-row"><strong>CPF/Doc:</strong> <span>${clientCpf}</span></div>
+                    <div class="doc-row"><strong>Modalidade:</strong> <span>${entryType}</span></div>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-card-title">💻 DADOS DO EQUIPAMENTO</div>
+                    <div class="doc-row"><strong>Aparelho:</strong> <span>${deviceTitle}</span></div>
+                    <div class="doc-row"><strong>Nº de Série:</strong> <span>${deviceSerial}</span></div>
+                    <div class="doc-row"><strong>Defeito:</strong> <span>${reportedDefect}</span></div>
+                    <div class="doc-row"><strong>Rastreio:</strong> <span>Token #${trackingToken}</span></div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">🔬 DIÁRIO TÉCNICO DE BANCADA & ESCOPO DOS SERVIÇOS</div>
+                <div class="doc-text">${technicalDiagnosis}</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">💵 DEMONSTRATIVO FINANCEIRO & COMPONENTES</div>
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Descrição do Item / Serviço</th>
+                            <th style="width: 100px;">Categoria</th>
+                            <th style="width: 110px;">Valor (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mão de Obra Técnica de Bancada / Engenharia</td>
+                            <td>Serviço</td>
+                            <td>R$ ${laborCost.toFixed(2).replace('.', ',')}</td>
+                        </tr>
+                        ${partsCost > 0 ? `
+                        <tr>
+                            <td>Peças e Componentes Homologados</td>
+                            <td>Hardware</td>
+                            <td>R$ ${partsCost.toFixed(2).replace('.', ',')}</td>
+                        </tr>` : ''}
+                        ${pickupFee > 0 ? `
+                        <tr>
+                            <td>Taxa de Transporte / Logística Leva-e-Traz</td>
+                            <td>Logística</td>
+                            <td>R$ ${pickupFee.toFixed(2).replace('.', ',')}</td>
+                        </tr>` : ''}
+                    </tbody>
+                </table>
+                <div class="doc-total-box">
+                    <span class="doc-total-label">VALOR TOTAL DA ORDEM DE SERVIÇO:</span>
+                    <span class="doc-total-val">R$ ${totalAmount.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div class="doc-payment-info">
+                    <span>Situação Financeira: <strong>${paymentStatus}</strong></span>
+                    <span>Chave Pix Oficial: <strong>ianpietrinho@gmail.com</strong> (Ian Pietro // IF Tech)</span>
+                </div>
+            </div>
+
+            <div class="doc-terms">
+                <div class="doc-terms-title">DECLARAÇÃO DE CUSTÓDIA TÉCNICA & TERMOS DE GARANTIA LEGAL (CDC)</div>
+                <p>1. <strong>Custódia Técnica:</strong> O cliente acima identificado autoriza a IF Tech a realizar diagnósticos, desmontagens técnicas e testes de estresse em laboratório para fins de reparo e recuperação do equipamento.</p>
+                <p>2. <strong>Garantia Legal CDC 90 Dias:</strong> Nos termos do Artigo 26, inciso II da Lei Federal nº 8.078/1990 (Código de Defesa do Consumidor), os serviços executados e componentes substituídos possuem garantia legal de 90 (noventa) dias a contar da data de entrega.</p>
+                <p>3. <strong>Integridade do Lacre:</strong> A inviolabilidade do selo técnico de bancada IF Tech é pré-requisito para acionamento de garantia. Abertura por terceiros anula a cobertura técnica.</p>
+                <p>4. <strong>Proteção de Dados:</strong> A IF Tech zela pelo sigilo absoluto dos dados e integridade dos arquivos armazenados no equipamento.</p>
+            </div>
+
+            <div class="doc-bottom-grid">
+                <div class="qr-box">
+                    <canvas id="doc-qr-code" width="84" height="84"></canvas>
+                    <div class="qr-caption">ESCANEAR STATUS</div>
+                </div>
+                <div class="signature-col">
+                    <div class="sig-line">IF Tech Soluções Tecnológicas</div>
+                    <div class="sig-sub">Responsável Técnico & Engenharia</div>
+                </div>
+                <div class="signature-col">
+                    <div class="sig-line">${clientName}</div>
+                    <div class="sig-sub">Assinatura do Titular / Cliente</div>
+                </div>
+            </div>
+
+            <div class="doc-footer">
+                HASH DE AUTENTICIDADE DIGITAL: <strong>${authHash}</strong> • IF TECH // SISTEMA DE TELEMETRIA & CUSTÓDIA • BRAGANÇA PAULISTA - SP • iflcosta.tech
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            if (window.QRious) {
+                new QRious({
+                    element: document.getElementById('doc-qr-code'),
+                    value: '${trackingUrl}',
+                    size: 84
+                });
+            }
+        };
+
+        function downloadPDF() {
+            const btn = document.getElementById('btn-download');
+            if (btn) btn.innerHTML = '⏳ Gerando PDF...';
+            const element = document.getElementById('pdf-document');
+            const opt = {
+                margin: [6, 6, 6, 6],
+                filename: 'OS-${osNum}-IFTech.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save().then(function() {
+                if (btn) btn.innerHTML = '✓ Arquivo Salvo!';
+                setTimeout(function() { if (btn) btn.innerHTML = '📥 Baixar Arquivo PDF'; }, 3000);
+            }).catch(function(err) {
+                console.error(err);
+                alert('Erro na geração direta. Use o botão "Salvar como PDF / Imprimir" para salvar nativamente.');
+                if (btn) btn.innerHTML = '📥 Baixar Arquivo PDF';
+            });
+        }
+    <\/script>
+</body>
+</html>`);
+            printWindow.document.close();
+            printWindow.focus();
         }
 
         // =========================================================================
