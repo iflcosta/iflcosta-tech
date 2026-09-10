@@ -6111,6 +6111,38 @@
         .signature-col {
             text-align: center;
         }
+        .sig-cursive {
+            font-family: 'Brush Script MT', 'Dancing Script', 'Caveat', cursive, sans-serif;
+            font-size: 18px;
+            color: #0f172a;
+            line-height: 1.1;
+            margin-bottom: -2px;
+            letter-spacing: 0.5px;
+        }
+        .sig-badge-digital {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            font-size: 7.5px;
+            font-weight: 800;
+            padding: 1px 5px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+        .sig-badge-client {
+            display: inline-block;
+            background: #f4f4f5;
+            color: #52525b;
+            border: 1px solid #e4e4e7;
+            font-size: 7.5px;
+            font-weight: 700;
+            padding: 1px 5px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
         .sig-line {
             border-top: 1.5px solid #09090b;
             padding-top: 4px;
@@ -6269,12 +6301,18 @@
                     <div class="qr-caption">ESCANEAR STATUS</div>
                 </div>
                 <div class="signature-col">
-                    <div class="sig-line">IF Tech Soluções Tecnológicas</div>
-                    <div class="sig-sub">Responsável Técnico & Engenharia</div>
+                    <div class="sig-badge-digital">🔒 ASSINADO DIGITALMENTE</div>
+                    <div class="sig-cursive">Ian Pietro</div>
+                    <div class="sig-line">Ian Pietro // IF Tech</div>
+                    <div class="sig-sub">Responsável Técnico & Engenharia • Bragança Paulista</div>
+                    <div style="font-size: 7px; color: #71717a; font-family: 'JetBrains Mono', monospace; margin-top: 1px;">Chancela Digital: ${authHash}</div>
                 </div>
                 <div class="signature-col">
+                    <div class="sig-badge-client">📱 VIA DIGITAL DO CLIENTE</div>
+                    <div style="font-size: 9px; color: #71717a; font-style: italic; min-height: 18px; display: flex; align-items: flex-end; justify-content: center;">Homologado via Portal Web</div>
                     <div class="sig-line">${clientName}</div>
-                    <div class="sig-sub">Assinatura do Titular / Cliente</div>
+                    <div class="sig-sub">Titular do Equipamento • Token #${trackingToken}</div>
+                    <div style="font-size: 7px; color: #71717a; font-family: 'JetBrains Mono', monospace; margin-top: 1px;">Dispensa assinatura manual (Lei 14.063/2020)</div>
                 </div>
             </div>
 
