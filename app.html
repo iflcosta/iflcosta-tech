@@ -1370,8 +1370,8 @@
     </main>
 
     <!-- MODAL DE DETALHES & GESTÃO DA OS (AÇÕES DE BANCADA) -->
-    <div id="os-detail-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-zinc-950 border-2 border-brand p-6 sm:p-8 max-w-2xl w-full shadow-2xl font-mono relative max-h-[90vh] overflow-y-auto">
+    <div id="os-detail-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-zinc-950 border-2 border-brand p-5 sm:p-8 max-w-2xl w-full shadow-2xl font-mono relative max-h-[90vh] overflow-y-auto my-auto">
             <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
                 <div>
                     <span class="text-brand text-[10px] font-bold uppercase block">[ Gestão da Bancada // IF Tech ]</span>
@@ -1535,11 +1535,11 @@
         <!-- ============================================================= -->
     <!-- MODAL DEDICADO: ELABORAÇÃO DE ORÇAMENTO & LAUDO TÉCNICO DE OS -->
     <!-- ============================================================= -->
-    <div id="budget-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
-        <div class="bg-black border-2 border-brand w-full max-w-4xl flex flex-col max-h-[92vh] font-mono shadow-[8px_8px_0px_0px_rgba(204,255,0,0.35)] overflow-hidden">
+    <div id="budget-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-black border-2 border-brand w-full max-w-4xl flex flex-col h-[90vh] sm:h-[88vh] max-h-[90vh] font-mono shadow-[8px_8px_0px_0px_rgba(204,255,0,0.35)] overflow-hidden my-auto">
             
             <!-- HEADER (FIXO NO TOPO - NUNCA ROLA) -->
-            <div class="p-4 sm:p-6 border-b-2 border-zinc-800 shrink-0 relative bg-zinc-950 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div class="p-3.5 sm:p-5 border-b-2 border-zinc-800 shrink-0 relative bg-zinc-950 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
                     <div class="flex items-center gap-2 mb-1">
                         <span class="w-2.5 h-2.5 bg-brand animate-pulse"></span>
@@ -1558,8 +1558,8 @@
                 </div>
             </div>
 
-            <!-- CORPO ROLÁVEL (flex-1 overflow-y-auto) -->
-            <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 text-xs">
+            <!-- CORPO ROLÁVEL (flex-1 min-h-0 overflow-y-auto - Garante scroll interno sem estourar o modal) -->
+            <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-6 text-xs">
                 <form id="budget-modal-form" onsubmit="handleSaveBudgetFromModal(event, false)" class="space-y-6">
                     <!-- Defeito de Entrada Relatado -->
                     <div class="bg-zinc-950 border border-zinc-800 p-3.5">
@@ -1691,7 +1691,7 @@
             </div>
 
             <!-- RODAPÉ FIXO (SHRINK-0 - PERMANENTEMENTE VISÍVEL NA TELA SEM PRECISAR ROLAR) -->
-            <div class="shrink-0 bg-zinc-950 border-t-2 border-brand p-3.5 sm:p-5 flex flex-col sm:flex-row justify-between items-center gap-3 z-30 font-mono shadow-[0_-8px_20px_rgba(0,0,0,0.8)]">
+            <div class="shrink-0 bg-zinc-950 border-t-2 border-brand p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-center gap-3 z-30 font-mono shadow-[0_-8px_20px_rgba(0,0,0,0.8)]">
                 <div class="flex items-center gap-4 text-xs w-full sm:w-auto justify-between sm:justify-start">
                     <div>
                         <span class="text-zinc-400 text-[10px] block uppercase font-bold">Total do Cliente</span>
@@ -1705,14 +1705,14 @@
                 
                 <!-- BOTÕES DE AÇÃO CLAROS: CANCELAR, ENVIAR PROPOSTA E CONFIRMAR ORÇAMENTO APROVADO -->
                 <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto justify-end">
-                    <button type="button" onclick="closeBudgetModal()" class="px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800 text-xs transition-colors">
+                    <button type="button" onclick="closeBudgetModal()" class="px-3.5 py-2 bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold uppercase hover:bg-zinc-800 text-xs transition-colors cursor-pointer">
                         Cancelar
                     </button>
-                    <button type="button" onclick="handleSaveBudgetFromModal(event, false)" id="btn-save-proposal-modal" class="px-4 py-2.5 bg-zinc-800 border border-brand/40 text-white font-bold uppercase tracking-wider hover:bg-zinc-700 flex items-center justify-center gap-1.5 text-xs transition-all cursor-pointer">
+                    <button type="button" onclick="handleSaveBudgetFromModal(event, false)" id="btn-save-proposal-modal" class="px-4 py-2 bg-zinc-800 border border-brand/40 text-white font-bold uppercase tracking-wider hover:bg-zinc-700 flex items-center justify-center gap-1.5 text-xs transition-all cursor-pointer">
                         <i data-lucide="send" class="w-4 h-4 text-brand"></i>
                         <span>Salvar & Enviar Proposta (WhatsApp)</span>
                     </button>
-                    <button type="button" onclick="handleSaveBudgetFromModal(event, true)" id="btn-confirm-budget-modal" class="px-5 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white flex items-center justify-center gap-1.5 text-xs shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] transition-all cursor-pointer">
+                    <button type="button" onclick="handleSaveBudgetFromModal(event, true)" id="btn-confirm-budget-modal" class="px-4 py-2 bg-brand text-black font-black uppercase tracking-wider hover:bg-white flex items-center justify-center gap-1.5 text-xs shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] transition-all cursor-pointer">
                         <i data-lucide="check-circle-2" class="w-4 h-4 text-black"></i>
                         <span>✓ Confirmar Orçamento (Aprovado)</span>
                     </button>
@@ -1723,8 +1723,8 @@
     </div>
 
     <!-- MODAL DE CHECK-IN RÁPIDO DE ENTRADA (TRIAGEM 30 SEGUNDOS) -->
-    <div id="intake-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-zinc-950 border-2 border-brand p-6 sm:p-8 max-w-2xl w-full shadow-2xl font-mono relative max-h-[90vh] overflow-y-auto">
+    <div id="intake-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-zinc-950 border-2 border-brand p-5 sm:p-8 max-w-2xl w-full shadow-2xl font-mono relative max-h-[90vh] overflow-y-auto my-auto">
             <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 bg-brand animate-pulse"></span>
@@ -1866,27 +1866,27 @@
     </div>
 
     <!-- MODAL DE SUCESSO: MENSAGEM WHATSAPP GERADA -->
-    <div id="whatsapp-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-zinc-950 border-2 border-brand p-6 sm:p-8 max-w-xl w-full shadow-2xl font-mono relative max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-4">
+    <div id="whatsapp-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-zinc-950 border-2 border-brand p-5 sm:p-6 max-w-xl w-full shadow-2xl font-mono relative max-h-[88vh] flex flex-col my-auto overflow-hidden">
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-3 shrink-0">
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 bg-brand"></span>
-                    <h3 class="text-lg font-extrabold text-white">OS Cadastrada com Sucesso!</h3>
+                    <span class="w-3 h-3 bg-brand animate-pulse"></span>
+                    <h3 class="text-base sm:text-lg font-extrabold text-white" id="whatsapp-modal-title">Mensagem WhatsApp // Proposta</h3>
                 </div>
-                <button onclick="closeModal()" class="text-zinc-500 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeWhatsAppModal()" class="text-zinc-500 hover:text-white p-1 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <p class="text-xs text-zinc-400 mb-3">
-                Copie a mensagem formatada abaixo e envie no WhatsApp do cliente com o link mágico da proposta:
+            <p class="text-xs text-zinc-400 mb-2 shrink-0">
+                Revise a mensagem formatada abaixo ou dispare diretamente no WhatsApp do cliente:
             </p>
 
-            <div class="bg-black border border-zinc-800 p-4 text-xs text-zinc-300 font-mono whitespace-pre-wrap mb-6" id="whatsapp-msg-preview">Gerando mensagem personalizada para o cliente...</div>
+            <div class="bg-black border border-zinc-800 p-3.5 text-xs text-zinc-300 font-mono whitespace-pre-wrap mb-4 flex-1 min-h-0 max-h-60 overflow-y-auto" id="whatsapp-msg-preview">Gerando mensagem personalizada para o cliente...</div>
 
-            <div class="flex flex-col sm:flex-row gap-3 justify-end">
-                <button onclick="copyWppText()" class="px-5 py-3 bg-zinc-800 text-white text-xs font-bold uppercase hover:bg-zinc-700 transition-colors border border-zinc-700 flex items-center justify-center gap-2">
+            <div class="flex flex-col sm:flex-row gap-2.5 justify-end shrink-0 pt-2 border-t border-zinc-800/80">
+                <button onclick="copyWppText()" class="px-4 py-2.5 bg-zinc-800 text-white text-xs font-bold uppercase hover:bg-zinc-700 transition-colors border border-zinc-700 flex items-center justify-center gap-2 cursor-pointer">
                     <i data-lucide="copy" class="w-4 h-4"></i> Copiar Mensagem
                 </button>
-                <a id="modal-wpp-link" href="#" target="_blank" class="px-5 py-3 bg-brand text-black text-xs font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2">
+                <a id="modal-wpp-link" href="#" target="_blank" class="px-5 py-2.5 bg-brand text-black text-xs font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] cursor-pointer">
                     <i data-lucide="send" class="w-4 h-4"></i> Abrir no WhatsApp
                 </a>
             </div>
@@ -2024,6 +2024,18 @@
             // Exibir modal para revisão e disparo consciente do operador
             const modalEl = document.getElementById('whatsapp-modal');
             if (modalEl) {
+                const titleEl = document.getElementById('whatsapp-modal-title');
+                if (titleEl) {
+                    if (type === 'orcamento' || type === 'laudo') {
+                        titleEl.textContent = `Proposta da OS #${osNum} // WhatsApp`;
+                    } else if (type === 'sinal' || type === 'pix') {
+                        titleEl.textContent = `Cobrança Pix da OS #${osNum} // WhatsApp`;
+                    } else if (type === 'pronto') {
+                        titleEl.textContent = `Aviso: Equipamento Pronto // OS #${osNum}`;
+                    } else {
+                        titleEl.textContent = `Status da OS #${osNum} // WhatsApp`;
+                    }
+                }
                 modalEl.classList.remove('hidden');
                 if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
             }
