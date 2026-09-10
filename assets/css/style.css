@@ -103,3 +103,88 @@ html {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* 5. Stepper de 5 Etapas: Garantia Visual e Contraste Cyber */
+.step-state-amber {
+    border: 2px solid #f59e0b !important;
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.35) !important;
+}
+.step-state-amber span[id$="-title"],
+.step-title-amber {
+    color: #f59e0b !important;
+    font-weight: 900 !important;
+}
+.step-state-amber span[id$="-sub"],
+.step-sub-amber {
+    color: #fde68a !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+.step-state-amber i,
+.step-state-amber svg,
+.step-icon-amber {
+    color: #f59e0b !important;
+    stroke: #f59e0b !important;
+}
+
+.step-state-cyan {
+    border: 2px solid #22d3ee !important;
+    background-color: rgba(34, 211, 238, 0.15) !important;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.35) !important;
+}
+.step-state-cyan span[id$="-title"] {
+    color: #22d3ee !important;
+    font-weight: 900 !important;
+}
+.step-state-cyan span[id$="-sub"] {
+    color: #a5f3fc !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+.step-state-cyan i,
+.step-state-cyan svg {
+    color: #22d3ee !important;
+    stroke: #22d3ee !important;
+}
+
+.step-state-yellow {
+    border: 2px solid #facc15 !important;
+    background-color: rgba(250, 204, 21, 0.15) !important;
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.35) !important;
+}
+.step-state-yellow span[id$="-title"] {
+    color: #facc15 !important;
+    font-weight: 900 !important;
+}
+.step-state-yellow span[id$="-sub"] {
+    color: #fef08a !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+.step-state-yellow i,
+.step-state-yellow svg {
+    color: #facc15 !important;
+    stroke: #facc15 !important;
+}
+
+.step-state-brand {
+    border: 2px solid #ccff00 !important;
+    background-color: rgba(204, 255, 0, 0.15) !important;
+    box-shadow: 0 0 15px rgba(204, 255, 0, 0.35) !important;
+}
+.step-state-brand span[id$="-title"] {
+    color: #ccff00 !important;
+    font-weight: 900 !important;
+}
+.step-state-brand span[id$="-sub"] {
+    color: #e4e4e7 !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+.step-state-brand i,
+.step-state-brand svg {
+    color: #ccff00 !important;
+    stroke: #ccff00 !important;
+}
+

@@ -17,6 +17,92 @@
     <!-- CSS Minificado de Produção (Tailwind Standalone) -->
     <link rel="stylesheet" href="/assets/css/style.min.css">
     
+    <!-- Garantia Visual Absoluta de Contraste do Stepper (Anti-Blackout) -->
+    <style>
+        .step-state-amber {
+            border: 2px solid #f59e0b !important;
+            background-color: rgba(245, 158, 11, 0.15) !important;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.35) !important;
+        }
+        .step-state-amber span[id$="-title"],
+        .step-title-amber {
+            color: #f59e0b !important;
+            font-weight: 900 !important;
+        }
+        .step-state-amber span[id$="-sub"],
+        .step-sub-amber {
+            color: #fde68a !important;
+            font-weight: 700 !important;
+            display: block !important;
+        }
+        .step-state-amber i,
+        .step-state-amber svg,
+        .step-icon-amber {
+            color: #f59e0b !important;
+            stroke: #f59e0b !important;
+        }
+
+        .step-state-cyan {
+            border: 2px solid #22d3ee !important;
+            background-color: rgba(34, 211, 238, 0.15) !important;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.35) !important;
+        }
+        .step-state-cyan span[id$="-title"] {
+            color: #22d3ee !important;
+            font-weight: 900 !important;
+        }
+        .step-state-cyan span[id$="-sub"] {
+            color: #a5f3fc !important;
+            font-weight: 700 !important;
+            display: block !important;
+        }
+        .step-state-cyan i,
+        .step-state-cyan svg {
+            color: #22d3ee !important;
+            stroke: #22d3ee !important;
+        }
+
+        .step-state-yellow {
+            border: 2px solid #facc15 !important;
+            background-color: rgba(250, 204, 21, 0.15) !important;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.35) !important;
+        }
+        .step-state-yellow span[id$="-title"] {
+            color: #facc15 !important;
+            font-weight: 900 !important;
+        }
+        .step-state-yellow span[id$="-sub"] {
+            color: #fef08a !important;
+            font-weight: 700 !important;
+            display: block !important;
+        }
+        .step-state-yellow i,
+        .step-state-yellow svg {
+            color: #facc15 !important;
+            stroke: #facc15 !important;
+        }
+
+        .step-state-brand {
+            border: 2px solid #ccff00 !important;
+            background-color: rgba(204, 255, 0, 0.15) !important;
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.35) !important;
+        }
+        .step-state-brand span[id$="-title"] {
+            color: #ccff00 !important;
+            font-weight: 900 !important;
+        }
+        .step-state-brand span[id$="-sub"] {
+            color: #e4e4e7 !important;
+            font-weight: 700 !important;
+            display: block !important;
+        }
+        .step-state-brand i,
+        .step-state-brand svg {
+            color: #ccff00 !important;
+            stroke: #ccff00 !important;
+        }
+    </style>
+    
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest" defer></script>
 
@@ -879,26 +965,29 @@
 
             if (subText && subEl) subEl.textContent = subText;
 
+            // Remove classes personalizadas anteriores
+            el.classList.remove('step-state-amber', 'step-state-cyan', 'step-state-yellow', 'step-state-brand');
+
             if (state === 'active-brand') {
-                el.className = "border-2 border-brand bg-brand text-black p-3 font-bold shadow-[0_0_15px_rgba(204,255,0,0.35)]";
-                if (titleEl) titleEl.className = "text-black font-black";
-                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
-                if (iconEl) iconEl.className = "w-4 h-4 text-black";
+                el.className = "border-2 border-brand bg-brand/15 p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(204,255,0,0.35)] step-state-brand";
+                if (titleEl) titleEl.className = "text-brand font-black";
+                if (subEl) subEl.className = "text-[11px] text-zinc-200 font-bold block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-brand";
             } else if (state === 'active-yellow') {
-                el.className = "border-2 border-yellow-400 bg-yellow-400 text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.35)]";
-                if (titleEl) titleEl.className = "text-black font-black";
-                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
-                if (iconEl) iconEl.className = "w-4 h-4 text-black";
+                el.className = "border-2 border-yellow-400 bg-yellow-400/15 p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.35)] step-state-yellow";
+                if (titleEl) titleEl.className = "text-yellow-400 font-black";
+                if (subEl) subEl.className = "text-[11px] text-yellow-200 font-bold block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-yellow-400";
             } else if (state === 'active-amber') {
-                el.className = "border-2 border-amber-500 bg-amber-500 text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(245,158,11,0.35)]";
-                if (titleEl) titleEl.className = "text-black font-black";
-                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
-                if (iconEl) iconEl.className = "w-4 h-4 text-black";
+                el.className = "border-2 border-amber-500 bg-amber-500/15 p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(245,158,11,0.35)] step-state-amber";
+                if (titleEl) titleEl.className = "text-amber-400 font-black step-title-amber";
+                if (subEl) subEl.className = "text-[11px] text-amber-200 font-bold block font-sans step-sub-amber";
+                if (iconEl) iconEl.className = "w-4 h-4 text-amber-400 step-icon-amber";
             } else if (state === 'active-cyan') {
-                el.className = "border-2 border-cyan-400 bg-cyan-400 text-black p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(6,182,212,0.35)]";
-                if (titleEl) titleEl.className = "text-black font-black";
-                if (subEl) subEl.className = "text-[11px] text-zinc-950 font-bold block font-sans";
-                if (iconEl) iconEl.className = "w-4 h-4 text-black";
+                el.className = "border-2 border-cyan-400 bg-cyan-400/15 p-3 font-bold animate-pulse shadow-[0_0_15px_rgba(6,182,212,0.35)] step-state-cyan";
+                if (titleEl) titleEl.className = "text-cyan-400 font-black";
+                if (subEl) subEl.className = "text-[11px] text-cyan-200 font-bold block font-sans";
+                if (iconEl) iconEl.className = "w-4 h-4 text-cyan-400";
             } else if (state === 'completed') {
                 el.className = "border-2 border-brand/50 bg-brand/10 p-3 text-brand font-bold";
                 if (titleEl) titleEl.className = "text-brand font-black";
@@ -914,6 +1003,10 @@
                 if (titleEl) titleEl.className = "text-zinc-300 font-bold";
                 if (subEl) subEl.className = "text-[11px] text-zinc-400 block font-sans";
                 if (iconEl) iconEl.className = "w-4 h-4 text-zinc-500";
+            }
+
+            if (window.lucide && window.lucide.createIcons) {
+                window.lucide.createIcons();
             }
         }
 
