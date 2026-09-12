@@ -116,7 +116,7 @@ stateDiagram-v2
    * A visualização no Portal do Cliente (`portal.html`) **NUNCA** projeta o campo `cost_price` ou `total_parts_cost`.
    * A RPC pública `rpc_get_work_order_by_token` executa `SELECT` explícito omitindo as colunas de custo.
 2. **Autenticação e Proteção do Cockpit Admin (`admin.html`):**
-   * Auth Guard com suporte a sessão JWT do Supabase e PIN Master de Contingência (`982601`).
+   * Auth Guard com suporte a sessão JWT do Supabase e PIN Master de Contingência (`512286`).
    * Sessão persistida em `sessionStorage` com limpeza automática no encerramento.
 3. **Content Security Policy (CSP) & Headers de Segurança:**
    * Cabeçalhos rigorosos em `_headers` e `vercel.json` liberando exclusivamente CDNs oficiais de scripts (`cdnjs.cloudflare.com`, `cdn.jsdelivr.net`, `unpkg.com`) e o gateway `api.asaas.com`.

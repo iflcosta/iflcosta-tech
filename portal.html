@@ -724,7 +724,7 @@
                 <div class="bg-zinc-950 border border-zinc-900 p-3.5 font-mono text-xs space-y-2">
                     <div class="flex justify-between items-center text-[11px]">
                         <span class="text-zinc-500 uppercase font-bold">Favorecido Oficial:</span>
-                        <span class="text-white font-bold">IAN PIETRO // IF TECH</span>
+                        <span class="text-white font-bold">IAGO LOPES // IF TECH</span>
                     </div>
                     <div class="flex justify-between items-center text-[11px]">
                         <span class="text-zinc-500 uppercase font-bold">Instituição / Cidade:</span>
@@ -1788,7 +1788,7 @@
 
         // =========================================================================
         // MOTOR DE CHECKOUT PIX OFICIAL // IF TECH
-        // Chave Oficial: ianpietrinho@gmail.com (Ian Pietro // IF Tech)
+        // Chave Oficial: ianpietrinho@gmail.com (Iago Lopes // IF Tech)
         // =========================================================================
         function crc16Pix(str) {
             let crc = 0xFFFF;
@@ -1821,7 +1821,7 @@
                 res += '54' + String(amtStr.length).padStart(2, '0') + amtStr;
             }
             res += '5802BR';
-            const cleanName = (name || 'IAN PIETRO').trim().substring(0, 25).toUpperCase();
+            const cleanName = (name || 'IAGO LOPES').trim().substring(0, 25).toUpperCase();
             res += '59' + String(cleanName.length).padStart(2, '0') + cleanName;
             const cleanCity = (city || 'BRAGANCA PAUL').trim().substring(0, 15).toUpperCase();
             res += '60' + String(cleanCity.length).padStart(2, '0') + cleanCity;
@@ -1867,7 +1867,7 @@
             if (amountEl) amountEl.textContent = 'R$ ' + payAmount.toFixed(2).replace('.', ',');
 
             // 1. Gerar Chave Pix Dinâmica Oficial (EMV BR Code)
-            const pixCode = generatePixPayload('ianpietrinho@gmail.com', 'IAN PIETRO', 'BRAGANCA PAUL', payAmount, 'OS' + osNumStr);
+            const pixCode = generatePixPayload('ianpietrinho@gmail.com', 'IAGO LOPES', 'BRAGANCA PAUL', payAmount, 'OS' + osNumStr);
 
             const inputCopy = document.getElementById('pix-copypaste-input');
             if (inputCopy) inputCopy.value = pixCode;
@@ -1886,7 +1886,7 @@
             // 3. Atualizar link de envio de comprovante no WhatsApp
             const proofBtn = document.getElementById('btn-send-pix-proof');
             if (proofBtn) {
-                const msg = `Olá Ian / IF Tech! Acabei de realizar o pagamento via Pix de R$ ${payAmount.toFixed(2).replace('.', ',')} referente à OS #${osNumStr}. Segue o comprovante em anexo:`;
+                const msg = `Olá Iago / IF Tech! Acabei de realizar o pagamento via Pix de R$ ${payAmount.toFixed(2).replace('.', ',')} referente à OS #${osNumStr}. Segue o comprovante em anexo:`;
                 proofBtn.href = `https://wa.me/5511919691542?text=${encodeURIComponent(msg)}`;
             }
 
@@ -2236,7 +2236,7 @@
             const half = (proj.total_budget || 0) / 2;
             const isStep1 = (step === 1);
             const txId = (proj.project_code || 'SW2026').replace(/[^a-zA-Z0-9]/g, '').slice(0, 25);
-            const pixPayload = generatePixPayload('ianpietrinho@gmail.com', 'IAN PIETRO', 'BRAGANCA PAUL', half, txId);
+            const pixPayload = generatePixPayload('ianpietrinho@gmail.com', 'IAGO LOPES', 'BRAGANCA PAUL', half, txId);
 
             const mockWO = {
                 os_number: proj.project_code || 'PRJ-SW',

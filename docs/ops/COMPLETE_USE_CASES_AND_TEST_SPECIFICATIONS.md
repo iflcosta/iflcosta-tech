@@ -49,7 +49,7 @@ graph TD
 * **Ator:** Técnico / Gestor
 * **Pré-condição:** Acessar `https://iflcosta.tech/app` com tela bloqueada.
 * **Fluxo Principal:**
-  1. O usuário digita o PIN Master `982601` e pressiona Enter.
+  1. O usuário digita o PIN Master `512286` e pressiona Enter.
   2. O sistema valida o hash/PIN, armazena `if_tech_auth_session` no `sessionStorage`, desbloqueia o Cockpit e renderiza o Kanban de OSs e os KPIs de DRE.
 * **Critério de Aceite:** O dashboard abre instantaneamente e mantém a sessão ativa ao navegar entre abas ou dar F5.
 

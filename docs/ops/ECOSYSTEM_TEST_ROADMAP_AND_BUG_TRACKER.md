@@ -13,7 +13,7 @@ Este documento segue a **ordem cronológica exata da vida real**: desde o técni
 
 ### 1️⃣ FASE 1: Acesso ao Cockpit Admin & Primeiro Check-in de OS
 - [ ] **1.1. Login no Cockpit (`https://iflcosta.tech/app`):**
-  - Digite o PIN Master: `982601` ➔ Acesso liberado ao painel;
+  - Digite o PIN Master: `512286` ➔ Acesso liberado ao painel;
   - Teste os atalhos de teclado: `Alt+1` a `Alt+7` (navegar entre abas), `F1` (ajuda de atalhos), `Esc` (fechar modais);
   - Teste a persistência no `F5` (mudar de aba e atualizar a página mantendo a mesma aba aberta).
 - [ ] **1.2. Check-in de Entrada do Primeiro Equipamento (30s):**

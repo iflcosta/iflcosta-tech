@@ -96,7 +96,7 @@ advanceOSStatus(Entregue) -> Supabase .update({status: Entregue})
 | unlockAdminCockpit() | 2036 | Desbloqueia UI e carrega dados |
 | checkAdminAuthSession() | 2074 | Verifica sessao Supabase/PIN |
 | handleAdminEmailLogin() | 2106 | Login email+senha via Supabase Auth |
-| handleAdminPinLogin() | 2176 | Login via PIN master (982601) |
+| handleAdminPinLogin() | 2176 | Login via PIN master (512286) |
 | handleAdminLogout() | 2206 | Sign out |
 
 ### 3.3. Financeiro DRE (L2535-2738)
