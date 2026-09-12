@@ -164,7 +164,7 @@
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Portal
                     </a>
                     <!-- Botão Zerar Base Local / Clean Slate -->
-                    <button type="button" onclick="resetAllSystemDataToCleanSlate()" title="Zerar todos os dados locais e cache do navegador para testes limpos" class="flex px-2.5 py-2 sm:px-3 sm:py-2.5 bg-red-950/40 border border-red-800/80 text-red-400 hover:bg-red-900 hover:text-white font-bold uppercase text-xs items-center gap-1.5 transition-colors shadow-[2px_2px_0px_0px_rgba(239,68,68,0.2)]">
+                    <button type="button" onclick="resetAllSystemDataToCleanSlate()" title="Zerar todos os dados locais e cache do navegador para testes limpos" class="hidden md:flex px-2.5 py-2 sm:px-3 sm:py-2.5 bg-red-950/40 border border-red-800/80 text-red-400 hover:bg-red-900 hover:text-white font-bold uppercase text-xs items-center gap-1.5 transition-colors shadow-[2px_2px_0px_0px_rgba(239,68,68,0.2)]">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5 text-red-400"></i>
                         <span class="hidden md:inline">Zerar</span> Base
                     </button>
@@ -1785,7 +1785,7 @@
                     </div>
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">WhatsApp do Cliente *</label>
-                        <input type="text" id="intake-client-phone" placeholder="Ex: (11) 90000-0000" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
+                        <input type="tel" inputmode="tel" id="intake-client-phone" placeholder="Ex: (11) 90000-0000" required class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-brand">
                     </div>
                     <div>
                         <label class="block text-zinc-400 font-bold uppercase mb-1">Logística de Devolução</label>
@@ -1896,9 +1896,9 @@
                     </div>
                 </div>
 
-                <div class="pt-3 flex justify-end gap-3">
-                    <button type="button" onclick="closeIntakeModal()" class="px-4 py-2.5 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white border border-zinc-700">Cancelar</button>
-                    <button type="submit" class="px-6 py-2.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center gap-2">
+                <div class="pt-3 flex flex-col sm:flex-row justify-end gap-2.5 sm:gap-3">
+                    <button type="button" onclick="closeIntakeModal()" class="w-full sm:w-auto px-4 py-3 bg-zinc-900 text-zinc-400 font-bold uppercase hover:text-white border border-zinc-700 text-center min-h-[44px]">Cancelar</button>
+                    <button type="submit" class="w-full sm:w-auto px-6 py-3.5 bg-brand text-black font-black uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 min-h-[48px] shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] cursor-pointer text-xs sm:text-sm">
                         <i data-lucide="check-circle" class="w-4 h-4"></i> Confirmar Entrada & Gerar Comprovante
                     </button>
                 </div>
@@ -1924,10 +1924,10 @@
             <div class="bg-black border border-zinc-800 p-3.5 text-xs text-zinc-300 font-mono whitespace-pre-wrap mb-4 flex-1 min-h-0 max-h-60 overflow-y-auto" id="whatsapp-msg-preview">Gerando mensagem personalizada para o cliente...</div>
 
             <div class="flex flex-col sm:flex-row gap-2.5 justify-end shrink-0 pt-2 border-t border-zinc-800/80">
-                <button onclick="copyWppText()" class="px-4 py-2.5 bg-zinc-800 text-white text-xs font-bold uppercase hover:bg-zinc-700 transition-colors border border-zinc-700 flex items-center justify-center gap-2 cursor-pointer">
-                    <i data-lucide="copy" class="w-4 h-4"></i> Copiar Mensagem
+                <button type="button" onclick="copyWppText()" class="w-full sm:w-auto px-4 py-3 bg-zinc-800 text-white text-xs font-bold uppercase hover:bg-zinc-700 transition-colors border border-zinc-700 flex items-center justify-center gap-2 cursor-pointer min-h-[44px]">
+                    <i data-lucide="copy" class="w-4 h-4"></i> Copiar Texto
                 </button>
-                <a id="modal-wpp-link" href="#" target="_blank" class="px-5 py-2.5 bg-brand text-black text-xs font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] cursor-pointer">
+                <a id="modal-wpp-link" href="#" target="_blank" onclick="copyWppText()" class="w-full sm:w-auto px-6 py-3.5 bg-brand text-black text-xs sm:text-sm font-black uppercase hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] cursor-pointer min-h-[48px]">
                     <i data-lucide="send" class="w-4 h-4"></i> Abrir no WhatsApp
                 </a>
             </div>
@@ -2040,7 +2040,14 @@
 
             let msg = '';
             const isDelivery = Boolean(wo.is_pickup_delivery || wo.requires_delivery || (wo.acquisition_channel === 'Leva-e-Traz'));
-            if (type === 'orcamento' || type === 'laudo') {
+            if (type === 'entrada' || type === 'checkin') {
+                const devBrand = (wo.device_brand || 'Equipamento').trim();
+                const devModel = (wo.device_model || '').trim();
+                const devFull = (devBrand && devModel) ? (devModel.toLowerCase().includes(devBrand.toLowerCase()) ? devModel : `${devBrand} ${devModel}`) : (devModel || devBrand || 'Equipamento');
+                const defectText = wo.reported_defect || 'Triagem inicial';
+                const channelText = isDelivery ? 'Logística Leva-e-Traz' : 'Atendimento Presencial / Balcão';
+                msg = `Olá ${clientName}! 👋\nAqui é o Iago da *IF Tech*.\n\nSeu equipamento foi recepcionado com sucesso em nosso laboratório! 💻\n\n📋 *Comprovante de Entrada & Custódia:*\n• *Ordem de Serviço:* #${osNum}\n• *Equipamento:* ${devFull}\n• *Defeito Relatado:* ${defectText}\n• *Modalidade:* ${channelText}\n\n🔗 *Acompanhe o diagnóstico e o laudo técnico em tempo real pelo seu link exclusivo:*\n👉 ${link}\n\n_Assim que concluirmos os testes de bancada, você receberá o laudo detalhado e a proposta por aqui._\n*IF Tech // Engenharia de Hardware*`;
+            } else if (type === 'orcamento' || type === 'laudo') {
                 msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSua proposta técnica e laudo para a *OS #${osNum}* estão prontos!\n🔧 *Valor Total:* R$ ${totalVal}${breakdownNote}\n\n📋 *Acompanhe e aprove seu orçamento pelo link exclusivo:*\n👉 ${link}\n\nQualquer dúvida, estamos à disposição!\n*IF Tech // Engenharia de Hardware*`;
             } else if (type === 'sinal' || type === 'pix') {
                 msg = `Olá ${clientName}! 👋\nAqui é da *IF Tech*.\n\nSegue o link Pix para aprovação e faturamento da sua *OS #${osNum}*:\n💰 *Sinal de Peças:* R$ ${partsVal} • *Total:* R$ ${totalVal}\n\n🔗 *Acesse para pagar via Pix e acompanhar o laudo em tempo real:*\n👉 ${link}\n\n*IF Tech // Engenharia de Hardware*`;
@@ -2076,7 +2083,9 @@
             if (modalEl) {
                 const titleEl = document.getElementById('whatsapp-modal-title');
                 if (titleEl) {
-                    if (type === 'orcamento' || type === 'laudo') {
+                    if (type === 'entrada' || type === 'checkin') {
+                        titleEl.textContent = `Comprovante de Entrada // OS #${osNum}`;
+                    } else if (type === 'orcamento' || type === 'laudo') {
                         titleEl.textContent = `Proposta da OS #${osNum} // WhatsApp`;
                     } else if (type === 'sinal' || type === 'pix') {
                         titleEl.textContent = `Cobrança Pix da OS #${osNum} // WhatsApp`;
@@ -4991,6 +5000,11 @@
             renderFinancialDashboard(currentWorkOrders);
             if (typeof renderClientsTable === 'function') renderClientsTable();
             showToast('✓ OS #' + formatOSNumber(nextOSNum) + ' aberta com sucesso na Triagem!', 'success');
+
+            // Disparo instantâneo do comprovante de entrada para WhatsApp (1-tap no mobile presencial)
+            if (phone && typeof openWhatsAppNotificationModal === 'function') {
+                openWhatsAppNotificationModal(newOS, 'entrada');
+            }
         }
 
         function updateOSDetailPaymentCard(wo) {
@@ -5176,8 +5190,11 @@
 
             if (s.includes('triagem')) {
                 buttonsHtml = `
-                    <button type="button" onclick="actionBudgetFromOS()" class="px-4 py-2.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                    <button type="button" onclick="actionBudgetFromOS()" class="px-4 py-2.5 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
                         <i data-lucide="calculator" class="w-4 h-4"></i> Elaborar Orçamento & Laudo
+                    </button>
+                    <button type="button" onclick="openWhatsAppNotificationModal(null, 'entrada')" class="px-3.5 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-200 font-bold uppercase text-xs hover:bg-zinc-800 transition-colors flex items-center justify-center gap-1.5">
+                        <i data-lucide="message-square" class="w-4 h-4 text-brand"></i> Comprovante Entrada (WhatsApp)
                     </button>
                 `;
             } else if (s.includes('orcamento')) {
@@ -6607,7 +6624,9 @@
                 showToast('Nenhuma OS selecionada.', 'warning');
                 return;
             }
-            openWhatsAppNotificationModal(wo, 'status');
+            const s = (wo.status || '').toLowerCase();
+            const type = s.includes('triagem') ? 'entrada' : (s.includes('pronto') ? 'pronto' : (s.includes('orcamento') ? 'orcamento' : 'status'));
+            openWhatsAppNotificationModal(wo, type);
         }
 
         // =====================================================================
