@@ -15,3 +15,7 @@
 /status         /portal.html    200
 /os/:id         /portal.html    200
 /t/:token       /portal.html    200
+/hardware/*     /index.html     200
+/software/*     /index.html     200
+/msp/*          /index.html     200
+/performance/*  /index.html     200
