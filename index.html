@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IF Tech | Consultoria Tech de Alta Performance & TI em Bragança Paulista</title>
     
+    <!-- Google tag (gtag.js) - Google Ads: AW-18161865460 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18161865460"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-18161865460');
+    </script>
+    
     <!-- Favicon SVG -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a0a0c'/><path d='M30 30h15v40H30zM55 30h15v40H55z' fill='%23ccff00'/></svg>">
     
@@ -1001,6 +1011,54 @@
                 lucide.createIcons();
             }
         });
+
+        // =========================================================================
+        // MOTOR DE TRACKING DE CONVERSÕES (Google Ads & Meta Ads)
+        // =========================================================================
+        window.trackContactConversion = function(label, category) {
+            try {
+                // 1. Disparo de Conversão Oficial no Google Ads (Ação: Contato)
+                if (typeof gtag === 'function') {
+                    gtag('event', 'conversion', {
+                        'send_to': 'AW-18161865460/PdYgCMbr6KwcEPSloNRD',
+                        'event_category': category || 'Contato',
+                        'event_label': label || 'WhatsApp_Lead',
+                        'value': 1.0,
+                        'currency': 'BRL'
+                    });
+                }
+                // 2. Disparo de Conversão no Meta Pixel (quando ativo)
+                if (typeof fbq === 'function') {
+                    fbq('track', 'Contact', {
+                        content_name: label || 'WhatsApp_Lead',
+                        content_category: category || 'Geral'
+                    });
+                }
+            } catch (err) {
+                console.warn('[Tracking] Erro ao registrar conversão:', err);
+            }
+        };
+
+        // Delegação automática de cliques em qualquer botão/link de WhatsApp do site
+        document.addEventListener('click', function(event) {
+            const link = event.target.closest('a[href*="wa.me"], a[href*="whatsapp.com"]');
+            if (!link) return;
+
+            const href = link.getAttribute('href') || '';
+            const text = (link.textContent || link.getAttribute('aria-label') || '').trim();
+            
+            let category = 'Geral';
+            if (href.includes('upgrade') || href.includes('computador') || link.closest('.card-triage-hw')) {
+                category = 'Hardware';
+            } else if (href.includes('software') || link.closest('.card-triage-sw')) {
+                category = 'Software';
+            } else if (href.includes('empresa') || href.includes('TI') || link.closest('.card-triage-msp')) {
+                category = 'MSP';
+            }
+
+            const label = text ? `WhatsApp_${text.slice(0, 25).replace(/[^a-zA-Z0-9_-]/g, '_')}` : 'WhatsApp_FAB';
+            window.trackContactConversion(label, category);
+        }, true);
     </script>
 </body>
 </html>
