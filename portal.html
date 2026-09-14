@@ -2771,6 +2771,21 @@
         // =========================================================================
         // MOTOR DE TRACKING DE CONVERSÕES (Google Ads & Meta Ads)
         // =========================================================================
+        window.gtag_report_conversion = function(url) {
+            var callback = function () {
+                if (typeof(url) != 'undefined' && url) {
+                    window.location = url;
+                }
+            };
+            if (typeof gtag === 'function') {
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-18161865460/kezNCM_O7fYcEPSloNRD',
+                    'event_callback': callback
+                });
+            }
+            return false;
+        };
+
         window.trackContactConversion = function(label, category) {
             try {
                 if (typeof gtag === 'function') {
