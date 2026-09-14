@@ -13,10 +13,10 @@
     { "source": "/status", "destination": "/portal.html" },
     { "source": "/os/:id", "destination": "/portal.html" },
     { "source": "/t/:token", "destination": "/portal.html" },
-    { "source": "/hardware/:path*", "destination": "/index.html" },
-    { "source": "/software/:path*", "destination": "/index.html" },
-    { "source": "/msp/:path*", "destination": "/index.html" },
-    { "source": "/performance/:path*", "destination": "/index.html" }
+    { "source": "/hardware/:path*", "destination": "/" },
+    { "source": "/software/:path*", "destination": "/" },
+    { "source": "/msp/:path*", "destination": "/" },
+    { "source": "/performance/:path*", "destination": "/" }
   ],
   "headers": [
     {
