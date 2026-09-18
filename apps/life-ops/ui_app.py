@@ -13,7 +13,8 @@ from database import (
     get_quick_buttons, update_quick_button, add_quick_button, delete_quick_button,
     reset_all_transactions_and_balances, set_pot_balance, set_pot_target,
     get_flip_projects, add_flip_project, update_flip_project_status, delete_flip_project,
-    log_morning_checkin, get_morning_checkin_status, create_database_backup
+    log_morning_checkin, get_morning_checkin_status, create_database_backup,
+    get_ebike_procurement, update_ebike_procurement_item, get_ebike_trips
 )
 from engine_finance import (
     get_financial_overview, simulate_purchase, project_30_days_timeline
@@ -23,6 +24,10 @@ from engine_routine import (
 )
 from engine_hardware import (
     calculate_flip_metrics, fetch_supabase_telemetry, open_cockpit_in_browser
+)
+from engine_ebike import (
+    calculate_route_fee, get_ebike_savings_metrics, get_ebike_procurement_summary,
+    record_logistics_trip_and_distribute, register_monthly_savings_deposit
 )
 
 # Configuração global de aparência
@@ -160,12 +165,14 @@ class LifeOpsApp(ctk.CTk):
 
         self.tab_fluxo = self.tabs.add("💰 Fluxo de Caixa")
         self.tab_simulador = self.tabs.add("🎯 Simulador de Compras")
+        self.tab_ebike = self.tabs.add("🚲 E-Bike Logística")
         self.tab_flip = self.tabs.add("💻 Hardware Flip")
         self.tab_rotina = self.tabs.add("⏰ Rotina & Foco")
         self.tab_config = self.tabs.add("⚙️ Configurações")
 
         self.build_tab_fluxo()
         self.build_tab_simulador()
+        self.build_tab_ebike()
         self.build_tab_flip()
         self.build_tab_rotina()
         self.build_tab_config()
@@ -177,15 +184,16 @@ class LifeOpsApp(ctk.CTk):
         self.tab_fluxo.grid_columnconfigure((0, 1), weight=1)
         self.tab_fluxo.grid_rowconfigure(1, weight=1)
 
-        # 4 Potes (Cards)
+        # 5 Potes (Cards)
         self.pots_container = ctk.CTkFrame(self.tab_fluxo, fg_color="transparent")
         self.pots_container.grid(row=0, column=0, columnspan=2, padx=12, pady=(10, 12), sticky="ew")
-        self.pots_container.grid_columnconfigure((0, 1, 2, 3), weight=1)
+        self.pots_container.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
 
         self.card_giro = self.create_pot_card(self.pots_container, 0, "Caixa de Giro", "#00E676")
         self.card_familia = self.create_pot_card(self.pots_container, 1, "Provisão Família", "#FFB300")
         self.card_quarto = self.create_pot_card(self.pots_container, 2, "Quarto & Bancada", "#00E5FF")
         self.card_flip = self.create_pot_card(self.pots_container, 3, "Giro Hardware (Flip)", "#E040FB")
+        self.card_ebike = self.create_pot_card(self.pots_container, 4, "E-Bike BBSHD 1000W", "#76FF03")
 
         # Painel Esquerdo: Lançamento Manual + Extrato Recente
         left_panel = ctk.CTkFrame(self.tab_fluxo, fg_color="#202024", corner_radius=10)
@@ -214,7 +222,15 @@ class LifeOpsApp(ctk.CTk):
         self.entry_m_val = ctk.CTkEntry(row1, placeholder_text="Valor R$ (ex: 50.00)", width=130)
         self.entry_m_val.pack(side="left", padx=(0, 6))
         self.combo_m_pot = ctk.CTkComboBox(
-            row1, values=["giro (Caixa de Giro)", "familia (Família)", "quarto_lab (Projeto Quarto/Bancada)", "hardware_flip (Giro Hardware/Flip)"],
+            row1, values=[
+                "giro (Caixa de Giro)", 
+                "familia (Família)", 
+                "quarto_lab (Projeto Quarto/Bancada)", 
+                "hardware_flip (Giro Hardware/Flip)",
+                "ebike_capex (Projeto E-Bike BBSHD)",
+                "ebike_bateria (Fundo Bateria E-Bike)",
+                "ebike_manutencao (Manutenção E-Bike)"
+            ],
             width=210
         )
         self.combo_m_pot.set("giro (Caixa de Giro)")
@@ -425,6 +441,320 @@ class LifeOpsApp(ctk.CTk):
         self.lbl_verdict_badge.configure(text=res["badge"], text_color=fg, fg_color=bg)
         self.lbl_verdict_msg.configure(text=res["message"])
         self.lbl_verdict_rec.configure(text="💡 RECOMENDAÇÃO: " + res["recommendation"])
+
+    # ==========================================
+    # ABA: E-BIKE BBSHD 1000W & LOGÍSTICA LEVA-E-TRAZ
+    # ==========================================
+    def build_tab_ebike(self):
+        self.tab_ebike.grid_columnconfigure((0, 1), weight=1)
+        self.tab_ebike.grid_rowconfigure(0, weight=1)
+
+        # Lado Esquerdo: Meta de Poupança CAPEX & Calculadora/Despacho de Rotas
+        left_ebike = ctk.CTkScrollableFrame(self.tab_ebike, fg_color="#202024", corner_radius=10)
+        left_ebike.grid(row=0, column=0, padx=(14, 7), pady=14, sticky="nsew")
+
+        # 1. Card Meta de Poupança CAPEX (R$ 11.000,00)
+        ctk.CTkLabel(
+            left_ebike, text="🎯 META POUPANÇA E-BIKE BBSHD 1000W",
+            font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"),
+            text_color="#76FF03"
+        ).pack(anchor="w", padx=14, pady=(12, 2))
+
+        ctk.CTkLabel(
+            left_ebike, text="Plano de aporte mensal: R$ 1.833,00/mês por 6 meses (Out/26 a Mar/27) em CDI:",
+            font=ctk.CTkFont(family="Segoe UI", size=11), text_color="#A1A1AA"
+        ).pack(anchor="w", padx=14, pady=(0, 6))
+
+        box_savings = ctk.CTkFrame(left_ebike, fg_color="#27272A", corner_radius=8)
+        box_savings.pack(fill="x", padx=14, pady=6)
+
+        self.lbl_ebike_savings_status = ctk.CTkLabel(
+            box_savings, text="R$ 0,00 / R$ 11.000,00 (0,0%)",
+            font=ctk.CTkFont(family="Segoe UI", size=15, weight="bold"),
+            text_color="#76FF03"
+        )
+        self.lbl_ebike_savings_status.pack(anchor="w", padx=12, pady=(10, 4))
+
+        self.progress_ebike_savings = ctk.CTkProgressBar(box_savings, height=12, corner_radius=6)
+        self.progress_ebike_savings.pack(fill="x", padx=12, pady=(0, 6))
+        self.progress_ebike_savings.set(0.0)
+
+        self.lbl_ebike_savings_sub = ctk.CTkLabel(
+            box_savings, text="Faltam R$ 11.000,00 (~6.0 meses de aportes)",
+            font=ctk.CTkFont(family="Segoe UI", size=11), text_color="#A1A1AA"
+        )
+        self.lbl_ebike_savings_sub.pack(anchor="w", padx=12, pady=(0, 8))
+
+        row_save_action = ctk.CTkFrame(box_savings, fg_color="transparent")
+        row_save_action.pack(fill="x", padx=12, pady=(0, 10))
+
+        btn_aporte = ctk.CTkButton(
+            row_save_action, text="➕ REGISTRAR APORTE MENSAL (R$ 1.833,00)",
+            font=ctk.CTkFont(size=11, weight="bold"),
+            fg_color="#76FF03", hover_color="#64DD17", text_color="#000000",
+            height=30, corner_radius=6, command=self.do_ebike_savings_deposit
+        )
+        btn_aporte.pack(side="left", padx=(0, 8))
+
+        # 2. Card Calculadora & Despacho Leva-e-Traz
+        ctk.CTkLabel(
+            left_ebike, text="⚡ CALCULADORA & DESPACHO LEVA-E-TRAZ",
+            font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"),
+            text_color="#00E5FF"
+        ).pack(anchor="w", padx=14, pady=(16, 2))
+
+        ctk.CTkLabel(
+            left_ebike, text="Tarifa: R$ 0,89/km (Ida e Volta via Maps) • Piso de saída: R$ 6,50:",
+            font=ctk.CTkFont(family="Segoe UI", size=11), text_color="#A1A1AA"
+        ).pack(anchor="w", padx=14, pady=(0, 6))
+
+        box_calc = ctk.CTkFrame(left_ebike, fg_color="#27272A", corner_radius=8)
+        box_calc.pack(fill="x", padx=14, pady=6)
+
+        # Inputs
+        r_c1 = ctk.CTkFrame(box_calc, fg_color="transparent")
+        r_c1.pack(fill="x", padx=10, pady=(10, 4))
+        ctk.CTkLabel(r_c1, text="Distância Total (Ida e Volta km):", font=ctk.CTkFont(size=11), text_color="#A1A1AA", width=180).pack(side="left", padx=(0, 6))
+        self.entry_ebike_km = ctk.CTkEntry(r_c1, placeholder_text="ex: 13.0", width=120)
+        self.entry_ebike_km.pack(side="left")
+        self.entry_ebike_km.bind("<KeyRelease>", lambda e: self.recalculate_ebike_trip_preview())
+
+        r_c2 = ctk.CTkFrame(box_calc, fg_color="transparent")
+        r_c2.pack(fill="x", padx=10, pady=4)
+        ctk.CTkLabel(r_c2, text="Cliente / Destino:", font=ctk.CTkFont(size=11), text_color="#A1A1AA", width=180).pack(side="left", padx=(0, 6))
+        self.entry_ebike_client = ctk.CTkEntry(r_c2, placeholder_text="ex: Lucas Lima (Leva-e-Traz)", width=180)
+        self.entry_ebike_client.pack(side="left", fill="x", expand=True)
+
+        r_c3 = ctk.CTkFrame(box_calc, fg_color="transparent")
+        r_c3.pack(fill="x", padx=10, pady=4)
+        ctk.CTkLabel(r_c3, text="Nº Ordem de Serviço (OS):", font=ctk.CTkFont(size=11), text_color="#A1A1AA", width=180).pack(side="left", padx=(0, 6))
+        self.entry_ebike_os = ctk.CTkEntry(r_c3, placeholder_text="ex: OS-1075 (opcional)", width=140)
+        self.entry_ebike_os.pack(side="left")
+
+        # Painel de Métricas Calculadas
+        self.box_trip_metrics = ctk.CTkFrame(box_calc, fg_color="#202024", corner_radius=6)
+        self.box_trip_metrics.pack(fill="x", padx=10, pady=(8, 10))
+
+        self.lbl_ebike_fee = ctk.CTkLabel(
+            self.box_trip_metrics, text="TAXA COBRADA: R$ 0,00",
+            font=ctk.CTkFont(size=13, weight="bold"), text_color="#00E676"
+        )
+        self.lbl_ebike_fee.pack(anchor="w", padx=10, pady=(8, 2))
+
+        self.lbl_ebike_opcost = ctk.CTkLabel(
+            self.box_trip_metrics, text="Custo Operacional (CPK R$ 0,234): R$ 0,00 | Margem Líquida: R$ 0,00 (0%)",
+            font=ctk.CTkFont(size=11), text_color="#A1A1AA"
+        )
+        self.lbl_ebike_opcost.pack(anchor="w", padx=10, pady=2)
+
+        self.lbl_ebike_segregation = ctk.CTkLabel(
+            self.box_trip_metrics, text="Segregação: Manutenção (26%): R$ 0,00 | Bateria (35%): R$ 0,00 | Amortização (39%): R$ 0,00",
+            font=ctk.CTkFont(size=10), text_color="#FFB300"
+        )
+        self.lbl_ebike_segregation.pack(anchor="w", padx=10, pady=2)
+
+        self.lbl_ebike_uber_economy = ctk.CTkLabel(
+            self.box_trip_metrics, text="Economia vs Uber/Motoboy (R$ 23,00): R$ 0,00 economizados",
+            font=ctk.CTkFont(size=10, weight="bold"), text_color="#00E5FF"
+        )
+        self.lbl_ebike_uber_economy.pack(anchor="w", padx=10, pady=(2, 8))
+
+        btn_record_trip = ctk.CTkButton(
+            box_calc, text="🚀 REGISTRAR SAÍDA (SEGREGAÇÃO AUTOMÁTICA NOS POTES)",
+            font=ctk.CTkFont(size=11, weight="bold"),
+            fg_color="#00E5FF", hover_color="#00B4D8", text_color="#000000",
+            height=32, corner_radius=6, command=self.submit_ebike_trip
+        )
+        btn_record_trip.pack(fill="x", padx=10, pady=(0, 10))
+
+        # Lado Direito: Cronograma de Compras por Fase & Extrato de Corridas
+        right_ebike = ctk.CTkFrame(self.tab_ebike, fg_color="#202024", corner_radius=10)
+        right_ebike.grid(row=0, column=1, padx=(7, 14), pady=14, sticky="nsew")
+        right_ebike.grid_rowconfigure(1, weight=1)
+        right_ebike.grid_rowconfigure(3, weight=1)
+        right_ebike.grid_columnconfigure(0, weight=1)
+
+        # 3. Checklist e Cronograma de Compras por Fase
+        ctk.CTkLabel(
+            right_ebike, text="📦 CRONOGRAMA DE AQUISIÇÃO POR FASE",
+            font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"),
+            text_color="#F4F4F5"
+        ).grid(row=0, column=0, padx=14, pady=(12, 2), sticky="w")
+
+        self.scroll_procurement = ctk.CTkScrollableFrame(right_ebike, fg_color="transparent")
+        self.scroll_procurement.grid(row=1, column=0, padx=10, pady=(0, 6), sticky="nsew")
+
+        # 4. Extrato Recente de Corridas Leva-e-Traz
+        ctk.CTkLabel(
+            right_ebike, text="📋 HISTÓRICO DE SAÍDAS LEVA-E-TRAZ",
+            font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"),
+            text_color="#F4F4F5"
+        ).grid(row=2, column=0, padx=14, pady=(10, 2), sticky="w")
+
+        self.scroll_ebike_trips = ctk.CTkScrollableFrame(right_ebike, fg_color="transparent")
+        self.scroll_ebike_trips.grid(row=3, column=0, padx=10, pady=(0, 10), sticky="nsew")
+
+    def recalculate_ebike_trip_preview(self):
+        try:
+            km_str = self.entry_ebike_km.get().strip().replace(",", ".")
+            km_val = float(km_str) if km_str else 0.0
+        except ValueError:
+            km_val = 0.0
+
+        route = calculate_route_fee(km_val)
+        min_tag = " (Piso Mínimo Aplicado)" if route["applied_min_fee"] else ""
+        self.lbl_ebike_fee.configure(text=f"TAXA COBRADA: R$ {route['fee_charged']:.2f}{min_tag}")
+        self.lbl_ebike_opcost.configure(
+            text=f"Custo Operacional (CPK R$ 0,234): R$ {route['operational_cost']:.2f} | Margem Líquida: R$ {route['net_margin']:.2f} ({route['margin_pct']:.0f}%)"
+        )
+        seg = route["segregation"]
+        self.lbl_ebike_segregation.configure(
+            text=f"Segregação: Manutenção (26%): R$ {seg['manutencao']:.2f} | Bateria (35%): R$ {seg['bateria']:.2f} | Amortização (39%): R$ {seg['amortizacao']:.2f}"
+        )
+        self.lbl_ebike_uber_economy.configure(
+            text=f"Economia vs Uber/Motoboy (R$ 23,00): R$ {route['economy_generated']:.2f} economizados"
+        )
+
+    def submit_ebike_trip(self):
+        try:
+            km_str = self.entry_ebike_km.get().strip().replace(",", ".")
+            if not km_str:
+                messagebox.showerror("Erro", "Insira a distância total em km.")
+                return
+            km_val = float(km_str)
+            if km_val <= 0:
+                messagebox.showerror("Erro", "A distância deve ser maior que zero.")
+                return
+        except ValueError:
+            messagebox.showerror("Erro", "Quilometragem inválida.")
+            return
+
+        client = self.entry_ebike_client.get().strip() or "Cliente Geral Leva-e-Traz"
+        os_num = self.entry_ebike_os.get().strip()
+
+        res = record_logistics_trip_and_distribute(
+            client_name=client,
+            distance_km=km_val,
+            work_order_id=os_num,
+            auto_distribute=True
+        )
+
+        self.entry_ebike_km.delete(0, "end")
+        self.entry_ebike_client.delete(0, "end")
+        self.entry_ebike_os.delete(0, "end")
+        self.recalculate_ebike_trip_preview()
+        self.refresh_all_data()
+
+        messagebox.showinfo(
+            "Saída Registrada com Sucesso!",
+            f"Corrida de {km_val:.1f} km registrada!\n"
+            f"Taxa Cobrada: R$ {res['fee_charged']:.2f}\n"
+            f"Custo Operacional: R$ {res['operational_cost']:.2f}\n"
+            f"Margem Líquida: R$ {res['net_margin']:.2f}\n\n"
+            f"Segregação Automática realizada nos Potes:\n"
+            f"• Manutenção Imediata (26%): +R$ {res['manutencao_share']:.2f}\n"
+            f"• Fundo Reposição Bateria (35%): +R$ {res['bateria_share']:.2f}\n"
+            f"• Amortização CAPEX (39%): +R$ {res['amortizacao_share']:.2f}"
+        )
+
+    def do_ebike_savings_deposit(self):
+        aporte_cfg = float(get_config("ebike_aporte_mensal", "1833.00"))
+        res = register_monthly_savings_deposit(aporte_cfg)
+        if res["success"]:
+            self.refresh_all_data()
+            messagebox.showinfo("Aporte Registrado", res["message"])
+        else:
+            messagebox.showerror("Erro", res["message"])
+
+    def toggle_procurement_status(self, item_id: int, current_status: str):
+        new_status = "Planejado" if current_status == "Comprado" else "Comprado"
+        update_ebike_procurement_item(item_id, new_status)
+        self.refresh_all_data()
+
+    def render_ebike_procurement_list(self):
+        for w in self.scroll_procurement.winfo_children():
+            w.destroy()
+
+        summary = get_ebike_procurement_summary()
+        
+        # Fase 1 Card
+        p1 = summary["phase1"]
+        f1_card = ctk.CTkFrame(self.scroll_procurement, fg_color="#27272A", corner_radius=8)
+        f1_card.pack(fill="x", pady=4)
+        
+        h1 = ctk.CTkFrame(f1_card, fg_color="transparent")
+        h1.pack(fill="x", padx=10, pady=(8, 2))
+        ctk.CTkLabel(h1, text="FASE 1 (Meses 1-4 | Out/26 a Jan/27) - Mecânica & CONTRAN", font=ctk.CTkFont(size=11, weight="bold"), text_color="#FFB300").pack(side="left")
+        ctk.CTkLabel(h1, text=f"{p1['bought_count']}/{p1['total_count']} itens (R$ {p1['actual']:.2f} / R$ {p1['estimated']:.2f})", font=ctk.CTkFont(size=10), text_color="#A1A1AA").pack(side="right")
+        
+        ctk.CTkLabel(f1_card, text="💡 Estratégia: Compras graduais e Black Friday. Não comprar powertrain ainda.", font=ctk.CTkFont(size=9), text_color="#71717A").pack(anchor="w", padx=10, pady=(0, 6))
+
+        for it in p1["items"]:
+            row = ctk.CTkFrame(f1_card, fg_color="#202024", corner_radius=6)
+            row.pack(fill="x", padx=8, pady=2)
+            is_bought = it["status"] == "Comprado"
+            btn_st = ctk.CTkButton(
+                row, text="✅" if is_bought else "⭕", width=28, height=22,
+                fg_color="#00E676" if is_bought else "#3F3F46", hover_color="#00C853",
+                command=lambda iid=it["id"], s=it["status"]: self.toggle_procurement_status(iid, s)
+            )
+            btn_st.pack(side="left", padx=4, pady=3)
+            txt_color = "#A1A1AA" if is_bought else "#F4F4F5"
+            ctk.CTkLabel(row, text=it["item_name"], font=ctk.CTkFont(size=10, weight="bold" if not is_bought else "normal"), text_color=txt_color).pack(side="left", padx=4)
+            val_txt = f"R$ {it['actual_cost']:.2f}" if is_bought else f"~R$ {it['estimated_cost']:.2f}"
+            ctk.CTkLabel(row, text=val_txt, font=ctk.CTkFont(size=10, weight="bold"), text_color="#00E5FF" if is_bought else "#E4E4E7").pack(side="right", padx=6)
+
+        # Fase 2 Card
+        p2 = summary["phase2"]
+        f2_card = ctk.CTkFrame(self.scroll_procurement, fg_color="#27272A", corner_radius=8)
+        f2_card.pack(fill="x", pady=6)
+        
+        h2 = ctk.CTkFrame(f2_card, fg_color="transparent")
+        h2.pack(fill="x", padx=10, pady=(8, 2))
+        ctk.CTkLabel(h2, text="FASE 2 (Meses 5-6 | Fev/27 a Mar/27) - Motor BBSHD & Bateria", font=ctk.CTkFont(size=11, weight="bold"), text_color="#76FF03").pack(side="left")
+        ctk.CTkLabel(h2, text=f"{p2['bought_count']}/{p2['total_count']} itens (R$ {p2['actual']:.2f} / R$ {p2['estimated']:.2f})", font=ctk.CTkFont(size=10), text_color="#A1A1AA").pack(side="right")
+        
+        ctk.CTkLabel(f2_card, text="🔒 Estratégia: Comprar na semana da montagem (Mar/27) para garantia e frescor da química.", font=ctk.CTkFont(size=9), text_color="#71717A").pack(anchor="w", padx=10, pady=(0, 6))
+
+        for it in p2["items"]:
+            row = ctk.CTkFrame(f2_card, fg_color="#202024", corner_radius=6)
+            row.pack(fill="x", padx=8, pady=2)
+            is_bought = it["status"] == "Comprado"
+            btn_st = ctk.CTkButton(
+                row, text="✅" if is_bought else "⭕", width=28, height=22,
+                fg_color="#00E676" if is_bought else "#3F3F46", hover_color="#00C853",
+                command=lambda iid=it["id"], s=it["status"]: self.toggle_procurement_status(iid, s)
+            )
+            btn_st.pack(side="left", padx=4, pady=3)
+            txt_color = "#A1A1AA" if is_bought else "#F4F4F5"
+            ctk.CTkLabel(row, text=it["item_name"], font=ctk.CTkFont(size=10, weight="bold" if not is_bought else "normal"), text_color=txt_color).pack(side="left", padx=4)
+            val_txt = f"R$ {it['actual_cost']:.2f}" if is_bought else f"~R$ {it['estimated_cost']:.2f}"
+            ctk.CTkLabel(row, text=val_txt, font=ctk.CTkFont(size=10, weight="bold"), text_color="#00E5FF" if is_bought else "#E4E4E7").pack(side="right", padx=6)
+
+    def render_ebike_trips_list(self):
+        for w in self.scroll_ebike_trips.winfo_children():
+            w.destroy()
+
+        trips = get_ebike_trips(15)
+        if not trips:
+            ctk.CTkLabel(self.scroll_ebike_trips, text="Nenhuma saída Leva-e-Traz registrada ainda.", text_color="#71717A", font=ctk.CTkFont(size=11)).pack(pady=12)
+            return
+
+        tot_km = sum(t["distance_km"] for t in trips)
+        tot_fee = sum(t["fee_charged"] for t in trips)
+        tot_eco = sum(t["avoided_uber_cost"] - t["operational_cost"] for t in trips)
+
+        sum_bar = ctk.CTkFrame(self.scroll_ebike_trips, fg_color="#27272A", corner_radius=6)
+        sum_bar.pack(fill="x", pady=(0, 6))
+        ctk.CTkLabel(sum_bar, text=f"📊 {len(trips)} saídas | {tot_km:.1f} km rodados | Faturamento: R$ {tot_fee:.2f} | Economia Uber: R$ {tot_eco:.2f}", font=ctk.CTkFont(size=10, weight="bold"), text_color="#00E5FF").pack(padx=8, pady=4)
+
+        for t in trips:
+            row = ctk.CTkFrame(self.scroll_ebike_trips, fg_color="#27272A", corner_radius=6)
+            row.pack(fill="x", pady=2)
+            ctk.CTkLabel(row, text=f"{t['date'][5:]}", text_color="#A1A1AA", font=ctk.CTkFont(size=10, weight="bold"), width=40).pack(side="left", padx=4)
+            ctk.CTkLabel(row, text=f"{t['client_name']} ({t['distance_km']:.1f}km)", text_color="#F4F4F5", font=ctk.CTkFont(size=10)).pack(side="left", padx=4)
+            ctk.CTkLabel(row, text=f"R$ {t['fee_charged']:.2f}", text_color="#00E676", font=ctk.CTkFont(size=10, weight="bold")).pack(side="right", padx=6)
+            ctk.CTkLabel(row, text=f"Líquido: R$ {t['net_margin']:.2f}", text_color="#00E5FF", font=ctk.CTkFont(size=9)).pack(side="right", padx=4)
 
     # ==========================================
     # ABA 3: HARDWARE FLIP (ALAVANCAGEM COMERCIAL)
@@ -826,15 +1156,20 @@ class LifeOpsApp(ctk.CTk):
         grid_f.grid_columnconfigure(1, weight=1)
 
         fields = [
-            ("Salário CLT Líquido Integral (R$):", "salario_liquido", "2164.00"),
-            ("Adiantamento / Vale (%):", "pct_adiantamento", "40"),
+            ("Meta / Faturamento Mensal Base (R$):", "salario_liquido", "2500.00"),
+            ("Meta Quinzena / Ciclo 1 (%):", "pct_adiantamento", "40"),
             ("Compromisso Família Dia 05 (R$):", "gasto_familia", "500.00"),
             ("Gasto Fim de Semana / Namorada (R$):", "gasto_fds", "100.00"),
             ("Orçamento Mensal Lazer / Namorada (R$):", "orcamento_lazer", "400.00"),
-            ("1º Vale (20/09) Proporcional (R$ - opcional):", "primeiro_vale_custom", ""),
-            ("1º Saldo (05/10) Proporcional (R$ - opcional):", "primeiro_saldo_custom", ""),
+            ("1º Ciclo (20/09) Proporcional (R$ - opcional):", "primeiro_vale_custom", ""),
+            ("2º Ciclo (05/10) Proporcional (R$ - opcional):", "primeiro_saldo_custom", ""),
             ("Meta Semanal Estudos IA (Horas):", "meta_horas_ia_semana", "7.5"),
-            ("Meta Semanal IF Tech (Horas):", "meta_horas_iftech_semana", "12.0")
+            ("Meta Semanal IF Tech (Horas):", "meta_horas_iftech_semana", "25.0"),
+            ("Meta CAPEX E-Bike BBSHD (R$):", "ebike_meta_capex", "11000.00"),
+            ("Aporte Mensal E-Bike (R$):", "ebike_aporte_mensal", "1833.00"),
+            ("Tarifa Logística Leva-e-Traz (R$/km):", "ebike_tarifa_km", "0.89"),
+            ("Taxa Mínima Despacho (R$):", "ebike_taxa_minima", "6.50"),
+            ("Custo Ref. Uber/Motoboy (R$):", "ebike_custo_uber_referencia", "23.00")
         ]
 
         self.config_entries = {}
@@ -1125,6 +1460,8 @@ class LifeOpsApp(ctk.CTk):
         self.card_familia.configure(text=f"R$ {pots.get('familia', 0.0):.2f}")
         self.card_quarto.configure(text=f"R$ {pots.get('quarto_lab', 0.0):.2f}")
         self.card_flip.configure(text=f"R$ {pots.get('hardware_flip', 0.0):.2f}")
+        if hasattr(self, "card_ebike"):
+            self.card_ebike.configure(text=f"R$ {pots.get('ebike_capex', 0.0):.2f}")
 
         # 4. Atualizar Extrato Recente
         for w in self.scroll_trans.winfo_children():
@@ -1199,6 +1536,19 @@ class LifeOpsApp(ctk.CTk):
         # 9. Atualizar Lista de Hardware Flips
         if hasattr(self, "scroll_flips"):
             self.render_flip_projects_list()
+
+        # 10. Atualizar Aba E-Bike (Poupança, Checklist de Compras e Corridas)
+        if hasattr(self, "lbl_ebike_savings_status"):
+            eb_sav = get_ebike_savings_metrics()
+            self.lbl_ebike_savings_status.configure(
+                text=f"R$ {eb_sav['balance_capex']:.2f} / R$ {eb_sav['meta_capex']:.2f} ({eb_sav['pct_display']:.1f}%)"
+            )
+            self.progress_ebike_savings.set(eb_sav["pct_achieved"])
+            self.lbl_ebike_savings_sub.configure(
+                text=f"Faltam R$ {eb_sav['remaining']:.2f} (~{eb_sav['months_needed']:.1f} meses de R$ {eb_sav['aporte_mensal']:.2f})"
+            )
+            self.render_ebike_procurement_list()
+            self.render_ebike_trips_list()
 
 if __name__ == "__main__":
     from database import init_db

@@ -484,11 +484,16 @@ DECLARE
 BEGIN
     v_clean_phone := REGEXP_REPLACE(COALESCE(p_phone, ''), '\D', '', 'g');
     
+    -- Exigência estrita de 2FA para proteção de dados (LGPD): busca por número de OS exige ao menos 4 dígitos do telefone
+    IF LENGTH(v_clean_phone) < 4 THEN
+        RETURN jsonb_build_object('found', false, 'error', 'Informe ao menos os 4 ultimos digitos do WhatsApp cadastrado.');
+    END IF;
+
     SELECT wo.public_tracking_token INTO v_token
     FROM public.work_orders wo
     LEFT JOIN public.clients c ON wo.client_id = c.id
     WHERE wo.os_number = p_os_number
-      AND (v_clean_phone = '' OR LENGTH(v_clean_phone) < 4 OR c.whatsapp LIKE ('%' || v_clean_phone))
+      AND (c.whatsapp IS NULL OR c.whatsapp LIKE ('%' || v_clean_phone))
     LIMIT 1;
 
     IF v_token IS NULL THEN

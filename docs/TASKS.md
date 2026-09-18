@@ -25,6 +25,13 @@
   - [x] Emissão de Cupom Térmico Não Fiscal 58mm/80mm no PDV (atalho `F8`);
   - [x] Catálogo Geral com saldo físico, reservado e disponível + Alertas de Reposição (Curva ABC);
   - [x] Raio-X de Garantia Reversa (RMA de Fornecedor) por Número de Série (S/N) e Livro Kardex auditável.
+- [x] **Sprint E-Bike DIY BBSHD 1000W & Logística Leva-e-Traz (IF Tech LifeOps Desktop):**
+  - [x] Modelagem SQLite (`ebike_procurement`, `ebike_trips`, potes `ebike_capex`, `ebike_bateria`, `ebike_manutencao`);
+  - [x] Motor logístico e financeiro (`engine_ebike.py`) com cálculo de rotas (R$ 0,89/km, piso R$ 6,50), CPK de R$ 0,234/km e segregação das 3 contas (26% manutenção, 35% bateria, 39% amortização);
+  - [x] Meta de poupança CAPEX (R$ 11.000,00 com aportes de R$ 1.833,00/mês de Outubro/2026 a Março/2027);
+  - [x] Interface gráfica desktop CustomTkinter (`ui_app.py`) com aba dedicada `🚲 E-Bike Logística`, checklist de compras em 2 fases (Fase 1 Mecânica/Black Friday vs Fase 2 Powertrain na montagem) e extrato de saídas;
+  - [x] Suíte de testes automatizados (`test_ebike.py`) com 100% de aprovação matemática e de persistência;
+  - [x] Dossiê técnico e plano operacional (`docs/ops/PLANO_MESTRE_EBIKE_BBSHD_LOGISTICA.md`).
 
 ---
 

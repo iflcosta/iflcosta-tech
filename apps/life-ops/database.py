@@ -106,6 +106,41 @@ def init_db():
         )
     """)
 
+    # Tabela de Checklist e Cronograma de Aquisição da E-Bike DIY (Fase 1 vs Fase 2)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ebike_procurement (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            phase INTEGER DEFAULT 1, -- 1: Mecânica/Ferramentas/Segurança, 2: Powertrain BBSHD/Bateria
+            item_name TEXT,
+            estimated_cost REAL DEFAULT 0.0,
+            actual_cost REAL DEFAULT 0.0,
+            status TEXT DEFAULT 'Planejado', -- 'Planejado', 'Comprado'
+            target_period TEXT,
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    # Tabela de Corridas e Despacho Leva-e-Traz (E-Bike Logística)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ebike_trips (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT,
+            client_name TEXT,
+            work_order_id TEXT,
+            distance_km REAL DEFAULT 0.0,
+            fee_charged REAL DEFAULT 0.0,
+            operational_cost REAL DEFAULT 0.0,
+            net_margin REAL DEFAULT 0.0,
+            manutencao_share REAL DEFAULT 0.0,
+            bateria_share REAL DEFAULT 0.0,
+            amortizacao_share REAL DEFAULT 0.0,
+            avoided_uber_cost REAL DEFAULT 23.0,
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
     # Seed de configurações padrão (se não existirem)
     defaults_config = {
         "salario_liquido": "2164.00",
@@ -116,21 +151,37 @@ def init_db():
         "gasto_fds": "100.00",
         "orcamento_lazer": "400.00", # 4 x R$ 100 fds namorada (zero cigarro)
         "meta_horas_ia_semana": "7.5",
-        "meta_horas_iftech_semana": "12.0"
+        "meta_horas_iftech_semana": "25.0",
+        "ebike_meta_capex": "11000.00",
+        "ebike_aporte_mensal": "1833.00",
+        "ebike_data_inicio": "2026-10-01",
+        "ebike_data_alvo": "2027-03-31",
+        "ebike_tarifa_km": "0.89",
+        "ebike_taxa_minima": "6.50",
+        "ebike_cpk_total": "0.234",
+        "ebike_pct_manutencao": "26",
+        "ebike_pct_bateria": "35",
+        "ebike_pct_amortizacao": "39",
+        "ebike_custo_uber_referencia": "23.00"
     }
 
     for key, val in defaults_config.items():
-        cursor.execute("INSERT OR REPLACE INTO config (key, value) VALUES (?, ?)", (key, val))
+        cursor.execute("INSERT OR IGNORE INTO config (key, value) VALUES (?, ?)", (key, val))
+    # Atualiza meta semanal de iftech para o novo patamar
+    cursor.execute("UPDATE config SET value = '25.0' WHERE key = 'meta_horas_iftech_semana' AND value = '12.0'")
 
     # Limpa potes antigos se existirem
     cursor.execute("DELETE FROM pots WHERE name IN ('reserva', 'stormtrooper')")
 
-    # Seed de Potes com as 2 Trilhas Estratégicas
+    # Seed de Potes Estratégicos (Operacionais, Pessoais e Projeto E-Bike)
     default_pots = [
         ("giro", "Caixa de Giro Diário", 0.0, 400.0, "#00E676"),
         ("familia", "Provisão Família (Dia 05)", 0.0, 500.0, "#FFB300"),
         ("quarto_lab", "Projeto Quarto & Bancada", 0.0, 1560.0, "#00E5FF"),
-        ("hardware_flip", "Giro Hardware / Flip PCs", 0.0, 4000.0, "#E040FB")
+        ("hardware_flip", "Giro Hardware / Flip PCs", 0.0, 4000.0, "#E040FB"),
+        ("ebike_capex", "Projeto E-Bike BBSHD 1000W", 0.0, 11000.0, "#76FF03"),
+        ("ebike_bateria", "E-Bike: Fundo Nova Bateria", 0.0, 2800.0, "#00E5FF"),
+        ("ebike_manutencao", "E-Bike: Manutenção Imediata", 0.0, 500.0, "#FF9100")
     ]
 
     for name, label, balance, target, color in default_pots:
@@ -171,6 +222,26 @@ def init_db():
             180.0, 280.0, 160.0, 420.0, 190.0, 240.0, 260.0, 120.0,
             3850.0, "Em Montagem", "Ativo comercial. 100% da venda líquida irá para o pote hardware_flip para montar o PC de R$ 6.000."
         ))
+
+    # Seed de Itens de Aquisição da E-Bike BBSHD se estiver vazio
+    proc_count = cursor.execute("SELECT COUNT(*) FROM ebike_procurement").fetchone()[0]
+    if proc_count == 0:
+        default_procurement = [
+            # Fase 1: Mecânica, Ferramentas, Segurança CONTRAN 996 (Meses 1 a 4 - Out/26 a Jan/27)
+            (1, "Corrente Reforçada e-Bike (KMC e-Glide/e9/e10)", 180.0, 0.0, "Planejado", "Meses 1 a 4 (Out/26 - Jan/27)", "Resiste aos 160Nm do motor. Aproveitar promoções / Black Friday."),
+            (1, "Pastilhas de Freio Metálicas/Sinterizadas + Fluído", 160.0, 0.0, "Planejado", "Meses 1 a 4 (Out/26 - Jan/27)", "Frenagem de alta performance para descidas severas de Bragança com carga."),
+            (1, "Kit Legal CONTRAN 996 (Farol 1000lm, Lanterna, Retrovisor Esq, Campainha)", 220.0, 0.0, "Planejado", "Meses 1 a 4 (Out/26 - Jan/27)", "Conformidade legal integral com a Resolução CONTRAN 996/2023."),
+            (1, "Ferramentas Específicas (Chave BBS, Extrator Pedivela, Alicate Elo)", 140.0, 0.0, "Planejado", "Meses 1 a 4 (Out/26 - Jan/27)", "Ferramental indispensável para montagem e manutenção DIY."),
+            (1, "Canote Retrátil Mecânico c/ Alavanca Guidão (Dropper Post)", 350.0, 0.0, "Planejado", "Meses 1 a 4 (Out/26 - Jan/27)", "Ajuste rápido de altura para apoio firme dos pés em aclives acentuados."),
+            # Fase 2: Powertrain BBSHD 1000W e Bateria Li-ion NMC (Meses 5 e 6 - Fev/27 a Mar/27)
+            (2, "Kit Motor Central Bafang BBSHD 1000W Completo (Display DPC-18 + Sensores)", 7800.0, 0.0, "Planejado", "Meses 5 e 6 (Fev/27 - Mar/27)", "160 Nm de torque, 48V/52V 30A. Adquirir na semana da montagem para garantia integral."),
+            (2, "Bateria Lítio Li-ion NMC 48V/52V 20Ah Hailong (1000Wh) + Carregador 3A/4A", 2700.0, 0.0, "Planejado", "Meses 5 e 6 (Fev/27 - Mar/27)", "Pack de alta densidade. Compra imediata na montagem para preservar frescor químico.")
+        ]
+        for phase, item_name, est_cost, act_cost, status, period, notes in default_procurement:
+            cursor.execute("""
+                INSERT INTO ebike_procurement (phase, item_name, estimated_cost, actual_cost, status, target_period, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (phase, item_name, est_cost, act_cost, status, period, notes))
 
     conn.commit()
     conn.close()
@@ -388,4 +459,78 @@ def create_database_backup():
     
     shutil.copy2(DB_PATH, backup_filepath)
     return backup_filepath
+
+# ==========================================
+# GESTÃO DO PROJETO E-BIKE BBSHD 1000W & LOGÍSTICA
+# ==========================================
+def get_ebike_procurement():
+    conn = get_connection()
+    rows = conn.execute("SELECT * FROM ebike_procurement ORDER BY phase ASC, id ASC").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def add_ebike_procurement_item(phase: int, item_name: str, estimated_cost: float, 
+                               actual_cost: float = 0.0, status: str = "Planejado", 
+                               target_period: str = "", notes: str = ""):
+    conn = get_connection()
+    conn.execute("""
+        INSERT INTO ebike_procurement (phase, item_name, estimated_cost, actual_cost, status, target_period, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (phase, item_name, estimated_cost, actual_cost, status, target_period, notes))
+    conn.commit()
+    conn.close()
+
+def update_ebike_procurement_item(item_id: int, status: str, actual_cost: float = None):
+    conn = get_connection()
+    if actual_cost is not None:
+        conn.execute("""
+            UPDATE ebike_procurement SET status = ?, actual_cost = ? WHERE id = ?
+        """, (status, actual_cost, item_id))
+    else:
+        conn.execute("""
+            UPDATE ebike_procurement SET status = ? WHERE id = ?
+        """, (status, item_id))
+    conn.commit()
+    conn.close()
+
+def delete_ebike_procurement_item(item_id: int):
+    conn = get_connection()
+    conn.execute("DELETE FROM ebike_procurement WHERE id = ?", (item_id,))
+    conn.commit()
+    conn.close()
+
+def get_ebike_trips(limit: int = 50):
+    conn = get_connection()
+    rows = conn.execute("SELECT * FROM ebike_trips ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def add_ebike_trip(client_name: str, distance_km: float, fee_charged: float, 
+                   operational_cost: float, net_margin: float, 
+                   manutencao_share: float, bateria_share: float, amortizacao_share: float,
+                   work_order_id: str = "", avoided_uber_cost: float = 23.0, notes: str = "", date_str: str = None):
+    conn = get_connection()
+    today = date_str if date_str else datetime.now().strftime("%Y-%m-%d")
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO ebike_trips (
+            date, client_name, work_order_id, distance_km, fee_charged,
+            operational_cost, net_margin, manutencao_share, bateria_share,
+            amortizacao_share, avoided_uber_cost, notes
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (today, client_name, work_order_id, distance_km, fee_charged,
+          operational_cost, net_margin, manutencao_share, bateria_share,
+          amortizacao_share, avoided_uber_cost, notes))
+    trip_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return trip_id
+
+def delete_ebike_trip(trip_id: int):
+    conn = get_connection()
+    conn.execute("DELETE FROM ebike_trips WHERE id = ?", (trip_id,))
+    conn.commit()
+    conn.close()
+
 

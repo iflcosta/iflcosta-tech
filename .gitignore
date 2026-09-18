@@ -16,6 +16,6 @@ __pycache__/
 *.pyc
 apps/life-ops/build/
 apps/life-ops/dist/
+# Tests & Temporary PDF exports
+test_*.pdf
 *.db
-
-

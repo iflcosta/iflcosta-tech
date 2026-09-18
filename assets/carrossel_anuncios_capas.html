@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Capas dos Anúncios de Inauguração - IF Tech</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #050507;
+            font-family: 'Inter', sans-serif;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .slide-container {
+            width: 1080px;
+            height: 1080px;
+            background-color: #0A0A0C;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #27272A;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px 50px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Subtle technical grid background */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Header Component */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #27272A;
+            padding-bottom: 20px;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-symbol {
+            width: 52px; height: 52px;
+            background-color: #CCFF00;
+            color: #0A0A0C;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%);
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.4);
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #FFFFFF;
+        }
+
+        .brand-cat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #A1A1AA;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-discount {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 800;
+            background-color: #CCFF00;
+            color: #0A0A0C;
+            padding: 8px 18px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.35);
+        }
+
+        /* Typography */
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: rgba(204, 255, 0, 0.1);
+            border: 1.5px solid #CCFF00;
+            color: #CCFF00;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px;
+            font-weight: 800;
+            padding: 8px 18px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            width: fit-content;
+            margin-bottom: 16px;
+        }
+
+        .tag-pill.cyan {
+            background-color: rgba(34, 211, 238, 0.1);
+            border-color: #22D3EE;
+            color: #22D3EE;
+        }
+
+        .tag-pill.purple {
+            background-color: rgba(192, 132, 252, 0.1);
+            border-color: #C084FC;
+            color: #C084FC;
+        }
+
+        .title-hero {
+            font-size: 58px;
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .title-hero span.lime { color: #CCFF00; }
+        .title-hero span.cyan { color: #22D3EE; }
+        .title-hero span.purple { color: #C084FC; }
+
+        .lead-text {
+            font-size: 21px;
+            color: #D4D4D8;
+            font-weight: 500;
+            line-height: 1.35;
+            border-left: 3px solid #CCFF00;
+            padding-left: 16px;
+            margin-bottom: 22px;
+        }
+
+        .lead-text.cyan { border-color: #22D3EE; }
+        .lead-text.purple { border-color: #C084FC; }
+
+        /* Checklist / Grid Card */
+        .checklist-card {
+            background-color: #121216;
+            border: 1.5px solid #27272A;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 19px;
+            color: #E4E4E7;
+            font-weight: 600;
+        }
+
+        .check-icon {
+            width: 26px; height: 26px;
+            background-color: rgba(204, 255, 0, 0.15);
+            border: 1.5px solid #CCFF00;
+            color: #CCFF00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 900;
+            flex-shrink: 0;
+            border-radius: 2px;
+        }
+
+        .check-icon.cyan {
+            background-color: rgba(34, 211, 238, 0.15);
+            border-color: #22D3EE;
+            color: #22D3EE;
+        }
+
+        .check-icon.purple {
+            background-color: rgba(192, 132, 252, 0.15);
+            border-color: #C084FC;
+            color: #C084FC;
+        }
+
+        /* Price Box Component */
+        .price-box {
+            background-color: #141418;
+            border: 2px solid #CCFF00;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 25px rgba(204, 255, 0, 0.12);
+        }
+
+        .price-box.cyan {
+            border-color: #22D3EE;
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.12);
+        }
+
+        .price-box.purple {
+            border-color: #C084FC;
+            box-shadow: 0 0 25px rgba(192, 132, 252, 0.12);
+        }
+
+        .price-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .old-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            color: #71717A;
+            text-decoration: line-through;
+            font-weight: 700;
+        }
+
+        .price-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            color: #A1A1AA;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .price-terms {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: #A1A1AA;
+            margin-top: 2px;
+        }
+
+        .big-price {
+            font-family: 'Inter', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            color: #CCFF00;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .big-price.cyan { color: #22D3EE; }
+        .big-price.purple { color: #C084FC; }
+
+        /* Footer Component */
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #27272A;
+            padding-top: 20px;
+        }
+
+        .footer-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px;
+            font-weight: 700;
+            color: #71717A;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background-color: #CCFF00;
+            box-shadow: 0 0 8px #CCFF00;
+        }
+
+        .swipe-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px;
+            font-weight: 800;
+            color: #CCFF00;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .swipe-indicator.cyan { color: #22D3EE; }
+        .swipe-indicator.purple { color: #C084FC; }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== CAPA 1: COMBO PC NOVO DE NOVO ==================== -->
+    <div id="capa-1" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Engenharia de Hardware</div>
+                    </div>
+                </div>
+                <div class="badge-discount">35% OFF • INAUGURAÇÃO</div>
+            </div>
+
+            <div style="padding: 14px 0;">
+                <div class="tag-pill">Manutenção de Precisão & Logística</div>
+                <h1 class="title-hero">
+                    Seu PC travando ou esquentando?<br>
+                    <span class="lime">Combo "PC Novo de Novo"</span>
+                </h1>
+                <p class="lead-text">
+                    Buscamos no seu endereço em Bragança Paulista, realizamos revisão cirúrgica em bancada e devolvemos voando.
+                </p>
+
+                <div class="checklist-card">
+                    <div class="check-item"><div class="check-icon">✓</div> Desmontagem 100% & Banho Isopropílico</div>
+                    <div class="check-item"><div class="check-icon">✓</div> Troca de Pasta Térmica Premium Arctic MX-6</div>
+                    <div class="check-item"><div class="check-icon">✓</div> Formatação Limpa + Otimização do Windows</div>
+                    <div class="check-item"><div class="check-icon">✓</div> Leva-e-Traz na sua porta com termo digital</div>
+                </div>
+
+                <div class="price-box">
+                    <div class="price-left">
+                        <div class="old-price">De R$ 415,00</div>
+                        <div class="price-label">Por apenas</div>
+                        <div class="price-terms">À vista via Pix ou até 2x no cartão</div>
+                    </div>
+                    <div class="big-price">R$ 230</div>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot"></div>
+                    BRAGANÇA PAULISTA & REGIÃO
+                </div>
+                <div class="swipe-indicator">
+                    DESLIZE <span style="font-size: 20px;">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CAPA 2: REVITALIZAÇÃO DE NOTEBOOK ==================== -->
+    <div id="capa-2" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol" style="background-color: #22D3EE; box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Manutenção de Notebooks</div>
+                    </div>
+                </div>
+                <div class="badge-discount" style="background-color: #22D3EE; box-shadow: 0 0 15px rgba(34, 211, 238, 0.35);">35% OFF • INAUGURAÇÃO</div>
+            </div>
+
+            <div style="padding: 14px 0;">
+                <div class="tag-pill cyan">Revitalização & Velocidade</div>
+                <h1 class="title-hero">
+                    Notebook lento para ligar?<br>
+                    <span class="cyan">Revitalização Turbo</span>
+                </h1>
+                <p class="lead-text cyan">
+                    Não precisa gastar R$ 3.000 em um novo: eliminamos o estrangulamento térmico e clonamos seu SSD sem perder nada.
+                </p>
+
+                <div class="checklist-card">
+                    <div class="check-item"><div class="check-icon cyan">✓</div> Limpeza profunda de cooler e aletas de cobre</div>
+                    <div class="check-item"><div class="check-icon cyan">✓</div> Troca de Pasta Térmica de alta condutividade</div>
+                    <div class="check-item"><div class="check-icon cyan">✓</div> Otimização do Windows (ou Upgrade SSD Incluso)</div>
+                    <div class="check-item"><div class="check-icon cyan">✓</div> Leva-e-Traz com segurança em Bragança Paulista</div>
+                </div>
+
+                <div class="price-box cyan">
+                    <div class="price-left">
+                        <div class="old-price">De R$ 445,00</div>
+                        <div class="price-label">A partir de</div>
+                        <div class="price-terms">Com SSD 480GB incluso: R$ 730 (ou até 6x)</div>
+                    </div>
+                    <div class="big-price cyan">R$ 250</div>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot" style="background-color: #22D3EE; box-shadow: 0 0 8px #22D3EE;"></div>
+                    BRAGANÇA PAULISTA & REGIÃO
+                </div>
+                <div class="swipe-indicator cyan">
+                    DESLIZE <span style="font-size: 20px;">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CAPA 3: MONTAGEM DE PC GAMER VIP ==================== -->
+    <div id="capa-3" class="slide-container">
+        <div class="slide-content">
+            <div class="slide-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol" style="background-color: #C084FC; box-shadow: 0 0 20px rgba(192, 132, 252, 0.4);">IF</div>
+                    <div>
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Montagem de Alta Precisão</div>
+                    </div>
+                </div>
+                <div class="badge-discount" style="background-color: #C084FC; box-shadow: 0 0 15px rgba(192, 132, 252, 0.35);">35% OFF • INAUGURAÇÃO</div>
+            </div>
+
+            <div style="padding: 14px 0;">
+                <div class="tag-pill purple">Gamer & Workstation VIP</div>
+                <h1 class="title-hero">
+                    Comprou peças na internet?<br>
+                    <span class="purple">Montagem Cirúrgica</span>
+                </h1>
+                <p class="lead-text purple">
+                    Montagem de padrão militar, temperaturas baixas, BIOS atualizada e 1 hora de estresse térmico com laudo.
+                </p>
+
+                <div class="checklist-card">
+                    <div class="check-item"><div class="check-icon purple">✓</div> Cable Management militar com fios invisíveis</div>
+                    <div class="check-item"><div class="check-icon purple">✓</div> Atualização de BIOS & Perfil de Memória XMP/EXPO</div>
+                    <div class="check-item"><div class="check-icon purple">✓</div> 1h de Estresse Térmico (AIDA64 + FurMark) com laudo</div>
+                    <div class="check-item"><div class="check-icon purple">✓</div> Entrega e instalação pronta na mesa do cliente</div>
+                </div>
+
+                <div class="price-box purple">
+                    <div class="price-left">
+                        <div class="old-price">A partir de R$ 285,00</div>
+                        <div class="price-label">A partir de</div>
+                        <div class="price-terms">À vista via Pix ou no cartão em até 12x</div>
+                    </div>
+                    <div class="big-price purple">R$ 185</div>
+                </div>
+            </div>
+
+            <div class="slide-footer">
+                <div class="footer-tag">
+                    <div class="footer-dot" style="background-color: #C084FC; box-shadow: 0 0 8px #C084FC;"></div>
+                    BRAGANÇA PAULISTA & REGIÃO
+                </div>
+                <div class="swipe-indicator purple">
+                    DESLIZE <span style="font-size: 20px;">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

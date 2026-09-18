@@ -25,6 +25,7 @@
     <meta property="og:description" content="Acabamos com a lentidão do seu PC e cuidamos da TI e sistemas da sua empresa. Atendimento local com Leva-e-Traz.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://iflcosta.tech/">
+    <link rel="canonical" href="https://iflcosta.tech/">
     <meta property="og:image" content="https://iflcosta.tech/assets/img/og-image.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="IF Tech | Engenharia de Software & TI em Bragança Paulista">
@@ -94,8 +95,8 @@
     <!-- Tailwind CSS Compilado -->
     <link rel="stylesheet" href="assets/css/style.min.css">
     
-    <!-- Lucide Icons -->
-    <script defer src="https://unpkg.com/lucide@latest"></script>
+    <!-- Lucide Icons (Self-hosted para soberania de CDN e proteção de integridade) -->
+    <script defer src="assets/js/lucide.min.js"></script>
     <!-- Estilos Específicos para Cards de Triagem Interativa -->
     <style>
         /* Card Hardware (Neon Brand) */
@@ -290,12 +291,18 @@
                             <span class="text-[11px] text-zinc-400 uppercase font-bold block mb-2 flex items-center gap-1.5">
                                 <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i> Já é cliente? Rastreie seu equipamento em tempo real:
                             </span>
-                            <form onsubmit="handleHeroTracking(event)" class="flex flex-col sm:flex-row gap-2 max-w-md">
-                                <input type="text" id="hero-tracking-input" placeholder="Digite Nº da OS ou Token..." required class="w-full bg-zinc-900/90 border-2 border-zinc-700 px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 font-mono focus:outline-none focus:border-brand">
-                                <button type="submit" class="px-5 py-2.5 bg-zinc-900 border-2 border-zinc-700 hover:border-brand hover:text-brand text-zinc-300 font-bold text-xs uppercase transition-colors whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer">
-                                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
-                                    <span>Rastrear</span>
-                                </button>
+                            <form onsubmit="handleHeroTracking(event)" class="flex flex-col gap-2 max-w-lg">
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <input type="text" id="hero-tracking-input" placeholder="Nº da OS ou Token..." required class="w-full sm:flex-1 bg-zinc-900/90 border-2 border-zinc-700 px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 font-mono focus:outline-none focus:border-brand">
+                                    <input type="tel" id="hero-tracking-phone" placeholder="4 dígitos WhatsApp" maxlength="15" class="w-full sm:w-44 bg-zinc-900/90 border-2 border-zinc-700 px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 font-mono focus:outline-none focus:border-brand">
+                                    <button type="submit" class="px-5 py-2.5 bg-brand text-black hover:bg-white font-mono font-black text-xs uppercase transition-colors whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer border-2 border-brand shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
+                                        <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                                        <span>Rastrear</span>
+                                    </button>
+                                </div>
+                                <span class="text-[10px] text-zinc-500 font-mono flex items-center gap-1">
+                                    <i data-lucide="lock" class="w-3 h-3 text-brand"></i> Token UUID dispensa telefone. Por Nº de OS, confirme os 4 dígitos do WhatsApp.
+                                </span>
                             </form>
                         </div>
                     </div>
@@ -914,11 +921,16 @@
         function handleHeroTracking(e) {
             e.preventDefault();
             const query = (document.getElementById('hero-tracking-input')?.value || '').trim();
+            const phone = (document.getElementById('hero-tracking-phone')?.value || '').replace(/\D/g, '').trim();
             if (!query) return;
             if (query.length > 8 || query.includes('-')) {
                 window.location.href = `/status?token=${encodeURIComponent(query)}`;
             } else {
-                window.location.href = `/status?os=${encodeURIComponent(query.replace(/\D/g, ''))}`;
+                let url = `/status?os=${encodeURIComponent(query.replace(/\D/g, ''))}`;
+                if (phone) {
+                    url += `&phone=${encodeURIComponent(phone)}`;
+                }
+                window.location.href = url;
             }
         }
 

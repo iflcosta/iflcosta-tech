@@ -19,6 +19,9 @@ def get_financial_overview():
     saldo_familia = pots.get("familia", 0.0)
     saldo_quarto_lab = pots.get("quarto_lab", 0.0)
     saldo_hardware_flip = pots.get("hardware_flip", 0.0)
+    saldo_ebike_capex = pots.get("ebike_capex", 0.0)
+    saldo_ebike_bateria = pots.get("ebike_bateria", 0.0)
+    saldo_ebike_manutencao = pots.get("ebike_manutencao", 0.0)
 
     # Cálculo da Cota Diária Segura
     hoje = datetime.now()
@@ -31,19 +34,19 @@ def get_financial_overview():
     if dia_atual < 5:
         proximo_dia_paga = 5
         dias_restantes = 5 - dia_atual
-        proximo_tipo = "Saldo Salário (60%)"
+        proximo_tipo = "Ciclo 2 IF Tech (Meta Fechamento)"
         proximo_valor = float(primeiro_saldo_cfg) if primeiro_saldo_cfg and float(primeiro_saldo_cfg) > 0 else val_saldo_salario
     elif dia_atual < 20:
         proximo_dia_paga = 20
         dias_restantes = 20 - dia_atual
-        proximo_tipo = "Vale / Adiantamento (40%)"
+        proximo_tipo = "Ciclo 1 IF Tech (Meta Quinzena)"
         proximo_valor = float(primeiro_vale_cfg) if primeiro_vale_cfg and float(primeiro_vale_cfg) > 0 else val_adiantamento
     else:
         # Passou do dia 20, próxima entrada é dia 05 do mês que vem
         ultimo_dia_mes = calendar.monthrange(hoje.year, hoje.month)[1]
         dias_restantes = (ultimo_dia_mes - dia_atual) + 5
         proximo_dia_paga = 5
-        proximo_tipo = "Saldo Salário (60%)"
+        proximo_tipo = "Ciclo 2 IF Tech (Meta Fechamento)"
         proximo_valor = float(primeiro_saldo_cfg) if primeiro_saldo_cfg and float(primeiro_saldo_cfg) > 0 else val_saldo_salario
 
     dias_divisor = max(1, dias_restantes)
@@ -54,7 +57,12 @@ def get_financial_overview():
         "saldo_familia": saldo_familia,
         "saldo_quarto_lab": saldo_quarto_lab,
         "saldo_hardware_flip": saldo_hardware_flip,
-        "saldo_total": saldo_giro + saldo_familia + saldo_quarto_lab + saldo_hardware_flip,
+        "saldo_ebike_capex": saldo_ebike_capex,
+        "saldo_ebike_bateria": saldo_ebike_bateria,
+        "saldo_ebike_manutencao": saldo_ebike_manutencao,
+        "saldo_total": (saldo_giro + saldo_familia + saldo_quarto_lab + 
+                        saldo_hardware_flip + saldo_ebike_capex + 
+                        saldo_ebike_bateria + saldo_ebike_manutencao),
         "cota_diaria": cota_diaria,
         "dias_restantes": dias_restantes,
         "proximo_dia_paga": proximo_dia_paga,
@@ -142,20 +150,20 @@ def project_30_days_timeline():
                 corrente -= gasto_fds
                 eventos.append(f"-R$ {gasto_fds:.0f} (Namorada/Fds)")
 
-            # 2. Evento Dia 20 (Adiantamento CLT / Vale)
+            # 2. Evento Dia 20 (Meta Quinzena IF Tech)
             if dia_num == 20:
                 v_vale = val_primeiro_vale if not primeiro_vale_aplicado else val_adiantamento
                 primeiro_vale_aplicado = True
                 corrente += v_vale
-                eventos.append(f"+R$ {v_vale:.0f} (Vale 40%)")
+                eventos.append(f"+R$ {v_vale:.0f} (Ciclo 1 IF Tech)")
 
-            # 3. Evento Dia 05 (Saldo CLT - Família)
+            # 3. Evento Dia 05 (Meta Fechamento IF Tech - Família)
             elif dia_num == 5:
                 v_saldo = val_primeiro_saldo if not primeiro_saldo_aplicado else val_saldo_salario
                 primeiro_saldo_aplicado = True
                 corrente += v_saldo
                 corrente -= gasto_familia
-                eventos.append(f"+R$ {v_saldo:.0f} (CLT) - R$ {gasto_familia:.0f} (Família)")
+                eventos.append(f"+R$ {v_saldo:.0f} (Ciclo 2 IF Tech) - R$ {gasto_familia:.0f} (Família)")
 
         timeline.append({
             "date": dia_futuro.strftime("%d/%m"),

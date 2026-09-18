@@ -1,6 +1,7 @@
 """
 IF Tech Life & Business Ops - Routine & Time-Blocking Engine
 Determina o Modo Atual Ativo com base no relógio do sistema e rastreia metas semanais.
+Atualizado: Modo Full-Time Founder (Fundador em Tempo Integral da IF Tech).
 """
 
 from datetime import datetime
@@ -19,17 +20,27 @@ def get_current_mode():
             "title": "🏖️ Domingo Sagrado: Descompressão & Namoro",
             "subtitle": "Zero obrigações pesadas. Recarregue a bateria mental e desfrute com quem você ama.",
             "color": "#AB47BC",
-            "next_block": "Amanhã 08:00 — Estudos de IA"
+            "next_block": "Amanhã 08:00 — Estudos de IA & Software"
         }
 
-    # Sábado à Noite (Pós-fábrica)
-    if dia_semana == 5 and hora_min >= 19 * 60:
+    # Sábado à Tarde / Noite (Fim de semana livre)
+    if dia_semana == 5 and hora_min >= 13 * 60:
         return {
             "mode": "LAZER",
-            "title": "💑 Sábado Livre: Noite com a Namorada",
-            "subtitle": "Trabalho CLT concluído. Aproveite a noite sem culpa.",
+            "title": "💑 Sábado Livre: Descompressão & Namorada",
+            "subtitle": "Semana de alta produção concluída. Aproveite o fim de semana sem peso na consciência.",
             "color": "#EC407A",
             "next_block": "Amanhã — Domingo de Descanso"
+        }
+
+    # Sábado de Manhã (08:30 às 12:30) - Manutenção / Entregas Finais
+    if dia_semana == 5 and 8 * 60 + 30 <= hora_min < 12 * 60 + 30:
+        return {
+            "mode": "IFTECH",
+            "title": "💼 Sábado Operacional: Bancada & Entregas Finais",
+            "subtitle": "Finalização de reparos da semana, entregas aos clientes e organização do laboratório.",
+            "color": "#00E676",
+            "next_block": "12:30 — Início do Fim de Semana Livre"
         }
 
     # Período Noturno / Sono (23:30 às 07:30)
@@ -37,113 +48,112 @@ def get_current_mode():
         return {
             "mode": "REGENERACAO",
             "title": "💤 Modo Regeneração: Sono Sagrado (8h)",
-            "subtitle": "Durma para consolidar a memória dos estudos e recuperar o corpo da fábrica.",
+            "subtitle": "Durma para consolidar a memória dos estudos e recuperar a capacidade cognitiva.",
             "color": "#5C6BC0",
-            "next_block": "08:00 — Estudos de IA (EAD)"
+            "next_block": "08:00 — Estudos de IA & Software"
         }
 
-    # 07:30 às 08:00 - Despertar
+    # 07:30 às 08:00 - Despertar & Organização do Ambiente
     if 7 * 60 + 30 <= hora_min < 8 * 60:
         return {
             "mode": "PREPARACAO",
-            "title": "🌅 Despertar Biológico & Café",
-            "subtitle": "Zero telas. Hidrate-se, tome café e prepare a mente para os estudos.",
+            "title": "🌅 Despertar Biológico, Arrumar Quarto & Café",
+            "subtitle": "Cama arrumada, ambiente limpo, roupa de trabalho (sem pijama) e mente pronta.",
             "color": "#FFA726",
-            "next_block": "08:00 — Estudos de IA"
+            "next_block": "08:00 — Estudos de IA & Software"
         }
 
-    # 08:00 às 09:45 - Bloco 1: Estudos de IA
-    if 8 * 60 <= hora_min < 9 * 60 + 45:
+    # 08:00 às 09:30 - Bloco 1: Estudos de IA & Software
+    if 8 * 60 <= hora_min < 9 * 60 + 30:
         return {
             "mode": "ESTUDOS",
-            "title": "🧠 Bloco 1: Estudos de Inteligência Artificial",
-            "subtitle": "Mente 100% descansada. Foco em Python, Tecnólogo EAD e Algoritmos.",
+            "title": "🧠 Bloco 1: Estudos de IA & Engenharia de Software",
+            "subtitle": "Mente 100% descansada. Foco em Python, Tecnólogo EAD, Algoritmos e Arquitetura.",
             "color": "#00E5FF",
-            "next_block": "10:00 — IF Tech (Bancada & Projetos)"
+            "next_block": "09:30 — IF Tech (Bancada ou Prospecção Ativa)"
         }
 
-    # 09:45 às 10:00 - Pausa Cognitiva
-    if 9 * 60 + 45 <= hora_min < 10 * 60:
-        return {
-            "mode": "PAUSA",
-            "title": "☕ Pausa Cognitiva & Água",
-            "subtitle": "Levante da cadeira, tome água e desconecte por 15 minutos.",
-            "color": "#66BB6A",
-            "next_block": "10:00 — IF Tech (Bancada)"
-        }
-
-    # 10:00 às 12:00 - Bloco 2: IF Tech (2h de Bancada & Foco)
-    if 10 * 60 <= hora_min < 12 * 60:
+    # 09:30 às 12:00 - Bloco 2: IF Tech (Bancada Técnica / Prospecção Matinal)
+    if 9 * 60 + 30 <= hora_min < 12 * 60:
         return {
             "mode": "IFTECH",
-            "title": "💼 Bloco 2: IF Tech (Bancada & Projetos)",
-            "subtitle": "2h de foco pleno: manutenções, orçamentos, montagens e desenvolvimento do lab.",
+            "title": "🔬 Bloco 2: Bancada Técnica & Produção",
+            "subtitle": "Máquinas em atendimento, montagens e testes periciais. Se bancada zerada: Prospecção Ativa!",
             "color": "#00E676",
-            "next_block": "12:00 — Almoço Nutritivo & Banho"
+            "next_block": "12:00 — Almoço & Parceria (Cyber Informática)"
         }
 
-    # 12:00 às 13:00 - Almoço, Banho & Preparação
-    if 12 * 60 <= hora_min < 13 * 60:
+    # 12:00 às 13:30 - Almoço, Parceria Cyber Informática & Descompressão
+    if 12 * 60 <= hora_min < 13 * 60 + 30:
         return {
             "mode": "ALMOCO",
-            "title": "🍽️ Almoço Nutritivo, Banho & Preparação",
-            "subtitle": "Almoço tranquilo em casa, higiene e uniforme sem pressa.",
+            "title": "🍽️ Almoço & Networking (Cyber Informática)",
+            "subtitle": "Almoço nutritivo, fortalecimento da parceria na Cyber Informática e descanso mental.",
             "color": "#FFB74D",
-            "next_block": "13:00 — Caminhada até a Fábrica (15 min)"
+            "next_block": "13:30 — Geração de Demanda & Vendas (Caçador)"
         }
 
-    # 13:00 às 13:20 - Deslocamento a Pé (15 min andando)
-    if 13 * 60 <= hora_min < 13 * 60 + 20:
+    # 13:30 às 15:30 - Bloco 3: Geração de Demanda & Vendas (Caçador)
+    if 13 * 60 + 30 <= hora_min < 15 * 60 + 30:
         return {
-            "mode": "CAMINHADA",
-            "title": "🚶 Deslocamento a Pé até a Fábrica",
-            "subtitle": "15 minutos de caminhada ativa até o trabalho. Chegue com 5 min de folga para o ponto.",
-            "color": "#4DD0E1",
-            "next_block": "13:20 — Bater Ponto na Fábrica CLT"
+            "mode": "PROSPECCAO",
+            "title": "🎯 Bloco 3: Geração de Demanda & Vendas (Caçador)",
+            "subtitle": "Prospecção B2B (contabilidades/clínicas), postagens no Instagram, Google Meu Negócio e Marketplaces.",
+            "color": "#FF7043",
+            "next_block": "15:30 — Concierge Leva-e-Traz & Operações Externas"
         }
 
-    # Turno CLT Fábrica (13:20 às 22:00 seg-sex / às 19:00 sáb)
-    hora_fim_clt = (19 * 60) if dia_semana == 5 else (22 * 60)
-    if 13 * 60 + 20 <= hora_min < hora_fim_clt:
+    # 15:30 às 17:30 - Bloco 4: Concierge Leva-e-Traz & Operações Externas
+    if 15 * 60 + 30 <= hora_min < 17 * 60 + 30:
         return {
-            "mode": "FABRICA",
-            "title": "⚙️ Modo Chão de Fábrica (CLT)",
-            "subtitle": "Execução limpa, ritmo constante e conservação de energia física.",
-            "color": "#78909C",
-            "next_block": f"{'19:00' if dia_semana == 5 else '22:00'} — Fim do Turno & Retorno a Pé"
+            "mode": "CONCIERGE",
+            "title": "🚲 Bloco 4: Concierge Leva-e-Traz (E-Bike BBSHD)",
+            "subtitle": "Coleta e entrega de máquinas com termo formal, balcão na Cyber Informática e logística ágil de e-bike.",
+            "color": "#26A69A",
+            "next_block": "17:30 — Cockpit ERP, Orçamentos & DRE"
         }
 
-    # 22:00 às 22:20 - Caminhada de Volta para Casa
-    if hora_fim_clt <= hora_min < hora_fim_clt + 20:
+    # 17:30 às 18:30 - Bloco 5: Cockpit Gestão, Orçamentos & DRE
+    if 17 * 60 + 30 <= hora_min < 18 * 60 + 30:
         return {
-            "mode": "RETORNO",
-            "title": "🚶 Retorno a Pé para Casa (15 min)",
-            "subtitle": "Caminhada noturna de descompressão física. Respiração calma após o turno.",
-            "color": "#81C784",
-            "next_block": "22:20 — Ceia, Banho & Namorada"
+            "mode": "GESTAO",
+            "title": "📊 Bloco 5: Cockpit ERP, Orçamentos & Fechamento DRE",
+            "subtitle": "Registro de serviços, envio de laudos e links Pix Asaas via WhatsApp, conciliação e plano de amanhã.",
+            "color": "#7E57C2",
+            "next_block": "18:30 — Vida Pessoal, Treino & Namorada"
         }
 
-    # 22:20 às 23:30 - Desaceleração Noturna & Namorada
+    # 18:30 às 22:30 - Vida Pessoal, Treino & Namorada
+    if 18 * 60 + 30 <= hora_min < 22 * 60 + 30:
+        return {
+            "mode": "PESSOAL",
+            "title": "🛋️ Vida Pessoal, Atividade Física & Namorada",
+            "subtitle": "Desconexão do trabalho, caminhada/treino, jantar e tempo de qualidade com quem você ama.",
+            "color": "#EC407A",
+            "next_block": "22:30 — Desaceleração Noturna"
+        }
+
+    # 22:30 às 23:30 - Desaceleração Noturna
     return {
         "mode": "DESACELERACAO",
-        "title": "🛋️ Desaceleração Noturna & Namorada",
-        "subtitle": "Ceia leve, banho, conversa com a namorada e relaxamento para o sono sagrado.",
-        "color": "#7E57C2",
+        "title": "🛋️ Desaceleração Noturna & Higiene do Sono",
+        "subtitle": "Desconectar telas, banho relaxante, leitura leve e preparação para o sono reparador.",
+        "color": "#5C6BC0",
         "next_block": "23:30 — Sono Sagrado (8h)"
     }
 
 def get_daily_timeline():
     """Retorna os blocos cronológicos do dia para visualização em grade."""
     return [
-        {"time": "07:30 - 08:00", "label": "Despertar Biológico & Café", "tag": "Rotina"},
-        {"time": "08:00 - 09:45", "label": "Estudos de IA (Tecnólogo EAD)", "tag": "Estudos"},
-        {"time": "09:45 - 10:00", "label": "Pausa Cognitiva (Água/Alongamento)", "tag": "Pausa"},
-        {"time": "10:00 - 12:00", "label": "IF Tech (Bancada, Reparos & Projetos)", "tag": "IF Tech"},
-        {"time": "12:00 - 13:00", "label": "Almoço Nutritivo, Banho & Higiene", "tag": "Almoço"},
-        {"time": "13:00 - 13:20", "label": "Caminhada até a Fábrica (15 min a pé)", "tag": "Deslocamento"},
-        {"time": "13:20 - 22:00", "label": "Turno Fábrica CLT (Sáb até 19h)", "tag": "Fábrica"},
-        {"time": "22:00 - 22:20", "label": "Caminhada de Volta para Casa (15 min)", "tag": "Deslocamento"},
-        {"time": "22:20 - 23:30", "label": "Ceia, Desaceleração & Namorada", "tag": "Pessoal"},
+        {"time": "07:30 - 08:00", "label": "Despertar, Arrumar Quarto & Café", "tag": "Rotina"},
+        {"time": "08:00 - 09:30", "label": "Estudos de IA & Software (EAD)", "tag": "Estudos"},
+        {"time": "09:30 - 12:00", "label": "Bancada Técnica (ou Prospecção Ativa)", "tag": "Bancada"},
+        {"time": "12:00 - 13:30", "label": "Almoço & Parceria (Cyber Informática)", "tag": "Networking"},
+        {"time": "13:30 - 15:30", "label": "Geração de Demanda & Vendas (B2B/B2C)", "tag": "Vendas"},
+        {"time": "15:30 - 17:30", "label": "Concierge Leva-e-Traz & Balcão", "tag": "Logística"},
+        {"time": "17:30 - 18:30", "label": "Cockpit ERP, Orçamentos & DRE", "tag": "Gestão"},
+        {"time": "18:30 - 22:30", "label": "Vida Pessoal, Treino & Namorada", "tag": "Pessoal"},
+        {"time": "22:30 - 23:30", "label": "Desaceleração Noturna & Leitura", "tag": "Descanso"},
         {"time": "23:30 - 07:30", "label": "Sono Sagrado Reparador (8 Horas)", "tag": "Sono"}
     ]
 
@@ -152,7 +162,7 @@ def get_weekly_metrics():
     summary = get_week_routine_summary()
     
     meta_ia_horas = float(get_config("meta_horas_ia_semana", "7.5"))
-    meta_iftech_horas = float(get_config("meta_horas_iftech_semana", "12.0"))
+    meta_iftech_horas = float(get_config("meta_horas_iftech_semana", "25.0"))
 
     horas_ia_feitas = (summary.get("ia_estudos", 0) or 0) / 60.0
     horas_iftech_feitas = (summary.get("iftech_lab", 0) or 0) / 60.0

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Cliente // IF Tech</title>
     <meta name="description" content="Acompanhe em tempo real o status da sua Ordem de Serviço, Projeto de Software ou Contrato de TI Gerenciada na IF Tech.">
+    <!-- Diretivas de Privacidade & Anti-Indexação (LGPD) -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://iflcosta.tech/status">
     
     <!-- Google tag (gtag.js) - Google Analytics 4 (G-MZNP04Z795) & Google Ads (AW-18161865460) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MZNP04Z795"></script>
@@ -114,8 +117,8 @@
         }
     </style>
     
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- Lucide Icons (Self-hosted para soberania de CDN e proteção de integridade) -->
+    <script src="/assets/js/lucide.min.js" defer></script>
 
     <!-- Supabase JS Client SDK & QRious -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
@@ -212,6 +215,27 @@
                 <p class="font-mono text-zinc-400 text-sm">Consultando banco de telemetria da IF Tech...</p>
             </div>
 
+            <!-- Mensagem de Confirmação de Titularidade (2FA WhatsApp) -->
+            <div id="phone-required-state" class="hidden bg-amber-950/40 border-2 border-amber-500 p-6 sm:p-8 my-8 shadow-2xl font-sans">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <div class="p-3 bg-amber-500/20 border border-amber-500/40 text-amber-400 shrink-0">
+                        <i data-lucide="shield-alert" class="w-8 h-8"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 font-mono text-[10px] font-bold uppercase tracking-wider border border-amber-500/30">Segurança LGPD</span>
+                            <h3 class="text-base sm:text-lg font-extrabold text-white">Confirmação dos 4 Últimos Dígitos do WhatsApp</h3>
+                        </div>
+                        <p class="text-zinc-300 text-xs sm:text-sm mb-2" id="phone-required-msg">
+                            Para consultar a Ordem de Serviço pelo número público, informe os <strong class="text-amber-400">4 últimos dígitos do WhatsApp</strong> cadastrado no campo acima e clique em Consultar.
+                        </p>
+                        <p class="text-zinc-500 text-[11px] font-mono flex items-center gap-1.5">
+                            <i data-lucide="info" class="w-3.5 h-3.5 text-brand"></i> Clientes que acessam pelo link direto recebido no WhatsApp (Magic Link) não precisam digitar o telefone.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Mensagem de Erro / Não Encontrado -->
             <div id="not-found-state" class="hidden bg-red-950/40 border-2 border-red-800 p-8 text-center my-8">
                 <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-3"></i>
@@ -219,7 +243,7 @@
                 <p class="text-zinc-400 text-sm max-w-md mx-auto mb-4">
                     Não encontramos nenhuma OS ou projeto correspondente aos dados informados. Verifique o número ou solicite um link atualizado no WhatsApp.
                 </p>
-                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20N%C3%A3o%20consegui%20localizar%20minha%20OS%20no%20portal." target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 text-white font-mono text-xs font-bold uppercase hover:bg-zinc-700 border border-zinc-600">
+                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20N%C3%A3o%20consegui%20localizar%20minha%20OS%20no%20portal." target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 text-white font-mono text-xs font-bold uppercase hover:bg-zinc-700 border border-zinc-600">
                     Falar com o Suporte <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                 </a>
             </div>
@@ -254,6 +278,15 @@
                                 <span id="hw-status-text">EM TESTES DE ESTRESSE QA</span>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- BANNER DE ATENDIMENTO CONCIERGE LEVA-E-TRAZ (SE HABILITADO) -->
+                    <div id="hw-concierge-banner" class="hidden mt-4 p-3 bg-zinc-950 border border-amber-500/40 font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-amber-500/20 border border-amber-500/50 text-amber-400 font-bold uppercase text-[10px]">🚗 Atendimento Concierge</span>
+                            <span class="text-zinc-300 font-sans">Coleta e Devolução Seguras no seu endereço via Leva-e-Traz.</span>
+                        </div>
+                        <div class="text-[11px] text-zinc-400 font-sans italic" id="hw-concierge-address-info"></div>
                     </div>
 
                     <!-- LINHA DO TEMPO BRUTALISTA DA BANCADA (5 ETAPAS / ALTO CONTRASTE) -->
@@ -374,7 +407,7 @@
 
                         <!-- Botão Dinâmico de Ação -->
                         <div id="hw-action-buttons" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                            <a id="hw-doubt-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20atendimento." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
+                            <a id="hw-doubt-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20atendimento." target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
                                 Tirar Dúvida
                             </a>
                             <button onclick="downloadWarrantyPDF()" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-transparent shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
@@ -527,11 +560,11 @@
                             <p class="text-sm text-white font-bold" id="sw-card-staging-url-text">preview.iflcosta.tech/...</p>
                         </div>
                         <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-                            <a id="sw-card-whatsapp-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20meu%20projeto%20de%20software." target="_blank" class="w-full sm:w-auto px-5 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-bold text-xs uppercase tracking-wider hover:border-brand text-center transition-colors flex items-center justify-center gap-2">
+                            <a id="sw-card-whatsapp-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20meu%20projeto%20de%20software." target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-5 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-bold text-xs uppercase tracking-wider hover:border-brand text-center transition-colors flex items-center justify-center gap-2">
                                 <i data-lucide="message-square" class="w-4 h-4 text-brand"></i>
                                 Tirar Dúvida
                             </a>
-                            <a id="sw-card-staging-btn" href="#" target="_blank" class="w-full sm:w-auto px-6 py-3.5 bg-cyan-400 text-black font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)]">
+                            <a id="sw-card-staging-btn" href="#" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-6 py-3.5 bg-cyan-400 text-black font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)]">
                                 <i data-lucide="external-link" class="w-4 h-4"></i>
                                 Abrir Ambiente de Testes
                             </a>
@@ -614,7 +647,7 @@
                         <div class="text-sm font-mono text-zinc-400">
                             Suporte técnico corporativo dedicado com tempo de resposta garantido.
                         </div>
-                        <a id="msp-ticket-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Preciso%20abrir%20um%20chamado%20priorit%C3%A1rio%20MSP." target="_blank" class="w-full sm:w-auto px-8 py-3.5 bg-brand text-black font-mono font-black text-sm uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 border-2 border-transparent">
+                        <a id="msp-ticket-btn" href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Preciso%20abrir%20um%20chamado%20priorit%C3%A1rio%20MSP." target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-3.5 bg-brand text-black font-mono font-black text-sm uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 border-2 border-transparent">
                             <i data-lucide="alert-circle" class="w-4 h-4"></i>
                             Abrir Chamado Prioritário (SLA 2h)
                         </a>
@@ -709,7 +742,7 @@
                             <span>2. Após transferir, confirme o envio:</span>
                         </span>
                     </div>
-                    <a id="btn-send-pix-proof" href="#" target="_blank" class="w-full py-3.5 bg-emerald-500 text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(0,255,100,0.3)] min-h-[48px]">
+                    <a id="btn-send-pix-proof" href="#" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 bg-emerald-500 text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(0,255,100,0.3)] min-h-[48px]">
                         <i data-lucide="message-square" class="w-4 h-4"></i> Enviar Comprovante no WhatsApp
                     </a>
                 </div>
@@ -903,6 +936,14 @@
                 .replace(/'/g, '&#039;');
         }
 
+        // Classificador unificado de itens (Mão de Obra vs Peças/Componentes)
+        function isLaborItem(it) {
+            if (!it) return false;
+            const type = (it.item_type || '').toLowerCase();
+            const desc = (it.description || '').toLowerCase();
+            return type === 'labor' || type.includes('labor') || type.includes('servi') || desc.includes('mão') || desc.includes('mao');
+        }
+
         // Formatador de Defeito & Badges de Checklist Visual
         function formatChecklistHTML(rawDefect) {
             if (!rawDefect) return `<p class="text-sm text-yellow-400 font-semibold leading-snug">"Equipamento sob análise técnica na bancada."</p>`;
@@ -957,6 +998,8 @@
         function hideAllContainers() {
             if (loadingState) loadingState.classList.add("hidden");
             if (notFoundState) notFoundState.classList.add("hidden");
+            const phoneNotice = document.getElementById("phone-required-state");
+            if (phoneNotice) phoneNotice.classList.add("hidden");
             if (hwContainer) hwContainer.classList.add("hidden");
             if (swContainer) swContainer.classList.add("hidden");
             if (mspContainer) mspContainer.classList.add("hidden");
@@ -1047,9 +1090,10 @@
             const brand = wo.device_brand || "Equipamento";
             const model = wo.device_model || "Hardware";
             const clientName = wo.client_first_name || (wo.customer_name ? wo.customer_name.split(' ')[0] : '') || (wo.client_name ? wo.client_name.split(' ')[0] : '') || "Cliente";
-            const deliveryText = wo.is_pickup_delivery 
-                ? "Atendimento Especializado com Leva-e-Traz" 
-                : "Atendimento Presencial na Bancada";
+            const isDelivery = Boolean(wo.is_pickup_delivery || wo.requires_delivery || (wo.acquisition_channel === 'Leva-e-Traz') || (parseFloat(wo.pickup_fee || 0) > 0));
+            const deliveryText = isDelivery 
+                ? "Atendimento Especializado Concierge (Leva-e-Traz)" 
+                : "Atendimento Técnico Especializado";
 
             const osEl = document.getElementById("hw-os-number");
             if (osEl) osEl.textContent = "#" + formatOSNumber(osNum);
@@ -1059,7 +1103,23 @@
             
             const clientNameEl = document.getElementById("hw-client-name");
             if (clientNameEl) {
-                clientNameEl.innerHTML = `Cliente: <strong class="text-zinc-200">${escapeHtml(clientName)}</strong> • ${deliveryText}`;
+                const addrNotice = (isDelivery && wo.client_bairro) ? ` • ${escapeHtml(wo.client_bairro)}` : '';
+                clientNameEl.innerHTML = `Cliente: <strong class="text-zinc-200">${escapeHtml(clientName)}</strong> • ${deliveryText}${addrNotice}`;
+            }
+
+            const conciergeBanner = document.getElementById("hw-concierge-banner");
+            const conciergeAddrInfo = document.getElementById("hw-concierge-address-info");
+            if (conciergeBanner) {
+                if (isDelivery) {
+                    conciergeBanner.classList.remove("hidden");
+                    if (conciergeAddrInfo) {
+                        const addrDisplay = wo.client_address ? escapeHtml(wo.client_address) : '';
+                        const bairroDisplay = wo.client_bairro ? ` (${escapeHtml(wo.client_bairro)})` : '';
+                        conciergeAddrInfo.textContent = addrDisplay ? `Destino: ${addrDisplay}${bairroDisplay}` : `Bragança Paulista - SP`;
+                    }
+                } else {
+                    conciergeBanner.classList.add("hidden");
+                }
             }
 
             // Data de Entrada
@@ -1080,7 +1140,7 @@
             itemsList.forEach(it => {
                 const p = parseFloat(it.unit_price) || 0;
                 const q = parseInt(it.quantity) || 1;
-                const isLabor = it.item_type === 'Labor' || (it.description && it.description.toLowerCase().includes('mão')) || (it.item_type && (it.item_type.toLowerCase().includes('labor') || it.item_type.toLowerCase().includes('servi')));
+                const isLabor = isLaborItem(it);
                 if (isLabor) {
                     computedLaborSum += p * q;
                 } else {
@@ -1206,13 +1266,13 @@
                 setStepVisual(4, 'completed-full', 'QA Aprovado ✓');
                 setStepVisual(5, 'active-brand', 'Garantia CDC Ativa');
             } else if (isPronto) {
-                if (statusBadgeText) statusBadgeText.textContent = "05. PRONTO PARA RETIRADA";
+                if (statusBadgeText) statusBadgeText.textContent = isDelivery ? "05. PRONTO // AGUARDANDO ROTA DE ENTREGA" : "05. PRONTO PARA RETIRADA";
                 if (statusBadge) statusBadge.className = "px-4 py-2 bg-brand text-black border-2 border-brand font-mono text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2 animate-pulse";
                 setStepVisual(1, 'completed', 'Checklist & Fotos ✓');
                 setStepVisual(2, 'completed', 'Orçamento Aprovado ✓');
                 setStepVisual(3, 'completed', 'Execução Concluída ✓');
                 setStepVisual(4, 'completed', 'QA Aprovado ✓');
-                setStepVisual(5, 'active-brand', 'Pronto p/ Retirada');
+                setStepVisual(5, 'active-brand', isDelivery ? 'Pronto p/ Entrega' : 'Pronto p/ Retirada');
             }
 
             // Atualiza barra mobile flutuante
@@ -1293,7 +1353,7 @@
                                 <div class="text-xs font-mono text-zinc-400">
                                     <span class="text-white font-bold">Investimento Inicial: R$ 0,00</span> • O orçamento formal será publicado neste link para sua aprovação prévia.
                                 </div>
-                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" class="px-5 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
                                     <i data-lucide="message-square" class="w-3.5 h-3.5 text-brand"></i>
                                     Falar com o Técnico
                                 </a>
@@ -1321,7 +1381,7 @@
                             </div>
                         `;
                         actionButtonHtml = `
-                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20deixar%20meu%20feedback%20sobre%20a%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20deixar%20meu%20feedback%20sobre%20a%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
                                 <i data-lucide="star" class="w-4 h-4"></i> Avaliar no Google / Suporte
                             </a>
                         `;
@@ -1339,7 +1399,7 @@
                             </div>
                         `;
                         actionButtonHtml = `
-                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vi%20que%20minha%20OS%20${encodeURIComponent(formatOSNumber(osNum))}%20est%C3%A1%20pronta%20para%20retirada." target="_blank" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vi%20que%20minha%20OS%20${encodeURIComponent(formatOSNumber(osNum))}%20est%C3%A1%20pronta%20para%20retirada." target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 bg-brand text-black font-mono font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white text-center transition-colors flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]">
                                 <i data-lucide="package-check" class="w-4 h-4"></i> Combinar Retirada / Entrega
                             </a>
                         `;
@@ -1568,7 +1628,7 @@
 
                             <div id="hw-action-buttons" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                                 ${actionButtonHtml}
-                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20or%C3%A7amento%20da%20OS%20${encodeURIComponent(formatOSNumber(osNum))}." target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 bg-zinc-900 border-2 border-zinc-700 text-white font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-brand text-center transition-colors">
                                     Tirar Dúvida
                                 </a>
                                 ${(isPronto || isEntregue) ? `
@@ -1591,15 +1651,15 @@
                             const price = parseFloat(item.unit_price) || 0;
                             const qty = parseInt(item.quantity) || 1;
                             const itemTotal = price * qty;
-                            const isLaborItem = item.item_type === 'Labor' || (item.description && item.description.toLowerCase().includes('mão')) || (item.item_type && (item.item_type.toLowerCase().includes('labor') || item.item_type.toLowerCase().includes('servi')));
-                            if (isLaborItem) {
+                            const isLabor = isLaborItem(item);
+                            if (isLabor) {
                                 laborSum += itemTotal;
                             } else {
                                 partsSum += itemTotal;
                             }
 
                             const tr = document.createElement("tr");
-                            if (isLaborItem) {
+                            if (isLabor) {
                                 tr.className = "bg-zinc-900/40";
                                 tr.innerHTML = `
                                     <td class="py-3 px-3 font-bold text-brand">Mão de Obra</td>
@@ -1680,16 +1740,17 @@
             photoSection.classList.remove("hidden");
             if (galleryContainer) {
                 galleryContainer.innerHTML = photos.map((p, idx) => {
-                    const url = typeof p === 'string' ? p : (p.url || p.photo_url || '');
+                    const rawUrl = typeof p === 'string' ? p : (p.url || p.photo_url || '');
+                    const safeUrl = (rawUrl && (/^https?:\/\//i.test(rawUrl) || rawUrl.startsWith('data:image/'))) ? rawUrl : '#';
                     const label = typeof p === 'object' && p.label ? p.label : `Foto 0${idx + 1} • Registro de Bancada`;
                     return `
                         <div class="border-2 border-zinc-800 bg-zinc-900 overflow-hidden group">
-                            <a href="${escapeHtml(url)}" target="_blank" class="block h-48 bg-zinc-950 flex items-center justify-center overflow-hidden">
-                                <img src="${escapeHtml(url)}" alt="${escapeHtml(label)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" class="block h-48 bg-zinc-950 flex items-center justify-center overflow-hidden">
+                                <img src="${escapeHtml(safeUrl)}" alt="${escapeHtml(label)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                             </a>
                             <div class="p-2.5 bg-black border-t border-zinc-800 font-mono text-[11px] text-zinc-400 flex justify-between items-center">
                                 <span>${escapeHtml(label)}</span>
-                                <a href="${escapeHtml(url)}" target="_blank" class="text-brand hover:underline text-[10px]">Ampliar ↗</a>
+                                <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" class="text-brand hover:underline text-[10px]">Ampliar ↗</a>
                             </div>
                         </div>
                     `;
@@ -1714,7 +1775,7 @@
                 const itemsList = currentWorkOrderData.items || currentWorkOrderData.work_order_items || [];
                 let computedParts = 0;
                 itemsList.forEach(it => {
-                    if (it.item_type !== 'Labor') computedParts += (parseFloat(it.unit_price) || 0) * (parseInt(it.quantity) || 1);
+                    if (!isLaborItem(it)) computedParts += (parseFloat(it.unit_price) || 0) * (parseInt(it.quantity) || 1);
                 });
                 const totalParts = (currentWorkOrderData.total_parts !== undefined && currentWorkOrderData.total_parts !== null) ? parseFloat(currentWorkOrderData.total_parts) : computedParts;
                 const hasParts = totalParts > 0;
@@ -1854,7 +1915,7 @@
             itemsList.forEach(it => {
                 const p = parseFloat(it.unit_price) || 0;
                 const q = parseInt(it.quantity) || 1;
-                if (it.item_type === 'Labor') laborSum += p * q;
+                if (isLaborItem(it)) laborSum += p * q;
                 else partsSum += p * q;
             });
 
@@ -2108,7 +2169,8 @@
             if (lhAcc) lhAcc.textContent = proj.lighthouse_accessibility_score || 96;
 
             // Staging Link
-            const stagingUrl = proj.staging_url || 'https://preview.iflcosta.tech/demo';
+            const rawStagingUrl = proj.staging_url || 'https://preview.iflcosta.tech/demo';
+            const stagingUrl = (/^https?:\/\//i.test(rawStagingUrl)) ? rawStagingUrl : 'https://preview.iflcosta.tech/demo';
             const stagingTextEl = document.getElementById('sw-card-staging-url-text');
             const stagingBtnEl = document.getElementById('sw-card-staging-btn');
             const whatsappBtnEl = document.getElementById('sw-card-whatsapp-btn');
@@ -2487,27 +2549,58 @@
                 }
             }
 
-            // 4. BUSCA POR NÚMERO DA OS + CONFIRMAÇÃO DE TELEFONE (2FA) VIA SUPABASE
+            // 4. BUSCA POR NÚMERO DA OS + CONFIRMAÇÃO DE TELEFONE (2FA LGPD)
             const num = parseInt(cleanQuery.replace(/\D/g, ''));
-            if (!isNaN(num) && num > 0 && client) {
-                try {
-                    const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
-                    const { data, error } = await client.rpc('rpc_track_work_order_by_number', {
-                        p_os_number: num,
-                        p_phone: cleanPhone || null
-                    });
+            if (!isNaN(num) && num > 0) {
+                const cleanPhone = phone ? phone.replace(/\D/g, '') : '';
 
-                    if (!error && data && data.found) {
-                        if (loadingState) loadingState.classList.add("hidden");
-                        renderWorkOrderData(data);
-                        if (data.id) setupPortalRealtime(data.id);
-                        if (hwContainer) hwContainer.classList.remove("hidden");
-                        window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
-                        if (window.lucide) lucide.createIcons();
-                        return;
+                // Validação 2FA: para buscar por número público de OS, exige ao menos 4 dígitos do WhatsApp
+                if (cleanPhone.length < 4) {
+                    if (loadingState) loadingState.classList.add("hidden");
+                    hideAllContainers();
+
+                    const phoneNotice = document.getElementById("phone-required-state");
+                    const phoneMsg = document.getElementById("phone-required-msg");
+                    if (phoneMsg) {
+                        phoneMsg.innerHTML = `Para consultar a Ordem de Serviço <strong class="text-white font-mono">#${num}</strong>, informe os <strong class="text-amber-400">4 últimos dígitos do WhatsApp cadastrado</strong> no campo acima e clique em Consultar.`;
                     }
-                } catch (err) {
-                    console.warn("Falha na busca por número de OS via Supabase:", err);
+                    if (phoneNotice) phoneNotice.classList.remove("hidden");
+
+                    const phoneEl = document.getElementById("search-phone");
+                    if (phoneEl) {
+                        phoneEl.classList.add("border-amber-500", "ring-2", "ring-amber-500/50");
+                        phoneEl.focus();
+                    }
+                    if (window.lucide) lucide.createIcons();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+
+                // Remove destaques do campo se preenchido corretamente
+                const phoneNotice = document.getElementById("phone-required-state");
+                if (phoneNotice) phoneNotice.classList.add("hidden");
+                const phoneEl = document.getElementById("search-phone");
+                if (phoneEl) phoneEl.classList.remove("border-amber-500", "ring-2", "ring-amber-500/50");
+
+                if (client) {
+                    try {
+                        const { data, error } = await client.rpc('rpc_track_work_order_by_number', {
+                            p_os_number: num,
+                            p_phone: cleanPhone
+                        });
+
+                        if (!error && data && data.found) {
+                            if (loadingState) loadingState.classList.add("hidden");
+                            renderWorkOrderData(data);
+                            if (data.id) setupPortalRealtime(data.id);
+                            if (hwContainer) hwContainer.classList.remove("hidden");
+                            window.scrollTo({ top: hwContainer.offsetTop - 100, behavior: 'smooth' });
+                            if (window.lucide) lucide.createIcons();
+                            return;
+                        }
+                    } catch (err) {
+                        console.warn("Falha na busca por número de OS via Supabase:", err);
+                    }
                 }
             }
 
@@ -2522,9 +2615,10 @@
                         const matchTok = (o.public_tracking_token && (o.public_tracking_token === cleanQuery || o.id === cleanQuery)) || (o.id && o.id === cleanQuery);
                         if (!matchNum && !matchTok) return false;
                         
-                        if (cleanPhone && o.client_whatsapp) {
+                        if (matchNum) {
+                            if (!o.client_whatsapp) return true;
                             const oPhone = o.client_whatsapp.replace(/\D/g, '');
-                            return oPhone.endsWith(cleanPhone) || oPhone === cleanPhone || cleanPhone.length < 4;
+                            return oPhone.endsWith(cleanPhone) || oPhone === cleanPhone;
                         }
                         return true;
                     });
@@ -2743,6 +2837,15 @@
                 const osVal = searchInput?.value.trim() || '';
                 const phoneVal = document.getElementById('search-phone') ? document.getElementById('search-phone').value.trim() : '';
                 handleSearch(osVal, phoneVal);
+            });
+        }
+
+        const phoneInputEl = document.getElementById('search-phone');
+        if (phoneInputEl) {
+            phoneInputEl.addEventListener('input', () => {
+                phoneInputEl.classList.remove("border-amber-500", "ring-2", "ring-amber-500/50");
+                const phoneNotice = document.getElementById("phone-required-state");
+                if (phoneNotice) phoneNotice.classList.add("hidden");
             });
         }
 

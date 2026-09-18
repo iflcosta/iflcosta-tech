@@ -348,3 +348,29 @@ advanceOSStatus(Entregue) -> Supabase .update({status: Entregue})
 - **Auditoria de IDs DOM**: 260 chamadas a `getElementById` auditadas contra o DOM — 100% validas.
 - **Sintaxe JavaScript**: Executado `node --check` em todos os blocos de script em `index.html`, `admin.html` e `portal.html` — 0 erros.
 - **Paridade da Triade**: `admin.html`, `app.html` e `app/index.html` verificados com hashes SHA-256 identicos.
+
+---
+
+## 12. SISTEMA DESKTOP LIFE & BUSINESS OPS (PYTHON / CUSTOMTKINTER) & PROJETO E-BIKE BBSHD 1000W
+
+### 12.1. Arquitetura do Aplicativo Desktop (`apps/life-ops`)
+- **`main.py`**: Entrypoint que inicializa as tabelas SQLite e lança a janela principal CustomTkinter.
+- **`database.py`**: Gerenciador local SQLite (`life_ops.db`) contendo tabelas de potes (`pots`), transações (`transactions`), rotina (`routine_logs`), hardware flips (`flip_projects`), aquisição da E-Bike (`ebike_procurement`) e saídas do Leva-e-Traz (`ebike_trips`).
+- **`engine_finance.py`**: Motor de cota diária segura, projeção de saldo para 30 dias e simulador de impacto de compras.
+- **`engine_ebike.py`**: Motor de logística Leva-e-Traz, CPK decomposto (R$ 0,234/km), cálculo dinâmico de taxas (R$ 0,89/km, piso R$ 6,50), segregação financeira (26% Manutenção / 35% Bateria / 39% Amortização) e rastreamento da meta de poupança CAPEX (R$ 11.000,00 com aportes de R$ 1.833,00/mês).
+- **`engine_routine.py`**: Rastreamento de time-blocking com modo full-time founder e bloco dedicado `🚲 Concierge Leva-e-Traz (E-Bike BBSHD)`.
+- **`engine_hardware.py`**: Calculadora de flips de computadores e telemetria read-only ultrarrápida do Supabase Cloud.
+- **`ui_app.py`**: Interface gráfica desktop moderna em Dark Mode com abas: Fluxo de Caixa, Simulador de Compras, E-Bike Logística, Hardware Flip, Rotina & Foco e Configurações.
+- **`test_ebike.py`**: Suíte de testes unitários automatizados validando 100% dos cálculos, persistência e regras de segregação.
+
+### 12.2. Dossiê Oficial do Projeto E-Bike BBSHD 1000W
+- **Documentação Master**: `docs/ops/PLANO_MESTRE_EBIKE_BBSHD_LOGISTICA.md`
+- **Topografia & Aplicação**: Bragança Paulista/SP (aclives de 15% a 25%). Quadro 17" Aro 29 alumínio hidroformado com movimento central rosqueado BSA 68-73 mm.
+- **Carga de Trabalho**: Mochila técnica 59x59x25 cm transportando até gabinetes Full Tower (18 a 25 kg). Remoção obrigatória da GPU no transporte.
+- **Powertrain & Legalidade**: Motor Central Bafang BBSHD 1000W (160 Nm) com bateria Hailong Li-ion NMC 48V/52V 20Ah (~1000 Wh). Assistência limitada a 32 km/h conforme Resolução CONTRAN 996/2023 (isento de CNH e emplacamento).
+- **Engenharia Financeira**:
+  - **CAPEX**: R$ 11.000,00 via 6 aportes de R$ 1.833,00/mês (Out/26 a Mar/27) em CDI com compras 100% no Brasil.
+  - **Cronograma**: Fase 1 (M1 a M4 - Mecânica, ferramentas e CONTRAN 996 aproveitando Black Friday) e Fase 2 (M5 e M6 - Powertrain e bateria adquiridos na semana da montagem).
+  - **OPEX / CPK**: R$ 0,234/km (energia R$ 0,017, amortização bateria R$ 0,082, transmissão R$ 0,075, freios/pneus R$ 0,045, preventiva R$ 0,015).
+  - **Precificação ao Cliente**: R$ 0,89/km com piso de R$ 6,50 (margem líquida de ~74% / R$ 0,656/km). Economia indireta de ~R$ 920,00/mês contra Uber/motoboy.
+
