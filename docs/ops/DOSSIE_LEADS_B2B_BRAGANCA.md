@@ -32,12 +32,31 @@ flowchart TD
     H --> I["Rua José Domingues: Clínica Bragança (#238)"]
 ```
 
+## 🚨 SEÇÃO DE OURO: 3 LEADS COM FALHAS DIGITAIS PÚBLICAS (GATILHO IMEDIATO)
+Estas 3 empresas em Bragança Paulista estão com problemas graves visíveis para qualquer cliente. Abordá-los avisando sobre o erro quebra qualquer objeção e cria gratidão e autoridade imediatas:
+
+1. **Nardo Contabilidade** (`nardocontabilidade.com.br`):
+   - **Status:** Alerta vermelho no Chrome (`NET::ERR_CERT_DATE_INVALID` - Certificado SSL Expirado).
+   - **Risco:** Qualquer cliente que acessa vê aviso de que o site é "perigoso e pode roubar senhas".
+   - **Ação:** Instalação emergencial de SSL e blindagem de domínio.
+2. **Mucci Contabilidade** (`muccicontabilidade.com.br`):
+   - **Status:** Site 100% FORA DO AR com tela de erro fatal: *"Your server is running PHP version 7.2.34 but WordPress requires at least 7.4"*.
+   - **Risco:** Vergonha pública e perda de leads contábeis que pesquisam a empresa no Google.
+   - **Ação:** Upgrade do PHP no servidor/cPanel e restabelecimento do WordPress em 20 minutos.
+3. **VFO Contabilidade** (`vfocontabil.com.br`):
+   - **Status:** Site congelado no tempo ("Copyright © 2013"), sem versão mobile responsiva, e-mails expostos a robôs de spam e sem botão de WhatsApp.
+   - **Ação:** Modernização de presença digital (Landing Page de alta conversão) e plano MSP para o escritório.
+
 ---
 
 ## 📋 3. TABELA GERAL DE LEADS QUALIFICADOS (ALTO POTENCIAL B2B)
 
 | # | Empresa | Segmento | Endereço em Bragança Paulista | Tomador(es) de Decisão / Sócios | Contato Direto |
 |---|---|---|---|---|---|
+| **🔥 01** | **Nardo Contabilidade** | Assessoria Contábil & Fiscal | R. Dom Aguirre, 1.171 (Centro) | **Érico Nardo** | (11) 4034-3164 / 4032-4765 |
+| **🔥 02** | **Mucci Contabilidade** | Contabilidade & Condomínios | R. Ercílio Baratella, 157 (Sta. Helena) | **Sinval Mucci** | (11) 4033-4284 / 4032-1355 |
+| **🔥 03** | **VFO Contabilidade** | Controladoria & Gestão | Av. José Gomes da Rocha Leal, 371 (Centro) | **Osmar Eduardo**, **Valter**, **Fernanda** | (11) 2473-5563 / vfocontabil.com.br |
+| **04** | **Contábil Lima** | Contabilidade Tradicional | R. Cel. João Leme, 1019 (Centro) | **Orlando Lima** (CEO), **Priscila Gonçalves** | (11) 4033-3709 |
 | **01** | **Dominicci Contabilidade** | Contábil / Condominial | R. Cel. João Leme, 286 - Sala 03 (Centro) | **César Dominicci**, **Alessandra Dominicci**, **Thaissa Dominicci** | (11) 97506-6860 |
 | **02** | **Imperial Contabilidade** | Contabilidade Empresarial | R. Cel. João Leme, 460 - Sala 401 (Centro) | **Ulisses Jesus da Silva**, **Felipe Moreno** | imperialcontabilidadebp.com.br |
 | **03** | **Gomes da Silva Contadores** | Contabilidade Tradicional | Av. Pres. Castelo Branco, 468 (Tanque do Moinho) | **Ariosto B. Gomes da Silva**, **Rosana da Cruz**, **Ariosto Neto** | (11) 4031-0500 |
