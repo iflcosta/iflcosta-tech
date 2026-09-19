@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>IF Tech - Anúncios Mobile-First WhatsApp</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: #030304;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            padding: 60px 0;
+        }
+
+        /* ============================================================
+           SHARED BRUTALIST NEON COMPONENTS & UTILITIES
+        ============================================================ */
+        .technical-grid {
+            background-color: #0A0A0C;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Subtle technical grid background */
+        .technical-grid::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+            background-size: 54px 54px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Neon Radial Glow at Top-Left & Bottom-Right */
+        .technical-grid::after {
+            content: '';
+            position: absolute;
+            top: -150px;
+            left: -150px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(204, 255, 0, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .ambient-glow-wa {
+            position: absolute;
+            bottom: 100px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 211, 102, 0.09) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .inner-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Brand Header */
+        .brand-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #222226;
+            padding-bottom: 20px;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-symbol {
+            width: 54px; 
+            height: 54px;
+            background-color: #CCFF00;
+            color: #0A0A0C;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%);
+            box-shadow: 0 0 24px rgba(204, 255, 0, 0.5);
+            letter-spacing: -1px;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #FFFFFF;
+            line-height: 1;
+        }
+
+        .brand-cat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #A1A1AA;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .location-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #141418;
+            border: 1.5px solid #2E2E34;
+            padding: 10px 18px;
+            border-radius: 9999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #E4E4E7;
+            letter-spacing: 0.5px;
+        }
+
+        .radar-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #CCFF00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #CCFF00;
+            position: relative;
+        }
+
+        /* Banner Pills / Badges */
+        .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .badge-offer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 900;
+            background-color: #CCFF00;
+            color: #0A0A0C;
+            padding: 8px 18px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-sos {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 800;
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 1.5px solid #EF4444;
+            color: #FCA5A5;
+            padding: 7px 16px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-logistica {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 800;
+            background-color: rgba(37, 211, 102, 0.12);
+            border: 1.5px solid #25D366;
+            color: #25D366;
+            padding: 7px 16px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Headlines */
+        .headline-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .main-headline {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -2.5px;
+            text-transform: uppercase;
+            color: #FFFFFF;
+        }
+
+        .main-headline .highlight-lime {
+            color: #CCFF00;
+            text-shadow: 0 0 35px rgba(204, 255, 0, 0.35);
+        }
+
+        .main-headline .highlight-wa {
+            color: #25D366;
+            text-shadow: 0 0 35px rgba(37, 211, 102, 0.35);
+        }
+
+        .sub-lead {
+            font-size: 24px;
+            color: #D4D4D8;
+            font-weight: 500;
+            line-height: 1.35;
+            border-left: 4px solid #CCFF00;
+            padding-left: 18px;
+            margin-top: 4px;
+        }
+
+        .sub-lead strong {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        /* Bento / Checklist Card */
+        .bento-card {
+            background-color: #121216;
+            border: 2px solid #27272E;
+            border-radius: 12px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+
+        .bento-card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 800;
+            color: #CCFF00;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #222228;
+            padding-bottom: 12px;
+        }
+
+        .check-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 21px;
+            color: #F4F4F5;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .check-item strong {
+            color: #FFFFFF;
+            font-weight: 800;
+        }
+
+        .check-icon-box {
+            width: 32px;
+            height: 32px;
+            background-color: rgba(204, 255, 0, 0.15);
+            border: 2px solid #CCFF00;
+            color: #CCFF00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            font-weight: 900;
+            flex-shrink: 0;
+            border-radius: 6px;
+            box-shadow: 0 0 12px rgba(204, 255, 0, 0.25);
+        }
+
+        /* Pricing Card */
+        .pricing-box {
+            background-color: #101014;
+            border: 2.5px solid #CCFF00;
+            border-radius: 12px;
+            padding: 22px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 35px rgba(204, 255, 0, 0.18), inset 0 0 20px rgba(204, 255, 0, 0.05);
+        }
+
+        .pricing-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .pricing-old {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            color: #71717A;
+            text-decoration: line-through;
+            font-weight: 700;
+        }
+
+        .pricing-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            color: #D4D4D8;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .pricing-terms {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            color: #A1A1AA;
+            margin-top: 3px;
+        }
+
+        .pricing-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .pricing-currency {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 800;
+            color: #CCFF00;
+        }
+
+        .pricing-amount {
+            font-family: 'Inter', sans-serif;
+            font-size: 76px;
+            font-weight: 900;
+            color: #CCFF00;
+            line-height: 0.95;
+            letter-spacing: -3px;
+            text-shadow: 0 0 25px rgba(204, 255, 0, 0.4);
+        }
+
+        .pricing-badge-save {
+            background-color: #27272E;
+            color: #CCFF00;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-top: 6px;
+            border: 1px solid rgba(204, 255, 0, 0.3);
+        }
+
+        /* WhatsApp Master CTA Button */
+        .cta-whatsapp-btn {
+            background: linear-gradient(135deg, #25D366 0%, #1EBE5D 100%);
+            border: 2px solid #58F58D;
+            border-radius: 14px;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 14px 40px rgba(37, 211, 102, 0.45);
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-whatsapp-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+            pointer-events: none;
+        }
+
+        .cta-left-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cta-wa-icon {
+            width: 58px;
+            height: 58px;
+            background-color: #FFFFFF;
+            color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .cta-text-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cta-main-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            color: #042410;
+            letter-spacing: -0.5px;
+            line-height: 1.05;
+            text-transform: uppercase;
+        }
+
+        .cta-sub-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #073819;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-arrow-box {
+            width: 48px;
+            height: 48px;
+            background-color: #042410;
+            color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        /* Footer & Trust Badges */
+        .trust-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #222226;
+            padding-top: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #8E8E93;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trust-bullet {
+            width: 6px;
+            height: 6px;
+            background-color: #CCFF00;
+            border-radius: 50%;
+        }
+
+
+        /* ============================================================
+           SPECIFIC FORMAT 1: STORIES / REELS / STATUS (9:16 - 1080x1920)
+           Strict Safe Zone: Top 250px & Bottom 250px padding
+        ============================================================ */
+        #anuncio-9-16 {
+            width: 1080px;
+            height: 1920px;
+            /* SAFE ZONE: Top 250px, Bottom 250px, Sides 64px */
+            padding: 260px 64px 260px 64px;
+            box-sizing: border-box;
+        }
+
+        #anuncio-9-16 .inner-content {
+            gap: 24px;
+        }
+
+        #anuncio-9-16 .main-headline {
+            font-size: 74px;
+            letter-spacing: -2.5px;
+            margin-top: 4px;
+        }
+
+        #anuncio-9-16 .sub-lead {
+            font-size: 25px;
+            line-height: 1.35;
+        }
+
+        #anuncio-9-16 .bento-card {
+            padding: 26px 30px;
+            gap: 18px;
+        }
+
+        #anuncio-9-16 .check-item {
+            font-size: 22px;
+            gap: 18px;
+        }
+
+        #anuncio-9-16 .pricing-box {
+            padding: 24px 30px;
+        }
+
+        #anuncio-9-16 .pricing-amount {
+            font-size: 82px;
+        }
+
+        #anuncio-9-16 .cta-whatsapp-btn {
+            padding: 26px 34px;
+        }
+
+        #anuncio-9-16 .cta-main-text {
+            font-size: 34px;
+        }
+
+
+        /* ============================================================
+           SPECIFIC FORMAT 2: VERTICAL FEED (4:5 - 1080x1350)
+           78% more screen real estate than 1:1 square
+        ============================================================ */
+        #anuncio-4-5 {
+            width: 1080px;
+            height: 1350px;
+            padding: 48px 54px;
+            box-sizing: border-box;
+        }
+
+        #anuncio-4-5 .inner-content {
+            gap: 14px;
+        }
+
+        #anuncio-4-5 .brand-header {
+            padding-bottom: 14px;
+        }
+
+        #anuncio-4-5 .main-headline {
+            font-size: 60px;
+            line-height: 1.05;
+            letter-spacing: -2px;
+        }
+
+        #anuncio-4-5 .sub-lead {
+            font-size: 20px;
+            line-height: 1.3;
+            padding-left: 14px;
+        }
+
+        #anuncio-4-5 .bento-card {
+            padding: 18px 22px;
+            gap: 12px;
+        }
+
+        #anuncio-4-5 .bento-card-title {
+            font-size: 14px;
+            padding-bottom: 8px;
+        }
+
+        #anuncio-4-5 .check-item {
+            font-size: 18px;
+            gap: 14px;
+        }
+
+        #anuncio-4-5 .check-icon-box {
+            width: 28px;
+            height: 28px;
+            font-size: 15px;
+        }
+
+        #anuncio-4-5 .pricing-box {
+            padding: 16px 22px;
+        }
+
+        #anuncio-4-5 .pricing-old {
+            font-size: 19px;
+        }
+
+        #anuncio-4-5 .pricing-amount {
+            font-size: 68px;
+        }
+
+        #anuncio-4-5 .cta-whatsapp-btn {
+            padding: 18px 24px;
+            border-radius: 12px;
+        }
+
+        #anuncio-4-5 .cta-main-text {
+            font-size: 28px;
+        }
+
+        #anuncio-4-5 .cta-sub-text {
+            font-size: 13px;
+        }
+
+        #anuncio-4-5 .cta-wa-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        #anuncio-4-5 .trust-footer {
+            padding-top: 12px;
+            font-size: 13px;
+        }
+
+
+        /* ============================================================
+           SPECIFIC FORMAT 3: CLASSIC SQUARE (1:1 - 1080x1080)
+           Universal multi-placement fallback
+        ============================================================ */
+        #anuncio-1-1 {
+            width: 1080px;
+            height: 1080px;
+            padding: 40px 48px;
+            box-sizing: border-box;
+        }
+
+        #anuncio-1-1 .inner-content {
+            gap: 12px;
+        }
+
+        #anuncio-1-1 .brand-header {
+            padding-bottom: 12px;
+        }
+
+        #anuncio-1-1 .main-headline {
+            font-size: 50px;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+        }
+
+        #anuncio-1-1 .sub-lead {
+            font-size: 18px;
+            line-height: 1.25;
+            padding-left: 12px;
+        }
+
+        #anuncio-1-1 .bento-card {
+            padding: 14px 18px;
+            gap: 9px;
+        }
+
+        #anuncio-1-1 .check-item {
+            font-size: 16px;
+            gap: 12px;
+        }
+
+        #anuncio-1-1 .pricing-box {
+            padding: 14px 18px;
+        }
+
+        #anuncio-1-1 .pricing-amount {
+            font-size: 58px;
+        }
+
+        #anuncio-1-1 .cta-whatsapp-btn {
+            padding: 15px 20px;
+        }
+
+        #anuncio-1-1 .cta-main-text {
+            font-size: 24px;
+        }
+
+        #anuncio-1-1 .trust-footer {
+            padding-top: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====================================================================
+         CRIATIVO 1: STORIES / REELS / WHATSAPP STATUS (9:16 - 1080x1920)
+         100% Mobile Fullscreen com Safe Zone Ativa (260px Top / 260px Bottom)
+    ==================================================================== -->
+    <div id="anuncio-9-16" class="technical-grid">
+        <div class="ambient-glow-wa"></div>
+        <div class="inner-content">
+            
+            <!-- HEADER DA MARCA & PRAÇA -->
+            <div class="brand-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div class="brand-info">
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Engenharia de Hardware & TI</div>
+                    </div>
+                </div>
+                <div class="location-pill">
+                    <div class="radar-dot"></div>
+                    <span>Bragança Paulista & Região</span>
+                </div>
+            </div>
+
+            <!-- BADGES DE ANCORAGEM -->
+            <div class="badge-row">
+                <div class="badge-offer">⚡ 35% OFF • INAUGURAÇÃO</div>
+                <div class="badge-sos">🚨 SOS COMPUTADOR LENTO</div>
+                <div class="badge-logistica">🛵 LEVA-E-TRAZ NA PORTA</div>
+            </div>
+
+            <!-- HEADLINE DE ALTA CONVERSÃO -->
+            <div class="headline-section">
+                <h1 class="main-headline">
+                    PC TRAVANDO OU ESQUENTANDO?<br>
+                    <span class="highlight-lime">DEIXE NOVO DE NOVO</span><br>
+                    SEM SAIR DE CASA.
+                </h1>
+                <p class="sub-lead">
+                    Não perca tempo levando máquina pesada ao centro. <strong>Buscamos no seu endereço em Bragança</strong> e devolvemos com desempenho cirúrgico.
+                </p>
+            </div>
+
+            <!-- CHECKLIST BENTO CARD -->
+            <div class="bento-card">
+                <div class="bento-card-title">
+                    <span>⚙️</span> O QUE ESTÁ INCLUSO NO COMBO COMPLETO:
+                </div>
+                <div class="check-grid">
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Limpeza Técnica Profunda:</strong> Desmontagem integral & banho isopropílico</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Pasta Térmica Arctic MX-6:</strong> Redução drástica de temperatura (-20°C)</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Formatação & Otimização:</strong> Windows limpo, veloz e sem travamentos</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Leva-e-Traz Seguro:</strong> Coleta e entrega com Termo Digital de Responsabilidade</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRICING ANCHOR BOX -->
+            <div class="pricing-box">
+                <div class="pricing-details">
+                    <div class="pricing-old">De R$ 415,00</div>
+                    <div class="pricing-label">Condição de Inauguração:</div>
+                    <div class="pricing-terms">À vista via Pix ou até 2x no cartão • CDC 90 dias</div>
+                </div>
+                <div class="pricing-right">
+                    <div class="pricing-currency">R$</div>
+                    <div class="pricing-amount">230</div>
+                    <div class="pricing-badge-save">ECONOMIA DE R$ 185,00</div>
+                </div>
+            </div>
+
+            <!-- MASTER WHATSAPP CTA BUTTON -->
+            <div class="cta-whatsapp-btn">
+                <div class="cta-left-content">
+                    <div class="cta-wa-icon">
+                        <!-- Official WhatsApp SVG Icon -->
+                        <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.188 8.188 0 0 1-5.82 2.41c-1.47 0-2.92-.39-4.18-1.14l-.3-.18-3.11.82.83-3.03-.2-.31a8.21 8.21 0 0 1-1.26-4.41c0-4.54 3.7-8.24 8.24-8.24zm4.72 11.51c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.09-1.3-.77-.69-1.29-1.54-1.44-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.79-1.92-.21-.5-.42-.43-.58-.44h-.49c-.17 0-.45.06-.69.32-.24.26-.92.9-.92 2.2 0 1.3 1 2.56 1.14 2.74.14.19 1.97 3.01 4.78 4.22.67.29 1.19.46 1.6.59.67.21 1.28.18 1.76.11.54-.08 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.18-.5-.31z"/>
+                        </svg>
+                    </div>
+                    <div class="cta-text-group">
+                        <div class="cta-main-text">CHAMAR NO WHATSAPP EM 1 CLIQUE</div>
+                        <div class="cta-sub-text">⚡ Atendimento Direto com Especialista • Resposta Rápida</div>
+                    </div>
+                </div>
+                <div class="cta-arrow-box">➜</div>
+            </div>
+
+            <!-- TRUST FOOTER -->
+            <div class="trust-footer">
+                <div class="trust-item"><span class="trust-bullet"></span> Laudo Técnico em PDF Incluso</div>
+                <div class="trust-item"><span class="trust-bullet"></span> Garantia Legal 90 Dias CDC</div>
+                <div class="trust-item"><span class="trust-bullet"></span> Retirada Hoje em Bragança</div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ====================================================================
+         CRIATIVO 2: VERTICAL FEED (4:5 - 1080x1350)
+         O Formato de Maior Área Visual do Feed Mobile (+78% Área vs 1:1)
+    ==================================================================== -->
+    <div id="anuncio-4-5" class="technical-grid">
+        <div class="ambient-glow-wa"></div>
+        <div class="inner-content">
+            
+            <!-- HEADER DA MARCA & PRAÇA -->
+            <div class="brand-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div class="brand-info">
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Engenharia de Hardware & TI</div>
+                    </div>
+                </div>
+                <div class="location-pill">
+                    <div class="radar-dot"></div>
+                    <span>Bragança Paulista & Região</span>
+                </div>
+            </div>
+
+            <!-- BADGES DE ANCORAGEM -->
+            <div class="badge-row">
+                <div class="badge-offer">⚡ 35% OFF • INAUGURAÇÃO</div>
+                <div class="badge-sos">🚨 SOS COMPUTADOR LENTO</div>
+                <div class="badge-logistica">🛵 LEVA-E-TRAZ</div>
+            </div>
+
+            <!-- HEADLINE DE ALTA CONVERSÃO -->
+            <div class="headline-section">
+                <h1 class="main-headline">
+                    PC LENTO OU TRAVANDO?<br>
+                    <span class="highlight-lime">DEIXE NOVO DE NOVO</span><br>
+                    SEM SAIR DE CASA.
+                </h1>
+                <p class="sub-lead">
+                    Buscamos no seu endereço em Bragança Paulista. <strong>Revisão cirúrgica de bancada e entrega rápida.</strong>
+                </p>
+            </div>
+
+            <!-- CHECKLIST BENTO CARD -->
+            <div class="bento-card">
+                <div class="bento-card-title">
+                    <span>⚙️</span> COMBO COMPLETO DE INAUGURAÇÃO INCLUI:
+                </div>
+                <div class="check-grid">
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Limpeza Técnica Profunda:</strong> Desmontagem integral & banho isopropílico</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Pasta Arctic MX-6:</strong> Troca da pasta térmica original ressecada</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Formatação & Otimização:</strong> Windows voando sem perda de arquivos</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div><strong>Leva-e-Traz na Porta:</strong> Com Termo Digital e laudo de temperatura</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRICING ANCHOR BOX -->
+            <div class="pricing-box">
+                <div class="pricing-details">
+                    <div class="pricing-old">De R$ 415,00</div>
+                    <div class="pricing-label">Condição de Inauguração:</div>
+                    <div class="pricing-terms">À vista via Pix ou até 2x no cartão • CDC 90 dias</div>
+                </div>
+                <div class="pricing-right">
+                    <div class="pricing-currency">R$</div>
+                    <div class="pricing-amount">230</div>
+                    <div class="pricing-badge-save">ECONOMIA DE R$ 185</div>
+                </div>
+            </div>
+
+            <!-- MASTER WHATSAPP CTA BUTTON -->
+            <div class="cta-whatsapp-btn">
+                <div class="cta-left-content">
+                    <div class="cta-wa-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.188 8.188 0 0 1-5.82 2.41c-1.47 0-2.92-.39-4.18-1.14l-.3-.18-3.11.82.83-3.03-.2-.31a8.21 8.21 0 0 1-1.26-4.41c0-4.54 3.7-8.24 8.24-8.24zm4.72 11.51c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.09-1.3-.77-.69-1.29-1.54-1.44-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.79-1.92-.21-.5-.42-.43-.58-.44h-.49c-.17 0-.45.06-.69.32-.24.26-.92.9-.92 2.2 0 1.3 1 2.56 1.14 2.74.14.19 1.97 3.01 4.78 4.22.67.29 1.19.46 1.6.59.67.21 1.28.18 1.76.11.54-.08 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.18-.5-.31z"/>
+                        </svg>
+                    </div>
+                    <div class="cta-text-group">
+                        <div class="cta-main-text">TOQUE PARA CHAMAR NO WHATSAPP</div>
+                        <div class="cta-sub-text">⚡ Atendimento Direto com Especialista • Resposta Rápida</div>
+                    </div>
+                </div>
+                <div class="cta-arrow-box">➜</div>
+            </div>
+
+            <!-- TRUST FOOTER -->
+            <div class="trust-footer">
+                <div class="trust-item"><span class="trust-bullet"></span> Laudo Técnico em PDF</div>
+                <div class="trust-item"><span class="trust-bullet"></span> Garantia CDC 90 Dias</div>
+                <div class="trust-item"><span class="trust-bullet"></span> Retirada Hoje em Bragança</div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ====================================================================
+         CRIATIVO 3: QUADRADO (1:1 - 1080x1080)
+         Formato Versátil para Feed Padrão e Compartilhamentos
+    ==================================================================== -->
+    <div id="anuncio-1-1" class="technical-grid">
+        <div class="ambient-glow-wa"></div>
+        <div class="inner-content">
+            
+            <!-- HEADER DA MARCA & PRAÇA -->
+            <div class="brand-header">
+                <div class="brand-badge">
+                    <div class="logo-symbol">IF</div>
+                    <div class="brand-info">
+                        <div class="brand-name">IF Tech</div>
+                        <div class="brand-cat">Engenharia de Hardware</div>
+                    </div>
+                </div>
+                <div class="location-pill">
+                    <div class="radar-dot"></div>
+                    <span>Bragança Paulista</span>
+                </div>
+            </div>
+
+            <!-- BADGES DE ANCORAGEM -->
+            <div class="badge-row">
+                <div class="badge-offer">35% OFF • INAUGURAÇÃO</div>
+                <div class="badge-logistica">🛵 LEVA-E-TRAZ NA PORTA</div>
+            </div>
+
+            <!-- HEADLINE -->
+            <div class="headline-section">
+                <h1 class="main-headline">
+                    PC LENTO? <span class="highlight-lime">NOVO DE NOVO</span><br>
+                    SEM SAIR DE CASA.
+                </h1>
+                <p class="sub-lead">
+                    Buscamos no seu endereço. Limpeza profunda + Pasta Arctic MX-6 + Otimização Windows.
+                </p>
+            </div>
+
+            <!-- CHECKLIST BENTO CARD -->
+            <div class="bento-card">
+                <div class="check-grid">
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div>Desmontagem integral & banho isopropílico</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div>Troca por Pasta Térmica Premium Arctic MX-6</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div>Formatação Limpa & Otimização do Windows</div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon-box">✓</div>
+                        <div>Leva-e-Traz com Termo Digital de Responsabilidade</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRICING ANCHOR BOX -->
+            <div class="pricing-box">
+                <div class="pricing-details">
+                    <div class="pricing-old">De R$ 415,00</div>
+                    <div class="pricing-label">Por apenas:</div>
+                    <div class="pricing-terms">À vista via Pix ou até 2x no cartão</div>
+                </div>
+                <div class="pricing-right">
+                    <div class="pricing-currency">R$</div>
+                    <div class="pricing-amount">230</div>
+                </div>
+            </div>
+
+            <!-- MASTER WHATSAPP CTA BUTTON -->
+            <div class="cta-whatsapp-btn">
+                <div class="cta-left-content">
+                    <div class="cta-wa-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.188 8.188 0 0 1-5.82 2.41c-1.47 0-2.92-.39-4.18-1.14l-.3-.18-3.11.82.83-3.03-.2-.31a8.21 8.21 0 0 1-1.26-4.41c0-4.54 3.7-8.24 8.24-8.24zm4.72 11.51c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.09-1.3-.77-.69-1.29-1.54-1.44-1.8-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.79-1.92-.21-.5-.42-.43-.58-.44h-.49c-.17 0-.45.06-.69.32-.24.26-.92.9-.92 2.2 0 1.3 1 2.56 1.14 2.74.14.19 1.97 3.01 4.78 4.22.67.29 1.19.46 1.6.59.67.21 1.28.18 1.76.11.54-.08 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.18-.5-.31z"/>
+                        </svg>
+                    </div>
+                    <div class="cta-text-group">
+                        <div class="cta-main-text">CHAMAR NO WHATSAPP AGORA</div>
+                        <div class="cta-sub-text">⚡ Resposta Rápida • Atendimento com Iago</div>
+                    </div>
+                </div>
+                <div class="cta-arrow-box">➜</div>
+            </div>
+
+            <!-- TRUST FOOTER -->
+            <div class="trust-footer">
+                <div class="trust-item"><span class="trust-bullet"></span> Laudo em PDF</div>
+                <div class="trust-item"><span class="trust-bullet"></span> Garantia 90 Dias</div>
+                <div class="trust-item"><span class="trust-bullet"></span> Retirada Hoje</div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
