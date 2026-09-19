@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrossel Feed 1:1 (1080x1080) - IF Tech Suporte TI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #121214;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+      padding: 40px 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* SQUARE CANVAS: 1080 x 1080 px (Meta Feed Carousel Standard) */
+    .feed-canvas {
+      width: 1080px;
+      height: 1080px;
+      background-color: #08080a;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 64px 74px 54px 74px;
+      color: #ffffff;
+    }
+
+    /* Cyber grid & ambient glow */
+    .feed-canvas::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .ambient-glow {
+      position: absolute;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(204, 255, 0, 0.12) 0%, rgba(204, 255, 0, 0) 70%);
+      top: 15%;
+      left: 65%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      filter: blur(55px);
+    }
+
+    .ambient-glow-bottom {
+      position: absolute;
+      width: 600px;
+      height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37, 211, 102, 0.1) 0%, rgba(37, 211, 102, 0) 70%);
+      bottom: 0;
+      left: 30%;
+      transform: translate(-50%, 0);
+      pointer-events: none;
+      filter: blur(50px);
+    }
+
+    /* TOP ZONE: Left aligned pill (leaves top-right clear for Meta's native 1/5 overlay) */
+    .top-bar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 24px;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 100px;
+      padding: 10px 24px;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #e4e4e7;
+    }
+    .badge-dot {
+      width: 12px;
+      height: 12px;
+      background: #ccff00;
+      border-radius: 50%;
+      box-shadow: 0 0 14px #ccff00;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .headline {
+      font-size: 64px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      text-transform: uppercase;
+    }
+    .headline .highlight-lime {
+      color: #ccff00;
+      text-shadow: 0 0 35px rgba(204, 255, 0, 0.35);
+      display: block;
+    }
+
+    .subhead {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.32;
+      color: #d4d4d8;
+      border-left: 5px solid #ccff00;
+      padding-left: 20px;
+    }
+    .subhead strong {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    /* CARD DE BENEFÍCIOS 1:1 */
+    .features-card {
+      background: linear-gradient(180deg, rgba(22, 22, 26, 0.96) 0%, rgba(12, 12, 16, 0.98) 100%);
+      border: 2px solid rgba(204, 255, 0, 0.28);
+      border-radius: 26px;
+      padding: 30px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(204, 255, 0, 0.04);
+      margin-top: 6px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .feature-icon {
+      font-size: 28px;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(204, 255, 0, 0.12);
+      border: 1.5px solid rgba(204, 255, 0, 0.45);
+      border-radius: 14px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(204, 255, 0, 0.15);
+    }
+    .feature-text {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      letter-spacing: -0.2px;
+    }
+
+    /* BOTTOM ZONE: Visual cue pointing to Meta's native "Enviar mensagem" bar */
+    .bottom-cue {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: rgba(37, 211, 102, 0.1);
+      border: 1.5px solid rgba(37, 211, 102, 0.4);
+      border-radius: 100px;
+      padding: 12px 28px;
+      margin-top: 14px;
+    }
+    .cue-text {
+      font-size: 23px;
+      font-weight: 800;
+      color: #25D366;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .cue-arrow {
+      font-size: 22px;
+      color: #25D366;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================== -->
+  <!-- CARD 1: O GANCHO DE IMPACTO (Notebook ou PC Travando)          -->
+  <!-- ============================================================== -->
+  <div id="feed-card-1" class="feed-canvas">
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-bottom"></div>
+
+    <div>
+      <div class="top-bar">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          Atendimento VIP em Bragança
+        </div>
+      </div>
+
+      <div class="main-content">
+        <h1 class="headline">
+          Notebook ou PC travando?
+          <span class="highlight-lime">Resolva com especialista.</span>
+        </h1>
+
+        <p class="subhead">
+          Consultoria e manutenção de alto nível.<br>
+          <strong>Buscamos no seu endereço.</strong>
+        </p>
+
+        <div class="features-card">
+          <div class="feature-item">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-text">Atendimento direto com Iago Costa</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🚚</div>
+            <div class="feature-text">Serviço Leva-e-Traz na sua porta</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-text">Laudo pericial e garantia de 90 dias</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-cue">
+      <span class="cue-text">Toque abaixo para falar no WhatsApp</span>
+      <span class="cue-arrow">👇</span>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- CARD 2: GESTÃO & SUPORTE DE TI CORPORATIVO (Para Empresas)    -->
+  <!-- ============================================================== -->
+  <div id="feed-card-2" class="feed-canvas">
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-bottom"></div>
+
+    <div>
+      <div class="top-bar">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          Suporte de TI para Empresas
+        </div>
+      </div>
+
+      <div class="main-content">
+        <h1 class="headline">
+          Sua empresa travada por TI?
+          <span class="highlight-lime">Gestão proativa de verdade.</span>
+        </h1>
+
+        <p class="subhead">
+          Escritórios, clínicas e empresas locais.<br>
+          <strong>Sua equipe trabalhando 100% sem paradas.</strong>
+        </p>
+
+        <div class="features-card">
+          <div class="feature-item">
+            <div class="feature-icon">🚀</div>
+            <div class="feature-text">Suporte presencial e remoto com SLA rápido</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🛠️</div>
+            <div class="feature-text">Manutenção preventiva de computadores</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🌐</div>
+            <div class="feature-text">Estabilidade de rede, servidores e sistemas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-cue">
+      <span class="cue-text">Toque abaixo para consultar suporte B2B</span>
+      <span class="cue-arrow">👇</span>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- CARD 3: BLINDAGEM DE DADOS & BACKUP 3-2-1                     -->
+  <!-- ============================================================== -->
+  <div id="feed-card-3" class="feed-canvas">
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-bottom"></div>
+
+    <div>
+      <div class="top-bar">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          Segurança & Continuidade
+        </div>
+      </div>
+
+      <div class="main-content">
+        <h1 class="headline">
+          Já pensou perder arquivos?
+          <span class="highlight-lime">Blindamos seus dados.</span>
+        </h1>
+
+        <p class="subhead">
+          Proteção contra falhas de disco e vírus.<br>
+          <strong>Seu negócio seguro e em conformidade LGPD.</strong>
+        </p>
+
+        <div class="features-card">
+          <div class="feature-item">
+            <div class="feature-icon">💾</div>
+            <div class="feature-text">Rotinas de Backup 3-2-1 em nuvem privada</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🔒</div>
+            <div class="feature-text">Criptografia e proteção contra ransomware</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-text">Recuperação rápida de dados em pane</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-cue">
+      <span class="cue-text">Toque abaixo para blindar seus dados</span>
+      <span class="cue-arrow">👇</span>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- CARD 4: ENGENHARIA DE HARDWARE & REVITALIZAÇÃO DE MÁQUINAS     -->
+  <!-- ============================================================== -->
+  <div id="feed-card-4" class="feed-canvas">
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-bottom"></div>
+
+    <div>
+      <div class="top-bar">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          Engenharia & Performance
+        </div>
+      </div>
+
+      <div class="main-content">
+        <h1 class="headline">
+          Máquinas velozes e focadas.
+          <span class="highlight-lime">Zero lentidão.</span>
+        </h1>
+
+        <p class="subhead">
+          Aceleramos seus computadores.<br>
+          <strong>Sem você gastar fortunas com máquinas novas.</strong>
+        </p>
+
+        <div class="features-card">
+          <div class="feature-item">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-text">Upgrades de SSD NVMe e Memória de ponta</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">❄️</div>
+            <div class="feature-text">Troca térmica com Arctic MX-6 (-20°C)</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🚚</div>
+            <div class="feature-text">Coleta e entrega Concierge em Bragança</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-cue">
+      <span class="cue-text">Toque abaixo para agendar avaliação</span>
+      <span class="cue-arrow">👇</span>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- CARD 5: INSTITUCIONAL / AUTÔNOMO COM LABORATÓRIO PRÓPRIO       -->
+  <!-- ============================================================== -->
+  <div id="feed-card-5" class="feed-canvas">
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-bottom"></div>
+
+    <div>
+      <div class="top-bar">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          Laboratório Próprio & Preço Justo
+        </div>
+      </div>
+
+      <div class="main-content">
+        <h1 class="headline">
+          Alto padrão. Preço justo.
+          <span class="highlight-lime">Zero intermediários.</span>
+        </h1>
+
+        <p class="subhead">
+          Especialista autônomo com bancada própria.<br>
+          <strong>Elimino custos de lojas e entrego engenharia real.</strong>
+        </p>
+
+        <div class="features-card">
+          <div class="feature-item">
+            <div class="feature-icon">🔬</div>
+            <div class="feature-text">Laboratório de precisão próprio em Bragança</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🤝</div>
+            <div class="feature-text">Você fala direto com quem resolve sua máquina</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">💰</div>
+            <div class="feature-text">Sem taxas de balcão de loja ou comissões</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-cue">
+      <span class="cue-text">Toque abaixo e fale direto com Iago</span>
+      <span class="cue-arrow">👇</span>
+    </div>
+  </div>
+
+</body>
+</html>
