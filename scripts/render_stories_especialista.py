@@ -1,0 +1,59 @@
+import os
+import shutil
+from playwright.sync_api import sync_playwright
+
+def render_stories():
+    html_path = os.path.abspath('assets/anuncio_stories_especialista.html')
+    output_dir_repo = os.path.abspath('marketing/campanhas-inauguracao/05_STORIES_ESPECIALISTA_ALTO_NIVEL')
+    output_dir_desktop = os.path.abspath('C:/Users/Iago/OneDrive/Desktop/CAMPANHAS_INSTAGRAM_IFTECH/05_STORIES_ESPECIALISTA_ALTO_NIVEL')
+    
+    os.makedirs(output_dir_repo, exist_ok=True)
+    os.makedirs(output_dir_desktop, exist_ok=True)
+
+    targets = [
+        {
+            "selector": "#story-variante-1",
+            "filename": "story_01_fale_com_especialista_9x16.png",
+            "desc": "Story 9:16 - Fale Direto com o Especialista (Minimalista & Alta Legibilidade)"
+        },
+        {
+            "selector": "#story-variante-2",
+            "filename": "story_02_notebook_pc_travando_vip_9x16.png",
+            "desc": "Story 9:16 - Notebook ou PC Travando VIP (Tipografia Extra Grande)"
+        }
+    ]
+
+    print("==================================================")
+    print("Renderizando Stories 9:16 de Alto Nível com Playwright...")
+    print(f"Origem do Template: {html_path}")
+    print("==================================================")
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={'width': 1400, 'height': 4500, 'device_scale_factor': 1})
+        page.goto(f'file:///{html_path}')
+        
+        page.wait_for_load_state('networkidle')
+        page.wait_for_timeout(2500)
+
+        for t in targets:
+            sel = t["selector"]
+            fname = t["filename"]
+            
+            repo_file = os.path.join(output_dir_repo, fname)
+            desktop_file = os.path.join(output_dir_desktop, fname)
+            
+            element = page.locator(sel)
+            element.screenshot(path=repo_file)
+            shutil.copyfile(repo_file, desktop_file)
+            
+            print(f"[OK] Renderizado: {fname}")
+            print(f"   -> Repositorio: {repo_file}")
+            print(f"   -> Desktop:     {desktop_file}")
+
+        browser.close()
+
+    print("\nTodos os Stories 9:16 foram renderizados e copiados com sucesso!")
+
+if __name__ == "__main__":
+    render_stories()
