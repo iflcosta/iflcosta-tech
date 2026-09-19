@@ -28,26 +28,40 @@
 
 ---
 
-## 📝 TEXTO DE LEGENDA / COPY DO ANÚNCIO (CAMPANHA DO META ADS)
+## 📝 DESCRIÇÕES DO ANÚNCIO (ESTRITAMENTE ATÉ 90 CARACTERES)
 
-### Opção 1: Direta & Foco em Conveniência (Recomendada para Stories/Feed)
-```text
-Seu computador ou empresa com suporte de alto nível em Bragança Paulista.
-🔧 Manutenção preventiva e upgrades de alta performance
-🚚 Serviço Leva-e-Traz na sua porta
-🔬 Laboratório próprio: direto com o especialista, sem intermediários e com preço justo!
+No Gerenciador de Anúncios da Meta, o campo de **Descrição** aceita no máximo 90 caracteres. Escolha uma das opções abaixo prontas para copiar e colar:
 
-Toque abaixo e converse direto comigo no WhatsApp.
-```
+### 🌟 OPÇÃO 1 (A MAIS RECOMENDADA - GERAL & ALTA CONVERSÃO)
+> `Notebook travando? Atendimento de alto nível sem sair de casa. Fale comigo no WhatsApp!`  
+> *(87/90 caracteres)*
 
-### Opção 2: Foco Empresarial & Profissional
-```text
-Notebook travando ou empresa perdendo tempo com TI lenta?
-Tenha a tranquilidade de um especialista autônomo cuidando da sua tecnologia.
-Atendimento com bancada própria, laudo técnico pericial e garantia.
+---
 
-Fale com Iago Costa no WhatsApp e receba um diagnóstico rápido!
-```
+### 🔬 OPÇÃO 2 (FOCO NO CARD INSTITUCIONAL: LABORATÓRIO & PREÇO JUSTO)
+> `Sem intermediários e preço justo: laboratório próprio de TI. Toque e fale no WhatsApp!`  
+> *(86/90 caracteres)*
+
+---
+
+### 🚚 OPÇÃO 3 (FOCO EM COMODIDADE & LEVA-E-TRAZ EM BRAGANÇA)
+> `Leva-e-Traz em Bragança Paulista. Fale direto com o especialista Iago no WhatsApp!`  
+> *(82/90 caracteres)*
+
+---
+
+### 🏢 OPÇÃO 4 (FOCO EM EMPRESAS & SUPORTE CORPORATIVO)
+> `Computador rápido e equipe sem travar. Suporte com especialista Iago. Fale no WhatsApp!`  
+> *(87/90 caracteres)*
+
+---
+
+### 📌 CASO QUEIRA PERSONALIZAR A DESCRIÇÃO DE CADA CARD DO CARROSSEL:
+* **Card 01:** `Notebook ou PC travando? Buscamos no seu endereço em Bragança. Fale no WhatsApp!` *(80/90)*
+* **Card 02:** `Suporte de TI e prevenção para empresas locais. Fale direto com Iago no WhatsApp!` *(81/90)*
+* **Card 03:** `Proteja os dados da sua empresa contra perdas e ataques. Fale direto no WhatsApp!` *(81/90)*
+* **Card 04:** `Upgrades de SSD e manutenção térmica para o seu PC voar. Chame agora no WhatsApp!` *(81/90)*
+* **Card 05:** `Laboratório próprio e atendimento direto com especialista. Sem taxas de loja. Fale!` *(83/90)*
 
 ---
 
