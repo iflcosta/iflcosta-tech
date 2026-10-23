@@ -273,6 +273,17 @@
                     </button>
                 </div>
 
+                <!-- Barra Informativa & Acesso ao Arquivo de OSs Entregues -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-zinc-950/80 border border-zinc-800/80 px-4 py-2 font-mono text-xs">
+                    <span class="text-zinc-400 flex items-center gap-1.5">
+                        <i data-lucide="info" class="w-3.5 h-3.5 text-brand shrink-0"></i>
+                        <span>Kanban exibe OSs ativas na bancada. OSs concluídas/entregues ficam arquivadas no DRE e no CRM.</span>
+                    </span>
+                    <button type="button" onclick="switchTab('financial')" class="px-3 py-1 bg-zinc-900 hover:bg-brand hover:text-black border border-zinc-700 text-zinc-300 font-bold uppercase text-[11px] transition-colors flex items-center gap-1.5 cursor-pointer shrink-0">
+                        <i data-lucide="archive" class="w-3.5 h-3.5"></i> Ver Todas as OSs Entregues (DRE 360°)
+                    </button>
+                </div>
+
                 <!-- O KANBAN DE 5 COLUNAS DA BANCADA -->
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     
@@ -508,13 +519,20 @@
                     <div class="flex-grow flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                         <div class="relative flex-grow">
                             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-zinc-500"></i>
-                            <input type="text" id="crm-search-input" oninput="filterClientsTable()" placeholder="Buscar cliente (nome, tel ou cidade)..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-4 py-2.5 text-white font-mono text-xs focus:outline-none focus:border-brand">
+                            <input type="text" id="crm-search-input" oninput="filterClientsTable()" onkeydown="if(event.key==='Enter'){filterClientsTable(); document.getElementById('crm-clients-tbody')?.scrollIntoView({behavior:'smooth', block:'nearest'});}" placeholder="Buscar cliente (nome, tel ou cidade)..." class="w-full bg-zinc-900 border border-zinc-700 pl-9 pr-4 py-2.5 text-white font-mono text-xs focus:outline-none focus:border-brand">
                         </div>
                         <select id="crm-filter-type" onchange="filterClientsTable()" class="bg-zinc-900 border border-zinc-700 px-3 py-2.5 text-white font-mono text-xs focus:outline-none focus:border-brand">
                             <option value="ALL">Todos os Tipos (B2C & B2B)</option>
                             <option value="B2C">Apenas B2C (Consumidores)</option>
                             <option value="B2B">Apenas B2B (Empresas)</option>
                         </select>
+                        <button type="button" onclick="filterClientsTable(); document.getElementById('crm-clients-tbody')?.scrollIntoView({behavior:'smooth', block:'nearest'});" class="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 border border-zinc-700 cursor-pointer transition-colors shadow-sm">
+                            <i data-lucide="search" class="w-3.5 h-3.5 text-brand"></i>
+                            <span>Buscar</span>
+                        </button>
+                        <button type="button" onclick="clearClientSearch()" title="Limpar busca" class="px-3 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white font-mono text-xs border border-zinc-700 cursor-pointer transition-colors">
+                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                        </button>
                     </div>
                     <button onclick="openNewClientModal()" class="w-full sm:w-auto px-5 py-3 bg-brand text-black font-mono font-black text-xs uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] min-h-[44px] cursor-pointer">
                         <i data-lucide="user-plus" class="w-4 h-4"></i>
@@ -891,7 +909,17 @@
                             <span class="text-brand text-xs font-bold uppercase tracking-wider block mb-1">// COCKPIT EXECUTIVO & DATA SCIENCE</span>
                             <h3 class="text-2xl sm:text-3xl font-black text-white">Demonstrativo Financeiro & Unit Economics</h3>
                         </div>
-                        <div class="flex items-center gap-3">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <!-- SELETOR DE PERÍODO DO DRE (MÊS ATUAL VS ACUMULADO) -->
+                            <div class="flex items-center gap-2 bg-zinc-900 border border-brand/60 px-2.5 py-1.5">
+                                <span class="text-zinc-400 text-[11px] uppercase font-bold flex items-center gap-1">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-brand"></i> Período:
+                                </span>
+                                <select id="dre-period-selector" onchange="setDREPeriodFilter(this.value)" class="bg-black text-brand text-xs font-bold font-mono px-2 py-1 outline-none border border-zinc-700 cursor-pointer">
+                                    <option value="current_month" selected>📅 Mês Vigente (Outubro/2026)</option>
+                                    <option value="all">🌐 Histórico Geral Acumulado</option>
+                                </select>
+                            </div>
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-brand/10 border border-brand text-brand text-xs font-bold uppercase">
                                 <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span> Telemetria BI Ativa
                             </span>
@@ -1390,9 +1418,14 @@
                         <span id="detail-os-num">#---</span> - <span id="detail-device-title" class="text-zinc-200">-</span>
                     </h3>
                 </div>
-                <button type="button" onclick="closeOSDetailModal()" class="text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800 hover:border-brand p-1.5 transition-colors cursor-pointer" title="Fechar (Esc)">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="openEditOSModal(selectedWorkOrder)" class="px-3 py-1.5 bg-yellow-400 hover:bg-white text-black font-black uppercase text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm" title="Editar Data de Entrada, Valores, Canal e Dados desta OS">
+                        <i data-lucide="edit" class="w-3.5 h-3.5"></i> ✏️ Editar OS
+                    </button>
+                    <button type="button" onclick="closeOSDetailModal()" class="text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800 hover:border-brand p-1.5 transition-colors cursor-pointer" title="Fechar (Esc)">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- CORPO ROLÁVEL COM SCROLL INTERNO -->
@@ -1617,6 +1650,167 @@
         <!-- ============================================================= -->
     <!-- MODAL DEDICADO: ELABORAÇÃO DE ORÇAMENTO & LAUDO TÉCNICO DE OS -->
     <!-- ============================================================= -->
+    
+    <!-- ============================================================= -->
+    <!-- MODAL DE EDIÇÃO COMPLETA DE OS (REVISITAR QUALQUER OS)         -->
+    <!-- ============================================================= -->
+    <div id="edit-os-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-hidden">
+        <div class="bg-zinc-950 border-2 border-yellow-400 max-w-2xl w-full shadow-2xl font-mono relative flex flex-col max-h-[92vh] my-auto overflow-hidden">
+            <!-- HEADER -->
+            <div class="p-4 sm:p-5 border-b border-zinc-800 shrink-0 bg-zinc-950 flex items-center justify-between z-20">
+                <div>
+                    <span class="text-yellow-400 text-[10px] font-bold uppercase block">[ Central de Edição & Retificação de OS ]</span>
+                    <h3 class="text-lg sm:text-2xl font-extrabold text-white flex items-center gap-2">
+                        Editar OS <span id="edit-modal-os-num" class="text-brand">#---</span>
+                    </h3>
+                </div>
+                <button type="button" onclick="closeEditOSModal()" class="text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800 p-1.5 transition-colors cursor-pointer">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- CORPO DO FORMULÁRIO COM SCROLL -->
+            <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-5 text-xs">
+                
+                <!-- 1. DATA E MEIO DE ENTRADA -->
+                <div class="bg-black border border-zinc-800 p-3.5 space-y-3">
+                    <span class="text-zinc-400 font-bold uppercase block text-[11px] pb-1 border-b border-zinc-900 flex items-center gap-1.5">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5 text-brand"></i> Data de Entrada & Canal Logístico
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Data e Hora de Entrada:</label>
+                            <input type="datetime-local" id="edit-os-entry-date" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Meio de Entrada (Canal):</label>
+                            <select id="edit-os-channel" onchange="toggleEditOSDeliveryFields(this.value)" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                                <option value="Balcao_Presencial">🏠 Balcão Presencial (Cliente veio à oficina)</option>
+                                <option value="Leva-e-Traz">🚗 Leva-e-Traz Concierge (Uber / 99 / Coleta)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Campos Extras se for Leva-e-Traz -->
+                    <div id="edit-os-delivery-group" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-zinc-900">
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Taxa Leva-e-Traz (R$):</label>
+                            <input type="number" step="0.01" id="edit-os-pickup-fee" placeholder="0.00" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Endereço de Coleta/Entrega:</label>
+                            <input type="text" id="edit-os-address" placeholder="Rua, número, bairro..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. EQUIPAMENTO & DEFEITO -->
+                <div class="bg-black border border-zinc-800 p-3.5 space-y-3">
+                    <span class="text-zinc-400 font-bold uppercase block text-[11px] pb-1 border-b border-zinc-900 flex items-center gap-1.5">
+                        <i data-lucide="laptop" class="w-3.5 h-3.5 text-brand"></i> Equipamento & Defeito Relatado
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Tipo / Categoria:</label>
+                            <input type="text" id="edit-os-brand" placeholder="Ex: Desktop Gamer, Notebook..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Modelo / Specs:</label>
+                            <input type="text" id="edit-os-model" placeholder="Ex: Ryzen 5 5600G, Dell Inspiron..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Nº de Série / Tag:</label>
+                            <input type="text" id="edit-os-serial" placeholder="Opcional" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-yellow-400 block mb-1 font-bold">Defeito Informado pelo Cliente:</label>
+                        <textarea id="edit-os-defect" rows="2" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs"></textarea>
+                    </div>
+                </div>
+
+                <!-- 3. VALORES FINANCEIROS & FECHAMENTO -->
+                <div class="bg-black border border-brand/50 p-3.5 space-y-3">
+                    <span class="text-brand font-bold uppercase block text-[11px] pb-1 border-b border-zinc-900 flex items-center gap-1.5">
+                        <i data-lucide="dollar-sign" class="w-3.5 h-3.5 text-brand"></i> Valores & Faturamento da OS
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Mão de Obra / Serviço (R$):</label>
+                            <input type="number" step="0.01" id="edit-os-labor" oninput="recalcEditOSTotal()" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-brand font-black font-mono focus:border-brand outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Peças / Hardware (R$):</label>
+                            <input type="number" step="0.01" id="edit-os-parts" oninput="recalcEditOSTotal()" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-bold font-mono focus:border-brand outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-brand block mb-1 font-bold">Valor Total Final (R$):</label>
+                            <input type="number" step="0.01" id="edit-os-total" class="w-full bg-zinc-900 border-2 border-brand px-3 py-2 text-white font-black font-mono focus:border-white outline-none text-base">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. LAUDO TÉCNICO & OBSERVAÇÕES -->
+                <div class="bg-black border border-zinc-800 p-3.5 space-y-2">
+                    <label class="text-[10px] uppercase text-zinc-400 block font-bold flex items-center gap-1.5">
+                        <i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-brand"></i> Laudo Técnico / Diagnóstico Realizado:
+                    </label>
+                    <textarea id="edit-os-diagnosis" rows="3" placeholder="Descrição do serviço realizado, testes e conclusão técnica..." class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs"></textarea>
+                </div>
+
+                <!-- 5. STATUS DA ETAPA & STATUS DO PAGAMENTO -->
+                <div class="bg-black border border-zinc-800 p-3.5 space-y-3">
+                    <span class="text-zinc-400 font-bold uppercase block text-[11px] pb-1 border-b border-zinc-900 flex items-center gap-1.5">
+                        <i data-lucide="git-commit" class="w-3.5 h-3.5 text-brand"></i> Status Operacional & Financeiro
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Etapa Atual da OS:</label>
+                            <select id="edit-os-status" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                                <option value="Triagem">01. Triagem (Diagnóstico)</option>
+                                <option value="Orcamento_Aguardando_Aprovacao">02. Orçamento (Pendente)</option>
+                                <option value="Aprovado_Fila_Bancada">02. Orçamento (Aprovado)</option>
+                                <option value="Na_Bancada">03. Na Bancada (Execução)</option>
+                                <option value="Teste_Estresse_QA">04. QA / Testes</option>
+                                <option value="Pronto">05. Pronto (Retirada)</option>
+                                <option value="Entregue">✓ Entregue & Quitado</option>
+                                <option value="Cancelado">✕ Cancelado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Status Pagamento:</label>
+                            <select id="edit-os-payment-status" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                                <option value="PENDING">Pendente</option>
+                                <option value="PAID">✓ Quitado / Pago</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-zinc-400 block mb-1 font-bold">Forma Pagamento:</label>
+                            <select id="edit-os-payment-method" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-2 text-white font-mono focus:border-brand outline-none text-xs">
+                                <option value="Pix">Pix</option>
+                                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                <option value="Cartão de Débito">Cartão de Débito</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                                <option value="Transferência TED/DOC">Transferência TED/DOC</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FOOTER COM BOTÕES -->
+            <div class="p-4 sm:p-5 border-t border-zinc-800 shrink-0 bg-zinc-950 flex items-center justify-between z-20">
+                <button type="button" onclick="closeEditOSModal()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700 font-bold uppercase text-xs transition-colors">
+                    Cancelar
+                </button>
+                <button type="button" onclick="saveEditedOS()" class="px-6 py-2.5 bg-brand text-black hover:bg-white font-black uppercase text-xs transition-all shadow-[2px_2px_0px_0px_rgba(204,255,0,0.4)] flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="save" class="w-4 h-4"></i> Salvar Alterações na OS
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="budget-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
         <div class="bg-black border-2 border-brand w-full max-w-4xl flex flex-col h-[90vh] sm:h-[88vh] max-h-[90vh] font-mono shadow-[8px_8px_0px_0px_rgba(204,255,0,0.35)] overflow-hidden my-auto">
             
@@ -2825,36 +3019,84 @@
         // =====================================================================
         // MOTOR FINANCEIRO & DRE EM TEMPO REAL (IF TECH)
         // =====================================================================
+        let currentDREPeriodFilter = 'current_month';
+
+        function setDREPeriodFilter(val) {
+            currentDREPeriodFilter = val;
+            renderFinancialDashboard(currentWorkOrders);
+        }
+
         function renderFinancialDashboard(orders) {
             if (!orders || orders.length === 0) orders = currentWorkOrders || [];
 
-            // 1. MOTOR 1: HARDWARE & BANCADA
-            let hwGross = 0;
-            let hwLabor = 0;
-            let hwPartsSale = 0;
-            let hwPartsCost = 0;
-            let deliveredCount = 0;
+            const now = new Date();
+            const curYear = now.getFullYear();
+            const curMonth = now.getMonth();
+            const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const curMonthLabel = `${monthNames[curMonth]}/${curYear}`;
+
+            // Atualiza label da opção do mês no seletor
+            const selEl = document.getElementById('dre-period-selector');
+            if (selEl) {
+                const optMonth = selEl.querySelector('option[value="current_month"]');
+                if (optMonth) optMonth.textContent = `📅 Mês Vigente (${curMonthLabel})`;
+            }
+
+            let monthHwGross = 0;
+            let monthHwLabor = 0;
+            let monthHwPartsSale = 0;
+            let monthHwPartsCost = 0;
+            let monthDeliveredCount = 0;
+
+            let allHwGross = 0;
+            let allHwLabor = 0;
+            let allHwPartsSale = 0;
+            let allHwPartsCost = 0;
+            let allDeliveredCount = 0;
+
             let levaTrazRev = 0;
             let balcaoRev = 0;
 
+            const currentMonthOrders = [];
+
             orders.forEach(wo => {
                 const s = (wo.status || '').toLowerCase();
+                if (s.includes('cancelado')) return; // Cancelada não soma receita/lucro
+
                 const labor = parseFloat(wo.total_labor || 0);
                 const parts = parseFloat(wo.total_parts || 0);
                 const cost = parseFloat(wo.total_parts_cost || (parts > 0 ? parts * 0.65 : 0));
                 const total = parseFloat(wo.total_amount || (labor + parts));
 
-                // Considera faturamento de OSs no ciclo
-                hwGross += total;
-                hwLabor += labor;
-                hwPartsSale += parts;
-                hwPartsCost += cost;
+                allHwGross += total;
+                allHwLabor += labor;
+                allHwPartsSale += parts;
+                allHwPartsCost += cost;
 
                 if (s.includes('entregue') || s.includes('pronto')) {
-                    deliveredCount++;
+                    allDeliveredCount++;
                 }
 
-                const isLevaTraz = wo.requires_delivery || (wo.acquisition_channel === 'Leva-e-Traz');
+                // Checar se a OS é do mês atual
+                const dStr = wo.delivered_at || wo.paid_at || wo.created_at || wo.entry_at;
+                let isCurrentMonth = false;
+                if (dStr) {
+                    const od = new Date(dStr);
+                    isCurrentMonth = (od.getFullYear() === curYear && od.getMonth() === curMonth);
+                }
+
+                if (isCurrentMonth) {
+                    currentMonthOrders.push(wo);
+                    monthHwGross += total;
+                    monthHwLabor += labor;
+                    monthHwPartsSale += parts;
+                    monthHwPartsCost += cost;
+                    if (s.includes('entregue') || s.includes('pronto')) {
+                        monthDeliveredCount++;
+                    }
+                }
+
+                const isLevaTraz = Boolean(wo.requires_delivery || wo.is_pickup_delivery || (wo.acquisition_channel === 'Leva-e-Traz'));
                 if (isLevaTraz) {
                     levaTrazRev += total;
                 } else {
@@ -2868,8 +3110,6 @@
                 currentSoftwareProjects.forEach(p => {
                     swGross += parseFloat(p.total_budget || p.contract_value || (p.price_model === 'SW-01' ? 2450 : 3800));
                 });
-            } else {
-                swGross = 0.00;
             }
 
             // 3. MOTOR 3: TI GERENCIADA MSP B2B (MRR)
@@ -2878,8 +3118,6 @@
                 currentMSPContracts.forEach(c => {
                     mspGross += parseFloat(c.monthly_fee || 890);
                 });
-            } else {
-                mspGross = 0.00;
             }
 
             // 4. MOTOR 4: VENDA DE EQUIPAMENTOS & PDV
@@ -2892,20 +3130,33 @@
                 });
             }
 
-            // 5. CONSOLIDAÇÃO TOTAL DOS 4 MOTORES
-            const totalGross = hwGross + swGross + mspGross + posGross;
-            const totalPartsCost = hwPartsCost + posCogs;
-            const netProfit = totalGross - totalPartsCost;
-            const marginPct = totalGross > 0 ? ((netProfit / totalGross) * 100).toFixed(0) : '0';
-            const avgTicket = (deliveredCount > 0 ? (hwGross / (deliveredCount || 1)) : 0.00);
+            const monthNetProfit = monthHwGross - monthHwPartsCost;
+            const allNetProfit = (allHwGross + swGross + mspGross + posGross) - (allHwPartsCost + posCogs);
 
-            // Atualizar KPIs do Topo do Painel
+            // -------------------------------------------------------------
+            // 1. ATUALIZAR CARD FIXO DO TOPO DA BANCADA (Tab 1: Stat Month Profit)
+            // Mostra SEMPRE o Mês Atual vigente: Quanto fiz no mês atual!
+            // -------------------------------------------------------------
             const statProfitEl = document.getElementById('stat-month-profit');
             const statProfitSubEl = document.getElementById('stat-profit-subtitle');
-            if (statProfitEl) statProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
-            if (statProfitSubEl) statProfitSubEl.textContent = `${deliveredCount} OS(s) concluída(s) • 4 Motores Ativos`;
+            if (statProfitEl) statProfitEl.textContent = 'R$ ' + monthNetProfit.toFixed(2).replace('.', ',');
+            if (statProfitSubEl) statProfitSubEl.textContent = `${monthDeliveredCount} OS(s) em ${curMonthLabel} • R$ ${allNetProfit.toFixed(2).replace('.', ',')} acumulado total`;
 
-            // Atualizar Cards da Aba DRE
+            // -------------------------------------------------------------
+            // 2. DRE 360° (Tab 7): Respeita o filtro do período selecionado
+            // -------------------------------------------------------------
+            const isPeriodMonth = (currentDREPeriodFilter === 'current_month');
+            const displayOrders = isPeriodMonth ? currentMonthOrders : orders;
+            const displayGross = isPeriodMonth ? monthHwGross : (allHwGross + swGross + mspGross + posGross);
+            const displayPartsCost = isPeriodMonth ? monthHwPartsCost : (allHwPartsCost + posCogs);
+            const displayNetProfit = isPeriodMonth ? monthNetProfit : allNetProfit;
+            const displayDelivered = isPeriodMonth ? monthDeliveredCount : allDeliveredCount;
+            const displayLabor = isPeriodMonth ? monthHwLabor : (allHwLabor + swGross + mspGross);
+            const displayParts = isPeriodMonth ? monthHwPartsSale : (allHwPartsSale + posGross);
+            const marginPct = displayGross > 0 ? ((displayNetProfit / displayGross) * 100).toFixed(0) : '100';
+            const avgTicket = displayDelivered > 0 ? (displayGross / displayDelivered) : displayGross;
+
+            // Cards de Métricas do DRE
             const grossEl = document.getElementById('dre-gross-revenue');
             const grossSubEl = document.getElementById('dre-gross-subtitle');
             const partsCostEl = document.getElementById('dre-parts-cost');
@@ -2914,15 +3165,15 @@
             const avgTicketEl = document.getElementById('dre-avg-ticket');
             const deliveredCountEl = document.getElementById('dre-delivered-count');
 
-            if (grossEl) grossEl.textContent = 'R$ ' + totalGross.toFixed(2).replace('.', ',');
-            if (grossSubEl) grossSubEl.textContent = `${orders.length} OSs + Web + MSP + PDV`;
-            if (partsCostEl) partsCostEl.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
-            if (netProfitEl) netProfitEl.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            if (grossEl) grossEl.textContent = 'R$ ' + displayGross.toFixed(2).replace('.', ',');
+            if (grossSubEl) grossSubEl.textContent = isPeriodMonth ? `Faturamento em ${curMonthLabel} (${displayOrders.length} OSs)` : `Acumulado Geral (${orders.length} OSs)`;
+            if (partsCostEl) partsCostEl.textContent = '- R$ ' + displayPartsCost.toFixed(2).replace('.', ',');
+            if (netProfitEl) netProfitEl.textContent = 'R$ ' + displayNetProfit.toFixed(2).replace('.', ',');
             if (marginPctEl) marginPctEl.textContent = `Margem Líquida: ${marginPct}%`;
             if (avgTicketEl) avgTicketEl.textContent = 'R$ ' + avgTicket.toFixed(2).replace('.', ',');
-            if (deliveredCountEl) deliveredCountEl.textContent = `${deliveredCount} atendimento(s) concluído(s)`;
+            if (deliveredCountEl) deliveredCountEl.textContent = `${displayDelivered} atendimento(s) concluído(s)`;
 
-            // Atualizar Linhas da Tabela DRE
+            // Linhas da Tabela DRE
             const lineLabor = document.getElementById('dre-line-labor');
             const pctLabor = document.getElementById('dre-pct-labor');
             const lineParts = document.getElementById('dre-line-parts-sale');
@@ -2932,21 +3183,18 @@
             const lineNet = document.getElementById('dre-line-net-total');
             const pctNet = document.getElementById('dre-pct-net-total');
 
-            const totalServicesGross = hwLabor + swGross + mspGross;
-            const totalGoodsGross = hwPartsSale + posGross;
-
-            if (lineLabor) lineLabor.textContent = 'R$ ' + totalServicesGross.toFixed(2).replace('.', ',');
-            if (pctLabor) pctLabor.textContent = `${((totalServicesGross / totalGross) * 100).toFixed(0)}%`;
-            if (lineParts) lineParts.textContent = 'R$ ' + totalGoodsGross.toFixed(2).replace('.', ',');
-            if (pctParts) pctParts.textContent = `${((totalGoodsGross / totalGross) * 100).toFixed(0)}%`;
-            if (lineCogs) lineCogs.textContent = '- R$ ' + totalPartsCost.toFixed(2).replace('.', ',');
-            if (pctCogs) pctCogs.textContent = `${((totalPartsCost / totalGross) * 100).toFixed(0)}%`;
-            if (lineNet) lineNet.textContent = 'R$ ' + netProfit.toFixed(2).replace('.', ',');
+            if (lineLabor) lineLabor.textContent = 'R$ ' + displayLabor.toFixed(2).replace('.', ',');
+            if (pctLabor) pctLabor.textContent = `${displayGross > 0 ? ((displayLabor / displayGross) * 100).toFixed(0) : 100}%`;
+            if (lineParts) lineParts.textContent = 'R$ ' + displayParts.toFixed(2).replace('.', ',');
+            if (pctParts) pctParts.textContent = `${displayGross > 0 ? ((displayParts / displayGross) * 100).toFixed(0) : 0}%`;
+            if (lineCogs) lineCogs.textContent = '- R$ ' + displayPartsCost.toFixed(2).replace('.', ',');
+            if (pctCogs) pctCogs.textContent = `${displayGross > 0 ? ((displayPartsCost / displayGross) * 100).toFixed(0) : 0}%`;
+            if (lineNet) lineNet.textContent = 'R$ ' + displayNetProfit.toFixed(2).replace('.', ',');
             if (pctNet) pctNet.textContent = `${marginPct}%`;
 
-            // Atualizar Métricas de Canais de Aquisição (BI)
-            const totalChannelRev = (levaTrazRev + balcaoRev) || hwGross || 1;
-            const levaTrazShare = Math.round((levaTrazRev / totalChannelRev) * 100) || 72;
+            // Métricas Canais de Aquisição (BI)
+            const totalChannelRev = (levaTrazRev + balcaoRev) || allHwGross || 1;
+            const levaTrazShare = Math.round((levaTrazRev / totalChannelRev) * 100) || 0;
             const balcaoShare = 100 - levaTrazShare;
 
             const shareLevaEl = document.getElementById('bi-share-leva-traz');
@@ -2959,17 +3207,22 @@
             if (shareBalcaoEl) shareBalcaoEl.textContent = `${balcaoShare}% (R$ ${balcaoRev.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")})`;
             if (barBalcaoEl) barBalcaoEl.style.width = `${balcaoShare}%`;
 
-            // Renderizar Tabela Analítica de Ordens de Serviço
+            // Tabela Analítica de OSs
             const tbody = document.getElementById('dre-orders-table-body');
             const tableCountEl = document.getElementById('dre-os-table-count');
-            if (tableCountEl) tableCountEl.textContent = `${orders.length} OSs no Total (${deliveredCount} Entregues/Prontas)`;
+            if (tableCountEl) {
+                tableCountEl.textContent = isPeriodMonth 
+                    ? `${displayOrders.length} OSs em ${curMonthLabel} (${displayDelivered} Entregue(s))`
+                    : `${orders.length} OSs no Total (${allDeliveredCount} Entregues/Prontas)`;
+            }
 
             if (tbody) {
                 tbody.innerHTML = '';
-                orders.forEach(wo => {
+                displayOrders.forEach(wo => {
                     const s = (wo.status || '').toLowerCase();
                     const isEntregue = s.includes('entregue');
                     const isPronto = s.includes('pronto');
+                    const isCancelado = s.includes('cancelado');
                     
                     const dateStr = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
                     const labor = parseFloat(wo.total_labor || 0);
@@ -2981,21 +3234,45 @@
                         statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand text-black font-black text-[10px] uppercase">✓ Quitado na Entrega</span>`;
                     } else if (isPronto) {
                         statusBadgeHtml = `<span class="px-2 py-0.5 bg-brand/20 border border-brand text-brand font-bold text-[10px] uppercase">📦 Pronto p/ Retirada</span>`;
+                    } else if (isCancelado) {
+                        statusBadgeHtml = `<span class="px-2 py-0.5 bg-red-950 border border-red-800 text-red-400 font-bold text-[10px] uppercase">✕ Cancelado</span>`;
                     } else {
                         statusBadgeHtml = `<span class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-400 font-mono text-[10px] uppercase">${escapeHtml((wo.status || 'Em Aberto').replace(/_/g, ' '))}</span>`;
                     }
 
+                    const isLeva = Boolean(wo.requires_delivery || wo.is_pickup_delivery || (wo.acquisition_channel === 'Leva-e-Traz'));
+
                     const tr = document.createElement('tr');
-                    tr.className = isEntregue ? "bg-zinc-950 hover:bg-zinc-900" : "hover:bg-zinc-900";
+                    tr.className = (isEntregue ? "bg-zinc-950 hover:bg-zinc-900" : (isCancelado ? "opacity-60 hover:bg-zinc-900" : "hover:bg-zinc-900")) + " cursor-pointer transition-colors group";
+                    tr.title = "Clique para abrir e editar qualquer dado desta OS";
+                    tr.onclick = () => openOSDetailModal(wo);
                     tr.innerHTML = `
-                        <td class="py-3 px-3 font-bold font-mono text-brand">#${formatOSNumber(wo.os_number)}</td>
-                        <td class="py-3 px-3 text-zinc-400">${dateStr}</td>
+                        <td class="py-3 px-3 whitespace-nowrap">
+                            <a href="javascript:void(0)" onclick="event.stopPropagation(); openOSDetailModal(currentWorkOrders.find(o => o.os_number == ${wo.os_number}) || selectedWorkOrder);" class="inline-flex items-center gap-1.5 font-bold font-mono text-brand hover:text-black hover:bg-brand px-2.5 py-1 border border-brand/50 hover:border-brand rounded transition-all cursor-pointer shadow-sm group-hover:bg-brand/10" title="Clique para abrir e gerenciar a OS #${formatOSNumber(wo.os_number)}">
+                                <i data-lucide="external-link" class="w-3 h-3"></i>
+                                <span>#${formatOSNumber(wo.os_number)}</span>
+                            </a>
+                        </td>
+                        <td class="py-3 px-3 text-zinc-400 whitespace-nowrap">${dateStr}</td>
                         <td class="py-3 px-3 font-bold text-white">${escapeHtml(wo.client_name || 'Cliente')}</td>
-                        <td class="py-3 px-3 text-zinc-300">${escapeHtml(wo.device_brand || '')} ${escapeHtml(wo.device_model || '')} <span class="text-zinc-500 block text-[10px]">${escapeHtml((wo.reported_defect || '').substring(0, 45))}...</span></td>
+                        <td class="py-3 px-3 text-zinc-300">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-semibold">${escapeHtml(wo.device_brand || '')} ${escapeHtml(wo.device_model || '')}</span>
+                                <span class="text-[9px] px-1 py-0.2 border ${isLeva ? 'bg-amber-950/60 border-amber-500/50 text-amber-400' : 'bg-zinc-900 border-zinc-700 text-zinc-400'}">${isLeva ? '🚗 Leva-Traz' : '🏠 Balcão'}</span>
+                            </div>
+                            <span class="text-zinc-500 block text-[10px] truncate max-w-[220px]">${escapeHtml(wo.reported_defect || '')}</span>
+                        </td>
                         <td class="py-3 px-3 text-right font-mono text-zinc-300">R$ ${parts.toFixed(2).replace('.', ',')}</td>
                         <td class="py-3 px-3 text-right font-mono text-brand font-bold">R$ ${labor.toFixed(2).replace('.', ',')}</td>
                         <td class="py-3 px-3 text-right font-mono text-white font-black text-sm">R$ ${total.toFixed(2).replace('.', ',')}</td>
-                        <td class="py-3 px-3 text-center">${statusBadgeHtml}</td>
+                        <td class="py-3 px-3 text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-2">
+                                ${statusBadgeHtml}
+                                <button type="button" onclick="event.stopPropagation(); openEditOSModal(currentWorkOrders.find(o => o.os_number == ${wo.os_number}) || selectedWorkOrder);" class="px-2.5 py-1 bg-yellow-500/15 hover:bg-yellow-400 hover:text-black text-yellow-400 border border-yellow-500/50 text-[11px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer" title="Editar dados, valores ou canal desta OS">
+                                    <i data-lucide="edit-3" class="w-3 h-3"></i> Editar
+                                </button>
+                            </div>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -3006,12 +3283,222 @@
                 updateBreakevenSimulator(fixedCostSlider ? fixedCostSlider.value : 1300);
             }
 
-            if (window.lucide) lucide.createIcons();
+            if (window.lucide && window.lucide.createIcons) lucide.createIcons();
         }
 
         // =====================================================================
-        // SIMULADOR DO CFO: VIABILIDADE DO PONTO COMERCIAL (CENTRO)
+        // CENTRAL DE EDIÇÃO COMPLETA DE QUALQUER OS (DATA, VALORES, CANAL, ETC)
         // =====================================================================
+        let editingWorkOrder = null;
+
+        function openEditOSModal(wo) {
+            if (!wo) wo = selectedWorkOrder;
+            if (!wo) {
+                showToast('Selecione uma OS para editar.', 'warning');
+                return;
+            }
+            editingWorkOrder = wo;
+
+            const modal = document.getElementById('edit-os-modal');
+            if (!modal) return;
+
+            document.getElementById('edit-modal-os-num').textContent = '#' + formatOSNumber(wo.os_number);
+
+            // 1. Data e Hora de Entrada (formato YYYY-MM-DDTHH:MM)
+            const entryInput = document.getElementById('edit-os-entry-date');
+            if (entryInput) {
+                const dateVal = wo.entry_at || wo.created_at;
+                if (dateVal) {
+                    const d = new Date(dateVal);
+                    // Formatar para fuso local ISO sem timezone
+                    const pad = (n) => String(n).padStart(2, '0');
+                    const localIso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                    entryInput.value = localIso;
+                } else {
+                    entryInput.value = '';
+                }
+            }
+
+            // 2. Canal e Logística
+            const channelSelect = document.getElementById('edit-os-channel');
+            const isLeva = Boolean(wo.requires_delivery || wo.is_pickup_delivery || (wo.acquisition_channel === 'Leva-e-Traz'));
+            if (channelSelect) {
+                channelSelect.value = isLeva ? 'Leva-e-Traz' : 'Balcao_Presencial';
+            }
+            toggleEditOSDeliveryFields(isLeva ? 'Leva-e-Traz' : 'Balcao_Presencial');
+
+            const feeInput = document.getElementById('edit-os-pickup-fee');
+            if (feeInput) feeInput.value = parseFloat(wo.pickup_fee || 0).toFixed(2);
+
+            const addrInput = document.getElementById('edit-os-address');
+            if (addrInput) addrInput.value = wo.customer_address || wo.client_address || '';
+
+            // 3. Equipamento & Defeito
+            const brandInput = document.getElementById('edit-os-brand');
+            if (brandInput) brandInput.value = wo.device_brand || '';
+
+            const modelInput = document.getElementById('edit-os-model');
+            if (modelInput) modelInput.value = wo.device_model || '';
+
+            const serialInput = document.getElementById('edit-os-serial');
+            if (serialInput) serialInput.value = wo.device_serial || '';
+
+            const defectInput = document.getElementById('edit-os-defect');
+            if (defectInput) defectInput.value = wo.reported_defect || '';
+
+            const diagInput = document.getElementById('edit-os-diagnosis');
+            if (diagInput) diagInput.value = wo.technical_diagnosis || '';
+
+            // 4. Valores
+            const laborInput = document.getElementById('edit-os-labor');
+            if (laborInput) laborInput.value = parseFloat(wo.total_labor || 0).toFixed(2);
+
+            const partsInput = document.getElementById('edit-os-parts');
+            if (partsInput) partsInput.value = parseFloat(wo.total_parts || 0).toFixed(2);
+
+            const totalInput = document.getElementById('edit-os-total');
+            if (totalInput) totalInput.value = parseFloat(wo.total_amount || 0).toFixed(2);
+
+            // 5. Status Operacional & Financeiro
+            const statusSelect = document.getElementById('edit-os-status');
+            if (statusSelect) statusSelect.value = wo.status || 'Triagem';
+
+            const payStatusSelect = document.getElementById('edit-os-payment-status');
+            if (payStatusSelect) payStatusSelect.value = wo.payment_status || (wo.status === 'Entregue' ? 'PAID' : 'PENDING');
+
+            const payMethodSelect = document.getElementById('edit-os-payment-method');
+            if (payMethodSelect) payMethodSelect.value = wo.payment_method || 'Pix';
+
+            modal.classList.remove('hidden');
+            if (window.lucide && window.lucide.createIcons) lucide.createIcons();
+        }
+
+        function closeEditOSModal() {
+            document.getElementById('edit-os-modal')?.classList.add('hidden');
+        }
+
+        function toggleEditOSDeliveryFields(channel) {
+            const group = document.getElementById('edit-os-delivery-group');
+            if (group) {
+                if (channel === 'Leva-e-Traz') {
+                    group.classList.remove('hidden');
+                } else {
+                    group.classList.add('hidden');
+                }
+            }
+        }
+
+        function recalcEditOSTotal() {
+            const l = parseFloat(document.getElementById('edit-os-labor')?.value || 0) || 0;
+            const p = parseFloat(document.getElementById('edit-os-parts')?.value || 0) || 0;
+            const totalEl = document.getElementById('edit-os-total');
+            if (totalEl) totalEl.value = (l + p).toFixed(2);
+        }
+
+        async function saveEditedOS() {
+            if (!editingWorkOrder) return;
+
+            const labor = parseFloat(document.getElementById('edit-os-labor')?.value || 0) || 0;
+            const parts = parseFloat(document.getElementById('edit-os-parts')?.value || 0) || 0;
+            const total = parseFloat(document.getElementById('edit-os-total')?.value || (labor + parts)) || (labor + parts);
+            const channel = document.getElementById('edit-os-channel')?.value || 'Balcao_Presencial';
+            const isLeva = (channel === 'Leva-e-Traz');
+            const pickupFee = isLeva ? (parseFloat(document.getElementById('edit-os-pickup-fee')?.value || 0) || 0) : 0;
+            const address = document.getElementById('edit-os-address')?.value.trim() || '';
+            const brand = document.getElementById('edit-os-brand')?.value.trim() || 'Equipamento';
+            const model = document.getElementById('edit-os-model')?.value.trim() || 'Hardware';
+            const serial = document.getElementById('edit-os-serial')?.value.trim() || '';
+            const defect = document.getElementById('edit-os-defect')?.value.trim() || '';
+            const diagnosis = document.getElementById('edit-os-diagnosis')?.value.trim() || '';
+            const status = document.getElementById('edit-os-status')?.value || 'Triagem';
+            const payStatus = document.getElementById('edit-os-payment-status')?.value || 'PENDING';
+            const payMethod = document.getElementById('edit-os-payment-method')?.value || 'Pix';
+            const entryDateVal = document.getElementById('edit-os-entry-date')?.value;
+
+            // Atualiza objeto em memória
+            editingWorkOrder.total_labor = labor;
+            editingWorkOrder.total_parts = parts;
+            editingWorkOrder.total_amount = total;
+            editingWorkOrder.acquisition_channel = channel;
+            editingWorkOrder.is_pickup_delivery = isLeva;
+            editingWorkOrder.requires_delivery = isLeva;
+            editingWorkOrder.pickup_fee = pickupFee;
+            editingWorkOrder.customer_address = address;
+            editingWorkOrder.device_brand = brand;
+            editingWorkOrder.device_model = model;
+            editingWorkOrder.device_serial = serial;
+            editingWorkOrder.reported_defect = defect;
+            editingWorkOrder.technical_diagnosis = diagnosis;
+            editingWorkOrder.status = status;
+            editingWorkOrder.payment_status = payStatus;
+            editingWorkOrder.payment_method = payMethod;
+
+            let entryIso = null;
+            if (entryDateVal) {
+                entryIso = new Date(entryDateVal).toISOString();
+                editingWorkOrder.entry_at = entryIso;
+                editingWorkOrder.created_at = entryIso;
+            }
+
+            // Sincronização direta no Supabase
+            const client = getSupabase() || supabaseClient;
+            if (client) {
+                const updatePayload = {
+                    total_labor: labor,
+                    total_parts: parts,
+                    total_amount: total,
+                    acquisition_channel: channel,
+                    is_pickup_delivery: isLeva,
+                    pickup_fee: pickupFee,
+                    device_brand: brand,
+                    device_model: model,
+                    device_serial: serial,
+                    reported_defect: defect,
+                    technical_diagnosis: diagnosis,
+                    status: status,
+                    payment_status: payStatus
+                };
+
+                if (entryIso) {
+                    updatePayload.entry_at = entryIso;
+                    updatePayload.created_at = entryIso;
+                }
+
+                if (status === 'Entregue') {
+                    const nowIso = new Date().toISOString();
+                    updatePayload.delivered_at = editingWorkOrder.delivered_at || nowIso;
+                    updatePayload.paid_at = editingWorkOrder.paid_at || nowIso;
+                }
+
+                try {
+                    const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+                    let q = client.from('work_orders').update(updatePayload);
+                    if (isUuid(editingWorkOrder.id)) {
+                        await q.eq('id', editingWorkOrder.id);
+                    } else if (editingWorkOrder.os_number) {
+                        await q.eq('os_number', parseInt(editingWorkOrder.os_number, 10));
+                    }
+                } catch(err) {
+                    console.error("Erro ao salvar OS no Supabase:", err);
+                }
+            }
+
+            try {
+                localStorage.setItem('if_tech_work_orders', JSON.stringify(currentWorkOrders));
+            } catch(e){}
+
+            showToast(`✓ OS #${formatOSNumber(editingWorkOrder.os_number)} atualizada com sucesso!`, 'success');
+            closeEditOSModal();
+
+            // Atualizar modal de detalhes se estiver aberto
+            if (selectedWorkOrder && selectedWorkOrder.os_number === editingWorkOrder.os_number) {
+                openOSDetailModal(editingWorkOrder);
+            }
+
+            renderKanbanBoard(currentWorkOrders);
+            renderFinancialDashboard(currentWorkOrders);
+        }
+
         function updateBreakevenSimulator(fixedCostVal) {
             const cost = parseFloat(fixedCostVal) || 1300;
             const fixedValEl = document.getElementById('sim-fixed-val');
@@ -5600,6 +6087,15 @@
                         <i data-lucide="message-square" class="w-4 h-4 text-black"></i> ${isDelivery ? 'Combinar Entrega (WhatsApp)' : 'Avisar Retirada (WhatsApp)'}
                     </button>
                 `;
+            } else if (s.includes('entregue')) {
+                buttonsHtml = `
+                    <button type="button" onclick="openEditOSModal(selectedWorkOrder)" class="px-4 py-2.5 bg-zinc-900 border border-brand text-brand font-black uppercase text-xs hover:bg-brand hover:text-black transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                        <i data-lucide="edit-3" class="w-4 h-4"></i> ✏️ Editar OS (Valores / Data / Canal)
+                    </button>
+                    <button type="button" onclick="advanceOSStatus('Na_Bancada')" class="px-3.5 py-2.5 bg-zinc-900 border border-yellow-500/60 text-yellow-400 font-bold uppercase text-xs hover:bg-yellow-500 hover:text-black transition-colors flex items-center justify-center gap-1.5">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reabrir OS (Retorno Bancada)
+                    </button>
+                `;
             }
 
             container.innerHTML = buttonsHtml;
@@ -5643,13 +6139,90 @@
         }
 
         function advanceOSStatus(newStatus) {
-            if (!selectedWorkOrder) return;
+            if (!selectedWorkOrder) return false;
+
+            // TRAVA DE SEGURANÇA OPERACIONAL: Validação de Valor e Laudo antes de Concluir ou Entregar
+            if (['Pronto', 'Entregue'].includes(newStatus)) {
+                const curLabor = parseFloat(selectedWorkOrder.total_labor || 0);
+                const curParts = parseFloat(selectedWorkOrder.total_parts || 0);
+                let curTotal = parseFloat(selectedWorkOrder.total_amount || 0) || (curLabor + curParts);
+
+                // 1. Se valor estiver zerado, solicitar antes de fechar
+                if (curTotal <= 0) {
+                    const promptVal = prompt(
+                        `⚠️ ATENÇÃO: VALOR ZERADO (R$ 0,00)!
+
+A OS #${formatOSNumber(selectedWorkOrder.os_number)} está sem valor de mão de obra/serviço.
+
+Digite o valor do serviço realizado (apenas números, ex: 100):
+ou clique em CANCELAR para abrir o Orçamento detalhado com peças:`,
+                        "100"
+                    );
+                    if (promptVal === null) {
+                        // Técnico cancelou para detalhar orçamento completo
+                        actionBudgetFromOS();
+                        return false;
+                    }
+                    const parsedVal = parseFloat(promptVal.replace(',', '.')) || 0;
+                    if (parsedVal > 0) {
+                        selectedWorkOrder.total_labor = parsedVal;
+                        selectedWorkOrder.total_amount = parsedVal + curParts;
+                    }
+                }
+
+                // 2. Se laudo técnico estiver vazio, capturar da textarea ou solicitar
+                let diag = (selectedWorkOrder.technical_diagnosis || '').trim();
+                const noteInput = document.getElementById('detail-technical-notes');
+                if (!diag && noteInput && noteInput.value.trim()) {
+                    diag = noteInput.value.trim();
+                }
+                if (!diag) {
+                    const promptDiag = prompt(
+                        `📝 LAUDO TÉCNICO NECESSÁRIO:
+
+Informe o laudo técnico ou diagnóstico do serviço realizado na OS #${formatOSNumber(selectedWorkOrder.os_number)}:`,
+                        selectedWorkOrder.reported_defect || "Formatação de sistema e testes de bancada"
+                    );
+                    if (promptDiag && promptDiag.trim()) {
+                        diag = promptDiag.trim();
+                    }
+                }
+                if (diag) {
+                    selectedWorkOrder.technical_diagnosis = diag;
+                    if (noteInput) noteInput.value = diag;
+                }
+            }
+
             selectedWorkOrder.status = newStatus;
             
-            // Se avançar para Bancada, QA ou Pronto, quita o sinal de peças automaticamente
+            // Se avançar para Bancada, QA, Pronto ou Entregue, confirma sinal de peças
             if (['Na_Bancada', 'Testes_QA', 'Teste_Estresse_QA', 'Pronto', 'Entregue'].includes(newStatus)) {
                 selectedWorkOrder.parts_deposit_paid = true;
                 selectedWorkOrder.parts_deposit_status = 'CONFIRMED';
+            }
+
+            // Preparação do payload completo para o Supabase
+            const updatePayload = {
+                status: newStatus,
+                parts_deposit_paid: selectedWorkOrder.parts_deposit_paid || false,
+                parts_deposit_status: selectedWorkOrder.parts_deposit_status || 'PENDING'
+            };
+
+            if (selectedWorkOrder.total_labor !== undefined) updatePayload.total_labor = parseFloat(selectedWorkOrder.total_labor || 0);
+            if (selectedWorkOrder.total_amount !== undefined) updatePayload.total_amount = parseFloat(selectedWorkOrder.total_amount || 0);
+            if (selectedWorkOrder.technical_diagnosis) updatePayload.technical_diagnosis = selectedWorkOrder.technical_diagnosis;
+
+            const nowIso = new Date().toISOString();
+            if (newStatus === 'Entregue') {
+                updatePayload.payment_status = 'PAID';
+                updatePayload.delivered_at = nowIso;
+                updatePayload.paid_at = nowIso;
+                selectedWorkOrder.payment_status = 'PAID';
+                selectedWorkOrder.delivered_at = nowIso;
+                selectedWorkOrder.paid_at = nowIso;
+            } else if (newStatus === 'Pronto') {
+                updatePayload.ready_at = nowIso;
+                selectedWorkOrder.ready_at = nowIso;
             }
 
             try { 
@@ -5660,11 +6233,7 @@
             const client = getSupabase() || supabaseClient;
             if (client) {
                 const isUuid = (id) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-                const query = client.from('work_orders').update({
-                    status: newStatus,
-                    parts_deposit_paid: selectedWorkOrder.parts_deposit_paid || false,
-                    parts_deposit_status: selectedWorkOrder.parts_deposit_status || 'PENDING'
-                });
+                const query = client.from('work_orders').update(updatePayload);
                 if (isUuid(selectedWorkOrder.id)) {
                     query.eq('id', selectedWorkOrder.id).then(() => {}).catch(() => {});
                 } else if (selectedWorkOrder.os_number) {
@@ -5676,6 +6245,7 @@
             closeOSDetailModal();
             renderKanbanBoard(currentWorkOrders);
             renderFinancialDashboard(currentWorkOrders);
+            return true;
         }
 
         function actionBudgetFromOS() {
@@ -7035,7 +7605,7 @@
                         <div class="p-3 bg-zinc-900 border border-zinc-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
                             <div>
                                 <div class="flex items-center gap-2 mb-0.5">
-                                    <span class="px-1.5 py-0.2 bg-brand text-black font-black text-[10px]">OS #${h.os}</span>
+                                    <button type="button" onclick="closeClientDetailModal(); openOSDetailModal(currentWorkOrders.find(o => o.os_number == ${h.os}) || h.rawWO);" class="px-2 py-0.5 bg-brand hover:bg-white text-black font-black text-[10px] uppercase flex items-center gap-1 cursor-pointer transition-colors shadow-sm" title="Abrir e gerenciar OS #${h.os}"><i data-lucide="external-link" class="w-3 h-3"></i> OS #${h.os}</button>
                                     <strong class="text-white font-bold">${escapeHtml(h.title)}</strong>
                                 </div>
                                 <span class="text-zinc-500 text-[10px]">${h.date} • ${h.status} • Garantia CDC 90D</span>
@@ -7156,6 +7726,12 @@
                                 parts_deposit_status: w.parts_deposit_status || (w.parts_deposit_paid ? 'CONFIRMED' : 'PENDING'),
                                 items: w.work_order_items || [],
                                 public_tracking_token: w.public_tracking_token,
+                                entry_at: w.entry_at || w.created_at,
+                                delivered_at: w.delivered_at,
+                                paid_at: w.paid_at,
+                                payment_status: w.payment_status || (w.status === 'Entregue' ? 'PAID' : 'PENDING'),
+                                payment_method: w.payment_method || 'Pix',
+                                customer_address: w.customer_address || (cli.street ? `${cli.street}, ${cli.number || 'S/N'}` : ''),
                                 created_at: w.created_at,
                                 updated_at: w.updated_at
                             };
@@ -7593,7 +8169,12 @@
         }
 
         function handleManualStatusChange(newStatus) {
-            advanceOSStatus(newStatus);
+            const prevStatus = selectedWorkOrder ? selectedWorkOrder.status : 'Triagem';
+            const ok = advanceOSStatus(newStatus);
+            if (ok === false) {
+                const sel = document.getElementById('detail-status-select');
+                if (sel) sel.value = prevStatus;
+            }
         }
 
         function handleSaveOS(e) {
@@ -7726,6 +8307,13 @@
 
             // Disparar modal de notificação WhatsApp com orçamento e laudo prontos
             openWhatsAppNotificationModal(newOS, 'orcamento');
+        }
+
+        function clearClientSearch() {
+            const input = document.getElementById('crm-search-input');
+            if (input) input.value = '';
+            filterClientsTable();
+            input?.focus();
         }
 
         function filterClientsTable() {
