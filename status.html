@@ -2479,7 +2479,7 @@
                             .limit(1);
                         if (!error && data && data.length > 0) {
                             foundContract = data[0];
-                            const devRes = await client.from('msp_workstations').select('*').eq('contract_id', foundContract.id);
+                            const devRes = await client.from('msp_managed_devices').select('*').eq('contract_id', foundContract.id);
                             if (devRes && devRes.data) contractDevices = devRes.data;
                             const tckRes = await client.from('msp_tickets').select('*').eq('contract_id', foundContract.id);
                             if (tckRes && tckRes.data) contractTickets = tckRes.data;

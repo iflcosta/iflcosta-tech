@@ -214,6 +214,11 @@
                     <span>7. DRE 360°</span>
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
+
+                <a href="/admin/noc" target="_blank" class="px-3 sm:px-3.5 py-2.5 min-h-[44px] text-black bg-[#CCFF00] hover:bg-white border-b-2 border-[#CCFF00] font-mono text-xs font-black uppercase flex items-center gap-1.5 whitespace-nowrap transition-colors flex-shrink-0 cursor-pointer shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                    <i data-lucide="server" class="w-4 h-4 shrink-0"></i>
+                    <span>🛡️ NOC & VPS</span>
+                </a>
             </div>
         </div>
     </nav>
@@ -345,6 +350,41 @@
                         </div>
                     </div>
 
+                </div>
+
+                <!-- Painel Informativo de Bancada Livre / Vazia (Exibido quando 0 máquinas na bancada) -->
+                <div id="kanban-bench-free-banner" class="hidden bg-zinc-950 border-2 border-dashed border-zinc-800 p-6 text-center font-mono">
+                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-brand/10 border border-brand text-brand mb-2">
+                        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="text-white font-bold text-sm uppercase">⚡ Bancada Técnica 100% Livre // 0 OSs Pendentes</h4>
+                    <p class="text-zinc-400 text-xs mt-1 max-w-lg mx-auto">
+                        Não há nenhuma OS em andamento ou em teste no momento. Todas as ordens de serviço anteriores já foram concluídas, quitadas e entregues aos clientes!
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-3 mt-4">
+                        <button type="button" onclick="switchTab('new-os')" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> + Nova Entrada de OS (Alt+2 ou N)
+                        </button>
+                        <button type="button" onclick="setDREPeriodFilter('all'); switchTab('financial');" class="px-4 py-2 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-zinc-200 font-bold uppercase text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                            <i data-lucide="archive" class="w-4 h-4"></i> Ver Histórico no DRE (4 OSs)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Prateleira de Acesso Rápido às Últimas OSs Entregues & Quitadas -->
+                <div id="kanban-recent-delivered-shelf" class="bg-black border border-zinc-800 p-4 font-mono space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-zinc-800 pb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <h4 class="text-xs font-bold uppercase text-white">Últimos Atendimentos Concluídos & Quitados (Histórico Recente)</h4>
+                        </div>
+                        <button type="button" onclick="setDREPeriodFilter('all'); switchTab('financial');" class="text-brand hover:underline text-xs flex items-center gap-1 cursor-pointer">
+                            Ver todas as OSs no DRE 360° &rarr;
+                        </button>
+                    </div>
+                    <div id="kanban-recent-delivered-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- Injetado dinamicamente via renderKanbanBoard -->
+                    </div>
                 </div>
             </div>
 
@@ -699,6 +739,9 @@
                     <button type="button" onclick="switchMSPSubTab('snitch')" id="msp-subtab-btn-snitch" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5">
                         🛡️ Dead Man's Snitch (Backup 3-2-1)
                     </button>
+                    <a href="/admin/noc" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-white text-white hover:text-black font-mono text-xs font-black uppercase transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(168,85,247,0.4)] cursor-pointer">
+                        <i data-lucide="server" class="w-4 h-4"></i> 🛡️ NOC & Gestão VPS ↗
+                    </a>
                 </div>
 
                 <!-- SUB-ABA 1: CONTRATOS & CARTEIRA B2B -->
@@ -3023,6 +3066,9 @@
 
         function setDREPeriodFilter(val) {
             currentDREPeriodFilter = val;
+            try { sessionStorage.setItem('iftech_dre_user_picked', val); } catch(e){}
+            const sel = document.getElementById('dre-period-selector');
+            if (sel) sel.value = val;
             renderFinancialDashboard(currentWorkOrders);
         }
 
@@ -3035,12 +3081,7 @@
             const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
             const curMonthLabel = `${monthNames[curMonth]}/${curYear}`;
 
-            // Atualiza label da opção do mês no seletor
             const selEl = document.getElementById('dre-period-selector');
-            if (selEl) {
-                const optMonth = selEl.querySelector('option[value="current_month"]');
-                if (optMonth) optMonth.textContent = `📅 Mês Vigente (${curMonthLabel})`;
-            }
 
             let monthHwGross = 0;
             let monthHwLabor = 0;
@@ -3103,6 +3144,24 @@
                     balcaoRev += total;
                 }
             });
+
+            // Fallback Inteligente de Virada de Mês:
+            // Se for início de mês e o mês atual ainda tiver 0 OSs, mas houver OSs no histórico,
+            // default automático para 'all' para o gestor nunca cair numa tela vazia!
+            const userPickedPeriod = (() => {
+                try { return sessionStorage.getItem('iftech_dre_user_picked'); } catch(e) { return null; }
+            })();
+            if (!userPickedPeriod && currentMonthOrders.length === 0 && orders.length > 0) {
+                currentDREPeriodFilter = 'all';
+            }
+
+            if (selEl) {
+                const optMonth = selEl.querySelector('option[value="current_month"]');
+                if (optMonth) optMonth.textContent = `📅 Mês Vigente (${curMonthLabel} - ${currentMonthOrders.length} OSs)`;
+                const optAll = selEl.querySelector('option[value="all"]');
+                if (optAll) optAll.textContent = `🌐 Histórico Geral Acumulado (${orders.length} OSs • R$ ${allHwGross.toFixed(0)})`;
+                selEl.value = currentDREPeriodFilter;
+            }
 
             // 2. MOTOR 2: SOFTWARE & ENGENHARIA WEB
             let swGross = 0;
@@ -3218,7 +3277,20 @@
 
             if (tbody) {
                 tbody.innerHTML = '';
-                displayOrders.forEach(wo => {
+                if (displayOrders.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="py-8 text-center bg-zinc-950 font-mono text-xs">
+                                <div class="text-zinc-400 mb-1 font-bold">📅 Nenhuma Ordem de Serviço registrada em <strong>${curMonthLabel}</strong> ainda.</div>
+                                <div class="text-zinc-500 mb-3 text-[11px]">Você possui ${orders.length} ordens de serviço registradas no histórico acumulado.</div>
+                                <button type="button" onclick="setDREPeriodFilter('all')" class="px-4 py-2 bg-brand text-black font-black uppercase text-xs hover:bg-white transition-colors cursor-pointer shadow-sm">
+                                    🌐 Visualizar Histórico Geral Acumulado (${orders.length} OSs • R$ ${allHwGross.toFixed(2).replace('.', ',')})
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    displayOrders.forEach(wo => {
                     const s = (wo.status || '').toLowerCase();
                     const isEntregue = s.includes('entregue');
                     const isPronto = s.includes('pronto');
@@ -3275,7 +3347,8 @@
                         </td>
                     `;
                     tbody.appendChild(tr);
-                });
+                    });
+                }
             }
 
             if (typeof updateBreakevenSimulator === 'function') {
@@ -3717,6 +3790,49 @@
             document.getElementById('count-bancada').textContent = cB;
             document.getElementById('count-qa').textContent = cQ;
             document.getElementById('count-pronto').textContent = cP;
+
+            // 1. Alternar Banner de Bancada Livre quando não houver máquinas ativas
+            const totalActive = cT + cO + cB + cQ + cP;
+            const freeBanner = document.getElementById('kanban-bench-free-banner');
+            if (freeBanner) {
+                if (totalActive === 0) {
+                    freeBanner.classList.remove('hidden');
+                } else {
+                    freeBanner.classList.add('hidden');
+                }
+            }
+
+            // 2. Preencher Prateleira de Acesso Rápido às OSs Concluídas
+            const shelfList = document.getElementById('kanban-recent-delivered-list');
+            if (shelfList) {
+                const delivered = orders.filter(o => {
+                    const s = (o.status || '').toLowerCase();
+                    return s.includes('entregue') || s.includes('pronto');
+                }).slice(0, 4);
+
+                if (delivered.length === 0) {
+                    shelfList.innerHTML = `<div class="col-span-full py-4 text-center text-zinc-500 text-xs">Nenhum atendimento finalizado no histórico ainda.</div>`;
+                } else {
+                    shelfList.innerHTML = delivered.map(wo => {
+                        const dateStr = wo.created_at ? new Date(wo.created_at).toLocaleDateString('pt-BR') : '';
+                        const devTitle = `${wo.device_brand || ''} ${wo.device_model || ''}`.trim() || 'Equipamento';
+                        const valNum = parseFloat(wo.total_amount || 0);
+                        return `
+                            <div onclick="openOSDetailModal(currentWorkOrders.find(o => o.os_number == ${wo.os_number}) || selectedWorkOrder);" class="p-2.5 bg-zinc-950 border border-zinc-850 hover:border-brand/60 cursor-pointer transition-all space-y-1.5 group shadow-sm">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="font-bold text-brand group-hover:text-white font-mono">#${formatOSNumber(wo.os_number)}</span>
+                                    <span class="px-1.5 py-0.2 bg-emerald-950 text-emerald-400 border border-emerald-800 text-[9px] uppercase font-bold">✓ Quitado</span>
+                                </div>
+                                <div class="text-white font-bold text-xs truncate" title="${escapeHtml(devTitle)}">${escapeHtml(devTitle)}</div>
+                                <div class="flex items-center justify-between text-[10px] text-zinc-400 pt-1 border-t border-zinc-900">
+                                    <span class="truncate">${escapeHtml(wo.client_name || 'Cliente')}</span>
+                                    <span class="font-mono text-zinc-200 font-bold">R$ ${valNum.toFixed(2).replace('.', ',')}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
         }
 
         let mockSerialsDB = [];
@@ -4168,7 +4284,7 @@
                         <td class="text-right font-bold">R$ ${(it.price * it.qty).toFixed(2).replace('.', ',')}</td>
                         `;
                         tbody.appendChild(tr);
-                });
+                    });
             }
 
             if (window.QRious) {
@@ -8060,8 +8176,8 @@ Informe o laudo técnico ou diagnóstico do serviço realizado na OS #${formatOS
                         </td>
                     `;
                     tbody.appendChild(tr);
-                });
-            }
+                    });
+                }
             recalcTotals();
             // Perfil carregado silenciosamente
         }
