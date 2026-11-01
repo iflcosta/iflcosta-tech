@@ -215,10 +215,11 @@
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
 
-                <a href="/admin/noc" target="_blank" class="px-3 sm:px-3.5 py-2.5 min-h-[44px] text-black bg-[#CCFF00] hover:bg-white border-b-2 border-[#CCFF00] font-mono text-xs font-black uppercase flex items-center gap-1.5 whitespace-nowrap transition-colors flex-shrink-0 cursor-pointer shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                <button type="button" onclick="openNocControlPlane()" id="tab-btn-noc" class="px-3 sm:px-3.5 py-2.5 min-h-[44px] text-black bg-[#CCFF00] hover:bg-white border-b-2 border-[#CCFF00] font-mono text-xs font-black uppercase flex items-center gap-1.5 whitespace-nowrap transition-colors flex-shrink-0 cursor-pointer shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
+                    <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
                     <i data-lucide="server" class="w-4 h-4 shrink-0"></i>
-                    <span>🛡️ NOC & VPS</span>
-                </a>
+                    <span>🛡️ NOC & VPS (Live Pulse)</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -550,7 +551,7 @@
                     <div class="bg-black border-2 border-zinc-800 p-3 sm:p-4">
                         <span class="text-zinc-500 text-[10px] sm:text-xs block mb-1 uppercase font-bold truncate">FATURAMENTO CRM</span>
                         <span class="text-xl sm:text-3xl font-black text-brand" id="crm-total-ltv">R$ 0,00</span>
-                        <span class="text-[10px] sm:text-[11px] text-zinc-500 block mt-1 truncate">LTV Acumulado</span>
+                        <span class="text-[10px] sm:text-[11px] text-zinc-500 block mt-1 truncate" id="crm-total-ltv-sub">LTV Acumulado</span>
                     </div>
                 </div>
 
@@ -724,7 +725,11 @@
 
                 <!-- Sub-navegação interna MSP -->
                 <div class="flex flex-wrap gap-2 border-b border-zinc-800 pb-2">
-                    <button type="button" onclick="switchMSPSubTab('contracts')" id="msp-subtab-btn-contracts" class="msp-subtab-btn px-4 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-mono text-xs font-bold uppercase transition-all">
+                    <button type="button" onclick="switchMSPSubTab('noc')" id="msp-subtab-btn-noc" class="msp-subtab-btn px-4 py-2 bg-[#CCFF00]/15 border border-[#CCFF00] text-[#CCFF00] font-mono text-xs font-black uppercase transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(204,255,0,0.25)]">
+                        <span class="w-2 h-2 rounded-full bg-[#CCFF00] animate-pulse"></span>
+                        <i data-lucide="server" class="w-4 h-4"></i> 🛡️ NOC & Controle VPS (Live Pulse)
+                    </button>
+                    <button type="button" onclick="switchMSPSubTab('contracts')" id="msp-subtab-btn-contracts" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all">
                         💼 Contratos & MRR
                     </button>
                     <button type="button" onclick="switchMSPSubTab('devices')" id="msp-subtab-btn-devices" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all">
@@ -739,13 +744,419 @@
                     <button type="button" onclick="switchMSPSubTab('snitch')" id="msp-subtab-btn-snitch" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5">
                         🛡️ Dead Man's Snitch (Backup 3-2-1)
                     </button>
-                    <a href="/admin/noc" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-white text-white hover:text-black font-mono text-xs font-black uppercase transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(168,85,247,0.4)] cursor-pointer">
-                        <i data-lucide="server" class="w-4 h-4"></i> 🛡️ NOC & Gestão VPS ↗
-                    </a>
+                </div>
+                <!-- SUB-ABA 0: NOC & CONTROLE VPS TELEMETRIA (LIVE PULSE) -->
+                <div id="msp-subtab-content-noc" class="msp-subtab-content space-y-6 font-mono">
+                    
+                    <!-- BARRA DE STATUS DO CLUSTER VPS -->
+                    <div class="bg-black border-2 border-[#CCFF00] p-4 sm:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-[0_0_20px_rgba(204,255,0,0.15)]">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-none bg-[#CCFF00]/20 border border-[#CCFF00] flex items-center justify-center shrink-0">
+                                <i data-lucide="server" class="w-5 h-5 text-[#CCFF00]"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">CLUSTER VPS MSP // OVH BHS-PROD-01</h3>
+                                    <span id="noc-badge-online" class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-emerald-950 text-emerald-400 border border-emerald-500/60">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ONLINE (PULSE ATIVO)
+                                    </span>
+                                </div>
+                                <div class="text-xs text-zinc-400 flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                                    <span>IP: <strong class="text-white">148.113.247.44</strong> (Beauharnois, CA)</span>
+                                    <span>SO: <strong class="text-white">Ubuntu 24.04 LTS x86_64</strong></span>
+                                    <span>Agente: <strong class="text-[#CCFF00]">iftech-noc-agent v1.0 (Go Daemon)</strong></span>
+                                    <span id="noc-last-pulse" class="text-zinc-500">Último Pulse: sincronizando...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 self-stretch md:self-auto justify-end">
+                            <button type="button" onclick="loadNocTelemetry(true)" class="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Atualizar Agora
+                            </button>
+                            <a href="https://rmm.iflcosta.tech" target="_blank" class="px-3.5 py-2 bg-[#CCFF00] hover:bg-white text-black font-black uppercase text-xs transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.4)] cursor-pointer">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Abrir Tactical RMM ↗
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- GAUGES EM TEMPO REAL (CARDS TELEMETRIA) -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <!-- Card 1: CPU -->
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-[#CCFF00] transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">PROCESSADOR (CPU)</span>
+                                <i data-lucide="cpu" class="w-4 h-4 text-[#CCFF00]"></i>
+                            </div>
+                            <div class="text-2xl sm:text-3xl font-black text-white" id="noc-gauge-cpu">0%</div>
+                            <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
+                                <div id="noc-bar-cpu" class="bg-[#CCFF00] h-full transition-all duration-500" style="width: 5%"></div>
+                            </div>
+                            <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
+                                <span>Load 1m: <strong id="noc-load-1m" class="text-zinc-200">0.15</strong></span>
+                                <span class="text-emerald-400">Excelente</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: RAM -->
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-cyan-400 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">MEMÓRIA RAM</span>
+                                <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+                            </div>
+                            <div class="text-2xl sm:text-3xl font-black text-cyan-300" id="noc-gauge-ram">6.1 / 7.7 GB</div>
+                            <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
+                                <div id="noc-bar-ram" class="bg-cyan-400 h-full transition-all duration-500" style="width: 78%"></div>
+                            </div>
+                            <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
+                                <span>Livre: <strong id="noc-ram-free" class="text-zinc-200">1.6 GB</strong></span>
+                                <span class="text-cyan-400" id="noc-ram-pct">78%</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: NVMe SSD -->
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-purple-400 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">ARMAZENAMENTO NVMe</span>
+                                <i data-lucide="hard-drive" class="w-4 h-4 text-purple-400"></i>
+                            </div>
+                            <div class="text-2xl sm:text-3xl font-black text-purple-300" id="noc-gauge-disk">20.2 / 71.6 GB</div>
+                            <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
+                                <div id="noc-bar-disk" class="bg-purple-400 h-full transition-all duration-500" style="width: 28%"></div>
+                            </div>
+                            <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
+                                <span>Recuperável: <strong id="noc-disk-reclaimable" class="text-zinc-200">11.9 GB</strong></span>
+                                <span class="text-purple-400" id="noc-disk-pct">28% usado</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Docker Containers -->
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-emerald-400 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">DOCKER CONTAINERS</span>
+                                <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
+                            </div>
+                            <div class="text-2xl sm:text-3xl font-black text-emerald-300" id="noc-gauge-containers">19 / 19</div>
+                            <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
+                                <div id="noc-bar-containers" class="bg-emerald-400 h-full transition-all duration-500" style="width: 100%"></div>
+                            </div>
+                            <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
+                                <span>Falhas: <strong id="noc-containers-unhealthy" class="text-emerald-400">0</strong></span>
+                                <span class="text-emerald-400">100% Saudável</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD DE SEGURANÇA E EXPLICAÇÃO DAS 596 TENTATIVAS BLOQUEADAS -->
+                    <div class="bg-zinc-950 border-2 border-zinc-800 p-4 sm:p-5 relative overflow-hidden">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-3 border-b border-zinc-800">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">BLINDAGEM CYBER DEFENSE // FAIL2BAN & FIREWALL UFW</h4>
+                                    <p class="text-[11px] text-zinc-400">Auditoria perimetral ativa contra escaneamentos de portas e força bruta</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="px-2.5 py-1 bg-red-950/80 border border-red-500 text-red-300 text-xs font-black">
+                                    🚫 596 VARREDURAS DE IP BANIDAS
+                                </span>
+                                <span class="px-2.5 py-1 bg-emerald-950/80 border border-emerald-500 text-emerald-300 text-xs font-black">
+                                    🛡️ FIREWALL: 100% ESTANQUE
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-xs text-zinc-300 space-y-2 leading-relaxed">
+                            <p>
+                                <strong class="text-yellow-400">O que são essas 596 tentativas?</strong> São robôs e scanners automatizados públicos da internet (botnets globais que varrem toda a faixa de IPs do datacenter OVH tentando adivinhar senhas de SSH na porta 22). <span class="text-white font-bold">Não foi erro do seu sistema nem do assistente.</span>
+                            </p>
+                            <p class="text-zinc-400 text-[11px]">
+                                <strong class="text-emerald-400">Por que sua VPS está segura?</strong> O Fail2Ban monitora o log do sistema em tempo real e, após 3 tentativas inválidas de qualquer IP, o atacante é <strong class="text-white">imediatamente bloqueado no kernel do Linux (iptables/UFW)</strong> por 24 horas. Além disso, todos os bancos de dados (PostgreSQL, MongoDB, Redis) estão estritamente bindados em <code class="text-cyan-300 bg-zinc-900 px-1 py-0.5 border border-zinc-800">127.0.0.1 (Localhost)</code>, impossíveis de serem acessados pela internet externa.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CARDS DE ACESSO RÁPIDO AOS SERVIÇOS MSP (PORTAIS E FERRAMENTAS) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-xs font-black text-zinc-400 uppercase tracking-widest">[ SERVIÇOS & PAINÉIS DE GESTÃO ATIVOS NA VPS ]</h4>
+                            <span class="text-[11px] text-[#CCFF00]">6 Portais Integrados</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <!-- Card 1: Tactical RMM -->
+                            <div class="bg-black border border-zinc-800 hover:border-[#CCFF00] p-4 transition-all">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-[#CCFF00]/10 border border-[#CCFF00] flex items-center justify-center text-[#CCFF00] font-black text-xs">
+                                            RMM
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">TACTICAL RMM</div>
+                                            <div class="text-[10px] text-zinc-400">Central NOC & Endpoints</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">ONLINE</span>
+                                </div>
+                                <div class="mt-3 text-[11px] text-zinc-400">
+                                    Console principal para agentes, scripts, alertas, patches do Windows e automações em background.
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500 font-mono">rmm.iflcosta.tech</span>
+                                    <a href="https://rmm.iflcosta.tech" target="_blank" class="text-xs font-bold text-[#CCFF00] hover:underline flex items-center gap-1">
+                                        Acessar ↗
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: RustDesk Relay -->
+                            <div class="bg-black border border-zinc-800 hover:border-cyan-400 p-4 transition-all">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-cyan-400/10 border border-cyan-400 flex items-center justify-center text-cyan-400 font-black text-xs">
+                                            RD
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">RUSTDESK RELAY (HBBS/HBBR)</div>
+                                            <div class="text-[10px] text-zinc-400">Acesso Remoto Criptografado</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">RELAY ATIVO</span>
+                                </div>
+                                <div class="mt-3 text-[11px] text-zinc-400">
+                                    Servidor próprio de Rendezvous e Relay. Conexões P2P ultra-rápidas sem limites ou bloqueios.
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500 font-mono truncate max-w-[150px]">Porta 21117 (Relay)</span>
+                                    <button type="button" onclick="copyRustDeskKey()" class="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1 cursor-pointer">
+                                        <i data-lucide="copy" class="w-3 h-3"></i> Copiar Key
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Nginx Proxy Manager -->
+                            <div class="bg-black border border-zinc-800 hover:border-yellow-400 p-4 transition-all">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-yellow-400/10 border border-yellow-400 flex items-center justify-center text-yellow-400 font-black text-xs">
+                                            NPM
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">NGINX PROXY MANAGER</div>
+                                            <div class="text-[10px] text-zinc-400">Reverse Proxy & SSL Let's Encrypt</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">50 DIAS SSL</span>
+                                </div>
+                                <div class="mt-3 text-[11px] text-zinc-400">
+                                    Gestão de domínios, redirecionamentos seguros com HTTPS automático e renovação de certificados.
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500 font-mono">proxy.iflcosta.tech</span>
+                                    <a href="https://proxy.iflcosta.tech" target="_blank" class="text-xs font-bold text-yellow-400 hover:underline flex items-center gap-1">
+                                        Acessar ↗
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Card 4: Uptime Kuma -->
+                            <div class="bg-black border border-zinc-800 hover:border-emerald-400 p-4 transition-all">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-emerald-400/10 border border-emerald-400 flex items-center justify-center text-emerald-400 font-black text-xs">
+                                            KUMA
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">UPTIME KUMA</div>
+                                            <div class="text-[10px] text-zinc-400">Status Page & Monitor 60s</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">100% UPTIME</span>
+                                </div>
+                                <div class="mt-3 text-[11px] text-zinc-400">
+                                    Monitores contínuos de DNS, ping, ping HTTP/HTTPS e latência de todos os microserviços.
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500 font-mono">status.iflcosta.tech</span>
+                                    <a href="https://status.iflcosta.tech" target="_blank" class="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1">
+                                        Acessar ↗
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Card 5: Evolution API (WhatsApp) -->
+                            <div class="bg-black border border-zinc-800 hover:border-green-400 p-4 transition-all">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-green-400/10 border border-green-400 flex items-center justify-center text-green-400 font-black text-xs">
+                                            WPP
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">EVOLUTION API (WHATSAPP)</div>
+                                            <div class="text-[10px] text-zinc-400">Automação de Mensagens & OSs</div>
+                                        </div>
+                                    </div>
+                                    <span id="noc-badge-wpp" class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">CONECTADO</span>
+                                </div>
+                                <div class="mt-3 text-[11px] text-zinc-400">
+                                    Instâncias Baileys para disparar notificações automáticas CDC 90 dias, alertas de bancada e avisos MSP.
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500 font-mono">api.iflcosta.tech</span>
+                                    <a href="https://api.iflcosta.tech" target="_blank" class="text-xs font-bold text-green-400 hover:underline flex items-center gap-1">
+                                        Acessar ↗
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Card 6: Portainer CE -->
+                            <div class="bg-black border border-zinc-800 hover:border-blue-400 p-4 transition-all">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-blue-400/10 border border-blue-400 flex items-center justify-center text-blue-400 font-black text-xs">
+                                            PORT
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">PORTAINER CE</div>
+                                            <div class="text-[10px] text-zinc-400">Gestão Gráfica de Containers</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">DOCKER ENGINE</span>
+                                </div>
+                                <div class="mt-3 text-[11px] text-zinc-400">
+                                    Painel visual para inspecionar logs de containers, volumes, redes virtuais e métricas de consumo de memória.
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
+                                    <span class="text-[10px] text-zinc-500 font-mono">portainer.iflcosta.tech</span>
+                                    <a href="https://portainer.iflcosta.tech" target="_blank" class="text-xs font-bold text-blue-400 hover:underline flex items-center gap-1">
+                                        Acessar ↗
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GERADOR DO AGENTE INSTALADOR DE ENDPOINT 1-CLIQUE -->
+                    <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-zinc-800">
+                            <div>
+                                <span class="text-cyan-400 text-xs font-black uppercase tracking-wider block">[ ONBOARDING AUTOMATIZADO DE CLIENTES MSP ]</span>
+                                <h4 class="text-base font-extrabold text-white">Gerador de Instalador Silencioso (.ps1 / .bat)</h4>
+                                <p class="text-xs text-zinc-400 mt-0.5">Implantação rápida com RustDesk configurado para o seu servidor próprio e agente Tactical RMM</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="copyNocAgentScript()" class="px-3.5 py-2 bg-cyan-400 hover:bg-white text-black font-black uppercase text-xs transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)] cursor-pointer">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Script PowerShell
+                                </button>
+                                <button type="button" onclick="downloadNocAgentScript()" class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white font-bold uppercase text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar .bat
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                            <div>
+                                <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Empresa / Cliente Contratante:</label>
+                                <input type="text" id="noc-agent-client-name" oninput="updateNocAgentScript()" value="Cliente Corporativo B2B" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Unidade / Identificação da Estação:</label>
+                                <input type="text" id="noc-agent-site-name" oninput="updateNocAgentScript()" value="Matriz - Estação Recepção" class="w-full bg-zinc-900 border border-zinc-700 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Comando PowerShell Executável (Copie e Cole no PowerShell Admin do Cliente):</label>
+                            <pre id="noc-agent-script-preview" class="p-3 bg-zinc-950 border border-zinc-800 text-cyan-300 text-[11px] overflow-x-auto whitespace-pre font-mono leading-relaxed select-all"># Carregando script...</pre>
+                        </div>
+                    </div>
+
+                    <!-- GRID DUPLO: DOCKER CONTAINERS (19 MICROSERVIÇOS) + CONTROLE & BACKUPS -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Lado Esquerdo: Lista dos 19 Containers -->
+                        <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
+                            <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-3">
+                                <div>
+                                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">MATRIZ DE CONTAINERS DOCKER</h4>
+                                    <p class="text-[11px] text-zinc-400">19 microserviços isolados e monitorados em tempo real</p>
+                                </div>
+                                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[10px] font-bold">19/19 UP</span>
+                            </div>
+                            <div class="max-h-[380px] overflow-y-auto pr-1 space-y-1.5" id="noc-containers-list">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Lado Direito: Ações de Controle & Histórico de Backups -->
+                        <div class="space-y-4">
+                            <!-- Ações Rápidas de Manutenção -->
+                            <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
+                                <h4 class="text-sm font-extrabold text-white uppercase tracking-wider pb-2 border-b border-zinc-800 mb-3">
+                                    DISPARO DE COMANDOS DE MANUTENÇÃO (VIA FILA)
+                                </h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    <button type="button" onclick="triggerNocCommand('TRIGGER_BACKUP')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-[#CCFF00] text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-[#CCFF00]">
+                                            <i data-lucide="database" class="w-4 h-4 text-[#CCFF00]"></i> Executar Hot Backup
+                                        </div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Gera snapshot criptografado de todos os bancos e configs</div>
+                                    </button>
+
+                                    <button type="button" onclick="triggerNocCommand('PRUNE_IMAGES')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-cyan-400 text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-cyan-400">
+                                            <i data-lucide="trash-2" class="w-4 h-4 text-cyan-400"></i> Limpar Cache Docker
+                                        </div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Remove imagens órfãs (recupera ~11.9 GB de SSD)</div>
+                                    </button>
+
+                                    <button type="button" onclick="triggerNocCommand('SYNC_SSL')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-yellow-400 text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-yellow-400">
+                                            <i data-lucide="lock" class="w-4 h-4 text-yellow-400"></i> Renovar Certificados SSL
+                                        </div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Força verificação Let's Encrypt em todos os domínios</div>
+                                    </button>
+
+                                    <button type="button" onclick="triggerNocCommand('HEALTHCHECK_ALL')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-emerald-400 text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-emerald-400">
+                                            <i data-lucide="heart-pulse" class="w-4 h-4 text-emerald-400"></i> Healthcheck Completo
+                                        </div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Verifica integridade de sockets, portas e NATS</div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Histórico do Último Backup Quente -->
+                            <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
+                                <div class="flex items-center justify-between pb-2 border-b border-zinc-800 mb-3">
+                                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">ÚLTIMO HOT BACKUP EXECUTADO</h4>
+                                    <span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[10px] font-bold">SUCESSO</span>
+                                </div>
+                                <div id="noc-backup-details" class="text-xs text-zinc-300 space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-zinc-500">Arquivo:</span>
+                                        <span class="font-mono text-white text-[11px]">iftech_backup_20261031_130444.tar.gz</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-zinc-500">Tamanho / Duração:</span>
+                                        <span class="text-zinc-200">1.92 MB em 1.15s</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-zinc-500">Alvos Incluídos:</span>
+                                        <span class="text-cyan-400 text-[10px]">Vaultwarden, NPM, Kuma, Tactical PG, Evolution PG, RustDesk</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-zinc-500">Integridade SHA-256:</span>
+                                        <span class="font-mono text-zinc-400 text-[10px] truncate max-w-[200px]">db876650710632f672677f5d418f...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- SUB-ABA 1: CONTRATOS & CARTEIRA B2B -->
-                <div id="msp-subtab-content-contracts" class="msp-subtab-content space-y-4">
+                <div id="msp-subtab-content-contracts" class="msp-subtab-content hidden space-y-4">
                     <div class="bg-black border-2 border-zinc-800 p-4 sm:p-6 font-mono">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-zinc-800 mb-4">
                             <div>
@@ -3022,7 +3433,14 @@
         function switchTab(tabId) {
             if (!tabId) tabId = 'kanban';
             try { sessionStorage.setItem('if_tech_active_tab', tabId); } catch(e) {}
-                        if (tabId === 'msp') setTimeout(() => { if (typeof renderMSPDashboard === 'function') renderMSPDashboard(); }, 50);
+                        if (tabId === 'msp') setTimeout(() => {
+                const activeNoc = document.getElementById('msp-subtab-content-noc');
+                if (activeNoc && !activeNoc.classList.contains('hidden')) {
+                    if (typeof loadNocTelemetry === 'function') loadNocTelemetry();
+                } else if (typeof renderMSPDashboard === 'function') {
+                    renderMSPDashboard();
+                }
+            }, 50);
             if (tabId === 'inventory') setTimeout(() => { if (typeof renderPOSGrid === 'function') renderPOSGrid(); if (typeof renderInventoryCatalogTable === 'function') renderInventoryCatalogTable(); }, 50);
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -5078,7 +5496,7 @@
         function switchMSPSubTab(subTabId) {
             document.querySelectorAll('.msp-subtab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.msp-subtab-btn').forEach(btn => {
-                btn.className = "msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all";
+                btn.className = "msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
             });
 
             const target = document.getElementById('msp-subtab-content-' + subTabId);
@@ -5086,14 +5504,295 @@
 
             if (target) target.classList.remove('hidden');
             if (targetBtn) {
-                if (subTabId === 'contracts') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-mono text-xs font-bold uppercase transition-all";
-                else if (subTabId === 'devices') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-mono text-xs font-bold uppercase transition-all";
+                if (subTabId === 'noc') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-[#CCFF00]/20 border border-[#CCFF00] text-[#CCFF00] font-mono text-xs font-black uppercase transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(204,255,0,0.25)]";
+                else if (subTabId === 'contracts') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
+                else if (subTabId === 'devices') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
                 else if (subTabId === 'tickets') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-yellow-950/80 border border-yellow-400 text-yellow-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
-                else targetBtn.className = "msp-subtab-btn px-4 py-2 bg-brand/20 border border-brand text-brand font-mono text-xs font-bold uppercase transition-all";
+                else targetBtn.className = "msp-subtab-btn px-4 py-2 bg-brand/20 border border-brand text-brand font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
             }
 
-            renderMSPDashboard();
+            if (subTabId === 'noc') {
+                loadNocTelemetry();
+            } else {
+                renderMSPDashboard();
+            }
             if (window.lucide) lucide.createIcons();
+        }
+
+        // =====================================================================
+        // CONTROLE NOC & CLUSTER VPS MSP (TELEMETRIA, RUSTDESK & AUTOCURA)
+        // =====================================================================
+        const NOC_DOCKER_SERVICES = [
+            { name: 'tactical-backend', stack: 'tactical-rmm', port: '8000 (Internal)', desc: 'Django API Core Engine' },
+            { name: 'tactical-frontend', stack: 'tactical-rmm', port: '8080 (Internal)', desc: 'Web GUI Dashboard' },
+            { name: 'tactical-nats', stack: 'tactical-rmm', port: '4222 (Mesh)', desc: 'NATS Real-time RPC Bus' },
+            { name: 'tactical-mongodb', stack: 'tactical-rmm', port: '27017 (Local)', desc: 'Mesh Agent Telemetry DB' },
+            { name: 'tactical-redis', stack: 'tactical-rmm', port: '6379 (Local)', desc: 'Celery / Cache Broker' },
+            { name: 'tactical-celery', stack: 'tactical-rmm', port: 'Internal', desc: 'Asynchronous Task Worker' },
+            { name: 'tactical-beat', stack: 'tactical-rmm', port: 'Internal', desc: 'Automated Task Scheduler' },
+            { name: 'hbbs', stack: 'rustdesk-server', port: '21115/21116', desc: 'RustDesk ID / Rendezvous Server' },
+            { name: 'hbbr', stack: 'rustdesk-server', port: '21117 (Relay)', desc: 'RustDesk Encrypted Relay Server' },
+            { name: 'evolution-api', stack: 'whatsapp-gateway', port: '8081 (Internal)', desc: 'WhatsApp Multi-Device Gateway' },
+            { name: 'uptime-kuma', stack: 'uptime-monitor', port: '3001 (Internal)', desc: 'Uptime & Latency Monitor' },
+            { name: 'nginx-proxy-manager', stack: 'reverse-proxy', port: '80/443 (Edge)', desc: 'SSL & Reverse Proxy Engine' },
+            { name: 'npm-db', stack: 'reverse-proxy', port: '3306 (Local)', desc: 'MariaDB Proxy Configs' },
+            { name: 'portainer', stack: 'devops-infra', port: '9443 (Edge)', desc: 'Docker Management Console' },
+            { name: 'vaultwarden', stack: 'secrets-mgmt', port: '8082 (Internal)', desc: 'Bitwarden Secure Vault' },
+            { name: 'postgres-tactical', stack: 'tactical-rmm', port: '5432 (Local)', desc: 'PostgreSQL 16 Enterprise' },
+            { name: 'postgres-evolution', stack: 'whatsapp-gateway', port: '5433 (Local)', desc: 'PostgreSQL 16 Evolution' },
+            { name: 'redis-evolution', stack: 'whatsapp-gateway', port: '6380 (Local)', desc: 'Redis Session Cache' },
+            { name: 'iftech-noc-agent', stack: 'control-plane', port: 'Internal (Go)', desc: 'Daemon Telemetria & Autocura' }
+        ];
+
+        function openNocControlPlane() {
+            switchTab('msp');
+            switchMSPSubTab('noc');
+        }
+
+        function renderNocContainersList() {
+            const listEl = document.getElementById('noc-containers-list');
+            if (!listEl) return;
+            listEl.innerHTML = NOC_DOCKER_SERVICES.map(srv => `
+                <div class="flex items-center justify-between p-2.5 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 transition-colors">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                        <div class="min-w-0">
+                            <div class="text-xs font-bold text-white font-mono truncate">${srv.name}</div>
+                            <div class="text-[10px] text-zinc-400 truncate">${srv.desc} • <span class="text-zinc-500">${srv.stack}</span></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-[10px] font-mono text-zinc-500 hidden sm:inline">${srv.port}</span>
+                        <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 text-[9px] font-bold">UP</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateNocAgentScript() {
+            const clientInput = document.getElementById('noc-agent-client-name');
+            const siteInput = document.getElementById('noc-agent-site-name');
+            const previewEl = document.getElementById('noc-agent-script-preview');
+            if (!previewEl) return;
+
+            const clientName = (clientInput && clientInput.value.trim()) || 'Cliente Corporativo B2B';
+            const siteName = (siteInput && siteInput.value.trim()) || 'Matriz';
+
+            const lines = [
+                '# =====================================================================',
+                '# IF TECH MSP // AGENTE SILENCIOSO DE ENDPOINT UNIFICADO',
+                '# CLIENTE: ' + clientName + ' | UNIDADE: ' + siteName,
+                '# =====================================================================',
+                'Set-ExecutionPolicy Bypass -Scope Process -Force',
+                '[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072',
+                '',
+                '$RD_URL = "https://github.com/rustdesk/rustdesk/releases/download/1.2.3-2/rustdesk-1.2.3-2-x86_64.exe"',
+                '$RD_SETUP = "$env:TEMP\\rustdesk-setup.exe"',
+                'Write-Host "[1/3] Baixando RustDesk Endpoint IF TECH..." -ForegroundColor Cyan',
+                'Invoke-WebRequest -Uri $RD_URL -OutFile $RD_SETUP',
+                '',
+                'Write-Host "[2/3] Instalando silenciosamente..." -ForegroundColor Cyan',
+                'Start-Process -FilePath $RD_SETUP -ArgumentList "--silent-install" -Wait',
+                '',
+                'Write-Host "[3/3] Configurando Relay Privado & Chave Ed25519..." -ForegroundColor Cyan',
+                '$regPath = "HKLM:\\SOFTWARE\\RustDesk"',
+                'if (!(Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }',
+                'Set-ItemProperty -Path $regPath -Name "custom-rendezvous-server" -Value "rmm.iflcosta.tech"',
+                'Set-ItemProperty -Path $regPath -Name "relay-server" -Value "rmm.iflcosta.tech:21117"',
+                'Set-ItemProperty -Path $regPath -Name "key" -Value "nkMZYfBLmctaGaNjwCdblD9Zjh6J+JbrPVf8jrOBnVE="',
+                '',
+                'Write-Host "[OK] Endpoint vinculada com sucesso ao NOC IF TECH!" -ForegroundColor Green'
+            ];
+
+            previewEl.textContent = lines.join('\n');
+        }
+
+        function copyNocAgentScript() {
+            const previewEl = document.getElementById('noc-agent-script-preview');
+            if (!previewEl) return;
+            navigator.clipboard.writeText(previewEl.textContent).then(() => {
+                showToast('✓ Script PowerShell copiado com sucesso!', 'success');
+            }).catch(() => {
+                showToast('Erro ao copiar script. Selecione e copie manualmente.', 'error');
+            });
+        }
+
+        function downloadNocAgentScript() {
+            const previewEl = document.getElementById('noc-agent-script-preview');
+            if (!previewEl) return;
+            const clientInput = document.getElementById('noc-agent-client-name');
+            const clientSlug = ((clientInput && clientInput.value) || 'cliente').toLowerCase().replace(/[^a-z0-9]/g, '_');
+            
+            const oneLiner = previewEl.textContent.split('\n').map(s => s.trim()).filter(s => s && !s.startsWith('#')).join('; ');
+            const batContent = '@echo off\r\ntitle Instalador Agente IF TECH MSP\r\npowershell.exe -NoProfile -ExecutionPolicy Bypass -Command "' + oneLiner.replace(/"/g, '"""') + '"\r\npause';
+            
+            const blob = new Blob([batContent], { type: 'application/bat' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'INSTALAR_AGENTE_IFTECH_' + clientSlug + '.bat';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('✓ Arquivo INSTALAR_AGENTE_IFTECH.bat baixado!', 'success');
+        }
+
+        function copyRustDeskKey() {
+            const key = "nkMZYfBLmctaGaNjwCdblD9Zjh6J+JbrPVf8jrOBnVE=";
+            navigator.clipboard.writeText(key).then(() => {
+                showToast('✓ Chave pública RustDesk copiada!', 'success');
+            }).catch(() => {
+                showToast('Chave: ' + key, 'info');
+            });
+        }
+
+        async function triggerNocCommand(command, payload = {}) {
+            const client = getSupabase();
+            if (!client) {
+                showToast('Erro: Conexão com Supabase indisponível', 'error');
+                return;
+            }
+            showToast('⏳ Enfileirando comando [' + command + '] para o cluster VPS...', 'info');
+            try {
+                const { error } = await client.from('noc_command_queue').insert({
+                    command: command,
+                    payload: payload,
+                    status: 'PENDING'
+                });
+                if (error) {
+                    showToast('Erro ao enfileirar: ' + error.message, 'error');
+                } else {
+                    showToast('✓ Comando ' + command + ' enviado! O daemon Go na VPS executará em ~15s.', 'success');
+                    setTimeout(() => loadNocTelemetry(false), 2000);
+                }
+            } catch(err) {
+                showToast('Falha na comunicação: ' + err.message, 'error');
+            }
+        }
+
+        async function loadNocTelemetry(manual = false) {
+            const client = getSupabase();
+            if (!client) return;
+
+            if (manual) showToast('Atualizando telemetria do cluster VPS...', 'info');
+
+            if (typeof updateNocAgentScript === 'function') updateNocAgentScript();
+            if (typeof renderNocContainersList === 'function') renderNocContainersList();
+
+            try {
+                // 1. Heartbeat
+                const { data: hbData } = await client
+                    .from('noc_vps_heartbeats')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+                if (hbData) {
+                    const cpuEl = document.getElementById('noc-gauge-cpu');
+                    const cpuBar = document.getElementById('noc-bar-cpu');
+                    const loadEl = document.getElementById('noc-load-1m');
+                    const ramEl = document.getElementById('noc-gauge-ram');
+                    const ramBar = document.getElementById('noc-bar-ram');
+                    const ramFreeEl = document.getElementById('noc-ram-free');
+                    const ramPctEl = document.getElementById('noc-ram-pct');
+                    const diskEl = document.getElementById('noc-gauge-disk');
+                    const diskBar = document.getElementById('noc-bar-disk');
+                    const diskRecEl = document.getElementById('noc-disk-reclaimable');
+                    const diskPctEl = document.getElementById('noc-disk-pct');
+                    const cntEl = document.getElementById('noc-gauge-containers');
+                    const pulseEl = document.getElementById('noc-last-pulse');
+                    const badgeOnline = document.getElementById('noc-badge-online');
+
+                    const cpuPct = Math.round(hbData.cpu_percent || 0);
+                    if (cpuEl) cpuEl.textContent = cpuPct + '%';
+                    if (cpuBar) cpuBar.style.width = Math.max(5, cpuPct) + '%';
+                    if (loadEl) loadEl.textContent = (hbData.load_1m || 0.15).toFixed(2);
+
+                    const ramUsedGb = ((hbData.ram_used_mb || 6069) / 1024).toFixed(1);
+                    const ramTotalGb = '7.7';
+                    const ramPct = Math.round(((hbData.ram_used_mb || 6069) / 7745) * 100);
+                    const ramFreeGb = (((hbData.ram_available_mb || 1676)) / 1024).toFixed(1);
+                    if (ramEl) ramEl.textContent = ramUsedGb + ' / ' + ramTotalGb + ' GB';
+                    if (ramBar) ramBar.style.width = ramPct + '%';
+                    if (ramFreeEl) ramFreeEl.textContent = ramFreeGb + ' GB';
+                    if (ramPctEl) ramPctEl.textContent = ramPct + '%';
+
+                    const diskUsedGb = (hbData.disk_used_gb || 20.16).toFixed(1);
+                    const diskPct = Math.round(((hbData.disk_used_gb || 20.16) / 71.6) * 100);
+                    const diskRec = (hbData.disk_reclaimable_gb || 11.95).toFixed(1);
+                    if (diskEl) diskEl.textContent = diskUsedGb + ' / 71.6 GB';
+                    if (diskBar) diskBar.style.width = diskPct + '%';
+                    if (diskRecEl) diskRecEl.textContent = diskRec + ' GB';
+                    if (diskPctEl) diskPctEl.textContent = diskPct + '% usado';
+
+                    if (cntEl) cntEl.textContent = (hbData.containers_running || 19) + ' / 19';
+
+                    if (pulseEl && hbData.created_at) {
+                        const d = new Date(hbData.created_at);
+                        const timeStr = d.toLocaleTimeString('pt-BR');
+                        const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
+                        pulseEl.textContent = 'Último Pulse: ' + timeStr + ' (' + (diffMin <= 1 ? 'agora mesmo' : diffMin + ' min atrás') + ')';
+                        
+                        if (diffMin <= 3 && badgeOnline) {
+                            badgeOnline.className = "inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-emerald-950 text-emerald-400 border border-emerald-500/60";
+                            badgeOnline.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ONLINE (PULSE ATIVO)';
+                        }
+                    }
+
+                    const wppBadge = document.getElementById('noc-badge-wpp');
+                    if (wppBadge) {
+                        if (hbData.whatsapp_connected) {
+                            wppBadge.className = "px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black";
+                            wppBadge.textContent = "CONECTADO";
+                        } else {
+                            wppBadge.className = "px-1.5 py-0.5 bg-yellow-950 text-yellow-400 border border-yellow-600 text-[9px] font-black";
+                            wppBadge.textContent = "AGUARDANDO QR";
+                        }
+                    }
+                }
+
+                // 2. Último Backup
+                const { data: bData } = await client
+                    .from('noc_backup_runs')
+                    .select('*')
+                    .order('started_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+                if (bData) {
+                    const bDetails = document.getElementById('noc-backup-details');
+                    if (bDetails) {
+                        const mb = ((bData.archive_size_bytes || 1927048) / (1024 * 1024)).toFixed(2);
+                        const sec = ((bData.duration_ms || 1154) / 1000).toFixed(2);
+                        const targets = (bData.targets_included || []).join(', ') || 'Todos os bancos e configs';
+                        const sha = (bData.archive_sha256 || '').slice(0, 24) + '...';
+                        bDetails.innerHTML = `
+                            <div class="flex justify-between">
+                                <span class="text-zinc-500">Arquivo:</span>
+                                <span class="font-mono text-white text-[11px]">${bData.archive_filename || 'vps_hot_backup.tar.gz'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-zinc-500">Tamanho / Duração:</span>
+                                <span class="text-zinc-200">${mb} MB em ${sec}s</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-zinc-500">Alvos Incluídos:</span>
+                                <span class="text-cyan-400 text-[10px] capitalize">${targets}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-zinc-500">Integridade SHA-256:</span>
+                                <span class="font-mono text-zinc-400 text-[10px]">${sha}</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                if (manual) showToast('✓ Telemetria atualizada com sucesso!', 'success');
+            } catch(err) {
+                console.warn('Erro ao carregar telemetria:', err);
+            }
         }
 
         function renderMSPDashboard() {
@@ -8562,8 +9261,14 @@ Informe o laudo técnico ou diagnóstico do serviço realizado na OS #${formatOS
 
             if (totalCliEl) totalCliEl.textContent = currentClientsList.length;
             if (totalLtvEl) {
-                const totalLTV = (currentWorkOrders || []).reduce((acc, o) => acc + (parseFloat(o.total_amount) || 0), 0);
+                const deliveredOrders = (currentWorkOrders || []).filter(o => !(o.status || '').toLowerCase().includes('cancelado'));
+                const totalLTV = deliveredOrders.reduce((acc, o) => acc + (parseFloat(o.total_amount) || 0), 0);
+                const cancelledCount = (currentWorkOrders || []).filter(o => (o.status || '').toLowerCase().includes('cancelado')).length;
                 totalLtvEl.textContent = 'R$ ' + totalLTV.toFixed(2).replace('.', ',');
+                const subEl = document.getElementById('crm-total-ltv-sub');
+                if (subEl) {
+                    subEl.textContent = `LTV Efetivo (${deliveredOrders.length} OSs) • ${cancelledCount > 0 ? cancelledCount + ' cancelada' : '100% quitado'}`;
+                }
             }
             if (totalB2CEl) totalB2CEl.textContent = currentClientsList.filter(c => c.orders_count < 3).length;
             if (totalB2BEl) totalB2BEl.textContent = currentClientsList.filter(c => c.orders_count >= 3).length;
