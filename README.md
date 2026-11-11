@@ -1,54 +1,55 @@
-# IFLCosta Tech
+# IF Tech (`iflcosta.tech`)
 
-A landing page e infraestrutura de documentação operacional da **IFLCosta Tech**, uma consultoria tech híbrida focada em Engenharia de Software, Upgrades de Hardware de alta performance e TI Gerenciada B2B (MSP).
+Plataforma web, Cockpit Administrativo ERP 360° e Portal de Acompanhamento da **IF Tech** — consultoria solo de Engenharia de Hardware, Sistemas Web/Automações e Gestão de TI (MSP) em Bragança Paulista - SP.
 
-## 🏗️ Arquitetura do Projeto
+## 🚀 Ambientes & Rotas em Produção (Vercel + Supabase)
 
-O projeto segue a filosofia de máxima performance, zero dependências complexas e design Neobrutalista:
-- **Core:** HTML5 Semântico puro.
-- **Estilização:** Tailwind CSS (Compilado e Minificado para produção).
-- **Ícones:** Lucide Icons (Carregamento via CDN deferido).
-- **Design System:** Neobrutalismo Tech (Fundo Carbono, Verde Fósforo, Bordas Fortes e Fontes Inter/JetBrains Mono).
+| Rota Pública | Destino Real | Função |
+|--------------|--------------|--------|
+| `https://iflcosta.tech/` | [`index.html`](index.html) | Landing Page institucional + triagem WhatsApp + consulta rápida de OS |
+| `https://iflcosta.tech/app` | [`admin.html`](admin.html) *(Tríade)* | Cockpit Admin / ERP 360° protegido exclusivamente por **Supabase Auth (JWT + RLS)** |
+| `https://iflcosta.tech/status` | [`portal.html`](portal.html) *(Tríade)* | Portal do Cliente em tempo real (tracking por UUID/OS, aprovação de orçamento e homologação) |
+| `https://iflcosta.tech/os/:id` | [`portal.html`](portal.html) | Atalho direto por número de Ordem de Serviço |
+| `https://iflcosta.tech/t/:token` | [`portal.html`](portal.html) | Magic link direto por token UUID |
+| `https://iflcosta.tech/sitemap.xml` | [`sitemap.xml`](sitemap.xml) | Sitemap XML público (rotas privadas bloqueadas em [`robots.txt`](robots.txt)) |
 
-## 📚 Documentação Viva (Spec-Driven Development)
+> **Regra de Tríade:** Após qualquer edição em [`admin.html`](admin.html), manter paridade SHA-256 idêntica em [`app.html`](app.html) e [`app/index.html`](app/index.html). Após editar [`portal.html`](portal.html), replicar identicamente em [`status.html`](status.html) e [`status/index.html`](status/index.html).
 
-Toda a lógica de negócios, tarefas concluídas e o ecossistema operacional interno estão fortemente documentados na pasta `/docs`. 
+## 🏗️ Arquitetura Atual (Fase Enxuta Sem VPS)
 
-### Documentação de Projeto
-- [Especificação Técnica](docs/SPECIFICATION.md): Diretrizes de design, cores, tipografia e tom de voz (Pivô Neobrutalista).
-- [Contexto do Negócio](docs/PROJECT_CONTEXT.md): Público-alvo, personas, personas B2B e proposta de valor.
-- [Registro de Tarefas](docs/TASKS.md): Histórico completo de desenvolvimento (Fases 1 a 10 + Sprints do ERP).
+O projeto opera em **arquitetura serverless gratuita/enxuta**, sem dependência de servidor VPS dedicado no momento:
 
-### Engenharia de Operações, Precificação e ERP (`/docs/ops`)
-- [Catálogo de Serviços & Matriz de Precificação](docs/ops/SERVICE_CATALOG_PRICING.md): Mão de obra, margens de peças e planos MSP por estação (Essential R$ 69,90 / Pro R$ 109,90 / Enterprise R$ 189,90).
-- [Especificação da Arquitetura do ERP](docs/ops/ERP_ARCHITECTURE_SPECIFICATION.md): Arquitetura completa em 7 módulos (CRM 360°, Bancada, Software 50/50, RMM/Backup e Ledger).
-- [Schema de Banco de Dados](docs/ops/DATABASE_SCHEMA.md): Modelagem relacional normalizada (PostgreSQL 15+).
-- [Script de Migração do Supabase](docs/ops/supabase_migration_v1.sql): Script DDL executado no projeto `togrnwxazuweuihlaljo`.
-- [Procedimentos Operacionais (SOP)](docs/ops/STANDARD_OPERATING_PROCEDURES.md): Checklist de bancada, ciclo de orçamento, testes de estresse e onboarding MSP.
-- [Templates de Comunicação](docs/ops/COMMUNICATION_TEMPLATES.md): Modelos de WhatsApp e PDF para orçamentos, aprovações, notificações de conclusão e contratos B2B.
-- [Blueprint do Espaço Físico (Lab & HQ)](docs/ops/PHYSICAL_LAB_BLUEPRINT.md): Planta baixa, zoneamento operacional, Kanban físico (Tote Box), metodologia 5S, protocolos de limpeza, infraestrutura de formatação em massa (KVM/PXE) e especificação de mobiliário/equipamentos.
-- [Ideias de Melhoria Contínua](docs/ops/CONTINUOUS_IMPROVEMENT_IDEAS.md): 19 ideias concretas para elevar profissionalismo, fluxo, CX e automação — priorizadas por Quick Win / Médio Prazo / Estratégico.
+- **Frontend / Edge:** HTML5 semântico + Tailwind CSS pré-compilado ([`assets/css/style.min.css`](assets/css/style.min.css)) + Lucide Icons self-hosted ([`assets/js/lucide.min.js`](assets/js/lucide.min.js)), hospedado na **Vercel** via [`vercel.json`](vercel.json).
+- **Backend / Auth / Storage:** **Supabase Cloud** (`togrnwxazuweuihlaljo`) com Row Level Security (RLS), RPCs atômicas e autenticação exclusiva via JWT no `/app`.
+- **Módulo NOC / VPS (Standby):** A sub-aba NOC no Cockpit permanece em modo **Standby** (`NOC_VPS_PROVISIONED = false`) até a contratação de uma VPS dedicada para Tactical RMM, RustDesk Relay e Evolution API.
+- **Automação & Desktop Auxiliar:**
+  - [`apps/life-ops/main.py`](apps/life-ops/main.py): Aplicativo desktop Python (`CustomTkinter` + SQLite) para controle pessoal, logística e caixa (iniciável via [`Iniciar_LifeOps.bat`](Iniciar_LifeOps.bat)).
+  - [`docs/ops/sniper_engine_bot.py`](docs/ops/sniper_engine_bot.py): Protótipo Python para cálculo de margem e alertas de hardware no Telegram.
+  - [`marketing/`](marketing) e [`assets/`](assets): Peças gráficas, cartões, carrosséis e scripts de renderização de mídia.
 
----
+## 📚 Documentação & Operações
 
-## 🌐 Arquitetura de Subdomínios & Produção
+- [`docs/SPECIFICATION.md`](docs/SPECIFICATION.md): Diretrizes de design Neobrutalista, paleta e tipografia.
+- [`docs/PROJECT_CONTEXT.md`](docs/PROJECT_CONTEXT.md): Contexto de negócio, personas e proposta de valor.
+- [`docs/TASKS.md`](docs/TASKS.md): Roadmap e histórico de Sprints.
+- [`docs/LIVING_DOCUMENTATION.md`](docs/LIVING_DOCUMENTATION.md): Mapa técnico canônico do Cockpit Admin e Portal.
+- [`docs/ops/ERP_ARCHITECTURE_SPECIFICATION.md`](docs/ops/ERP_ARCHITECTURE_SPECIFICATION.md): Especificação dos módulos do ERP.
+- [`docs/ops/SERVICE_CATALOG_PRICING.md`](docs/ops/SERVICE_CATALOG_PRICING.md): Catálogo de serviços e matriz de precificação.
+- [`docs/ops/STANDARD_OPERATING_PROCEDURES.md`](docs/ops/STANDARD_OPERATING_PROCEDURES.md): POPs de bancada, orçamento e SLA.
 
-- **Landing Page Oficial:** [https://iflcosta.tech](https://iflcosta.tech) (Deploy automático via Vercel)
-- **Painel Administrativo do Gestor:** `app.iflcosta.tech` (Planejado)
-- **Portal & Tracking de OS do Cliente:** `portal.iflcosta.tech` (Planejado)
-- **Backend & Storage:** Supabase Cloud (`togrnwxazuweuihlaljo`) com buckets `os-photos` e `technical-reports`.
+## 🧪 Auditorias & Verificação Local
 
----
+Para validar sintaxe JS, integridade de DOM IDs, handlers inline e paridade SHA-256 das Tríades antes de commitar:
 
-## 🚀 Como Rodar Localmente
+```bash
+python scripts/test_syntax.py
+python scripts/audit_dom_ids.py
+python scripts/audit_handlers.py
+python scripts/find_hardcoded.py
+```
 
-O projeto não requer Node.js ou servidores complexos para rodar a landing page:
-1. Clone este repositório: `git clone https://github.com/iflcosta/iflcosta-tech.git`
-2. Abra o arquivo `index.html` diretamente no seu navegador.
+Para recompilar o CSS Tailwind manualmente (quando `tailwindcss3.exe` estiver disponível localmente):
 
-## 🛠️ Como Compilar o Tailwind CSS (Modo de Desenvolvimento)
-
-Para compilar e minificar alterações de classes e estilos:
 ```bash
 .\tailwindcss3.exe -i ./assets/css/style.css -o ./assets/css/style.min.css --minify
 ```

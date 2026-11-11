@@ -179,6 +179,35 @@
         .card-triage-msp:hover .card-title {
             color: #c084fc !important;
         }
+
+        /* Navbar Responsive Guard (previne colisão entre logo, links e CTAs) */
+        .nav-desktop-links {
+            display: none;
+        }
+        @media (min-width: 1024px) {
+            .nav-desktop-links {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            .nav-desktop-links a {
+                font-size: 0.75rem;
+                line-height: 1rem;
+            }
+            #mobile-menu-btn,
+            #mobile-menu-dropdown {
+                display: none !important;
+            }
+        }
+        @media (min-width: 1280px) {
+            .nav-desktop-links {
+                gap: 2rem;
+            }
+            .nav-desktop-links a {
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-dark text-gray-300 font-sans antialiased selection:bg-brand selection:text-black">
@@ -186,33 +215,33 @@
     <!-- Navbar Brutalista com Menu Mobile (Sticky Top-0 Infalível) -->
     <header id="main-header" class="sticky top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16 sm:h-20">
-                <a href="#" class="flex items-center gap-2 group">
+            <div class="flex justify-between items-center h-16 sm:h-20 gap-3 sm:gap-4">
+                <a href="#" class="flex items-center gap-2 group shrink-0 whitespace-nowrap">
                     <div class="w-4 h-8 bg-brand group-hover:scale-110 transition-transform"></div>
                     <span class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">IF Tech</span>
                 </a>
-                <nav class="hidden md:flex gap-8">
-                    <a href="#solucoes" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Soluções</a>
-                    <a href="#garantias" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Garantias</a>
-                    <a href="#provas" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Resultados</a>
-                    <a href="#processo" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors">Processo</a>
+                <nav class="nav-desktop-links shrink-0">
+                    <a href="#solucoes" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors whitespace-nowrap">Soluções</a>
+                    <a href="#garantias" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors whitespace-nowrap">Garantias</a>
+                    <a href="#provas" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors whitespace-nowrap">Resultados</a>
+                    <a href="#processo" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-brand transition-colors whitespace-nowrap">Processo</a>
                 </nav>
-                <div class="flex items-center gap-2 sm:gap-3">
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                     <!-- Botão Acompanhar Serviço Destacado em 2 Linhas (Sempre Visível) -->
-                    <a href="/status" class="inline-flex flex-col items-center justify-center text-center px-2.5 py-1.5 sm:px-4 sm:py-2 bg-zinc-900 text-white text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider leading-tight border-2 border-zinc-700 hover:text-brand hover:border-brand hover:bg-zinc-800 transition-colors shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] group">
+                    <a href="/status" class="inline-flex flex-col items-center justify-center text-center px-2.5 py-1.5 sm:px-4 sm:py-2 bg-zinc-900 text-white text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider leading-tight border-2 border-zinc-700 hover:text-brand hover:border-brand hover:bg-zinc-800 transition-colors shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] group whitespace-nowrap shrink-0">
                         <span class="text-zinc-200 group-hover:text-white">ACOMPANHAR</span>
                         <span class="text-brand font-black text-[9px] sm:text-[10px] tracking-widest">SERVIÇO</span>
                     </a>
                     
-                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener noreferrer" class="sm:hidden inline-flex items-center gap-1 px-2.5 py-2 bg-brand text-black text-[11px] font-mono font-black uppercase tracking-wider hover:bg-white transition-colors border border-transparent shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] min-h-[38px]">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener noreferrer" class="sm:hidden inline-flex items-center gap-1 px-2.5 py-2 bg-brand text-black text-[11px] font-mono font-black uppercase tracking-wider hover:bg-white transition-colors border border-transparent shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)] min-h-[38px] whitespace-nowrap shrink-0">
                         <i data-lucide="message-square" class="w-3.5 h-3.5 text-black"></i>
                         <span>ORÇAR</span>
                     </a>
-                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex px-4 py-2 sm:px-6 sm:py-3 bg-white text-black text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20um%20especialista." target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex px-4 py-2 sm:px-5 sm:py-2.5 bg-white text-black text-xs font-bold uppercase tracking-wider hover:bg-brand transition-colors border-2 border-transparent whitespace-nowrap shrink-0">
                         FALAR COM ESPECIALISTA
                     </a>
                     <!-- Botão Hambúrguer Mobile (Target de toque 48x48px com A11y) -->
-                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white bg-zinc-900 border-2 border-zinc-700 hover:border-brand focus:border-brand focus:outline-none transition-colors cursor-pointer" aria-label="Abrir Menu" aria-expanded="false" aria-controls="mobile-menu-dropdown">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white bg-zinc-900 border-2 border-zinc-700 hover:border-brand focus:border-brand focus:outline-none transition-colors cursor-pointer shrink-0" aria-label="Abrir Menu" aria-expanded="false" aria-controls="mobile-menu-dropdown">
                         <i data-lucide="menu" id="menu-icon-bars" class="w-5 h-5 sm:w-6 sm:h-6 block"></i>
                         <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 sm:w-6 sm:h-6 hidden"></i>
                     </button>
@@ -221,7 +250,7 @@
         </div>
 
         <!-- Menu Dropdown Mobile Neobrutalista -->
-        <div id="mobile-menu-dropdown" class="hidden md:hidden bg-zinc-950 border-t-2 border-zinc-800 px-5 py-6 font-mono text-sm shadow-2xl transition-all duration-200">
+        <div id="mobile-menu-dropdown" class="hidden bg-zinc-950 border-t-2 border-zinc-800 px-5 py-6 font-mono text-sm shadow-2xl transition-all duration-200">
             <div class="flex flex-col space-y-1">
                 <a href="#solucoes" class="mobile-nav-link flex items-center justify-between font-bold uppercase text-zinc-300 hover:text-brand hover:bg-zinc-900/60 px-3 py-3 border-b border-zinc-800/80 transition-colors">
                     <span>Soluções</span>
@@ -903,7 +932,7 @@
             </div>
 
             <div class="pt-6 text-center font-mono text-zinc-500 text-xs">
-                &copy; 2025 IF Tech &bull; Bragança Paulista - SP &bull; Todos os direitos reservados.
+                &copy; 2026 IF Tech &bull; Bragança Paulista - SP &bull; Todos os direitos reservados.
             </div>
         </div>
     </footer>

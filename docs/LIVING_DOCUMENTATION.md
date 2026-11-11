@@ -10,17 +10,17 @@
 
 | Arquivo | Linhas | Funcao |
 |---------|--------|--------|
-| index.html | 912 | Landing Page institucional |
-| admin.html | 6719 | Cockpit Admin/ERP (ARQUIVO MESTRE) |
+| index.html | ~1105 | Landing Page institucional |
+| admin.html | ~10190 | Cockpit Admin/ERP (ARQUIVO MESTRE) |
 | app.html | = admin.html | Copia identica (deploy alias) |
 | app/index.html | = admin.html | Copia identica (deploy alias) |
-| portal.html | 2750 | Portal do Cliente (ARQUIVO MESTRE) |
+| portal.html | ~2926 | Portal do Cliente (ARQUIVO MESTRE) |
 | status.html | = portal.html | Copia identica (deploy alias) |
 | status/index.html | = portal.html | Copia identica (deploy alias) |
 | assets/css/style.min.css | - | CSS Tailwind compilado |
-| assets/js/main.js | ~100 | JS auxiliar (NAO importado atualmente) |
-| vercel.json | 51 | Config Vercel (redirects, headers, CSP) |
-| _redirects | 18 | Config Cloudflare/Netlify rewrites |
+| assets/js/lucide.min.js | - | Icones Lucide self-hosted |
+| vercel.json | 56 | Config Vercel (redirects, rewrites, headers, CSP) |
+| _redirects | 21 | Config Cloudflare/Netlify rewrites |
 | scripts/db_exec.py | - | Executor SQL Supabase |
 
 ### 1.2. Regra de Triade (CRITICA)
@@ -35,8 +35,8 @@ VERIFICACAO: Hashes SHA-256 devem ser identicos dentro de cada triade.
 | iflcosta.tech/app | admin.html (via rewrite) | Cockpit Admin |
 | iflcosta.tech/status | portal.html (via rewrite) | Portal Cliente |
 | iflcosta.tech/status?token=UUID | portal.html | Magic Link |
-| iflcosta.tech/os/:id | portal.html (via _redirects) | AVISO: Falta no vercel.json |
-| iflcosta.tech/t/:token | portal.html (via _redirects) | AVISO: Falta no vercel.json |
+| iflcosta.tech/os/:id | portal.html (rewrite vercel.json + _redirects) | Link curto OS |
+| iflcosta.tech/t/:token | portal.html (rewrite vercel.json + _redirects) | Link curto Token |
 
 ---
 
@@ -89,15 +89,15 @@ advanceOSStatus(Entregue) -> Supabase .update({status: Entregue})
 | formatOSNumber() | 1937 | Formata para exibicao | - |
 | escapeHtml() | 1956 | Sanitiza XSS | - |
 
-### 3.2. Autenticacao (L1966-2230)
-| Funcao | Linha | Proposito |
-|--------|-------|-----------|
-| switchAuthMode() | 1974 | Alterna aba Supabase/PIN |
-| unlockAdminCockpit() | 2036 | Desbloqueia UI e carrega dados |
-| checkAdminAuthSession() | 2074 | Verifica sessao Supabase/PIN |
-| handleAdminEmailLogin() | 2106 | Login email+senha via Supabase Auth |
-| handleAdminPinLogin() | 2176 | Login via PIN master (512286) |
-| handleAdminLogout() | 2206 | Sign out |
+### 3.2. Autenticacao (Supabase Auth JWT + Auto-Lock)
+| Funcao | Proposito |
+|--------|-----------|
+| resetAdminInactivityTimer() | Auto-lock e signOut apos 45 min inativo |
+| showAuthError() | Exibe erro no guard de autenticacao |
+| unlockAdminCockpit() | Desbloqueia UI e carrega dados do Supabase |
+| checkAdminAuthSession() | Verifica sessao JWT ativa no Supabase Auth |
+| handleAdminEmailLogin() | Login email+senha via Supabase Auth (`signInWithPassword`) |
+| handleAdminLogout() | Encerra sessao no Supabase Auth (`signOut`) |
 
 ### 3.3. Financeiro DRE (L2535-2738)
 | Funcao | Linha | Bug? |

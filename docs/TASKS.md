@@ -47,18 +47,25 @@
   - [x] Métricas de QA de Software (Lighthouse Performance, SEO e Best Practices > 95);
   - [x] Schema DDL e RPCs atômicas no Supabase (`docs/ops/sprint4_software_web_schema.sql`).
 
-- [ ] **Sprint 5: Portal B2B MSP & Gestão de Contratos de TI Corporativa**
-  - [ ] Painel corporativo para clientes de TI Gerenciada com inventário de estações e servidores;
-  - [ ] Central de chamados e service desk com SLA 2h/4h;
-  - [ ] Monitoramento de rotinas de backup em nuvem (Regra 3-2-1) e telemetria de segurança ("Dead Man's Snitch").
+- [x] **Sprint 5: Portal B2B MSP & Gestão de Contratos de TI Corporativa**
+  - [x] Painel corporativo para clientes de TI Gerenciada com inventário de estações e servidores;
+  - [x] Central de chamados e service desk com SLA 2h/4h;
+  - [x] Monitoramento de rotinas de backup em nuvem (Regra 3-2-1) e telemetria de segurança ("Dead Man's Snitch").
 
-- [ ] **Sprint 6: DRE Executivo em Tempo Real & BI Analytics 360°**
-  - [ ] Apuração diária e mensal da DRE com Custo Fixo Real calibrado (R$ 1.300/mês);
-  - [ ] Consolidação dos 4 Motores de Receita (Hardware, Software, MSP e PDV Balcão);
-  - [ ] Dashboard de Atribuição de Canais (Leva-e-Traz vs Balcão Presencial) e Unit Economics (CAC/LTV).
+- [x] **Sprint 6: DRE Executivo em Tempo Real & BI Analytics 360°**
+  - [x] Apuração diária e mensal da DRE com acompanhamento de meta e break-even;
+  - [x] Consolidação dos 4 Motores de Receita (Hardware, Software, MSP e PDV Balcão);
+  - [x] Dashboard de Atribuição de Canais (Leva-e-Traz vs Balcão Presencial) e Unit Economics (CAC/LTV).
 
-- [ ] **Sprint 7: 🤖 BOT DE IA SNIPER DE PROMOÇÕES NO WHATSAPP (HARDWARE & MOBILE)**
-  - [ ] Coleta contínua de promoções relâmpago (KaBuM, Terabyte, Pichau, ML Full, AliExpress DDP);
-  - [ ] Cérebro de IA com filtro pelo Preço Teto IF Tech e cálculo de margem líquida;
-  - [ ] Notificações automáticas no WhatsApp com link direto de compra.
+- [x] **Sprint 7: 🤖 SNIPER DE HARDWARE & MÓDULO NOC (PROTOTIPAGEM & STANDYBY)**
+  - [x] Protótipo Python (`docs/ops/sniper_engine_bot.py`) com filtro pelo Preço Teto IF Tech e cálculo de margem líquida;
+  - [x] Interface NOC integrada ao Cockpit Admin com modo `Standby` até o provisionamento de VPS dedicada.
+
+- [x] **Solo Reboot & Hardening (Nov/2026):**
+  - [x] Remoção integral de PIN hardcoded e senha fallback do Cockpit Admin (autenticação exclusiva via Supabase Auth JWT + RLS);
+  - [x] Desacoplamento honesto da VPS no módulo NOC (`NOC_VPS_PROVISIONED = false` / modo Standby 100% em nuvem Vercel + Supabase);
+  - [x] Remoção de arquivos órfãos Next.js (`src/app/...`), correção responsiva da navbar em `index.html`, atualização de copyright (`2026`) e `sitemap.xml`.
+
+- [ ] **Próximo Marco (Quando Provisionar VPS):**
+  - [ ] Contratar VPS Linux dedicada, configurar RustDesk Relay (`hbbs`/`hbbr`), Tactical RMM e ativar `NOC_VPS_PROVISIONED = true`.
 

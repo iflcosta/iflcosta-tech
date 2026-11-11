@@ -42,18 +42,8 @@
                 <div class="w-4 h-8 bg-brand"></div>
                 <div>
                     <h1 class="text-xl font-black text-white tracking-tight uppercase">IF TECH // ERP</h1>
-                    <span class="font-mono text-[10px] text-brand font-bold uppercase tracking-widest block">Cockpit Administrativo • Acesso Restrito</span>
+                    <span class="font-mono text-[10px] text-brand font-bold uppercase tracking-widest block">Cockpit Administrativo • Supabase Auth (JWT)</span>
                 </div>
-            </div>
-
-            <!-- Abas de Método de Autenticação -->
-            <div class="grid grid-cols-2 gap-2 mb-6 font-mono text-xs">
-                <button type="button" id="tab-auth-supabase" onclick="switchAuthMode('supabase')" class="py-2.5 px-3 bg-brand text-black font-black uppercase text-center border border-brand transition-colors">
-                    Supabase Auth
-                </button>
-                <button type="button" id="tab-auth-pin" onclick="switchAuthMode('pin')" class="py-2.5 px-3 bg-zinc-900 text-zinc-400 font-bold uppercase text-center border border-zinc-800 hover:border-zinc-700 transition-colors">
-                    PIN Master
-                </button>
             </div>
 
             <!-- Mensagem de Erro / Alerta -->
@@ -62,7 +52,7 @@
                 <span id="admin-auth-error-msg">Credenciais inválidas.</span>
             </div>
 
-            <!-- Formulário 1: Supabase Auth (E-mail + Senha JWT) -->
+            <!-- Formulário Único: Supabase Auth (E-mail + Senha JWT) -->
             <form id="admin-supabase-auth-form" onsubmit="handleAdminEmailLogin(event)" class="space-y-4 font-mono">
                 <div>
                     <label class="block text-xs uppercase font-bold text-zinc-300 mb-1.5" for="admin-login-email">
@@ -73,7 +63,7 @@
 
                 <div>
                     <label class="block text-xs uppercase font-bold text-zinc-300 mb-1.5" for="admin-login-password">
-                        Senha Mestre:
+                        Senha:
                     </label>
                     <input type="password" id="admin-login-password" required autocomplete="current-password" placeholder="••••••••••••" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-white text-xs font-sans focus:outline-none focus:border-brand transition-colors">
                 </div>
@@ -84,26 +74,10 @@
                 </button>
             </form>
 
-            <!-- Formulário 2: PIN Master de Emergência (Break-Glass) -->
-            <form id="admin-pin-auth-form" onsubmit="handleAdminPinLogin(event)" class="hidden space-y-4 font-mono">
-                <div>
-                    <label class="block text-xs uppercase font-bold text-zinc-300 mb-1.5" for="admin-login-pin">
-                        PIN Master de Emergência (6 Dígitos):
-                    </label>
-                    <input type="password" id="admin-login-pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="000000" class="w-full bg-zinc-900 border border-zinc-700 px-3.5 py-2.5 text-center tracking-[0.5em] text-white text-lg font-mono focus:outline-none focus:border-brand transition-colors">
-                    <span class="text-[10px] text-zinc-500 block mt-1">Break-Glass para acesso imediato à Bancada sem internet/Auth.</span>
-                </div>
-
-                <button type="submit" id="btn-admin-login-pin" class="w-full py-3.5 bg-brand text-black font-black uppercase text-xs tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.2)]">
-                    <i data-lucide="key" class="w-4 h-4"></i>
-                    <span>Desbloquear com PIN Master</span>
-                </button>
-            </form>
-
             <!-- Rodapé de Auditoria e Segurança -->
             <div class="mt-6 pt-4 border-t border-zinc-800 text-[10px] font-mono text-zinc-500 flex flex-col gap-1 text-center">
                 <span>🛡️ Protocolo TLS 1.3 • Row Level Security (RLS) Ativo</span>
-                <span>Zero Trust Architecture • IF Tech Security Baseline v5.0</span>
+                <span>Zero Trust Architecture • Autenticação Exclusiva via Supabase Auth</span>
             </div>
         </div>
     </div>
@@ -215,10 +189,10 @@
                     <kbd class="hidden 2xl:inline-block text-[9px] bg-black/40 border border-zinc-800 text-zinc-500 px-1 py-0.2 font-mono group-hover:border-zinc-700">Alt+7</kbd>
                 </button>
 
-                <button type="button" onclick="openNocControlPlane()" id="tab-btn-noc" class="px-3 sm:px-3.5 py-2.5 min-h-[44px] text-black bg-[#CCFF00] hover:bg-white border-b-2 border-[#CCFF00] font-mono text-xs font-black uppercase flex items-center gap-1.5 whitespace-nowrap transition-colors flex-shrink-0 cursor-pointer shadow-[2px_2px_0px_0px_rgba(204,255,0,0.3)]">
-                    <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
+                <button type="button" onclick="openNocControlPlane()" id="tab-btn-noc" class="px-3 sm:px-3.5 py-2.5 min-h-[44px] text-amber-300 bg-zinc-900 hover:bg-zinc-800 border-b-2 border-amber-500 font-mono text-xs font-bold uppercase flex items-center gap-1.5 whitespace-nowrap transition-colors flex-shrink-0 cursor-pointer">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
                     <i data-lucide="server" class="w-4 h-4 shrink-0"></i>
-                    <span>🛡️ NOC & VPS (Live Pulse)</span>
+                    <span>🛡️ NOC & VPS (Standby)</span>
                 </button>
             </div>
         </div>
@@ -725,9 +699,9 @@
 
                 <!-- Sub-navegação interna MSP -->
                 <div class="flex flex-wrap gap-2 border-b border-zinc-800 pb-2">
-                    <button type="button" onclick="switchMSPSubTab('noc')" id="msp-subtab-btn-noc" class="msp-subtab-btn px-4 py-2 bg-[#CCFF00]/15 border border-[#CCFF00] text-[#CCFF00] font-mono text-xs font-black uppercase transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(204,255,0,0.25)]">
-                        <span class="w-2 h-2 rounded-full bg-[#CCFF00] animate-pulse"></span>
-                        <i data-lucide="server" class="w-4 h-4"></i> 🛡️ NOC & Controle VPS (Live Pulse)
+                    <button type="button" onclick="switchMSPSubTab('noc')" id="msp-subtab-btn-noc" class="msp-subtab-btn px-4 py-2 bg-amber-950 border border-amber-500 text-amber-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        <i data-lucide="server" class="w-4 h-4"></i> 🛡️ NOC & Controle VPS (Standby)
                     </button>
                     <button type="button" onclick="switchMSPSubTab('contracts')" id="msp-subtab-btn-contracts" class="msp-subtab-btn px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs font-bold uppercase transition-all">
                         💼 Contratos & MRR
@@ -745,150 +719,150 @@
                         🛡️ Dead Man's Snitch (Backup 3-2-1)
                     </button>
                 </div>
-                <!-- SUB-ABA 0: NOC & CONTROLE VPS TELEMETRIA (LIVE PULSE) -->
+                <!-- SUB-ABA 0: NOC & CONTROLE VPS TELEMETRIA (MODO STANDBY / SOLO) -->
                 <div id="msp-subtab-content-noc" class="msp-subtab-content space-y-6 font-mono">
                     
                     <!-- BARRA DE STATUS DO CLUSTER VPS -->
-                    <div class="bg-black border-2 border-[#CCFF00] p-4 sm:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-[0_0_20px_rgba(204,255,0,0.15)]">
+                    <div class="bg-black border-2 border-amber-500 p-4 sm:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-none bg-[#CCFF00]/20 border border-[#CCFF00] flex items-center justify-center shrink-0">
-                                <i data-lucide="server" class="w-5 h-5 text-[#CCFF00]"></i>
+                            <div class="w-10 h-10 rounded-none bg-amber-950 border border-amber-500 flex items-center justify-center shrink-0">
+                                <i data-lucide="server" class="w-5 h-5 text-amber-300"></i>
                             </div>
                             <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">CLUSTER VPS MSP // OVH BHS-PROD-01</h3>
-                                    <span id="noc-badge-online" class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-emerald-950 text-emerald-400 border border-emerald-500/60">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ONLINE (PULSE ATIVO)
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">CLUSTER VPS MSP // NÃO PROVISIONADO</h3>
+                                    <span id="noc-badge-online" class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-amber-950 text-amber-300 border border-amber-500">
+                                        <span class="w-2 h-2 rounded-full bg-amber-400"></span> STANDBY (SEM VPS ATIVA)
                                     </span>
                                 </div>
                                 <div class="text-xs text-zinc-400 flex flex-wrap gap-x-4 gap-y-1 mt-1">
-                                    <span>IP: <strong class="text-white">148.113.247.44</strong> (Beauharnois, CA)</span>
-                                    <span>SO: <strong class="text-white">Ubuntu 24.04 LTS x86_64</strong></span>
-                                    <span>Agente: <strong class="text-[#CCFF00]">iftech-noc-agent v1.0 (Go Daemon)</strong></span>
-                                    <span id="noc-last-pulse" class="text-zinc-500">Último Pulse: sincronizando...</span>
+                                    <span>Stack Ativa: <strong class="text-white">Vercel Edge + Supabase Cloud</strong></span>
+                                    <span>VPS Dedicada: <strong class="text-amber-300">Não contratada (Fase Solo Enxuta)</strong></span>
+                                    <span>Agente: <strong class="text-zinc-300">iftech-noc-agent (Aguardando VPS)</strong></span>
+                                    <span id="noc-last-pulse" class="text-zinc-500">Standby: aguardando provisionamento da VPS</span>
                                 </div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 self-stretch md:self-auto justify-end">
                             <button type="button" onclick="loadNocTelemetry(true)" class="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer">
-                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Atualizar Agora
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Verificar Status
                             </button>
-                            <a href="https://tactical.iflcosta.tech" target="_blank" class="px-3.5 py-2 bg-[#CCFF00] hover:bg-white text-black font-black uppercase text-xs transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(204,255,0,0.4)] cursor-pointer">
-                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Abrir Tactical RMM ↗
-                            </a>
+                            <span class="px-3.5 py-2 bg-zinc-900 border border-zinc-800 text-zinc-500 font-bold uppercase text-xs flex items-center gap-1.5 cursor-not-allowed" title="Requer VPS provisionada">
+                                <i data-lucide="lock" class="w-3.5 h-3.5"></i> Tactical RMM (Standby)
+                            </span>
                         </div>
                     </div>
 
-                    <!-- GAUGES EM TEMPO REAL (CARDS TELEMETRIA) -->
+                    <!-- GAUGES EM STANDBY (TELEMETRIA DESACOPLADA) -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         <!-- Card 1: CPU -->
-                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-[#CCFF00] transition-colors">
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">PROCESSADOR (CPU)</span>
-                                <i data-lucide="cpu" class="w-4 h-4 text-[#CCFF00]"></i>
+                                <i data-lucide="cpu" class="w-4 h-4 text-zinc-400"></i>
                             </div>
-                            <div class="text-2xl sm:text-3xl font-black text-white" id="noc-gauge-cpu">0%</div>
+                            <div class="text-2xl sm:text-3xl font-black text-zinc-400" id="noc-gauge-cpu">--</div>
                             <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
-                                <div id="noc-bar-cpu" class="bg-[#CCFF00] h-full transition-all duration-500" style="width: 5%"></div>
+                                <div id="noc-bar-cpu" class="bg-zinc-700 h-full transition-all duration-500" style="width: 0%"></div>
                             </div>
                             <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
-                                <span>Load 1m: <strong id="noc-load-1m" class="text-zinc-200">0.15</strong></span>
-                                <span class="text-emerald-400">Excelente</span>
+                                <span>Load 1m: <strong id="noc-load-1m" class="text-zinc-300">--</strong></span>
+                                <span class="text-amber-300">Standby</span>
                             </div>
                         </div>
 
                         <!-- Card 2: RAM -->
-                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-cyan-400 transition-colors">
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">MEMÓRIA RAM</span>
-                                <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+                                <i data-lucide="activity" class="w-4 h-4 text-zinc-400"></i>
                             </div>
-                            <div class="text-2xl sm:text-3xl font-black text-cyan-300" id="noc-gauge-ram">6.1 / 7.7 GB</div>
+                            <div class="text-2xl sm:text-3xl font-black text-zinc-400" id="noc-gauge-ram">-- / -- GB</div>
                             <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
-                                <div id="noc-bar-ram" class="bg-cyan-400 h-full transition-all duration-500" style="width: 78%"></div>
+                                <div id="noc-bar-ram" class="bg-zinc-700 h-full transition-all duration-500" style="width: 0%"></div>
                             </div>
                             <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
-                                <span>Livre: <strong id="noc-ram-free" class="text-zinc-200">1.6 GB</strong></span>
-                                <span class="text-cyan-400" id="noc-ram-pct">78%</span>
+                                <span>Livre: <strong id="noc-ram-free" class="text-zinc-300">-- GB</strong></span>
+                                <span class="text-amber-300" id="noc-ram-pct">Standby</span>
                             </div>
                         </div>
 
                         <!-- Card 3: NVMe SSD -->
-                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-purple-400 transition-colors">
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">ARMAZENAMENTO NVMe</span>
-                                <i data-lucide="hard-drive" class="w-4 h-4 text-purple-400"></i>
+                                <i data-lucide="hard-drive" class="w-4 h-4 text-zinc-400"></i>
                             </div>
-                            <div class="text-2xl sm:text-3xl font-black text-purple-300" id="noc-gauge-disk">20.2 / 71.6 GB</div>
+                            <div class="text-2xl sm:text-3xl font-black text-zinc-400" id="noc-gauge-disk">-- / -- GB</div>
                             <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
-                                <div id="noc-bar-disk" class="bg-purple-400 h-full transition-all duration-500" style="width: 28%"></div>
+                                <div id="noc-bar-disk" class="bg-zinc-700 h-full transition-all duration-500" style="width: 0%"></div>
                             </div>
                             <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
-                                <span>Recuperável: <strong id="noc-disk-reclaimable" class="text-zinc-200">11.9 GB</strong></span>
-                                <span class="text-purple-400" id="noc-disk-pct">28% usado</span>
+                                <span>Recuperável: <strong id="noc-disk-reclaimable" class="text-zinc-300">-- GB</strong></span>
+                                <span class="text-amber-300" id="noc-disk-pct">Standby</span>
                             </div>
                         </div>
 
                         <!-- Card 4: Docker Containers -->
-                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group hover:border-emerald-400 transition-colors">
+                        <div class="bg-black border-2 border-zinc-800 p-4 relative overflow-hidden group transition-colors">
                             <div class="flex justify-between items-start mb-2">
                                 <span class="text-[10px] text-zinc-500 uppercase font-black tracking-wider">DOCKER CONTAINERS</span>
-                                <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
+                                <i data-lucide="layers" class="w-4 h-4 text-zinc-400"></i>
                             </div>
-                            <div class="text-2xl sm:text-3xl font-black text-emerald-300" id="noc-gauge-containers">19 / 19</div>
+                            <div class="text-2xl sm:text-3xl font-black text-zinc-400" id="noc-gauge-containers">0 / 19</div>
                             <div class="w-full bg-zinc-900 h-1.5 mt-2 overflow-hidden">
-                                <div id="noc-bar-containers" class="bg-emerald-400 h-full transition-all duration-500" style="width: 100%"></div>
+                                <div id="noc-bar-containers" class="bg-zinc-700 h-full transition-all duration-500" style="width: 0%"></div>
                             </div>
                             <div class="text-[10px] text-zinc-400 mt-2 flex justify-between">
-                                <span>Falhas: <strong id="noc-containers-unhealthy" class="text-emerald-400">0</strong></span>
-                                <span class="text-emerald-400">100% Saudável</span>
+                                <span>Falhas: <strong id="noc-containers-unhealthy" class="text-zinc-300">--</strong></span>
+                                <span class="text-amber-300">Sem VPS</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- CARD DE SEGURANÇA E EXPLICAÇÃO DAS 596 TENTATIVAS BLOQUEADAS -->
+                    <!-- CARD DE ARQUITETURA DE SEGURANÇA PLANEJADA -->
                     <div class="bg-zinc-950 border-2 border-zinc-800 p-4 sm:p-5 relative overflow-hidden">
                         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-3 border-b border-zinc-800">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center shrink-0">
-                                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                                <div class="w-8 h-8 bg-amber-950 border border-amber-500 flex items-center justify-center shrink-0">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-amber-300"></i>
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">BLINDAGEM CYBER DEFENSE // FAIL2BAN & FIREWALL UFW</h4>
-                                    <p class="text-[11px] text-zinc-400">Auditoria perimetral ativa contra escaneamentos de portas e força bruta</p>
+                                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">BLINDAGEM CYBER DEFENSE // BLUEPRINT PRÉ-VPS</h4>
+                                    <p class="text-[11px] text-zinc-400">Arquitetura preparada para Fail2Ban, UFW e isolamento em localhost quando a VPS for contratada</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
-                                <span class="px-2.5 py-1 bg-red-950/80 border border-red-500 text-red-300 text-xs font-black">
-                                    🚫 596 VARREDURAS DE IP BANIDAS
+                                <span class="px-2.5 py-1 bg-amber-950 border border-amber-500 text-amber-300 text-xs font-black">
+                                    ⏳ MODO STANDBY (SEM VPS)
                                 </span>
-                                <span class="px-2.5 py-1 bg-emerald-950/80 border border-emerald-500 text-emerald-300 text-xs font-black">
-                                    🛡️ FIREWALL: 100% ESTANQUE
+                                <span class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-zinc-300 text-xs font-black">
+                                    ☁️ PRODUÇÃO VIA VERCEL + SUPABASE
                                 </span>
                             </div>
                         </div>
                         <div class="mt-3 text-xs text-zinc-300 space-y-2 leading-relaxed">
                             <p>
-                                <strong class="text-yellow-400">O que são essas 596 tentativas?</strong> São robôs e scanners automatizados públicos da internet (botnets globais que varrem toda a faixa de IPs do datacenter OVH tentando adivinhar senhas de SSH na porta 22). <span class="text-white font-bold">Não foi erro do seu sistema nem do assistente.</span>
+                                <strong class="text-amber-300">Operação Solo Enxuta Ativa:</strong> Como ainda não há VPS provisionada, não existem portas SSH, proxies ou containers expostos na internet. Todo o ERP, Portal do Cliente e Autenticação operam exclusivamente via <strong class="text-white">Vercel Edge (HTTPS/CSP)</strong> + <strong class="text-white">Supabase Cloud (JWT + RLS)</strong>.
                             </p>
                             <p class="text-zinc-400 text-[11px]">
-                                <strong class="text-emerald-400">Por que sua VPS está segura?</strong> O Fail2Ban monitora o log do sistema em tempo real e, após 3 tentativas inválidas de qualquer IP, o atacante é <strong class="text-white">imediatamente bloqueado no kernel do Linux (iptables/UFW)</strong> por 24 horas. Além disso, todos os bancos de dados (PostgreSQL, MongoDB, Redis) estão estritamente bindados em <code class="text-cyan-300 bg-zinc-900 px-1 py-0.5 border border-zinc-800">127.0.0.1 (Localhost)</code>, impossíveis de serem acessados pela internet externa.
+                                Quando você contratar sua VPS Linux, o blueprint prevê Fail2Ban + UFW estrito, bancos internos isolados em <code class="text-cyan-300 bg-zinc-900 px-1 py-0.5 border border-zinc-800">127.0.0.1</code> e ativação da chave <code class="text-brand bg-zinc-900 px-1 py-0.5 border border-zinc-800">NOC_VPS_PROVISIONED = true</code> no Cockpit.
                             </p>
                         </div>
                     </div>
 
-                    <!-- CARDS DE ACESSO RÁPIDO AOS SERVIÇOS MSP (PORTAIS E FERRAMENTAS) -->
+                    <!-- CARDS DE BLUEPRINT DOS SERVIÇOS MSP (PRÉ-PROVISIONAMENTO) -->
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <h4 class="text-xs font-black text-zinc-400 uppercase tracking-widest">[ SERVIÇOS & PAINÉIS DE GESTÃO ATIVOS NA VPS ]</h4>
-                            <span class="text-[11px] text-[#CCFF00]">6 Portais Integrados</span>
+                            <h4 class="text-xs font-black text-zinc-400 uppercase tracking-widest">[ BLUEPRINT DE SERVIÇOS MSP (REQUER VPS PARA ATIVAÇÃO) ]</h4>
+                            <span class="text-[11px] text-amber-300">6 Módulos em Standby</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                             <!-- Card 1: Tactical RMM -->
-                            <div class="bg-black border border-zinc-800 hover:border-[#CCFF00] p-4 transition-all">
+                            <div class="bg-black border border-zinc-800 p-4 transition-all">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 bg-[#CCFF00]/10 border border-[#CCFF00] flex items-center justify-center text-[#CCFF00] font-black text-xs">
+                                        <div class="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-300 font-black text-xs">
                                             RMM
                                         </div>
                                         <div>
@@ -896,24 +870,22 @@
                                             <div class="text-[10px] text-zinc-400">Central NOC & Endpoints</div>
                                         </div>
                                     </div>
-                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">ONLINE</span>
+                                    <span class="px-1.5 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[9px] font-black">STANDBY</span>
                                 </div>
                                 <div class="mt-3 text-[11px] text-zinc-400">
-                                    Console principal para agentes, scripts, alertas, patches do Windows e automações em background.
+                                    Console planejado para agentes, scripts, alertas, patches do Windows e automações em background.
                                 </div>
                                 <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
                                     <span class="text-[10px] text-zinc-500 font-mono">tactical.iflcosta.tech</span>
-                                    <a href="https://tactical.iflcosta.tech" target="_blank" class="text-xs font-bold text-[#CCFF00] hover:underline flex items-center gap-1">
-                                        Acessar ↗
-                                    </a>
+                                    <span class="text-xs font-bold text-zinc-500">Requer VPS</span>
                                 </div>
                             </div>
 
                             <!-- Card 2: RustDesk Relay -->
-                            <div class="bg-black border border-zinc-800 hover:border-cyan-400 p-4 transition-all">
+                            <div class="bg-black border border-zinc-800 p-4 transition-all">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 bg-cyan-400/10 border border-cyan-400 flex items-center justify-center text-cyan-400 font-black text-xs">
+                                        <div class="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-300 font-black text-xs">
                                             RD
                                         </div>
                                         <div>
@@ -921,24 +893,24 @@
                                             <div class="text-[10px] text-zinc-400">Acesso Remoto Criptografado</div>
                                         </div>
                                     </div>
-                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">RELAY ATIVO</span>
+                                    <span class="px-1.5 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[9px] font-black">STANDBY</span>
                                 </div>
                                 <div class="mt-3 text-[11px] text-zinc-400">
-                                    Servidor próprio de Rendezvous e Relay. Conexões P2P ultra-rápidas sem limites ou bloqueios.
+                                    Servidor próprio de Rendezvous e Relay (porta 21117) planejado para conexões P2P sem limites.
                                 </div>
                                 <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
-                                    <span class="text-[10px] text-zinc-500 font-mono truncate max-w-[150px]">Porta 21117 (Relay)</span>
-                                    <button type="button" onclick="copyRustDeskKey()" class="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1 cursor-pointer">
-                                        <i data-lucide="copy" class="w-3 h-3"></i> Copiar Key
+                                    <span class="text-[10px] text-zinc-500 font-mono truncate max-w-[150px]">Porta 21117 (Planejado)</span>
+                                    <button type="button" onclick="copyRustDeskKey()" class="text-xs font-bold text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer">
+                                        <i data-lucide="info" class="w-3 h-3"></i> Ver Chave
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Card 3: Nginx Proxy Manager -->
-                            <div class="bg-black border border-zinc-800 hover:border-yellow-400 p-4 transition-all">
+                            <div class="bg-black border border-zinc-800 p-4 transition-all">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 bg-yellow-400/10 border border-yellow-400 flex items-center justify-center text-yellow-400 font-black text-xs">
+                                        <div class="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-300 font-black text-xs">
                                             NPM
                                         </div>
                                         <div>
@@ -946,24 +918,22 @@
                                             <div class="text-[10px] text-zinc-400">Reverse Proxy & SSL Let's Encrypt</div>
                                         </div>
                                     </div>
-                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">50 DIAS SSL</span>
+                                    <span class="px-1.5 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[9px] font-black">STANDBY</span>
                                 </div>
                                 <div class="mt-3 text-[11px] text-zinc-400">
-                                    Gestão de domínios, redirecionamentos seguros com HTTPS automático e renovação de certificados.
+                                    Gestão de subdomínios na VPS e certificados HTTPS automáticos após apontamento DNS.
                                 </div>
                                 <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
                                     <span class="text-[10px] text-zinc-500 font-mono">proxy.iflcosta.tech</span>
-                                    <a href="https://proxy.iflcosta.tech" target="_blank" class="text-xs font-bold text-yellow-400 hover:underline flex items-center gap-1">
-                                        Acessar ↗
-                                    </a>
+                                    <span class="text-xs font-bold text-zinc-500">Requer VPS</span>
                                 </div>
                             </div>
 
                             <!-- Card 4: Uptime Kuma -->
-                            <div class="bg-black border border-zinc-800 hover:border-emerald-400 p-4 transition-all">
+                            <div class="bg-black border border-zinc-800 p-4 transition-all">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 bg-emerald-400/10 border border-emerald-400 flex items-center justify-center text-emerald-400 font-black text-xs">
+                                        <div class="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-300 font-black text-xs">
                                             KUMA
                                         </div>
                                         <div>
@@ -971,24 +941,22 @@
                                             <div class="text-[10px] text-zinc-400">Status Page & Monitor 60s</div>
                                         </div>
                                     </div>
-                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">100% UPTIME</span>
+                                    <span class="px-1.5 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[9px] font-black">STANDBY</span>
                                 </div>
                                 <div class="mt-3 text-[11px] text-zinc-400">
-                                    Monitores contínuos de DNS, ping, ping HTTP/HTTPS e latência de todos os microserviços.
+                                    Monitores contínuos de DNS, HTTP/HTTPS e latência planejados para contratos MSP.
                                 </div>
                                 <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
                                     <span class="text-[10px] text-zinc-500 font-mono">status.iflcosta.tech</span>
-                                    <a href="https://status.iflcosta.tech" target="_blank" class="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1">
-                                        Acessar ↗
-                                    </a>
+                                    <span class="text-xs font-bold text-zinc-500">Requer VPS</span>
                                 </div>
                             </div>
 
                             <!-- Card 5: Evolution API (WhatsApp) -->
-                            <div class="bg-black border border-zinc-800 hover:border-green-400 p-4 transition-all">
+                            <div class="bg-black border border-zinc-800 p-4 transition-all">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 bg-green-400/10 border border-green-400 flex items-center justify-center text-green-400 font-black text-xs">
+                                        <div class="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-300 font-black text-xs">
                                             WPP
                                         </div>
                                         <div>
@@ -996,24 +964,22 @@
                                             <div class="text-[10px] text-zinc-400">Automação de Mensagens & OSs</div>
                                         </div>
                                     </div>
-                                    <span id="noc-badge-wpp" class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">CONECTADO</span>
+                                    <span id="noc-badge-wpp" class="px-1.5 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[9px] font-black">STANDBY</span>
                                 </div>
                                 <div class="mt-3 text-[11px] text-zinc-400">
-                                    Instâncias Baileys para disparar notificações automáticas CDC 90 dias, alertas de bancada e avisos MSP.
+                                    Disparo automático planejado via VPS. Hoje o envio WhatsApp funciona por link direto `wa.me` 1-clique.
                                 </div>
                                 <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
                                     <span class="text-[10px] text-zinc-500 font-mono">api.iflcosta.tech</span>
-                                    <a href="https://api.iflcosta.tech" target="_blank" class="text-xs font-bold text-green-400 hover:underline flex items-center gap-1">
-                                        Acessar ↗
-                                    </a>
+                                    <span class="text-xs font-bold text-zinc-500">Requer VPS</span>
                                 </div>
                             </div>
 
                             <!-- Card 6: Portainer CE -->
-                            <div class="bg-black border border-zinc-800 hover:border-blue-400 p-4 transition-all">
+                            <div class="bg-black border border-zinc-800 p-4 transition-all">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 bg-blue-400/10 border border-blue-400 flex items-center justify-center text-blue-400 font-black text-xs">
+                                        <div class="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-300 font-black text-xs">
                                             PORT
                                         </div>
                                         <div>
@@ -1021,32 +987,30 @@
                                             <div class="text-[10px] text-zinc-400">Gestão Gráfica de Containers</div>
                                         </div>
                                     </div>
-                                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[9px] font-black">DOCKER ENGINE</span>
+                                    <span class="px-1.5 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[9px] font-black">STANDBY</span>
                                 </div>
                                 <div class="mt-3 text-[11px] text-zinc-400">
-                                    Painel visual para inspecionar logs de containers, volumes, redes virtuais e métricas de consumo de memória.
+                                    Painel Docker para inspecionar logs, volumes e métricas quando a stack estiver rodando na VPS.
                                 </div>
                                 <div class="mt-3 pt-3 border-t border-zinc-900 flex justify-between items-center">
                                     <span class="text-[10px] text-zinc-500 font-mono">portainer.iflcosta.tech</span>
-                                    <a href="https://portainer.iflcosta.tech" target="_blank" class="text-xs font-bold text-blue-400 hover:underline flex items-center gap-1">
-                                        Acessar ↗
-                                    </a>
+                                    <span class="text-xs font-bold text-zinc-500">Requer VPS</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- GERADOR DO AGENTE INSTALADOR DE ENDPOINT 1-CLIQUE -->
+                    <!-- GERADOR DO AGENTE INSTALADOR DE ENDPOINT 1-CLIQUE (TEMPLATE) -->
                     <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-zinc-800">
                             <div>
-                                <span class="text-cyan-400 text-xs font-black uppercase tracking-wider block">[ ONBOARDING AUTOMATIZADO DE CLIENTES MSP ]</span>
+                                <span class="text-amber-300 text-xs font-black uppercase tracking-wider block">[ TEMPLATE PRÉ-PROVISIONAMENTO MSP ]</span>
                                 <h4 class="text-base font-extrabold text-white">Gerador de Instalador Silencioso (.ps1 / .bat)</h4>
-                                <p class="text-xs text-zinc-400 mt-0.5">Implantação rápida com RustDesk configurado para o seu servidor próprio e agente Tactical RMM</p>
+                                <p class="text-xs text-zinc-400 mt-0.5">Configure sua chave pública RustDesk neste template após provisionar o servidor Relay na VPS</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <button type="button" onclick="copyNocAgentScript()" class="px-3.5 py-2 bg-cyan-400 hover:bg-white text-black font-black uppercase text-xs transition-colors flex items-center gap-1.5 shadow-[2px_2px_0px_0px_rgba(6,182,212,0.4)] cursor-pointer">
-                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Script PowerShell
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Template PowerShell
                                 </button>
                                 <button type="button" onclick="downloadNocAgentScript()" class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white font-bold uppercase text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
                                     <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar .bat
@@ -1066,21 +1030,21 @@
                         </div>
 
                         <div class="mt-3">
-                            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Comando PowerShell Executável (Copie e Cole no PowerShell Admin do Cliente):</label>
+                            <label class="text-[10px] text-zinc-400 uppercase font-bold block mb-1">Template PowerShell (Substitua a chave pública quando a VPS estiver ativa):</label>
                             <pre id="noc-agent-script-preview" class="p-3 bg-zinc-950 border border-zinc-800 text-cyan-300 text-[11px] overflow-x-auto whitespace-pre font-mono leading-relaxed select-all"># Carregando script...</pre>
                         </div>
                     </div>
 
-                    <!-- GRID DUPLO: DOCKER CONTAINERS (19 MICROSERVIÇOS) + CONTROLE & BACKUPS -->
+                    <!-- GRID DUPLO: BLUEPRINT DOCKER CONTAINERS (19 MICROSERVIÇOS) + CONTROLE & BACKUPS -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Lado Esquerdo: Lista dos 19 Containers -->
                         <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
                             <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-3">
                                 <div>
-                                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">MATRIZ DE CONTAINERS DOCKER</h4>
-                                    <p class="text-[11px] text-zinc-400">19 microserviços isolados e monitorados em tempo real</p>
+                                    <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">BLUEPRINT DE STACK DOCKER</h4>
+                                    <p class="text-[11px] text-zinc-400">19 microserviços planejados para futura VPS Linux</p>
                                 </div>
-                                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[10px] font-bold">19/19 UP</span>
+                                <span id="noc-containers-header-badge" class="px-2 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[10px] font-bold">0/19 STANDBY</span>
                             </div>
                             <div class="max-h-[380px] overflow-y-auto pr-1 space-y-1.5" id="noc-containers-list">
                                 <!-- Preenchido dinamicamente via JS -->
@@ -1092,35 +1056,35 @@
                             <!-- Ações Rápidas de Manutenção -->
                             <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
                                 <h4 class="text-sm font-extrabold text-white uppercase tracking-wider pb-2 border-b border-zinc-800 mb-3">
-                                    DISPARO DE COMANDOS DE MANUTENÇÃO (VIA FILA)
+                                    DISPARO DE COMANDOS DE MANUTENÇÃO (REQUER VPS)
                                 </h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                    <button type="button" onclick="triggerNocCommand('TRIGGER_BACKUP')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-[#CCFF00] text-left transition-all group cursor-pointer">
-                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-[#CCFF00]">
-                                            <i data-lucide="database" class="w-4 h-4 text-[#CCFF00]"></i> Executar Hot Backup
+                                    <button type="button" onclick="triggerNocCommand('TRIGGER_BACKUP')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-amber-500 text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-zinc-300 font-bold text-xs group-hover:text-amber-300">
+                                            <i data-lucide="database" class="w-4 h-4 text-amber-300"></i> Executar Hot Backup
                                         </div>
-                                        <div class="text-[10px] text-zinc-400 mt-1">Gera snapshot criptografado de todos os bancos e configs</div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Disponível após provisionar daemon na VPS</div>
                                     </button>
 
-                                    <button type="button" onclick="triggerNocCommand('PRUNE_IMAGES')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-cyan-400 text-left transition-all group cursor-pointer">
-                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-cyan-400">
-                                            <i data-lucide="trash-2" class="w-4 h-4 text-cyan-400"></i> Limpar Cache Docker
+                                    <button type="button" onclick="triggerNocCommand('PRUNE_IMAGES')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-amber-500 text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-zinc-300 font-bold text-xs group-hover:text-amber-300">
+                                            <i data-lucide="trash-2" class="w-4 h-4 text-amber-300"></i> Limpar Cache Docker
                                         </div>
-                                        <div class="text-[10px] text-zinc-400 mt-1">Remove imagens órfãs (recupera ~11.9 GB de SSD)</div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Disponível após provisionar daemon na VPS</div>
                                     </button>
 
-                                    <button type="button" onclick="triggerNocCommand('SYNC_SSL')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-yellow-400 text-left transition-all group cursor-pointer">
-                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-yellow-400">
-                                            <i data-lucide="lock" class="w-4 h-4 text-yellow-400"></i> Renovar Certificados SSL
+                                    <button type="button" onclick="triggerNocCommand('SYNC_SSL')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-amber-500 text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-zinc-300 font-bold text-xs group-hover:text-amber-300">
+                                            <i data-lucide="lock" class="w-4 h-4 text-amber-300"></i> Renovar Certificados SSL
                                         </div>
-                                        <div class="text-[10px] text-zinc-400 mt-1">Força verificação Let's Encrypt em todos os domínios</div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Disponível após provisionar daemon na VPS</div>
                                     </button>
 
-                                    <button type="button" onclick="triggerNocCommand('HEALTHCHECK_ALL')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-emerald-400 text-left transition-all group cursor-pointer">
-                                        <div class="flex items-center gap-2 text-white font-bold text-xs group-hover:text-emerald-400">
-                                            <i data-lucide="heart-pulse" class="w-4 h-4 text-emerald-400"></i> Healthcheck Completo
+                                    <button type="button" onclick="triggerNocCommand('HEALTHCHECK_ALL')" class="p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-amber-500 text-left transition-all group cursor-pointer">
+                                        <div class="flex items-center gap-2 text-zinc-300 font-bold text-xs group-hover:text-amber-300">
+                                            <i data-lucide="heart-pulse" class="w-4 h-4 text-amber-300"></i> Healthcheck Completo
                                         </div>
-                                        <div class="text-[10px] text-zinc-400 mt-1">Verifica integridade de sockets, portas e NATS</div>
+                                        <div class="text-[10px] text-zinc-400 mt-1">Disponível após provisionar daemon na VPS</div>
                                     </button>
                                 </div>
                             </div>
@@ -1129,25 +1093,10 @@
                             <div class="bg-black border-2 border-zinc-800 p-4 sm:p-5">
                                 <div class="flex items-center justify-between pb-2 border-b border-zinc-800 mb-3">
                                     <h4 class="text-sm font-extrabold text-white uppercase tracking-wider">ÚLTIMO HOT BACKUP EXECUTADO</h4>
-                                    <span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-600 text-[10px] font-bold">SUCESSO</span>
+                                    <span id="noc-backup-status-badge" class="px-2 py-0.5 bg-amber-950 text-amber-300 border border-amber-500 text-[10px] font-bold">STANDBY</span>
                                 </div>
-                                <div id="noc-backup-details" class="text-xs text-zinc-300 space-y-2">
-                                    <div class="flex justify-between">
-                                        <span class="text-zinc-500">Arquivo:</span>
-                                        <span class="font-mono text-white text-[11px]">iftech_backup_20261031_130444.tar.gz</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-zinc-500">Tamanho / Duração:</span>
-                                        <span class="text-zinc-200">1.92 MB em 1.15s</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-zinc-500">Alvos Incluídos:</span>
-                                        <span class="text-cyan-400 text-[10px]">Vaultwarden, NPM, Kuma, Tactical PG, Evolution PG, RustDesk</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-zinc-500">Integridade SHA-256:</span>
-                                        <span class="font-mono text-zinc-400 text-[10px] truncate max-w-[200px]">db876650710632f672677f5d418f...</span>
-                                    </div>
+                                <div id="noc-backup-details" class="text-xs text-zinc-400 space-y-2">
+                                    <p>Nenhum backup de VPS registrado. Operação atual executada 100% em nuvem gerenciada (Supabase Cloud + Vercel).</p>
                                 </div>
                             </div>
                         </div>
@@ -2866,12 +2815,8 @@
         // =====================================================================
         // CONTROLE DE ACESSO & SUPABASE AUTH SHIELD // MASTER GUARD
         // =====================================================================
-        // Hashes SHA-256 para prevenção de credenciais em texto claro no código cliente
-        const MASTER_PIN_HASH = "044cdb128ddaff2d3d9b82d644446c569ffe9abe15adf3b9086936b3f7df0e34"; // SHA-256("512286")
-        const FALLBACK_PWD_HASH = "1153afbfd00db5fcf122a1f63a757493da310c53639c154fa9b7b4be811f20ab"; // SHA-256("iftech2026")
         let authFailedAttempts = 0;
         let authLockUntil = 0;
-        let currentAuthMode = 'supabase';
 
         // Auto-lockout por inatividade (Baseline de Segurança ERP)
         let adminInactivityTimer = null;
@@ -2884,9 +2829,12 @@
                 adminInactivityTimer = setTimeout(() => {
                     const guard = document.getElementById('admin-auth-guard');
                     if (guard && app) {
+                        const client = getSupabase();
+                        if (client && client.auth) {
+                            try { client.auth.signOut().catch(() => {}); } catch (e) {}
+                        }
                         app.classList.add('hidden');
                         guard.classList.remove('hidden');
-                        sessionStorage.removeItem('iftech_admin_master_session');
                         showAuthError('Sessão bloqueada por inatividade (45 min). Insira suas credenciais novamente.');
                         showToast('Sessão bloqueada por inatividade.', 'warning');
                         if (window.lucide) lucide.createIcons();
@@ -2898,42 +2846,6 @@
         ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
             window.addEventListener(evt, resetAdminInactivityTimer, { passive: true });
         });
-
-        async function computeSHA256(message) {
-            try {
-                if (window.crypto && crypto.subtle) {
-                    const msgBuffer = new TextEncoder().encode(String(message));
-                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-                }
-            } catch(e) {}
-            return '';
-        }
-
-        function switchAuthMode(mode) {
-            currentAuthMode = mode;
-            const btnSupa = document.getElementById('tab-auth-supabase');
-            const btnPin = document.getElementById('tab-auth-pin');
-            const formSupa = document.getElementById('admin-supabase-auth-form');
-            const formPin = document.getElementById('admin-pin-auth-form');
-            const errEl = document.getElementById('admin-auth-error');
-            if (errEl) errEl.classList.add('hidden');
-
-            if (mode === 'supabase') {
-                btnSupa.className = "py-2.5 px-3 bg-brand text-black font-black uppercase text-center border border-brand transition-colors";
-                btnPin.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 font-bold uppercase text-center border border-zinc-800 hover:border-zinc-700 transition-colors";
-                formSupa.classList.remove('hidden');
-                formPin.classList.add('hidden');
-                document.getElementById('admin-login-email')?.focus();
-            } else {
-                btnPin.className = "py-2.5 px-3 bg-brand text-black font-black uppercase text-center border border-brand transition-colors";
-                btnSupa.className = "py-2.5 px-3 bg-zinc-900 text-zinc-400 font-bold uppercase text-center border border-zinc-800 hover:border-zinc-700 transition-colors";
-                formPin.classList.remove('hidden');
-                formSupa.classList.add('hidden');
-                document.getElementById('admin-login-pin')?.focus();
-            }
-            if (window.lucide) lucide.createIcons();
-        }
 
         function showAuthError(msg) {
             const errBox = document.getElementById('admin-auth-error');
@@ -3014,7 +2926,7 @@
         async function checkAdminAuthSession() {
             const client = getSupabase();
 
-            // 1. Verificar Supabase Auth Session
+            // 1. Verificar Supabase Auth Session (JWT + RLS)
             if (client && client.auth) {
                 try {
                     const { data: { session }, error } = await client.auth.getSession();
@@ -3028,14 +2940,7 @@
                 }
             }
 
-            // 2. Verificar Sessão PIN Master Break-Glass
-            const pinSession = sessionStorage.getItem('iftech_admin_master_session');
-            if (pinSession === 'AUTHENTICATED') {
-                unlockAdminCockpit('PIN Master');
-                return;
-            }
-
-            // 3. Bloqueado: Exibir Guard
+            // 2. Bloqueado: Exibir Guard
             const guard = document.getElementById('admin-auth-guard');
             const app = document.getElementById('admin-cockpit-app');
             if (guard) guard.classList.remove('hidden');
@@ -3051,6 +2956,9 @@
                 showAuthError(`Muitas tentativas com falha. Aguarde ${waitSec}s.`);
                 return;
             }
+
+            const errBox = document.getElementById('admin-auth-error');
+            if (errBox) errBox.classList.add('hidden');
 
             const email = document.getElementById('admin-login-email')?.value.trim();
             const password = document.getElementById('admin-login-password')?.value;
@@ -3069,16 +2977,12 @@
 
             const client = getSupabase();
             if (!client || !client.auth) {
-                // Fallback local com validação SHA-256 (sem credenciais em texto claro)
-                const pwdHash = await computeSHA256(password);
-                if (email === 'admin@iflcosta.tech' && (pwdHash === FALLBACK_PWD_HASH || password === 'iftech2026')) {
-                    sessionStorage.setItem('iftech_admin_master_session', 'AUTHENTICATED');
-                    unlockAdminCockpit('Admin Fallback');
-                    if (btn) { btn.disabled = false; btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>Acessar Cockpit ERP</span>`; }
-                    return;
+                showAuthError('Falha ao conectar no Supabase Auth. Verifique sua conexão e tente novamente.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>Acessar Cockpit ERP</span>`;
+                    if (window.lucide) lucide.createIcons();
                 }
-                showAuthError('Falha ao conectar no provedor de autenticação.');
-                if (btn) { btn.disabled = false; btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>Acessar Cockpit ERP</span>`; }
                 return;
             }
 
@@ -3112,36 +3016,6 @@
             }
         }
 
-        async function handleAdminPinLogin(e) {
-            e.preventDefault();
-            const now = Date.now();
-            if (now < authLockUntil) {
-                const waitSec = Math.ceil((authLockUntil - now) / 1000);
-                showAuthError(`Bloqueio temporário ativo. Aguarde ${waitSec}s.`);
-                return;
-            }
-
-            const pinInput = document.getElementById('admin-login-pin');
-            const pinVal = pinInput ? pinInput.value.trim() : '';
-            const pinHash = await computeSHA256(pinVal);
-
-            if (pinHash === MASTER_PIN_HASH || pinVal === '512286') {
-                authFailedAttempts = 0;
-                sessionStorage.setItem('iftech_admin_master_session', 'AUTHENTICATED');
-                unlockAdminCockpit('PIN Master');
-            } else {
-                authFailedAttempts++;
-                if (authFailedAttempts >= 5) {
-                    authLockUntil = Date.now() + 5 * 60 * 1000;
-                    authFailedAttempts = 0;
-                    showAuthError('PIN incorreto 5 vezes. Bloqueio de 5 minutos ativado.');
-                } else {
-                    showAuthError(`PIN Master incorreto (${5 - authFailedAttempts} tentativas restantes).`);
-                }
-                if (pinInput) pinInput.value = '';
-            }
-        }
-
         async function handleAdminLogout() {
             if (!confirm('Deseja realmente encerrar a sessão administrativa?')) return;
 
@@ -3154,11 +3028,8 @@
                 } catch (e) {}
             }
 
-            sessionStorage.removeItem('iftech_admin_master_session');
             const passInput = document.getElementById('admin-login-password');
-            const pinInput = document.getElementById('admin-login-pin');
             if (passInput) passInput.value = '';
-            if (pinInput) pinInput.value = '';
 
             const guard = document.getElementById('admin-auth-guard');
             const app = document.getElementById('admin-cockpit-app');
@@ -5504,7 +5375,11 @@
 
             if (target) target.classList.remove('hidden');
             if (targetBtn) {
-                if (subTabId === 'noc') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-[#CCFF00]/20 border border-[#CCFF00] text-[#CCFF00] font-mono text-xs font-black uppercase transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(204,255,0,0.25)]";
+                if (subTabId === 'noc') {
+                    targetBtn.className = NOC_VPS_PROVISIONED
+                        ? "msp-subtab-btn px-4 py-2 bg-[#CCFF00]/20 border border-[#CCFF00] text-[#CCFF00] font-mono text-xs font-black uppercase transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(204,255,0,0.25)]"
+                        : "msp-subtab-btn px-4 py-2 bg-amber-950 border border-amber-500 text-amber-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
+                }
                 else if (subTabId === 'contracts') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-purple-950/80 border border-purple-500 text-purple-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
                 else if (subTabId === 'devices') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-cyan-950/80 border border-cyan-400 text-cyan-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
                 else if (subTabId === 'tickets') targetBtn.className = "msp-subtab-btn px-4 py-2 bg-yellow-950/80 border border-yellow-400 text-yellow-300 font-mono text-xs font-bold uppercase transition-all flex items-center gap-1.5";
@@ -5520,8 +5395,11 @@
         }
 
         // =====================================================================
-        // CONTROLE NOC & CLUSTER VPS MSP (TELEMETRIA, RUSTDESK & AUTOCURA)
+        // CONTROLE NOC & CLUSTER VPS MSP (MODO STANDBY ATÉ PROVISIONAR VPS)
         // =====================================================================
+        const NOC_VPS_PROVISIONED = false;
+        const NOC_RUSTDESK_PUBLIC_KEY = ""; // Preencher com id_ed25519.pub após subir a VPS
+
         const NOC_DOCKER_SERVICES = [
             { name: 'tactical-backend', stack: 'tactical-rmm', port: '8000 (Internal)', desc: 'Django API Core Engine' },
             { name: 'tactical-frontend', stack: 'tactical-rmm', port: '8080 (Internal)', desc: 'Web GUI Dashboard' },
@@ -5552,10 +5430,16 @@
         function renderNocContainersList() {
             const listEl = document.getElementById('noc-containers-list');
             if (!listEl) return;
+            const dotClass = NOC_VPS_PROVISIONED ? 'bg-emerald-400' : 'bg-zinc-700';
+            const statusClass = NOC_VPS_PROVISIONED
+                ? 'px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 text-[9px] font-bold'
+                : 'px-1.5 py-0.5 bg-zinc-900 text-zinc-400 border border-zinc-700 text-[9px] font-bold';
+            const statusLabel = NOC_VPS_PROVISIONED ? 'UP' : 'STANDBY';
+
             listEl.innerHTML = NOC_DOCKER_SERVICES.map(srv => `
                 <div class="flex items-center justify-between p-2.5 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 transition-colors">
                     <div class="flex items-center gap-2.5 min-w-0">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                        <span class="w-2 h-2 rounded-full ${dotClass} shrink-0"></span>
                         <div class="min-w-0">
                             <div class="text-xs font-bold text-white font-mono truncate">${srv.name}</div>
                             <div class="text-[10px] text-zinc-400 truncate">${srv.desc} • <span class="text-zinc-500">${srv.stack}</span></div>
@@ -5563,7 +5447,7 @@
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <span class="text-[10px] font-mono text-zinc-500 hidden sm:inline">${srv.port}</span>
-                        <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 text-[9px] font-bold">UP</span>
+                        <span class="${statusClass}">${statusLabel}</span>
                     </div>
                 </div>
             `).join('');
@@ -5577,10 +5461,11 @@
 
             const clientName = (clientInput && clientInput.value.trim()) || 'Cliente Corporativo B2B';
             const siteName = (siteInput && siteInput.value.trim()) || 'Matriz';
+            const pubKey = NOC_RUSTDESK_PUBLIC_KEY || '<SUA_CHAVE_PUBLICA_RUSTDESK>';
 
             const lines = [
                 '# =====================================================================',
-                '# IF TECH MSP // AGENTE SILENCIOSO DE ENDPOINT UNIFICADO',
+                '# IF TECH MSP // TEMPLATE DE AGENTE ENDPOINT (REQUER VPS ATIVA)',
                 '# CLIENTE: ' + clientName + ' | UNIDADE: ' + siteName,
                 '# =====================================================================',
                 'Set-ExecutionPolicy Bypass -Scope Process -Force',
@@ -5599,7 +5484,7 @@
                 'if (!(Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }',
                 'Set-ItemProperty -Path $regPath -Name "custom-rendezvous-server" -Value "rmm.iflcosta.tech"',
                 'Set-ItemProperty -Path $regPath -Name "relay-server" -Value "rmm.iflcosta.tech:21117"',
-                'Set-ItemProperty -Path $regPath -Name "key" -Value "nkMZYfBLmctaGaNjwCdblD9Zjh6J+JbrPVf8jrOBnVE="',
+                'Set-ItemProperty -Path $regPath -Name "key" -Value "' + pubKey + '"',
                 '',
                 'Write-Host "[OK] Endpoint vinculada com sucesso ao NOC IF TECH!" -ForegroundColor Green'
             ];
@@ -5611,7 +5496,7 @@
             const previewEl = document.getElementById('noc-agent-script-preview');
             if (!previewEl) return;
             navigator.clipboard.writeText(previewEl.textContent).then(() => {
-                showToast('✓ Script PowerShell copiado com sucesso!', 'success');
+                showToast('✓ Template PowerShell copiado!', 'success');
             }).catch(() => {
                 showToast('Erro ao copiar script. Selecione e copie manualmente.', 'error');
             });
@@ -5639,15 +5524,22 @@
         }
 
         function copyRustDeskKey() {
-            const key = "nkMZYfBLmctaGaNjwCdblD9Zjh6J+JbrPVf8jrOBnVE=";
-            navigator.clipboard.writeText(key).then(() => {
+            if (!NOC_VPS_PROVISIONED || !NOC_RUSTDESK_PUBLIC_KEY) {
+                showToast('Nenhuma VPS ativa. Provisione o servidor RustDesk para gerar sua chave ed25519.', 'warning');
+                return;
+            }
+            navigator.clipboard.writeText(NOC_RUSTDESK_PUBLIC_KEY).then(() => {
                 showToast('✓ Chave pública RustDesk copiada!', 'success');
             }).catch(() => {
-                showToast('Chave: ' + key, 'info');
+                showToast('Chave: ' + NOC_RUSTDESK_PUBLIC_KEY, 'info');
             });
         }
 
         async function triggerNocCommand(command, payload = {}) {
+            if (!NOC_VPS_PROVISIONED) {
+                showToast('Modo Standby: nenhuma VPS provisionada. Provisione a VPS e ative NOC_VPS_PROVISIONED = true para enviar comandos.', 'warning');
+                return;
+            }
             const client = getSupabase();
             if (!client) {
                 showToast('Erro: Conexão com Supabase indisponível', 'error');
@@ -5672,13 +5564,20 @@
         }
 
         async function loadNocTelemetry(manual = false) {
+            if (typeof updateNocAgentScript === 'function') updateNocAgentScript();
+            if (typeof renderNocContainersList === 'function') renderNocContainersList();
+
+            const pulseEl = document.getElementById('noc-last-pulse');
+            if (!NOC_VPS_PROVISIONED) {
+                if (pulseEl) pulseEl.textContent = 'Modo Standby: nenhuma VPS provisionada (Vercel + Supabase ativos)';
+                if (manual) showToast('NOC em Standby: operação 100% em nuvem sem VPS dedicada.', 'info');
+                return;
+            }
+
             const client = getSupabase();
             if (!client) return;
 
             if (manual) showToast('Atualizando telemetria do cluster VPS...', 'info');
-
-            if (typeof updateNocAgentScript === 'function') updateNocAgentScript();
-            if (typeof renderNocContainersList === 'function') renderNocContainersList();
 
             try {
                 // 1. Heartbeat
@@ -5702,32 +5601,35 @@
                     const diskRecEl = document.getElementById('noc-disk-reclaimable');
                     const diskPctEl = document.getElementById('noc-disk-pct');
                     const cntEl = document.getElementById('noc-gauge-containers');
-                    const pulseEl = document.getElementById('noc-last-pulse');
                     const badgeOnline = document.getElementById('noc-badge-online');
 
                     const cpuPct = Math.round(hbData.cpu_percent || 0);
                     if (cpuEl) cpuEl.textContent = cpuPct + '%';
                     if (cpuBar) cpuBar.style.width = Math.max(5, cpuPct) + '%';
-                    if (loadEl) loadEl.textContent = (hbData.load_1m || 0.15).toFixed(2);
+                    if (loadEl) loadEl.textContent = Number(hbData.load_1m || 0).toFixed(2);
 
-                    const ramUsedGb = ((hbData.ram_used_mb || 6069) / 1024).toFixed(1);
-                    const ramTotalGb = '7.7';
-                    const ramPct = Math.round(((hbData.ram_used_mb || 6069) / 7745) * 100);
-                    const ramFreeGb = (((hbData.ram_available_mb || 1676)) / 1024).toFixed(1);
+                    const ramUsedMb = Number(hbData.ram_used_mb || 0);
+                    const ramAvailMb = Number(hbData.ram_available_mb || 0);
+                    const ramTotalMb = ramUsedMb + ramAvailMb;
+                    const ramUsedGb = (ramUsedMb / 1024).toFixed(1);
+                    const ramTotalGb = ramTotalMb > 0 ? (ramTotalMb / 1024).toFixed(1) : '--';
+                    const ramPct = ramTotalMb > 0 ? Math.round((ramUsedMb / ramTotalMb) * 100) : 0;
+                    const ramFreeGb = (ramAvailMb / 1024).toFixed(1);
                     if (ramEl) ramEl.textContent = ramUsedGb + ' / ' + ramTotalGb + ' GB';
                     if (ramBar) ramBar.style.width = ramPct + '%';
                     if (ramFreeEl) ramFreeEl.textContent = ramFreeGb + ' GB';
                     if (ramPctEl) ramPctEl.textContent = ramPct + '%';
 
-                    const diskUsedGb = (hbData.disk_used_gb || 20.16).toFixed(1);
-                    const diskPct = Math.round(((hbData.disk_used_gb || 20.16) / 71.6) * 100);
-                    const diskRec = (hbData.disk_reclaimable_gb || 11.95).toFixed(1);
-                    if (diskEl) diskEl.textContent = diskUsedGb + ' / 71.6 GB';
+                    const diskUsedGb = Number(hbData.disk_used_gb || 0).toFixed(1);
+                    const diskTotalGb = Number(hbData.disk_total_gb || 0);
+                    const diskPct = diskTotalGb > 0 ? Math.round((Number(hbData.disk_used_gb || 0) / diskTotalGb) * 100) : 0;
+                    const diskRec = Number(hbData.disk_reclaimable_gb || 0).toFixed(1);
+                    if (diskEl) diskEl.textContent = diskUsedGb + ' / ' + (diskTotalGb > 0 ? diskTotalGb.toFixed(1) : '--') + ' GB';
                     if (diskBar) diskBar.style.width = diskPct + '%';
                     if (diskRecEl) diskRecEl.textContent = diskRec + ' GB';
                     if (diskPctEl) diskPctEl.textContent = diskPct + '% usado';
 
-                    if (cntEl) cntEl.textContent = (hbData.containers_running || 19) + ' / 19';
+                    if (cntEl) cntEl.textContent = (hbData.containers_running ?? 0) + ' / 19';
 
                     if (pulseEl && hbData.created_at) {
                         const d = new Date(hbData.created_at);
@@ -5764,8 +5666,8 @@
                 if (bData) {
                     const bDetails = document.getElementById('noc-backup-details');
                     if (bDetails) {
-                        const mb = ((bData.archive_size_bytes || 1927048) / (1024 * 1024)).toFixed(2);
-                        const sec = ((bData.duration_ms || 1154) / 1000).toFixed(2);
+                        const mb = ((bData.archive_size_bytes || 0) / (1024 * 1024)).toFixed(2);
+                        const sec = ((bData.duration_ms || 0) / 1000).toFixed(2);
                         const targets = (bData.targets_included || []).join(', ') || 'Todos os bancos e configs';
                         const sha = (bData.archive_sha256 || '').slice(0, 24) + '...';
                         bDetails.innerHTML = `
