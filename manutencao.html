@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manutenção, Upgrade e Montagem de PCs e Notebooks em Bragança Paulista | IF Tech</title>
+
+    <!-- Google tag (gtag.js) - Google Analytics 4 (G-MZNP04Z795) & Google Ads (AW-18161865460) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MZNP04Z795"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-MZNP04Z795');
+      gtag('config', 'AW-18161865460');
+    </script>
+
+    <!-- Favicon SVG -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a0a0c'/><path d='M30 30h15v40H30zM55 30h15v40H55z' fill='%23ccff00'/></svg>">
+
+    <!-- SEO & Open Graph -->
+    <meta name="description" content="Manutenção de computadores e notebooks, formatação sem perda de dados, upgrade SSD/RAM, montagem de PCs sob medida e suporte técnico N1/N2 em Bragança Paulista com Leva-e-Traz e Garantia de 90 dias.">
+    <meta property="og:title" content="Manutenção, Upgrade e Montagem de PCs e Notebooks | IF Tech Bragança Paulista">
+    <meta property="og:description" content="Acabamos com a lentidão, travamentos e superaquecimento da sua máquina. Orçamento transparente e Garantia Legal de 90 dias.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iflcosta.tech/manutencao">
+    <link rel="canonical" href="https://iflcosta.tech/manutencao">
+    <meta property="og:image" content="https://iflcosta.tech/assets/img/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Manutenção, Upgrade e Montagem de PCs | IF Tech Bragança">
+    <meta name="twitter:description" content="Assistência técnica especializada, upgrades NVMe, montagem de PCs e suporte N1/N2 em Bragança Paulista.">
+
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Schema.org JSON-LD LocalBusiness -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "IF Tech - Manutenção e Montagem de Computadores",
+      "image": "https://iflcosta.tech/assets/img/og-image.jpg",
+      "telephone": "+5511919691542",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bragança Paulista",
+        "addressRegion": "SP",
+        "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -22.9519,
+        "longitude": -46.5412
+      },
+      "url": "https://iflcosta.tech/manutencao",
+      "priceRange": "$$",
+      "description": "Manutenção de PCs e notebooks, formatação preservando arquivos, upgrades de SSD NVMe e RAM, montagem de computadores sob medida e suporte técnico N1/N2 em Bragança Paulista.",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Serviços de Hardware e Suporte IF Tech",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Manutenção, Limpeza Térmica e Formatação de PC e Notebook",
+              "description": "Diagnóstico com telemetria, limpeza técnica com pasta térmica premium e formatação segura preservando arquivos."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Upgrade SSD NVMe, RAM e Montagem de Computadores",
+              "description": "Clonagem de sistema sem perda de dados, curadoria de hardware e montagem com cable management e teste de estresse."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Suporte Técnico N1 e N2 para Home Office e Empresas",
+              "description": "Atendimento técnico presencial e assistido para resolução de falhas de sistema, rede local, hardware e continuidade operacional."
+            }
+          }
+        ]
+      }
+    }
+    </script>
+
+    <!-- Tailwind CSS Compilado -->
+    <link rel="stylesheet" href="assets/css/style.min.css">
+
+    <!-- Lucide Icons (Self-hosted) -->
+    <script defer src="assets/js/lucide.min.js"></script>
+
+    <style>
+        .card-triage-hw {
+            background-color: #09090b;
+            border: 2px solid #27272a;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .card-triage-hw:hover {
+            border-color: #ccff00 !important;
+            box-shadow: 4px 4px 0px 0px rgba(204, 255, 0, 0.35) !important;
+            transform: translateY(-2px);
+        }
+        .card-triage-hw .icon-box {
+            background-color: rgba(204, 255, 0, 0.12);
+            border: 1px solid rgba(204, 255, 0, 0.6);
+            color: #ccff00;
+            transition: all 0.2s ease;
+        }
+        .card-triage-hw:hover .icon-box {
+            background-color: #ccff00 !important;
+            color: #000000 !important;
+            border-color: #ccff00 !important;
+        }
+        .card-triage-hw:hover .card-title {
+            color: #ccff00 !important;
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-300 font-sans antialiased selection:bg-brand selection:text-black overflow-x-hidden">
+
+    <!-- Header Ultra-Enxuto (Sem links de fuga para maximizar conversão do Google Ads) -->
+    <header id="main-header" class="sticky top-0 z-50 bg-dark/95 backdrop-blur-md border-b-2 border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20 gap-3">
+                <a href="#top" class="flex items-center gap-2 group shrink-0">
+                    <div class="w-4 h-8 bg-brand group-hover:scale-110 transition-transform"></div>
+                    <span class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">IF Tech</span>
+                </a>
+
+                <div class="flex items-center gap-3">
+                    <span class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-[11px] font-bold uppercase tracking-wider">
+                        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                        Bragança Paulista • SP
+                    </span>
+
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20Google%20e%20preciso%20de%20atendimento%20para%20meu%20computador%2Fnotebook." target="_blank" rel="noopener noreferrer" data-service="Atendimento Direto" class="inline-flex items-center gap-2 px-3.5 py-2 sm:px-5 sm:py-2.5 bg-brand text-black text-xs sm:text-sm font-mono font-black uppercase tracking-wider hover:bg-white transition-colors border-2 border-black shadow-[3px_3px_0px_0px_rgba(255,255,255,0.2)] min-h-[42px]">
+                        <i data-lucide="message-square" class="w-4 h-4 text-black shrink-0"></i>
+                        <span>WhatsApp Direto</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="top" class="flex-grow">
+        <!-- DOBRA 1: Hero Mobile-First de Alta Intenção -->
+        <section class="border-b-2 border-zinc-800 relative py-8 sm:py-12 lg:py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                    <div class="lg:col-span-7">
+                        <div class="inline-flex items-center gap-2 bg-brand/10 border border-brand/30 text-brand font-mono text-[11px] sm:text-xs font-bold px-3 py-1 uppercase mb-4">
+                            <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                            Bancada Técnica & Leva-e-Traz • Bragança Paulista
+                        </div>
+
+                        <h1 class="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight leading-[1.05] mb-4">
+                            Manutenção, Upgrade e Montagem de <span class="text-brand">PCs e Notebooks</span> em Bragança Paulista
+                        </h1>
+
+                        <p class="text-base sm:text-lg text-gray-300 font-medium mb-5 max-w-2xl leading-relaxed">
+                            Acabamos com a lentidão, superaquecimento e travamentos da sua máquina <strong class="text-white">sem apagar seus arquivos</strong>. Orçamento transparente antes de executar e Garantia Legal de 90 Dias.
+                        </p>
+
+                        <!-- Pílulas de Dor Imediata -->
+                        <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px]">
+                            <span class="px-2.5 py-1 bg-red-950/60 border border-red-800/80 text-red-300 flex items-center gap-1.5 font-bold">
+                                <span>⚠️</span> PC / Notebook Lento
+                            </span>
+                            <span class="px-2.5 py-1 bg-amber-950/60 border border-amber-800/80 text-amber-300 flex items-center gap-1.5 font-bold">
+                                <span>🔥</span> Esquentando / Desligando
+                            </span>
+                            <span class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-zinc-200 flex items-center gap-1.5 font-bold">
+                                <span>⚡</span> Upgrade SSD / RAM
+                            </span>
+                            <span class="px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-zinc-200 flex items-center gap-1.5 font-bold">
+                                <span>🖥️</span> Montagem Sob Medida
+                            </span>
+                        </div>
+
+                        <!-- CTA Principal Full-Width no Mobile -->
+                        <div class="flex flex-col sm:flex-row gap-3 mb-5">
+                            <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20Google%20e%20gostaria%20de%20um%20or%C3%A7amento%20r%C3%A1pido%20para%20meu%20computador%20ou%20notebook." target="_blank" rel="noopener noreferrer" data-service="Orçamento Rápido Hero" class="btn-brutal-primary w-full sm:w-auto inline-flex justify-center items-center gap-2.5 px-7 py-4 text-sm sm:text-base min-h-[52px]">
+                                <i data-lucide="zap" class="w-5 h-5 shrink-0"></i>
+                                <span>Orçamento Rápido no WhatsApp</span>
+                            </a>
+                        </div>
+
+                        <!-- Micro-Triagem em 1 Clique -->
+                        <div class="bg-black border-2 border-zinc-800 p-4 mb-5">
+                            <span class="font-mono text-[11px] text-zinc-400 uppercase font-bold block mb-2.5">
+                                // Qual é o seu caso? Clique para abrir o WhatsApp com o assunto pronto:
+                            </span>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Meu%20PC%2FNotebook%20est%C3%A1%20lento%2C%20travando%20ou%20com%20defeito%20e%20preciso%20de%20manuten%C3%A7%C3%A3o." target="_blank" rel="noopener noreferrer" data-service="Manutenção PC ou Notebook" class="flex items-center justify-between gap-2 px-3 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-white font-bold transition-colors min-h-[44px]">
+                                    <span>PC/Note Lento ou Defeito</span>
+                                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-brand shrink-0"></i>
+                                </a>
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Quero%20or%C3%A7ar%20upgrade%20de%20SSD%2FRAM%20ou%20montagem%20de%20computador%20em%20Bragan%C3%A7a." target="_blank" rel="noopener noreferrer" data-service="Upgrade ou Montagem de PC" class="flex items-center justify-between gap-2 px-3 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-white font-bold transition-colors min-h-[44px]">
+                                    <span>Upgrade ou Montagem PC</span>
+                                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-brand shrink-0"></i>
+                                </a>
+                                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Preciso%20de%20suporte%20t%C3%A9cnico%20N1%2FN2%20para%20home%20office%20ou%20empresa%20em%20Bragan%C3%A7a." target="_blank" rel="noopener noreferrer" data-service="Suporte Técnico N1/N2" class="flex items-center justify-between gap-2 px-3 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-brand hover:text-brand text-white font-bold transition-colors min-h-[44px]">
+                                    <span>Suporte Trabalho / Empresa</span>
+                                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-brand shrink-0"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Barra de Micro-Prova -->
+                        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs text-zinc-300">
+                            <span class="flex items-center gap-1.5">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-brand shrink-0"></i>
+                                Diagnóstico isento se aprovar
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <i data-lucide="truck" class="w-4 h-4 text-brand shrink-0"></i>
+                                Leva-e-Traz em Bragança
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-brand shrink-0"></i>
+                                Garantia 90 Dias (CDC)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card Visual de Bancada (Desktop) -->
+                    <div class="lg:col-span-5 relative hidden lg:block group">
+                        <div class="absolute -bottom-3 -left-3 w-full h-full bg-brand border-2 border-zinc-800 transition-transform duration-500 group-hover:translate-x-1.5 group-hover:-translate-y-1.5"></div>
+                        <div class="bg-black border-2 border-zinc-800 relative z-10 p-5 font-mono text-xs text-gray-300 shadow-2xl">
+                            <div class="flex items-center justify-between border-b-2 border-zinc-800 pb-3 mb-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2.5 h-2.5 bg-red-500"></div>
+                                    <div class="w-2.5 h-2.5 bg-yellow-500"></div>
+                                    <div class="w-2.5 h-2.5 bg-brand"></div>
+                                    <span class="text-zinc-500 text-xs ml-2 font-bold">iftech-lab // bancada-braganca</span>
+                                </div>
+                                <span class="text-brand text-xs font-bold uppercase tracking-widest px-2 py-0.5 bg-brand/10 border border-brand/30">BANCADA ATIVA</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="bg-zinc-900/90 border border-zinc-800 p-3.5">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-zinc-300 font-bold flex items-center gap-1.5"><i data-lucide="wrench" class="w-4 h-4 text-brand"></i> MANUTENÇÃO & TÉRMICA</span>
+                                        <span class="text-brand font-bold">-18°C</span>
+                                    </div>
+                                    <p class="text-zinc-400 text-xs">Limpeza isopropílica + pasta térmica premium + formatação segura</p>
+                                    <div class="w-full bg-zinc-800 h-1.5 mt-2 overflow-hidden">
+                                        <div class="bg-brand h-full" style="width: 92%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-zinc-900/90 border border-zinc-800 p-3.5">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-zinc-300 font-bold flex items-center gap-1.5"><i data-lucide="cpu" class="w-4 h-4 text-brand"></i> UPGRADES & MONTAGEM PC</span>
+                                        <span class="text-brand font-bold">BOOT 12s</span>
+                                    </div>
+                                    <p class="text-zinc-400 text-xs">SSD NVMe + RAM, cable management, BIOS & estresse AIDA64</p>
+                                    <div class="w-full bg-zinc-800 h-1.5 mt-2 overflow-hidden">
+                                        <div class="bg-brand h-full" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-zinc-900/90 border border-zinc-800 p-3.5">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-zinc-300 font-bold flex items-center gap-1.5"><i data-lucide="headset" class="w-4 h-4 text-brand"></i> SUPORTE N1 / N2 LOCAL</span>
+                                        <span class="text-brand font-bold">SLA ÁGIL</span>
+                                    </div>
+                                    <p class="text-zinc-400 text-xs">Home office, estações de trabalho, rede Wi-Fi e backups</p>
+                                    <div class="w-full bg-zinc-800 h-1.5 mt-2 overflow-hidden">
+                                        <div class="bg-brand h-full" style="width: 96%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-t border-zinc-800/80 text-zinc-500 text-xs flex justify-between items-center">
+                                <span>$ iftech --diagnostico --garantia=90d</span>
+                                <span class="text-brand font-bold">READY [OK]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOBRA 2: Os 3 Pilares Traduzidos da Busca -->
+        <section id="servicos" class="py-16 sm:py-24 bg-black border-b-2 border-zinc-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <span class="text-brand font-mono text-xs sm:text-sm font-bold uppercase mb-2 block">[ ESPECIALIDADES DA BANCADA ]</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">O que resolvemos hoje para você</h2>
+                    <p class="text-zinc-400 text-sm sm:text-base mt-2 max-w-2xl">
+                        Atendimento direto com o técnico responsável. Sem empurrar peça desnecessária e com separação clara entre mão de obra e peças.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Bloco 01: Manutenção, Limpeza & Sistema -->
+                    <div class="card-triage-hw p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="icon-box w-11 h-11 flex items-center justify-center">
+                                    <i data-lucide="wrench" class="w-5 h-5"></i>
+                                </div>
+                                <span class="font-mono text-[11px] font-bold text-zinc-500 uppercase">01 • Bancada</span>
+                            </div>
+                            <h3 class="card-title text-xl font-black text-white mb-3 transition-colors">
+                                PC ou Notebook Lento, Fervendo ou Sem Ligar
+                            </h3>
+                            <ul class="space-y-2.5 text-sm text-zinc-300 mb-6">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span>Formatação limpa preservando seus arquivos (backup seguro antes de mexer).</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span>Limpeza interna e troca de pasta térmica premium para acabar com o superaquecimento.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span>Diagnóstico térmico, elétrico e de disco com telemetria real (sem "chute").</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Preciso%20de%20manuten%C3%A7%C3%A3o%20ou%20limpeza%2Fformata%C3%A7%C3%A3o%20no%20meu%20PC%20ou%20notebook." target="_blank" rel="noopener noreferrer" data-service="Manutenção e Formatação" class="pt-4 border-t border-zinc-800 flex items-center justify-between text-brand font-mono text-xs font-bold uppercase hover:underline">
+                            <span>Orçar Manutenção</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Bloco 02: Upgrades & Montagem de PCs -->
+                    <div class="card-triage-hw p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="icon-box w-11 h-11 flex items-center justify-center">
+                                    <i data-lucide="cpu" class="w-5 h-5"></i>
+                                </div>
+                                <span class="font-mono text-[11px] font-bold text-zinc-500 uppercase">02 • Performance</span>
+                            </div>
+                            <h3 class="card-title text-xl font-black text-white mb-3 transition-colors">
+                                Upgrades (SSD/RAM) &amp; Montagem Sob Encomenda
+                            </h3>
+                            <ul class="space-y-2.5 text-sm text-zinc-300 mb-6">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span>Clonagem bit a bit para SSD NVMe: seu Windows abre em segundos sem reinstalar nada.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span>Montagem de PC Gamer ou Workstation (com suas peças ou curadoria completa IF Tech).</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span>Cable management organizado, ajuste fino de BIOS/XMP e teste de estresse de bancada.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Quero%20fazer%20um%20upgrade%20de%20SSD%2FRAM%20ou%20montar%20um%20computador%20com%20a%20IF%20Tech." target="_blank" rel="noopener noreferrer" data-service="Upgrade SSD ou Montagem" class="pt-4 border-t border-zinc-800 flex items-center justify-between text-brand font-mono text-xs font-bold uppercase hover:underline">
+                            <span>Orçar Upgrade / Montagem</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Bloco 03: Suporte Técnico N1 / N2 Traduzido -->
+                    <div class="card-triage-hw p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="icon-box w-11 h-11 flex items-center justify-center">
+                                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                </div>
+                                <span class="font-mono text-[11px] font-bold text-zinc-500 uppercase">03 • Nível 1 &amp; 2</span>
+                            </div>
+                            <h3 class="card-title text-xl font-black text-white mb-3 transition-colors">
+                                Suporte Técnico para Home Office &amp; Empresas
+                            </h3>
+                            <p class="text-sm text-zinc-300 leading-relaxed mb-4">
+                                Computador travando no meio do expediente, erro de sistema, lentidão na rede/Wi-Fi ou falha de backup?
+                            </p>
+                            <ul class="space-y-2 text-sm text-zinc-300 mb-6">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span><strong class="text-white">Suporte N1:</strong> incidentes rápidos do dia a dia, drivers, periféricos e contas.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-brand font-mono font-bold mt-0.5">&gt;</span>
+                                    <span><strong class="text-white">Suporte N2:</strong> diagnósticos profundos de hardware, sistema, rede local e segurança.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Preciso%20de%20suporte%20t%C3%A9cnico%20N1%2FN2%20para%20computador%20de%20trabalho%20ou%20empresa." target="_blank" rel="noopener noreferrer" data-service="Suporte N1 e N2" class="pt-4 border-t border-zinc-800 flex items-center justify-between text-brand font-mono text-xs font-bold uppercase hover:underline">
+                            <span>Solicitar Suporte N1/N2</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOBRA 3: Prova Visual de Bancada + Tabela de Transparência -->
+        <section id="provas" class="py-16 sm:py-24 bg-zinc-900 border-b-2 border-zinc-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center mb-14">
+                    <div class="lg:col-span-5">
+                        <span class="text-brand font-mono text-xs sm:text-sm font-bold uppercase mb-2 block">[ PROVA REAL DE BANCADA ]</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-5 text-white">
+                            Métricas reais antes e depois do serviço
+                        </h2>
+                        <p class="text-zinc-300 text-base sm:text-lg leading-relaxed mb-6">
+                            Nada de promessa vazia. Medimos tempo de inicialização, saúde do armazenamento e temperatura sob carga máxima antes de liberar seu equipamento.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 font-mono">
+                            <div class="bg-black border-2 border-zinc-800 p-4">
+                                <span class="text-brand text-2xl sm:text-3xl font-black block">90 Dias</span>
+                                <span class="text-zinc-400 text-xs uppercase mt-1 block">Garantia Art. 26 CDC</span>
+                            </div>
+                            <div class="bg-black border-2 border-zinc-800 p-4">
+                                <span class="text-brand text-2xl sm:text-3xl font-black block">100%</span>
+                                <span class="text-zinc-400 text-xs uppercase mt-1 block">Orçamento Aprovado Antes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 relative group">
+                        <div class="absolute -bottom-3 -right-3 w-full h-full bg-zinc-800 border-2 border-zinc-700 transition-transform duration-500 group-hover:translate-x-1 group-hover:translate-y-1"></div>
+                        <div class="bg-black border-2 border-zinc-700 p-5 sm:p-8 font-mono text-xs sm:text-sm text-gray-300 relative z-10 shadow-2xl">
+                            <div class="flex justify-between items-center border-b-2 border-zinc-800 pb-4 mb-6">
+                                <div>
+                                    <span class="text-zinc-500 uppercase text-xs block font-bold">Relatório Oficial de Bancada</span>
+                                    <span class="text-white font-extrabold text-sm sm:text-base">LAUDO COMPARATIVO DE PERFORMANCE</span>
+                                </div>
+                                <span class="bg-brand text-black font-black text-xs px-2.5 py-1 uppercase shrink-0">Aprovado</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <!-- Item 1: Boot Time -->
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2.5">
+                                    <div class="flex justify-between items-center text-xs gap-2">
+                                        <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="zap" class="w-3.5 h-3.5 text-brand"></i> Boot Time (Inicialização)</span>
+                                        <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5 shrink-0">-85% TEMPO</span>
+                                    </div>
+                                    <div class="space-y-2 text-xs">
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-zinc-400 font-bold">HD Antigo:</span>
+                                                <span class="text-red-400 font-bold">80s (Gargalo Mecânico)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-red-500/80" style="width: 85%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-brand font-bold">NVMe Tuning:</span>
+                                                <span class="text-brand font-black">12s (Boot Instantâneo)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-brand" style="width: 15%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 2: Temperatura CPU -->
+                                <div class="bg-zinc-900/70 border border-zinc-800/80 p-3.5 space-y-2.5">
+                                    <div class="flex justify-between items-center text-xs gap-2">
+                                        <span class="text-white font-bold flex items-center gap-1.5"><i data-lucide="flame" class="w-3.5 h-3.5 text-brand"></i> Temperatura em Estresse (AIDA64)</span>
+                                        <span class="text-brand font-bold text-[11px] bg-brand/10 border border-brand/30 px-2 py-0.5 shrink-0">-18°C ESTÁVEL</span>
+                                    </div>
+                                    <div class="space-y-2 text-xs">
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-zinc-400 font-bold">Original:</span>
+                                                <span class="text-red-400 font-bold">94°C (Thermal Throttling)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-red-500/80" style="width: 94%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-brand font-bold">Pós-Limpeza &amp; Pasta Premium:</span>
+                                                <span class="text-brand font-black">76°C (Estabilidade Máxima)</span>
+                                            </div>
+                                            <div class="w-full bg-black h-2.5 border border-zinc-800 relative overflow-hidden">
+                                                <div class="absolute left-0 top-0 bottom-0 bg-brand" style="width: 76%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-4 border-t border-zinc-800 flex justify-between items-center text-zinc-500 text-[11px]">
+                                <span>Verificado: Bancada IF Tech</span>
+                                <span class="text-zinc-400 font-bold">LAUDO SHA-256 VALIDADO</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela Resumida de Transparência -->
+                <div class="overflow-x-auto border-2 border-zinc-800 bg-black font-mono">
+                    <table class="w-full text-xs sm:text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-zinc-800 bg-zinc-950 text-zinc-400 uppercase text-[11px]">
+                                <th class="py-3.5 px-4 sm:px-6 w-1/3">Critério</th>
+                                <th class="py-3.5 px-4 sm:px-6 w-1/3 text-zinc-500">Assistência Comum</th>
+                                <th class="py-3.5 px-4 sm:px-6 w-1/3 text-brand bg-brand/5 border-l-2 border-brand font-black">IF Tech // Padrão</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-900 text-zinc-300">
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-3.5 px-4 sm:px-6 font-bold text-white">Diagnóstico</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-zinc-500">Troca de peça no chute</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Telemetria AIDA64 e estresse real</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-3.5 px-4 sm:px-6 font-bold text-white">Acompanhamento</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-zinc-500">Sem retorno, cliente precisa cobrar</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Link online com status e fotos da bancada</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-3.5 px-4 sm:px-6 font-bold text-white">Transparência de Preço</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-zinc-500">Valor fechado sem detalhar peças</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-white font-bold bg-brand/5 border-l-2 border-brand">✓ Peças com S/N separadas da mão de obra</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-950">
+                                <td class="py-3.5 px-4 sm:px-6 font-bold text-white">Entrega &amp; Garantia</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-zinc-500">Recibo simples sem testes</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-brand font-black bg-brand/5 border-l-2 border-brand">✓ Laudo PDF + 90 Dias (Art. 26 CDC)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOBRA 4: Como Funciona (Leva-e-Traz + Garantia) -->
+        <section id="como-funciona" class="py-16 sm:py-24 bg-dark border-b-2 border-zinc-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 text-center sm:text-left">
+                    <span class="text-brand font-mono text-xs sm:text-sm font-bold uppercase mb-2 block">[ PROCESSO SEM BUROCRACIA ]</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Como funciona do primeiro contato à entrega</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="border-t-4 border-brand pt-6">
+                        <span class="text-5xl font-black text-zinc-800 font-mono mb-4 block">01</span>
+                        <h3 class="text-xl font-extrabold text-white mb-3">Triagem Rápida no WhatsApp</h3>
+                        <p class="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                            Você explica o sintoma ou objetivo (ou envia foto/vídeo). Já orientamos o melhor caminho e estimativa na hora, sem linguagem complicada.
+                        </p>
+                    </div>
+
+                    <div class="border-t-4 border-white pt-6">
+                        <span class="text-5xl font-black text-zinc-800 font-mono mb-4 block">02</span>
+                        <h3 class="text-xl font-extrabold text-white mb-3">Balcão ou Leva-e-Traz</h3>
+                        <p class="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                            Retiramos e devolvemos em Bragança Paulista com protocolo e checklist fotográfico (<strong class="text-white">R$ 35 ou Grátis</strong> em serviços acima de R$ 350).
+                        </p>
+                    </div>
+
+                    <div class="border-t-4 border-zinc-700 pt-6">
+                        <span class="text-5xl font-black text-zinc-800 font-mono mb-4 block">03</span>
+                        <h3 class="text-xl font-extrabold text-white mb-3">Aprovação &amp; Entrega Testada</h3>
+                        <p class="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                            Você aprova o orçamento detalhado antes da execução. Entregamos validado em teste de estresse + <strong class="text-white">90 dias de garantia</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOBRA 5: FAQ Matador de Objeções -->
+        <section id="faq" class="py-16 sm:py-20 bg-black border-b-2 border-zinc-800">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-10 text-center sm:text-left">
+                    <span class="text-brand font-mono text-xs sm:text-sm font-bold uppercase mb-2 block">[ DÚVIDAS FREQUENTES ]</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Perguntas &amp; Respostas</h2>
+                </div>
+
+                <div class="space-y-4 font-mono">
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800 p-5 sm:p-6">
+                        <h3 class="text-base sm:text-lg font-extrabold text-white mb-2 flex items-start gap-2">
+                            <span class="text-brand shrink-0">&gt;</span>
+                            <span>Vou perder meus arquivos, fotos e programas?</span>
+                        </h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed font-sans">
+                            Não. Antes de formatar ou trocar armazenamento, realizamos backup seguro (ou clonagem bit a bit para seu novo SSD NVMe) mantendo seus arquivos protegidos.
+                        </p>
+                    </div>
+
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800 p-5 sm:p-6">
+                        <h3 class="text-base sm:text-lg font-extrabold text-white mb-2 flex items-start gap-2">
+                            <span class="text-brand shrink-0">&gt;</span>
+                            <span>Quanto custa para avaliar o equipamento?</span>
+                        </h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed font-sans">
+                            O diagnóstico cirúrgico em bancada (testes térmicos, disco e placa) custa R$ 90,00, mas é <strong class="text-white">100% isento ao aprovar o serviço</strong>. Você só paga pelo reparo ou upgrade aprovado.
+                        </p>
+                    </div>
+
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800 p-5 sm:p-6">
+                        <h3 class="text-base sm:text-lg font-extrabold text-white mb-2 flex items-start gap-2">
+                            <span class="text-brand shrink-0">&gt;</span>
+                            <span>Preciso levar o computador até vocês?</span>
+                        </h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed font-sans">
+                            Não obrigatoriamente. Temos serviço agendado de Leva-e-Traz em Bragança Paulista (taxa de R$ 35,00, ou gratuita em serviços acima de R$ 350,00) com termo digital de recebimento.
+                        </p>
+                    </div>
+
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800 p-5 sm:p-6">
+                        <h3 class="text-base sm:text-lg font-extrabold text-white mb-2 flex items-start gap-2">
+                            <span class="text-brand shrink-0">&gt;</span>
+                            <span>Vocês montam PC com peças que eu já comprei ou indicam as peças?</span>
+                        </h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed font-sans">
+                            Fazemos ambos: se você já comprou as peças, realizamos a montagem completa com cable management, atualização de BIOS e teste de estresse. Se ainda não comprou, fazemos a curadoria compatível dentro do seu orçamento.
+                        </p>
+                    </div>
+
+                    <div class="bg-zinc-900/70 border-2 border-zinc-800 p-5 sm:p-6">
+                        <h3 class="text-base sm:text-lg font-extrabold text-white mb-2 flex items-start gap-2">
+                            <span class="text-brand shrink-0">&gt;</span>
+                            <span>Qual é a garantia do serviço?</span>
+                        </h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed font-sans">
+                            Todos os serviços de manutenção, upgrades e montagens contam com <strong class="text-white">90 dias de garantia legal integral</strong> (Art. 26 do CDC), acompanhados de laudo técnico e certificado digital.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOBRA 6: CTA Final Brand -->
+        <section id="contato" class="py-16 sm:py-20 bg-brand text-black text-center">
+            <div class="max-w-4xl mx-auto px-4">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-5">
+                    Resolva seu PC ou Notebook hoje em Bragança Paulista
+                </h2>
+                <p class="text-base sm:text-xl font-medium mb-8 text-black/80 max-w-2xl mx-auto">
+                    Converse direto com o técnico no WhatsApp e receba orientação rápida para manutenção, upgrade ou montagem.
+                </p>
+                <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20Google%20e%20quero%20agendar%20atendimento%20com%20a%20IF%20Tech%20em%20Bragan%C3%A7a." target="_blank" rel="noopener noreferrer" data-service="CTA Final" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-black text-white text-base sm:text-lg font-mono font-black uppercase tracking-wider hover:bg-zinc-800 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] min-h-[54px]">
+                    <i data-lucide="message-square" class="w-5 h-5 text-brand shrink-0"></i>
+                    <span>Chamar no WhatsApp Agora</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Enxuto -->
+    <footer class="bg-dark border-t-2 border-zinc-800 py-10 safe-pb">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pb-6 border-b border-zinc-800">
+                <div class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                    <div class="w-3 h-6 bg-brand"></div>
+                    IF Tech
+                </div>
+
+                <div class="flex flex-wrap justify-center items-center gap-4 font-mono text-xs text-zinc-400">
+                    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20atendimento." target="_blank" rel="noopener noreferrer" data-service="Rodapé WhatsApp" class="text-white hover:text-brand font-bold transition-colors">
+                        [ (11) 91969-1542 ]
+                    </a>
+                    <span class="text-zinc-600 select-none">&bull;</span>
+                    <a href="/status" class="text-zinc-400 hover:text-brand transition-colors">
+                        Já é cliente? Acompanhar OS
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-5 text-center font-mono text-zinc-500 text-xs">
+                &copy; 2026 IF Tech &bull; Bragança Paulista - SP &bull; Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- FAB WhatsApp Neobrutalista -->
+    <a href="https://wa.me/5511919691542?text=Ol%C3%A1!%20Vim%20pelo%20Google%20e%20preciso%20de%20ajuda%20com%20meu%20computador." target="_blank" rel="noopener noreferrer" data-service="Botão Flutuante WhatsApp" class="fixed bottom-5 right-5 z-50 bg-brand text-black p-3.5 sm:p-4 rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(255,255,255,1)] transition-all duration-200" aria-label="Falar com a IF Tech no WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+        </svg>
+    </a>
+
+    <!-- Motor de Atribuição UTM + Conversão Google Ads com Beacon e Deduplicação -->
+    <script>
+        (function () {
+            const UTM_STORAGE_KEY = 'iftech_ads_utm_v1';
+            const CONV_SENT_KEY = 'iftech_ads_conv_sent_manutencao';
+
+            function readAttribution() {
+                let stored = {};
+                try {
+                    stored = JSON.parse(sessionStorage.getItem(UTM_STORAGE_KEY) || '{}') || {};
+                } catch (e) {
+                    stored = {};
+                }
+
+                const params = new URLSearchParams(window.location.search);
+                const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid'];
+                let changed = false;
+
+                keys.forEach((key) => {
+                    const val = params.get(key);
+                    if (val) {
+                        stored[key] = val.trim();
+                        changed = true;
+                    }
+                });
+
+                if (changed) {
+                    try {
+                        sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(stored));
+                    } catch (e) {}
+                }
+
+                return stored;
+            }
+
+            function appendAttributionToWaLinks(attr) {
+                const refValue = attr.utm_term || attr.utm_campaign || (attr.gclid ? 'gclid' : 'manutencao');
+                const cleanRef = String(refValue).replace(/[\r\n]+/g, ' ').slice(0, 60);
+                const links = document.querySelectorAll('a[href*="wa.me/"]');
+
+                links.forEach((link) => {
+                    try {
+                        const url = new URL(link.href);
+                        const baseText = url.searchParams.get('text') || 'Olá! Vim pelo site da IF Tech.';
+                        if (!baseText.includes('(Ref:')) {
+                            url.searchParams.set('text', `${baseText} (Ref: Ads-${cleanRef})`);
+                            link.href = url.toString();
+                        }
+                    } catch (e) {}
+                });
+            }
+
+            function trackWhatsAppLead(serviceIntent, attr) {
+                if (typeof gtag !== 'function') return;
+
+                // 1. Evento detalhado no GA4 (sempre via beacon para não perder na troca de app mobile)
+                gtag('event', 'whatsapp_lead', {
+                    transport_type: 'beacon',
+                    service_intent: serviceIntent || 'Geral',
+                    utm_campaign: attr.utm_campaign || 'direct',
+                    utm_term: attr.utm_term || '',
+                    page_path: '/manutencao'
+                });
+
+                // 2. Conversão oficial Google Ads (deduplicada 1x por sessão)
+                let alreadySent = false;
+                try {
+                    alreadySent = sessionStorage.getItem(CONV_SENT_KEY) === '1';
+                } catch (e) {}
+
+                if (!alreadySent) {
+                    gtag('event', 'conversion', {
+                        send_to: 'AW-18161865460/kezNCM_O7fYcEPSloNRD',
+                        transport_type: 'beacon',
+                        value: 1.0,
+                        currency: 'BRL'
+                    });
+                    try {
+                        sessionStorage.setItem(CONV_SENT_KEY, '1');
+                    } catch (e) {}
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+
+                const attribution = readAttribution();
+                appendAttributionToWaLinks(attribution);
+
+                document.addEventListener('click', (event) => {
+                    const link = event.target.closest('a[href*="wa.me/"]');
+                    if (!link) return;
+                    const serviceIntent = link.getAttribute('data-service') || 'WhatsApp_CTA';
+                    trackWhatsAppLead(serviceIntent, attribution);
+                }, true);
+            });
+
+            window.addEventListener('load', () => {
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
